@@ -142,3 +142,23 @@ test("source finding is separate from editorial publication approval",async()=>{
  assert.equal(storage.prepare("SELECT COUNT(*) AS n FROM cases WHERE assessment_status='resolved' AND review_status='approved'").get().n,3);
  storage.close();
 });
+
+test("country/year facets and API filters work beyond the first 250 globally paginated results",async()=>{
+ const {db,sql}=localDatabase();
+ await importReviewed(db,manifest);
+ const insert=sql.prepare("INSERT INTO cases(id,record_kind,title,description,date,date_precision,country_code,region,location,location_precision,category,review_status,publication_status,source_name,source_url,license) VALUES(?,'historical_import','Data test','Only synthetic test row','2026','year','DE','Berlin','Berlin','Region anchor','lights','approved','published','Test Fixture','https://example.org/test','fixture')");
+ for(let i=0;i<260;i++)insert.run("fixture-de-"+String(i).padStart(4,"0"));
+ const first=await getCases(db,new URLSearchParams({limit:"250"}));
+ assert.equal(first.total,263);
+ assert.equal(first.has_more,true);
+ assert.equal(first.cases.some(x=>x.country==="PR"),false);
+ const global=await getStats(db);
+ assert.equal(global.by_country.some(x=>x.code==="PR"&&x.count===1),true);
+ assert.equal(global.by_year.some(x=>x.year==="2013"&&x.count===1),true);
+ const puertoRico=await getCases(db,new URLSearchParams({country:"PR",limit:"250"}));
+ assert.equal(puertoRico.total,1);
+ assert.equal(puertoRico.cases[0].id,"aaro-pr-2013");
+ const oldYear=await getCases(db,new URLSearchParams({year:"2013",limit:"250"}));
+ assert.equal(oldYear.total,1);
+ sql.close();
+});
