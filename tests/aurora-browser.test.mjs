@@ -259,7 +259,7 @@ try{
     await page.locator('#typeFilter').selectOption('lights');
     await page.locator('#typeFilter').selectOption('instrument');
     await page.waitForFunction(()=>document.querySelectorAll('#countryCases .case-card').length===1 &&
-      document.querySelector('#countryCases .case-title')?.textContent==='Puerto Rico infrared objects');
+      document.querySelector('#countryCases .case-title')?.textContent==='Инфрачервени обекти над Пуерто Рико');
     await page.waitForTimeout(460);
     assert.ok(slowRequests>=1,'delayed older filter must have occurred');
     assert.equal(await page.locator('#countryCases .case-card').count(),1);
