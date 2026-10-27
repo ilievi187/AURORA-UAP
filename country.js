@@ -25,7 +25,7 @@
  el("countryIntro").textContent=isBg?"Публичен архив за "+countryName+". Данните се зареждат от реалния регистър; демо случаите не се броят.":"Public registry for "+countryName+". Counts come from D1; demonstration cases are excluded.";
  const txt={backLabel:["НАЧАЛО","HOME"],sightingsLabel:["РЕГИСТРИРАНИ СЛУЧАИ","REGISTERED CASES"],yearsLabel:["ГОДИНИ СЪС СЛУЧАИ","YEARS WITH CASES"],regionsLabel:["РЕГИОНИ","REGIONS"],chooseCountryLabel:["ДЪРЖАВА","COUNTRY"],yearLabel:["ГОДИНА","YEAR"],regionLabel:["РЕГИОН","REGION"],typeLabel:["ТИП","TYPE"],statusLabel:["СТАТУС","STATUS"],searchLabel:["ТЪРСЕНЕ","SEARCH"],resultsHeading:["РЕГИСТЪР НА СЛУЧАИТЕ","CASE REGISTER"],reportLabel:["✦ ПОДАЙ НАБЛЮДЕНИЕ","✦ REPORT A SIGHTING"],reportNotice:["Засега само локална чернова — публичното изпращане не е активно.","Local draft only — submissions are not enabled."],mapCaveat:["Приблизителни райони, не точни траектории и лични адреси.","Approximate regions, not flight paths or personal addresses."]};
  for(const [key,values] of Object.entries(txt))el(key).textContent=values[isBg?0:1];
- el("reportLink").href="/?report=draft&country="+code;
+ el("reportLink").href="/report.html?country="+code;
  const choose=el("chooseCountry");
  for(const c of names){
   const option=document.createElement("option");option.value=c;option.textContent=d.of(c)||c;
