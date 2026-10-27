@@ -3,6 +3,15 @@
 Multilingual static website for the independent AURORA UAP initiative.
 Domain: **aurorauap.org** on Cloudflare Pages. Current release: public design preview.
 
+## Mission Control V1.2 — interactive research workflow (2026-10-27)
+- New **Mission Control** section linked from desktop, mobile and footer navigation.
+- Four keyboard-accessible research tabs: Document → Verify → Analyze → Conclude. Each changes the explanatory checklist and phase visualization; Next cycles through all phases.
+- Procedurally animated orbital dashboard and radar sweep over the existing map, with accessibility-safe reduced-motion behavior.
+- Localized Mission Control UX for Bulgarian, English, German, Russian and Simplified Chinese; English fallback is used for the 13 explicitly marked preview locales.
+- Three **DEMO case** shortcuts open the same existing example-case dialog, maintaining synthetic-case disclosures.
+- Cross-browser automation exercises navigation, stage changes, keyboard controls, language switching, mobile layout, sample cases and existing map filters.
+- **Not real-time telemetry or report processing:** displays are educational illustrations, not real detected events. The report form still only saves drafts locally; no upload or email delivery is connected.
+
 ## JARVIS-style HUD update (2026-10-27)
 - **Two-step entrance required on every homepage visit:** select from the language cards and then press the separately translated **Continue** button. A saved language preselects the card but never silently skips the gateway.
 - The welcome scene and homepage now display real animated 2D Canvas radar sweeps, arcs, star-like signal particles, scan-line layers, instrument readouts and pointer parallax. These are **artistic interface effects**, not live UFO detections.

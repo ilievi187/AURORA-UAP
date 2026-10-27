@@ -1,0 +1,50 @@
+<section class="mission-console" id="control" aria-labelledby="controlHeading" data-phase="0">
+  <div class="console-heading">
+    <div><p class="console-kicker"><span class="console-status-light" aria-hidden="true"></span> AURORA / RESEARCH OPERATIONS / DEMO</p>
+      <h2 id="controlHeading" data-control-t="heading">КОМАНДЕН ЦЕНТЪР</h2>
+      <p class="console-intro" data-control-t="intro">Проследи как един сигнал преминава от наблюдение до обосновано заключение. Това е интерактивна демонстрация на методиката, не система с живи данни.</p>
+    </div>
+    <div class="console-identity" aria-hidden="true"><span>PROCESS VISUALIZER</span><strong>04 / STAGES</strong><span>SYSTEM: DEMONSTRATION</span></div>
+  </div>
+  <div class="console-layout">
+    <div class="console-phases">
+      <div class="console-small-label" data-control-t="phaseLabel">ИЗБЕРИ ЕТАП</div>
+      <div id="controlTabs" role="tablist" aria-label="Research workflow demo">
+        <button type="button" class="console-tab" id="controlTab0" role="tab" aria-selected="true" aria-controls="controlPanel" tabindex="0" data-phase="0"><span class="console-tab-no">01</span><span class="console-tab-title" data-control-t="phase0">Регистриране</span><span class="console-tab-indicator" aria-hidden="true">↗</span></button>
+        <button type="button" class="console-tab" id="controlTab1" role="tab" aria-selected="false" aria-controls="controlPanel" tabindex="-1" data-phase="1"><span class="console-tab-no">02</span><span class="console-tab-title" data-control-t="phase1">Проверка</span><span class="console-tab-indicator" aria-hidden="true">↗</span></button>
+        <button type="button" class="console-tab" id="controlTab2" role="tab" aria-selected="false" aria-controls="controlPanel" tabindex="-1" data-phase="2"><span class="console-tab-no">03</span><span class="console-tab-title" data-control-t="phase2">Анализ</span><span class="console-tab-indicator" aria-hidden="true">↗</span></button>
+        <button type="button" class="console-tab" id="controlTab3" role="tab" aria-selected="false" aria-controls="controlPanel" tabindex="-1" data-phase="3"><span class="console-tab-no">04</span><span class="console-tab-title" data-control-t="phase3">Заключение</span><span class="console-tab-indicator" aria-hidden="true">↗</span></button>
+      </div>
+      <p class="console-smallprint" data-control-t="disclaimer">Илюстративен процес. Не обработваме реални сигнали онлайн.</p>
+    </div>
+    <div class="console-visual" aria-hidden="true">
+      <div class="console-grid-overlay"></div>
+      <div class="console-orbit console-orbit-outer"></div>
+      <div class="console-orbit console-orbit-middle"></div>
+      <div class="console-orbit console-orbit-inner"></div>
+      <div class="console-sweep"></div>
+      <div class="console-core"><span>✦</span></div>
+      <span class="console-coordinate console-coordinate-a">AZIMUTH / 0° — 360°</span>
+      <span class="console-coordinate console-coordinate-b">PROTOCOL / 0<span id="controlVisualStage">1</span></span>
+      <div class="console-markers"><i></i><i></i><i></i><i></i></div>
+      <span class="console-crosshair console-crosshair-a">+</span>
+      <span class="console-crosshair console-crosshair-b">+</span>
+    </div>
+    <div class="console-detail" id="controlPanel" role="tabpanel" aria-labelledby="controlTab0" tabindex="0">
+      <div class="console-small-label"><span data-control-t="activeStage">АКТИВЕН ЕТАП</span> / <span id="controlCounter">01</span></div>
+      <h3 id="controlStageTitle">Регистриране на наблюдението</h3>
+      <p id="controlStageDescription">Започваме със свидетелството: точно време, място, посока, условия и оригинални файлове.</p>
+      <ul class="console-checklist" id="controlChecklist"><li>Дата, час и локация</li><li>Свидетели и контекст</li><li>Оригинални материали</li></ul>
+      <div class="console-actions">
+        <button class="console-next" id="controlNext" type="button"><span data-control-t="next">СЛЕДВАЩ ЕТАП</span><span aria-hidden="true">→</span></button>
+        <a class="console-link" id="controlContextLink" href="#methodology"><span data-control-t="methodLink">ВИЖ МЕТОДИКАТА</span> ↗</a>
+      </div>
+      <div class="console-progress" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    </div>
+  </div>
+  <div class="console-feed">
+    <div><span class="console-feed-label" data-control-t="feedLabel">ПРИМЕРНИ ДОСИЕТА / ДЕМО</span><p data-control-t="feedIntro">Разгледай примерните случаи или отвори пълния архив.</p></div>
+    <div id="controlCaseButtons" class="console-case-buttons" aria-label="Demo case shortcuts"></div>
+    <a href="#reports" class="console-archive-link"><span data-control-t="archiveLink">КЪМ АРХИВА</span> ↗</a>
+  </div>
+</section>

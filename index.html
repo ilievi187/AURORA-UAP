@@ -11,10 +11,12 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="aurora-v1.css">
   <link rel="stylesheet" href="jarvis-hud.css">
+  <link rel="stylesheet" href="mission-control.css">
   <script defer src="i18n-extra.js"></script>
   <script defer src="script.js"></script>
   <script defer src="aurora-v1.js"></script>
   <script defer src="jarvis-hud.js"></script>
+  <script defer src="mission-control.js"></script>
 </head>
 <body class="gate-open">
 <noscript><style>#languageGate{display:none!important}body.gate-open{overflow:auto}.site-shell{pointer-events:auto!important}</style></noscript>
@@ -66,11 +68,11 @@
       <span class="brand-text"><b>A U R O R A</b><small>UAP BULGARIA · RESEARCH INITIATIVE</small></span>
     </a>
     <nav class="desktop-nav" aria-label="Основна навигация">
-      <a class="active" href="#home" data-i18n="navHome">Начало</a><a href="#mission" data-i18n="navMission">Мисия</a><a href="#research" data-i18n="navResearch">Изследвания</a><a href="#map" data-i18n="navMap">Карта</a><a href="#reports" data-i18n="navReports">Сигнали</a><a href="#join" data-i18n="navJoin">Участвай</a><a class="nav-donate" href="donate.html" data-i18n="navDonate">❤️ ДАРИ</a>
+      <a class="active" href="#home" data-i18n="navHome">Начало</a><a href="#mission" data-i18n="navMission">Мисия</a><a href="#control" data-control-nav>Център</a><a href="#research" data-i18n="navResearch">Изследвания</a><a href="#map" data-i18n="navMap">Карта</a><a href="#reports" data-i18n="navReports">Сигнали</a><a href="#join" data-i18n="navJoin">Участвай</a><a class="nav-donate" href="donate.html" data-i18n="navDonate">❤️ ДАРИ</a>
     </nav>
     <div class="header-actions"><button type="button" class="gate-trigger" id="openLanguageGate" aria-label="Промени езика / Change language">LANGUAGE</button><label class="sr-only" for="langToggle">Language / Език</label><select class="lang-button lang-select" id="langToggle" aria-label="Language / Език"><option value="bg">Български</option><option value="en">English</option><option value="de">Deutsch</option><option value="ru">Русский</option><option value="zh-CN">中文</option></select><a class="join-top" href="#join"><svg class="icon"><use href="#i-users"/></svg><span data-i18n="joinButton">Включи се</span></a><button type="button" class="menu-button" id="menuToggle" aria-label="Отвори менюто" aria-expanded="false"><svg class="icon"><use href="#i-menu"/></svg></button></div>
   </header>
-  <nav class="mobile-nav" id="mobileNav" aria-label="Мобилна навигация" hidden><a href="#home" data-i18n="navHome">Начало</a><a href="#mission" data-i18n="navMission">Мисия</a><a href="#research" data-i18n="navResearch">Изследвания</a><a href="#map" data-i18n="navMap">Карта</a><a href="#reports" data-i18n="navReports">Сигнали</a><a href="#join" data-i18n="navJoin">Участвай</a><a class="nav-donate" href="donate.html" data-i18n="navDonate">❤️ ДАРИ</a></nav>
+  <nav class="mobile-nav" id="mobileNav" aria-label="Мобилна навигация" hidden><a href="#home" data-i18n="navHome">Начало</a><a href="#mission" data-i18n="navMission">Мисия</a><a href="#control" data-control-nav>Център</a><a href="#research" data-i18n="navResearch">Изследвания</a><a href="#map" data-i18n="navMap">Карта</a><a href="#reports" data-i18n="navReports">Сигнали</a><a href="#join" data-i18n="navJoin">Участвай</a><a class="nav-donate" href="donate.html" data-i18n="navDonate">❤️ ДАРИ</a></nav>
 
   <main id="main">
   <section class="hero" aria-labelledby="hero-title">
@@ -99,6 +101,57 @@
     <div class="stat"><span class="stat-icon"><svg class="icon"><use href="#i-globe"/></svg></span><div><b>01</b><p data-i18n="statMission">Обща мисия</p><small data-i18n="statMissionNote">Наука и прозрачност</small></div></div>
     <div class="stat"><span class="stat-icon"><svg class="icon"><use href="#i-shield"/></svg></span><div><b>00</b><p data-i18n="statVerified">Потвърдени случая</p><small data-i18n="statHonest">Без измислени доказателства</small></div></div>
   </section>
+
+  <section class="mission-console" id="control" aria-labelledby="controlHeading" data-phase="0">
+  <div class="console-heading">
+    <div><p class="console-kicker"><span class="console-status-light" aria-hidden="true"></span> AURORA / RESEARCH OPERATIONS / DEMO</p>
+      <h2 id="controlHeading" data-control-t="heading">КОМАНДЕН ЦЕНТЪР</h2>
+      <p class="console-intro" data-control-t="intro">Проследи как един сигнал преминава от наблюдение до обосновано заключение. Това е интерактивна демонстрация на методиката, не система с живи данни.</p>
+    </div>
+    <div class="console-identity" aria-hidden="true"><span>PROCESS VISUALIZER</span><strong>04 / STAGES</strong><span>SYSTEM: DEMONSTRATION</span></div>
+  </div>
+  <div class="console-layout">
+    <div class="console-phases">
+      <div class="console-small-label" data-control-t="phaseLabel">ИЗБЕРИ ЕТАП</div>
+      <div id="controlTabs" role="tablist" aria-label="Research workflow demo">
+        <button type="button" class="console-tab" id="controlTab0" role="tab" aria-selected="true" aria-controls="controlPanel" tabindex="0" data-phase="0"><span class="console-tab-no">01</span><span class="console-tab-title" data-control-t="phase0">Регистриране</span><span class="console-tab-indicator" aria-hidden="true">↗</span></button>
+        <button type="button" class="console-tab" id="controlTab1" role="tab" aria-selected="false" aria-controls="controlPanel" tabindex="-1" data-phase="1"><span class="console-tab-no">02</span><span class="console-tab-title" data-control-t="phase1">Проверка</span><span class="console-tab-indicator" aria-hidden="true">↗</span></button>
+        <button type="button" class="console-tab" id="controlTab2" role="tab" aria-selected="false" aria-controls="controlPanel" tabindex="-1" data-phase="2"><span class="console-tab-no">03</span><span class="console-tab-title" data-control-t="phase2">Анализ</span><span class="console-tab-indicator" aria-hidden="true">↗</span></button>
+        <button type="button" class="console-tab" id="controlTab3" role="tab" aria-selected="false" aria-controls="controlPanel" tabindex="-1" data-phase="3"><span class="console-tab-no">04</span><span class="console-tab-title" data-control-t="phase3">Заключение</span><span class="console-tab-indicator" aria-hidden="true">↗</span></button>
+      </div>
+      <p class="console-smallprint" data-control-t="disclaimer">Илюстративен процес. Не обработваме реални сигнали онлайн.</p>
+    </div>
+    <div class="console-visual" aria-hidden="true">
+      <div class="console-grid-overlay"></div>
+      <div class="console-orbit console-orbit-outer"></div>
+      <div class="console-orbit console-orbit-middle"></div>
+      <div class="console-orbit console-orbit-inner"></div>
+      <div class="console-sweep"></div>
+      <div class="console-core"><span>✦</span></div>
+      <span class="console-coordinate console-coordinate-a">AZIMUTH / 0° — 360°</span>
+      <span class="console-coordinate console-coordinate-b">PROTOCOL / 0<span id="controlVisualStage">1</span></span>
+      <div class="console-markers"><i></i><i></i><i></i><i></i></div>
+      <span class="console-crosshair console-crosshair-a">+</span>
+      <span class="console-crosshair console-crosshair-b">+</span>
+    </div>
+    <div class="console-detail" id="controlPanel" role="tabpanel" aria-labelledby="controlTab0" tabindex="0">
+      <div class="console-small-label"><span data-control-t="activeStage">АКТИВЕН ЕТАП</span> / <span id="controlCounter">01</span></div>
+      <h3 id="controlStageTitle">Регистриране на наблюдението</h3>
+      <p id="controlStageDescription">Започваме със свидетелството: точно време, място, посока, условия и оригинални файлове.</p>
+      <ul class="console-checklist" id="controlChecklist"><li>Дата, час и локация</li><li>Свидетели и контекст</li><li>Оригинални материали</li></ul>
+      <div class="console-actions">
+        <button class="console-next" id="controlNext" type="button"><span data-control-t="next">СЛЕДВАЩ ЕТАП</span><span aria-hidden="true">→</span></button>
+        <a class="console-link" id="controlContextLink" href="#methodology"><span data-control-t="methodLink">ВИЖ МЕТОДИКАТА</span> ↗</a>
+      </div>
+      <div class="console-progress" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    </div>
+  </div>
+  <div class="console-feed">
+    <div><span class="console-feed-label" data-control-t="feedLabel">ПРИМЕРНИ ДОСИЕТА / ДЕМО</span><p data-control-t="feedIntro">Разгледай примерните случаи или отвори пълния архив.</p></div>
+    <div id="controlCaseButtons" class="console-case-buttons" aria-label="Demo case shortcuts"></div>
+    <a href="#reports" class="console-archive-link"><span data-control-t="archiveLink">КЪМ АРХИВА</span> ↗</a>
+  </div>
+</section>
 
   <section class="section" id="mission">
     <div class="section-heading two-col"><div><div class="eyebrow" data-i18n="whatDo">КАКВО ПРАВИМ</div><h2 data-i18n="researchTitle">НАБЛЮДАВАМЕ. ПРОВЕРЯВАМЕ. ИЗСЛЕДВАМЕ.</h2></div><p data-i18n="researchIntro">За да разберем непознатото, първо изключваме познатото. Всеки сигнал заслужава уважение и внимателна проверка.</p></div>
@@ -145,7 +198,7 @@
   <section class="donate-banner" id="support"><div><div class="eyebrow" data-i18n="donateKicker">ПОДКРЕПИ НЕЗАВИСИМИТЕ ИЗСЛЕДВАНИЯ</div><h2 data-i18n="donateTitle">ПОМОГНИ НИ ДА ИЗГРАДИМ AURORA.</h2><p data-i18n="donateSummary">Подкрепата ще бъде използвана за оборудване, разследвания, пътувания, софтуер, хостинг и прозрачни разходи по проекта.</p></div><a class="button button-donate donate-giant" href="donate.html"><span>❤️</span> <span data-i18n="navDonate">ДАРИ</span> <span aria-hidden="true">↗</span></a></section>
   <div class="prototype-notice" role="status"><span class="status-dot"></span><strong data-i18n="protoLabel">ПРОТОТИП:</strong> <span data-i18n="protoNote">Организацията и платформата са в процес на подготовка. Картата и случаите са демонстрационни; няма публично подаване на данни или регистрации. Онлайн даренията ще бъдат активирани след проверка на платежния оператор.</span></div>
   </main>
-  <footer class="footer"><div class="footer-identity"><div class="brand-icon small" aria-hidden="true"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="currentColor"/><path d="M28 8 31 25 41 29 31 32 28 48 25 32 15 29 25 25z" fill="currentColor"/></svg></div><div><b>A U R O R A</b><small>UAP BULGARIA INITIATIVE</small><p data-i18n="footerSub">Да изследваме небето заедно.</p></div></div><div class="footer-links"><a href="#home" data-i18n="navHome">Начало</a><a href="#mission" data-i18n="navMission">Мисия</a><a href="#map" data-i18n="navMap">Карта</a><a href="#reports" data-i18n="navReports">Сигнали</a><a href="#methodology" data-i18n="methodNav">Методика</a><a href="donate.html" data-i18n="navDonate">❤️ ДАРИ</a><button type="button" id="footerLanguageGate" class="gate-trigger gate-trigger-in-footer">LANGUAGE</button></div><small class="footer-quote">SCIENCE. TRANSPARENCY. OPEN SKIES.<span>© <span id="year">2026</span> AURORA / UAP Bulgaria · Demo</span></small></footer>
+  <footer class="footer"><div class="footer-identity"><div class="brand-icon small" aria-hidden="true"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="currentColor"/><path d="M28 8 31 25 41 29 31 32 28 48 25 32 15 29 25 25z" fill="currentColor"/></svg></div><div><b>A U R O R A</b><small>UAP BULGARIA INITIATIVE</small><p data-i18n="footerSub">Да изследваме небето заедно.</p></div></div><div class="footer-links"><a href="#home" data-i18n="navHome">Начало</a><a href="#mission" data-i18n="navMission">Мисия</a><a href="#control" data-control-nav>Център</a><a href="#map" data-i18n="navMap">Карта</a><a href="#reports" data-i18n="navReports">Сигнали</a><a href="#methodology" data-i18n="methodNav">Методика</a><a href="donate.html" data-i18n="navDonate">❤️ ДАРИ</a><button type="button" id="footerLanguageGate" class="gate-trigger gate-trigger-in-footer">LANGUAGE</button></div><small class="footer-quote">SCIENCE. TRANSPARENCY. OPEN SKIES.<span>© <span id="year">2026</span> AURORA / UAP Bulgaria · Demo</span></small></footer>
 </div>
 
 <dialog id="reportDialog" aria-labelledby="reportDialogTitle" class="site-dialog"><div class="dialog-inner"><div class="dialog-heading"><div><div class="eyebrow" data-i18n="dialogKicker">ДЕМОНСТРАЦИОННА ФОРМА</div><h2 id="reportDialogTitle" data-i18n="dialogTitle">Опиши наблюдението си</h2></div><button type="button" class="dialog-close" id="closeDialog" aria-label="Затвори"><svg class="icon"><use href="#i-x"/></svg></button></div><p class="dialog-explainer" data-i18n="dialogExplain">Това е демо форма. Записва черновата само в този браузър, на твоето устройство — нищо не се изпраща към сървър.</p><form id="reportForm"><div class="form-row"><label><span data-i18n="formPlace">Място / град</span><input id="fPlace" name="place" maxlength="100" autocomplete="off" required placeholder="напр. Шумен"></label><label><span data-i18n="formDate">Дата и час</span><input id="fDate" name="date" type="datetime-local" required></label></div><label><span data-i18n="formType">Тип наблюдение</span><select id="fType" name="type"><option value="light" data-i18n="typeLight">Светлини</option><option value="object" data-i18n="typeObject">Обект</option><option value="other" data-i18n="typeOther">Друго / не знам</option></select></label><label><span data-i18n="formDesc">Какво видя?</span><textarea id="fDescription" name="description" rows="5" minlength="15" maxlength="2500" required placeholder="Опиши посоката, времетраенето, движението и условията..."></textarea></label><div class="form-actions"><button type="button" id="clearDraft" class="button button-secondary" data-i18n="deleteDraft">Изтрий черновата</button><button type="submit" class="button button-primary"><span data-i18n="saveDraft">Запази чернова</span><svg class="icon"><use href="#i-arrow"/></svg></button></div><p class="form-response" id="formResponse" role="status" aria-live="polite"></p></form></div></dialog>

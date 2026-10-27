@@ -77,6 +77,62 @@ try{
     assert.deepEqual(errors,[]);
     await context.close();
   });
+  await test('Mission Control demo tabs, localized steps and case shortcuts work in a real browser',async()=>{
+    const context=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'reduce'});
+    const page=await context.newPage(),errors=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    await page.goto('http://127.0.0.1:'+port+'/');
+    await page.locator('button[data-language="en"]').click();
+    await page.locator('#gateContinue').click();
+    await page.locator('#languageGate').waitFor({state:'hidden',timeout:1500});
+
+    assert.equal(await page.locator('a[href="#control"]').count(),3,'desktop, mobile and footer navigation');
+    assert.equal(await page.locator('#controlHeading').textContent(),'MISSION CONTROL');
+    assert.equal(await page.locator('#controlTabs [role="tab"]').count(),4);
+    assert.equal(await page.locator('#controlTab0').getAttribute('aria-selected'),'true');
+    assert.equal(await page.locator('#controlStageTitle').textContent(),'Document the observation');
+    await page.locator('#controlTab1').click();
+    assert.equal(await page.locator('#controlStageTitle').textContent(),'Check known explanations');
+    assert.equal(await page.locator('#controlTab1').getAttribute('aria-selected'),'true');
+    assert.equal(await page.locator('#controlPanel').getAttribute('aria-labelledby'),'controlTab1');
+    await page.locator('#controlNext').click();
+    assert.equal(await page.locator('#controlStageTitle').textContent(),'Analyze the evidence');
+    await page.locator('#controlTab2').focus();
+    await page.keyboard.press('ArrowRight');
+    assert.equal(await page.locator('#controlStageTitle').textContent(),'Communicate conclusions');
+    await page.locator('#controlTab3').focus();
+    await page.keyboard.press('Home');
+    assert.equal(await page.locator('#controlStageTitle').textContent(),'Document the observation');
+    assert.equal(await page.locator('#controlCaseButtons button').count(),3);
+    await page.locator('#controlCaseButtons button').first().click();
+    assert.equal(await page.locator('#caseDialog').evaluate(el=>el.open),true,'demo case dialog is opened');
+    await page.locator('#caseClose').click();
+
+    await page.locator('input[name="mapFilter"][value="light"]').check();
+    assert.equal(await page.locator('#visibleCount').textContent(),'4');
+    assert.deepEqual(errors,[]);
+    await context.close();
+  });
+
+  await test('mobile Mission Control fits viewport and works with translated controls',async()=>{
+    const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});
+    const page=await context.newPage(),errors=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    await page.goto('http://127.0.0.1:'+port+'/');
+    await page.locator('button[data-language="bg"]').click();
+    await page.locator('#gateContinue').click();
+    await page.locator('#languageGate').waitFor({state:'hidden',timeout:1000});
+    assert.equal(await page.locator('#controlHeading').textContent(),'КОМАНДЕН ЦЕНТЪР');
+    await page.locator('#controlTab3').click();
+    assert.equal(await page.locator('#controlStageTitle').textContent(),'Публикуване на заключение');
+    assert.equal(await page.locator('#controlVisualStage').textContent(),'4');
+    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+    assert.ok(overflow<=1,'no unintended horizontal overflow: '+overflow);
+    const animation=await page.locator('.console-sweep').evaluate(el=>getComputedStyle(el).animationName);
+    assert.equal(animation,'none','respects reduced-motion preference');
+    assert.deepEqual(errors,[]);
+    await context.close();
+  });
 }finally{
   if(browser)await browser.close();
   await new Promise(resolve=>server.close(resolve));

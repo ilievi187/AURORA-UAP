@@ -19,7 +19,7 @@ test('cinematic visual assets load from repository',()=>{
   assert.match(html,/href="aurora-v1\.css"/);
   assert.match(html,/src="aurora-v1\.js"/);
   assert.match(html,/class="orbital-stage"/);
-  for(const name of ['aurora-v1.css','aurora-v1.js','jarvis-hud.css','jarvis-hud.js','assets/hero-ufo.webp','assets/favicon.svg']){
+  for(const name of ['aurora-v1.css','aurora-v1.js','jarvis-hud.css','jarvis-hud.js','mission-control.css','mission-control.js','assets/hero-ufo.webp','assets/favicon.svg']){
     assert.ok(existsSync(new URL('../'+name,import.meta.url)),name+' missing');
   }
 });
@@ -32,7 +32,7 @@ test('no duplicate HTML ids or broken in-page links',()=>{
 });
 
 test('Javascript syntax parses without external toolchain',()=>{
-  for(const file of ['script.js','i18n-extra.js','aurora-v1.js','jarvis-hud.js','donate.js','donate-i18n.js','payment-config.js']){
+  for(const file of ['script.js','i18n-extra.js','aurora-v1.js','jarvis-hud.js','mission-control.js','donate.js','donate-i18n.js','payment-config.js']){
     assert.doesNotThrow(()=>new Script(read(file),{filename:file}),file);
   }
 });
@@ -66,4 +66,18 @@ test('real procedural HUD is present and honors OS reduced-motion',()=>{
   assert.match(read('jarvis-hud.js'),/requestAnimationFrame/);
   assert.match(read('jarvis-hud.js'),/prefers-reduced-motion: reduce/);
   assert.match(read('jarvis-hud.css'),/gate-scan-line/);
+});
+
+test('Mission Control v1.2 has working semantic navigation and progressive workflow controls',()=>{
+  assert.match(html,/id="control"/);
+  assert.match(html,/id="controlTabs" role="tablist"/);
+  assert.match(html,/id="controlPanel" role="tabpanel"/);
+  assert.match(html,/id="controlNext"/);
+  assert.match(html,/id="controlCaseButtons"/);
+  assert.match(html,/href="mission-control\.css"/);
+  assert.match(html,/src="mission-control\.js"/);
+  assert.match(read('mission-control.js'),/next\.addEventListener\("click"/);
+  assert.match(read('mission-control.js'),/function activate\(index/);
+  assert.match(read('mission-control.css'),/prefers-reduced-motion:reduce/);
+  assert.match(read('mission-control.css'),/mc-pin-pulse/);
 });
