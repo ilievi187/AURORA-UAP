@@ -34,6 +34,19 @@
  choose.value=code;
  choose.addEventListener("change",()=>{location.href="/countries/"+encodeURIComponent(choose.value)});
  el("caseSearch").placeholder=isBg?"Търси по място или описание":"Search place or description";
+ // The country template shares five full and thirteen preview locales with the landing
+ // page; on preview locales, English is the explicit fallback, not stray Bulgarian labels.
+ if(!isBg){
+  for(const id of ["yearFilter","regionFilter"])el(id).querySelector('option[value=""]').textContent="All";
+  const categories={"":"All","lights":"Lights","object":"Objects","instrument":"Instrument recording","other":"Other"};
+  for(const option of el("typeFilter").options)option.textContent=categories[option.value]||option.textContent;
+  const assessments={"":"All assessments","resolved":"Resolved","unresolved":"Unresolved","undetermined":"No conclusion","disputed":"Disputed"};
+  for(const option of el("statusFilter").options)option.textContent=assessments[option.value]||option.textContent;
+  document.querySelector(".skip").textContent="Skip to content";
+ }else{
+  document.querySelector(".skip").textContent="Към съдържанието";
+ }
+
  let land=[],entries=[],page=0,total=0,requestToken=0,controller=null,loadMoreBusy=false;
  const PAGE=30;
  const canvas=el("countryMap"),ctx=canvas.getContext("2d");
