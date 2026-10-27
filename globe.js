@@ -182,9 +182,8 @@
     updatePins();
   }
   function applyFilter(){
-    filtered=cases.filter(c=>matches(c,ui.filter.value)&&
-      (!document.getElementById("globeCountry")?.value||c.country===document.getElementById("globeCountry").value)&&
-      (!document.getElementById("globeYear")?.value||c.date.startsWith(document.getElementById("globeYear").value)));
+    // The API already applied country, year, category and assessment filters.
+    filtered=cases;
     if(!filtered.some(c=>c.id===selected))selected=filtered[0]?.id||null;
     renderList();
     if(selected)select(selected,false);
@@ -224,9 +223,9 @@
   function shift(amount){lon=((lon+amount+540)%360)-180;temporaryPause=performance.now()+9000;run()}
   ui.left.addEventListener("click",()=>shift(-22));
   ui.right.addEventListener("click",()=>shift(22));
-  ui.filter.addEventListener("change",applyFilter);
-  document.getElementById("globeCountry")?.addEventListener("change",applyFilter);
-  document.getElementById("globeYear")?.addEventListener("change",applyFilter);
+  ui.filter.addEventListener("change",()=>refreshCases());
+  document.getElementById("globeCountry")?.addEventListener("change",()=>refreshCases());
+  document.getElementById("globeYear")?.addEventListener("change",()=>refreshCases());
   ui.shell.addEventListener("keydown",event=>{
     if(event.key==="ArrowLeft"||event.key==="ArrowRight"){
       event.preventDefault();shift(event.key==="ArrowLeft"?-10:10);
@@ -250,41 +249,71 @@
   if("IntersectionObserver" in window){
     new IntersectionObserver(entries=>{wasVisible=entries[0]?.isIntersecting||false;run()},{threshold:0}).observe(ui.shell);
   }else wasVisible=true;
+  let refreshSequence=0;
+  async function refreshCases(){
+    const seq=++refreshSequence;
+    const query=new URLSearchParams({limit:"250"});
+    const country=document.getElementById("globeCountry").value;
+    const year=document.getElementById("globeYear").value;
+    const filter=ui.filter.value;
+    if(country)query.set("country",country);
+    if(year)query.set("year",year);
+    if(filter==="resolved")query.set("assessment","resolved");
+    else if(filter!=="all")query.set("type",filter);
+    ui.counter.textContent="…";
+    try{
+      const response=await fetch("/api/cases?"+query.toString(),{cache:"no-store"});
+      if(!response.ok)throw Error("D1 cases unavailable: HTTP "+response.status);
+      const dataset=await response.json();
+      if(seq!==refreshSequence)return;
+      cases=(Array.isArray(dataset.cases)?dataset.cases:[]).filter(c=>
+        typeof c.id==="string"&&c.title?.en&&c.summary?.en&&validUrl(c.source?.url)&&
+        (c.lat===null&&c.lng===null||
+         Number.isFinite(c.lat)&&Number.isFinite(c.lng)&&Math.abs(c.lat)<=90&&Math.abs(c.lng)<=180));
+      applyFilter();run();
+      if(dataset.has_more){
+        const more=document.createElement("span");
+        more.textContent=" / "+(document.documentElement.lang==="bg"?"Първи 250 — пълният списък е по държави":"First 250 — open a country for all cases");
+        ui.counter.append(more);
+      }
+    }catch(error){
+      if(seq!==refreshSequence)return;
+      console.warn("AURORA globe API error",error);
+      cases=[];applyFilter();
+      ui.title.textContent="AURORA / D1 OFFLINE";ui.counter.textContent="—";
+      ui.summary.textContent=document.documentElement.lang==="bg"?"Базата е недостъпна. Няма заместител с демо данни.":"Database unavailable; no demo fallback.";
+    }
+  }
   async function load(){
     updateLanguage();
-    const [geoRes,caseRes]=await Promise.all([
+    const [geoRes,statsRes]=await Promise.all([
       fetch("/data/earth-land.json",{cache:"force-cache"}),
-      fetch("/api/cases?limit=250",{cache:"no-store"})
+      fetch("/api/stats",{cache:"no-store"})
     ]);
-    if(!caseRes.ok)throw Error("D1 cases unavailable: HTTP "+caseRes.status);
-    const dataset=await caseRes.json();
-    // Do not use static DEMO cases or V1.3 JSON as a substitute for live D1 rows.
-    cases=(Array.isArray(dataset.cases)?dataset.cases:[]).filter(c=>
-      typeof c.id==="string"&&c.title?.en&&c.summary?.en&&validUrl(c.source?.url)&&
-      (c.lat===null&&c.lng===null||
-       Number.isFinite(c.lat)&&Number.isFinite(c.lng)&&Math.abs(c.lat)<=90&&Math.abs(c.lng)<=180));
+    if(!statsRes.ok)throw Error("D1 statistics unavailable: HTTP "+statsRes.status);
+    const stats=await statsRes.json();
+    if(stats.includes_demo!==false||!Array.isArray(stats.by_country)||!Array.isArray(stats.by_year))throw Error("Invalid D1 country/year facets");
     const countrySelect=document.getElementById("globeCountry"),yearSelect=document.getElementById("globeYear");
-    const countries=[...new Set(cases.map(c=>c.country).filter(Boolean))].sort();
-    for(const c of countries){
-      if(countrySelect.querySelector('option[value="'+c+'"]'))continue;
-      const option=document.createElement("option");option.value=c;
-      option.textContent=c+" — "+(new Intl.DisplayNames([document.documentElement.lang,"en"],{type:"region"}).of(c)||c);
+    const names=new Intl.DisplayNames([document.documentElement.lang,"en"],{type:"region"});
+    for(const row of stats.by_country){
+      const code=row.code;
+      if(!/^[A-Z]{2}$/.test(code)||countrySelect.querySelector('option[value="'+code+'"]'))continue;
+      const option=document.createElement("option");option.value=code;
+      option.textContent=code+" — "+(names.of(code)||code)+" ("+row.count+")";
       countrySelect.append(option);
     }
-    const years=[...new Set(cases.map(c=>c.date.slice(0,4)))].sort().reverse();
-    for(const y of years){
-      const option=document.createElement("option");option.value=y;option.textContent=y;
+    for(const row of stats.by_year){
+      if(!/^\d{4}$/.test(row.year))continue;
+      const option=document.createElement("option");option.value=row.year;
+      option.textContent=row.year+" ("+row.count+")";
       yearSelect.append(option);
     }
     if(geoRes.ok){
       const geo=await geoRes.json();
       if(Array.isArray(geo.polygons))land=geo.polygons;
     }
-    texture();initialized=true;applyFilter();run();
-    if(dataset.has_more){
-      const note=document.createElement("span");note.textContent=" / VIEWING FIRST 250 — USE COUNTRY PAGES FOR FULL REGISTER";
-      document.getElementById("globeCount")?.append(note);
-    }
+    texture();initialized=true;
+    await refreshCases();
   }
   load().catch(error=>{
     console.warn("AURORA case atlas: unable to load sourced dataset",error);
