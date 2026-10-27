@@ -1,7 +1,7 @@
-import {intakeEnabled} from "../../_lib/intake.js";
-export function onRequestGet({request,env}){
+import {intakeEnabled,intakeSchemaReady} from "../../_lib/intake.js";
+export async function onRequestGet({request,env}){
  const hostname=new URL(request.url).hostname;
- const accepting=intakeEnabled(env,hostname);
+ const accepting=intakeEnabled(env,hostname)&&await intakeSchemaReady(env.DB);
  return Response.json({
   accepting,
   mode:accepting?"text_only_quarantine":"local_draft_only",
