@@ -10,10 +10,26 @@ function translate(){document.documentElement.lang=lang;document.title=locales[l
 function verifiedCheckoutLink(){
   const url=window.AURORA_PAYMENT_LINK;
   if(typeof url!=='string')return null;
-  try{const u=new URL(url);return u.protocol==='https:'&&['buy.stripe.com','checkout.stripe.com'].includes(u.hostname)?u.toString():null;}catch{return null;}
+  try{
+    const u=new URL(url);
+    if(u.protocol!=='https:'||u.username||u.password)return null;
+    if(!['buymeacoffee.com','www.buymeacoffee.com'].includes(u.hostname))return null;
+    if(!u.pathname||u.pathname==='/')return null;
+    return u.toString();
+  }catch{return null;}
 }
 const link=verifiedCheckoutLink();
-if(link){checkout.disabled=false;status.hidden=true;checkout.addEventListener('click',()=>{window.location.assign(link);});}
-else {checkout.disabled=true;status.hidden=false;}
+checkout.disabled=false;
+if(link){
+  status.hidden=true;
+  checkout.addEventListener('click',()=>{window.location.assign(link);});
+}else{
+  status.hidden=false;
+  checkout.addEventListener('click',()=>{
+    status.hidden=false;
+    status.setAttribute('tabindex','-1');
+    status.focus();
+  });
+}
 sel.addEventListener('change',()=>{lang=sel.value;try{localStorage.setItem('aurora-lang',lang);}catch(_){}translate();});
 translate();

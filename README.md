@@ -1,32 +1,35 @@
-# AURORA — UAP Bulgaria
+# AURORA — UAP Bulgaria 🛸
 
-Static multilingual prototype for https://aurorauap.org.
+Multilingual static website for the independent AURORA UAP initiative.
+Planned domain: **aurorauap.org**. Preview release: public design demo.
 
 ## Features
-- Bulgarian, English, German, Russian, simplified Chinese (language selector stored locally).
-- Responsive sci-fi homepage, demo map, sample cases, offline report drafts.
-- Dedicated public-facing support/donation explanation with **prominent red DONATE button**.
-- **Donations are disabled until a verified payment processor is configured.** No personal banking details are stored in public source.
+- Five interface languages: Bulgarian, English, German, Russian and Simplified Chinese.
+- Responsive sci-fi homepage, illustrated research sections, demo sightings map and demo case archive.
+- Local-only draft report form. **No data is submitted to a server.**
+- Support page explaining intended spending on equipment, expeditions, workspace, technology and expert review.
+- Visible red **❤️ ДАРИ** buttons. When no verified payment URL is set, clicking shows the "not yet active" notice rather than charging anyone.
 
-## Cloudflare Pages (GitHub integration)
-- Repository: `ilievi187/AURORA-UAP`
-- Framework preset: None
+## Donations — Buy Me a Coffee
+The payment service has not yet been connected.
+After the owner finishes Buy Me a Coffee registration and verification:
+1. Confirm the permitted use of the account for this initiative and disclose the recipient's name/status and intended use of funds.
+2. Set the **public** profile link in `payment-config.js`:
+   `window.AURORA_PAYMENT_LINK = "https://buymeacoffee.com/YOUR_PROFILE";`
+3. Test the redirect and review the provider's fee, receipt and refund policies.
+
+Never put private IBANs, identity documents, bank statements, account tokens or payment secrets in this public repository. Donations always require explicit donor authorization on the hosted provider page. AURORA is not represented as a registered charitable organization.
+
+## Cloudflare Pages (production target)
+Connect GitHub repository `ilievi187/AURORA-UAP` to Cloudflare Pages:
+- Framework preset: None / Static HTML
 - Production branch: `main`
-- Build command: `exit 0` (or leave blank)
-- Build output directory: `.` (site files are in the repository root)
-- Custom domain: `aurorauap.org`, using Pages > Custom domains after successful deploy.
+- Build command: none (or `exit 0`)
+- Build output directory: `.`
+- Custom domain: `aurorauap.org` after the initial Pages deployment
 
-## Secure donations setup
-1. Register an eligible recipient and verify the account with a supported payment provider. Stripe supports Bulgaria but its donations policy requires a specific charitable purpose and compliance with local rules; approval is not automatic.
-2. In the provider dashboard, connect the recipient's payout bank account privately and enable payouts. Do **not** put IBAN, personal identification, API secrets, or card details into GitHub.
-3. Create a hosted **Payment Link** allowing donors to choose an amount in EUR; verify the provider account and live link work.
-4. Set `window.AURORA_PAYMENT_LINK` in `payment-config.js` to the approved `https://buy.stripe.com/...` URL (public checkout link, not a secret key). The red donate button will then enable automatically and redirect securely.
-5. Test a genuine low-value transaction and refund flow in an approved test environment, then document donation receipts, reporting and refunds policies.
+## GitHub Pages (optional design preview)
+A GitHub Actions workflow in `.github/workflows/pages.yml` deploys static files when GitHub Pages is enabled with **Settings → Pages → Source: GitHub Actions**. The preview URL will be `https://ilievi187.github.io/AURORA-UAP/` once deployment succeeds.
 
-Until step 4 the button is visually present but disabled, with a clear message. No fake checkout or promises of automatic debits.
-
-## Privacy and transparency
-- The user-provided bank statement is NOT included in this repository. Never publish its personal fields.
-- Example sightings on this prototype are fictional and labelled DEMO.
-- No report submission server, live case database, card storage, or live donation processing is implemented.
-- AURORA is not represented as an officially registered charity until its status is verified.
+## Prototype-only functionality
+All sighting examples are fictional and marked **DEMO**. No live sightings, verified evidence, accounts, report submissions, payment processing or private data storage are active yet. The pages use `noindex` until public launch.
