@@ -80,20 +80,27 @@ test("rights and editor review are mandatory; poisoned source cannot import",asy
  assert.throws(()=>validateManifest(wrongCoords),/Partial coordinates/);
 });
 test("public Pages Functions exercise actual SQLite data and fail closed without binding",async()=>{
- const list=await listHandler({env:{DB:db},request:new Request("https://aurorauap.org/api/cases?country=IQ")});
+ const list=await listHandler({env:{DB:db,AURORA_REGISTRY_PUBLIC:"enabled"},request:new Request("https://aurorauap.org/api/cases?country=IQ")});
  assert.equal(list.status,200);assert.equal((await list.json()).total,1);
- const stats=await statsHandler({env:{DB:db}});
+ const stats=await statsHandler({env:{DB:db,AURORA_REGISTRY_PUBLIC:"enabled"}});
  assert.equal((await stats.json()).sightings,3);
- const country=await countryHandler({env:{DB:db},params:{code:"DE"}});
+ const country=await countryHandler({env:{DB:db,AURORA_REGISTRY_PUBLIC:"enabled"},params:{code:"DE"}});
  assert.equal((await country.json()).total,0);
- const item=await detailHandler({env:{DB:db},params:{id:"aaro-pr-2013"}});
+ const item=await detailHandler({env:{DB:db,AURORA_REGISTRY_PUBLIC:"enabled"},params:{id:"aaro-pr-2013"}});
  assert.equal(item.status,200);
  assert.equal((await item.json()).country_code,"PR");
  const unbound=await statsHandler({env:{}});
  assert.equal(unbound.status,503);
  assert.equal((await unbound.json()).error,"database_unavailable");
- const invalid=await listHandler({env:{DB:db},request:new Request("https://aurorauap.org/api/cases?year=notayear")});
+ const invalid=await listHandler({env:{DB:db,AURORA_REGISTRY_PUBLIC:"enabled"},request:new Request("https://aurorauap.org/api/cases?year=notayear")});
  assert.equal(invalid.status,400);
+});
+test("D1 public API requires an explicit release flag even when DB binding exists",async()=>{
+ const blocked=await statsHandler({env:{DB:db}});
+ assert.equal(blocked.status,503);
+ assert.equal((await blocked.json()).error,"database_unavailable");
+ const active=await statsHandler({env:{DB:db,AURORA_REGISTRY_PUBLIC:"enabled"}});
+ assert.equal(active.status,200);
 });
 test("monthly audit records success after clean state",async()=>{
  assert.equal((await monthlyAudit(db)).status,"success");
