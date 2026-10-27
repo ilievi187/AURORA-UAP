@@ -32,7 +32,7 @@ test('no duplicate HTML ids or broken in-page links',()=>{
 });
 
 test('Javascript syntax parses without external toolchain',()=>{
-  for(const file of ['script.js','i18n-extra.js','aurora-v1.js','jarvis-hud.js','mission-control.js','globe.js','donate.js','donate-i18n.js','payment-config.js']){
+  for(const file of ['script.js','i18n-extra.js','aurora-v1.js','jarvis-hud.js','mission-control.js','globe.js','register.js','country.js','donate.js','donate-i18n.js','payment-config.js']){
     assert.doesNotThrow(()=>new Script(read(file),{filename:file}),file);
   }
 });
@@ -113,4 +113,21 @@ test('globe respects reduced motion and links to external sources safely',()=>{
   assert.match(read('globe.js'),/target/); // source link target is in HTML
   assert.match(read('globe.css'),/prefers-reduced-motion:reduce/);
   assert.match(html,/target="_blank" rel="noopener noreferrer"/);
+});
+
+test('V1.4 static country template, D1 APIs and real register controls exist',()=>{
+ for(const path of ['country.html','country.js','country.css','register.js','register.css',
+ 'migrations/0001_init.sql','data/imports/aaro-reviewed.json','functions/api/cases.js',
+ 'functions/api/stats.js','functions/api/cases/[id].js','functions/api/countries/[code].js',
+ 'functions/countries/[code].js','functions/_lib/public.js','worker/scheduled.js','worker/import-core.js']){
+  assert.ok(existsSync(new URL('../'+path,import.meta.url)),'missing '+path);
+ }
+ assert.match(html,/id="registeredSightings"/);
+ assert.match(html,/id="registeredCountries"/);
+ assert.match(html,/id="lastSync"/);
+ assert.match(html,/id="globeCountry"/);
+ assert.match(html,/id="globeYear"/);
+ assert.match(read('globe.js'),/fetch\("\/api\/cases\?limit=250"/);
+ assert.doesNotMatch(read('globe.js'),/fetch\("data\/cases\.json"/);
+ assert.match(read('register.js'),/includes_demo!==false/);
 });
