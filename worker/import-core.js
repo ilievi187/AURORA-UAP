@@ -23,27 +23,47 @@ export function validateManifest(m) {
 }
 export async function importReviewed(db,m,kind="manual_import"){
  validateManifest(m);
- const id=crypto.randomUUID(),start=new Date().toISOString(),s=m.source;
- await db.prepare("INSERT INTO sources(id,name,publisher,homepage_url,license,license_url,rights_note,rights_checked_at,approved_for_ingest) VALUES(?,?,?,?,?,?,?,?,1) ON CONFLICT(id) DO UPDATE SET name=excluded.name,publisher=excluded.publisher,homepage_url=excluded.homepage_url,license=excluded.license,license_url=excluded.license_url,rights_note=excluded.rights_note,rights_checked_at=excluded.rights_checked_at,approved_for_ingest=1").bind(s.id,s.name,s.publisher,s.homepage_url,s.license,s.license_url,s.rights_note,s.rights_checked_at).run();
- await db.prepare("INSERT INTO import_runs(id,source_id,run_type,status,started_at) VALUES(?,?,?,'started',?)").bind(id,s.id,kind,start).run();
- let inserted=0,updated=0;
+ if(!["manual_import","weekly_import"].includes(kind))throw Error("Invalid import kind");
+ if(typeof db.batch!=="function")throw Error("Atomic D1 batch API is required");
+ const id=crypto.randomUUID(),startedAt=new Date().toISOString(),s=m.source;
+ // Source metadata is non-public. It must exist before recording a failed audit run
+ // because import_runs.source_id has a foreign key to sources.
+ await db.prepare("INSERT INTO sources(id,name,publisher,homepage_url,license,license_url,rights_note,rights_checked_at,approved_for_ingest) VALUES(?,?,?,?,?,?,?,?,1) ON CONFLICT(id) DO UPDATE SET name=excluded.name,publisher=excluded.publisher,homepage_url=excluded.homepage_url,license=excluded.license,license_url=excluded.license_url,rights_note=excluded.rights_note,rights_checked_at=excluded.rights_checked_at,approved_for_ingest=1")
+  .bind(s.id,s.name,s.publisher,s.homepage_url,s.license,s.license_url,s.rights_note,s.rights_checked_at).run();
+ // Read-only preflight gives human-readable inserted/updated counts. D1 batch is
+ // the only place where public case mutations and the success record are committed.
+ const previous=await Promise.all(m.cases.map(x=>db.prepare("SELECT id,review_status,publication_status,record_kind FROM cases WHERE id=?").bind(x.id).first()));
+ let inserted=0,updated=0,preserved=0;
+ const statements=[];
+ for(let i=0;i<m.cases.length;i++){
+  const x=m.cases[i],prior=previous[i];
+  if(!prior)inserted++;
+  else if(prior.record_kind==="historical_import"&&prior.review_status==="approved"&&prior.publication_status==="published")updated++;
+  else preserved++;
+  const sql="INSERT INTO cases(id,record_kind,title,title_bg,description,description_bg,date,date_precision,country_code,region,location,latitude,longitude,location_precision,category,review_status,publication_status,source_name,source_url,license,media) "+
+   "VALUES(?,'historical_import',?,?,?,?,?,?,?,?,?,?,?,?,?,'approved','published',?,?,?,'[]') "+
+   "ON CONFLICT(id) DO UPDATE SET title=excluded.title,title_bg=excluded.title_bg,description=excluded.description,description_bg=excluded.description_bg,date=excluded.date,date_precision=excluded.date_precision,country_code=excluded.country_code,region=excluded.region,location=excluded.location,latitude=excluded.latitude,longitude=excluded.longitude,location_precision=excluded.location_precision,category=excluded.category,source_name=excluded.source_name,source_url=excluded.source_url,license=excluded.license,updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') "+
+   "WHERE cases.record_kind='historical_import' AND cases.review_status='approved' AND cases.publication_status='published'";
+  statements.push(db.prepare(sql).bind(x.id,x.title,x.title_bg,x.description,x.description_bg,x.date,x.date_precision,x.country_code,x.region,x.location,x.latitude,x.longitude,x.location_precision,x.category,s.name,x.source_url,x.license));
+  statements.push(db.prepare("UPDATE cases SET assessment_status=?,assessment_authority=?,assessment_confidence=? WHERE id=? AND record_kind='historical_import' AND review_status='approved' AND publication_status='published'")
+   .bind(x.assessment_status,x.assessment_authority,x.assessment_confidence,x.id));
+  // Retain provenance links even for withdrawn records. No status is reset
+  // and no formerly rejected case is automatically republished.
+  statements.push(db.prepare("INSERT INTO case_sources(case_id,source_id,source_record_id,source_url) VALUES(?,?,?,?) ON CONFLICT(source_id,source_record_id) DO UPDATE SET source_url=excluded.source_url")
+   .bind(x.id,s.id,x.source_record_id,x.source_url));
+ }
+ const completedAt=new Date().toISOString();
+ statements.push(db.prepare("INSERT INTO import_runs(id,source_id,run_type,status,inserted_count,updated_count,started_at,completed_at,details) VALUES(?,?,?,'success',?,?,?,?,?)")
+  .bind(id,s.id,kind,inserted,updated,startedAt,completedAt,JSON.stringify({preserved})));
  try{
-  for(const x of m.cases){
-   const previous=await db.prepare("SELECT id FROM cases WHERE id=?").bind(x.id).first();
-   const sql="INSERT INTO cases(id,record_kind,title,title_bg,description,description_bg,date,date_precision,country_code,region,location,latitude,longitude,location_precision,category,review_status,publication_status,source_name,source_url,license,media) "+
-    "VALUES(?,'historical_import',?,?,?,?,?,?,?,?,?,?,?,?,?,'approved','published',?,?,?,'[]') "+
-    "ON CONFLICT(id) DO UPDATE SET title=excluded.title,title_bg=excluded.title_bg,description=excluded.description,description_bg=excluded.description_bg,date=excluded.date,date_precision=excluded.date_precision,country_code=excluded.country_code,region=excluded.region,location=excluded.location,latitude=excluded.latitude,longitude=excluded.longitude,location_precision=excluded.location_precision,category=excluded.category,source_name=excluded.source_name,source_url=excluded.source_url,license=excluded.license,updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') "+
-    "WHERE cases.record_kind='historical_import' AND cases.review_status='approved' AND cases.publication_status='published'";
-   await db.prepare(sql).bind(x.id,x.title,x.title_bg,x.description,x.description_bg,x.date,x.date_precision,x.country_code,x.region,x.location,x.latitude,x.longitude,x.location_precision,x.category,s.name,x.source_url,x.license).run();
-   await db.prepare("UPDATE cases SET assessment_status=?,assessment_authority=?,assessment_confidence=? WHERE id=? AND record_kind='historical_import' AND review_status='approved' AND publication_status='published'").bind(x.assessment_status,x.assessment_authority,x.assessment_confidence,x.id).run();
-   // Keep all original cross-references, even after a case is manually withdrawn.
-   await db.prepare("INSERT INTO case_sources(case_id,source_id,source_record_id,source_url) VALUES(?,?,?,?) ON CONFLICT(source_id,source_record_id) DO UPDATE SET source_url=excluded.source_url").bind(x.id,s.id,x.source_record_id,x.source_url).run();
-   if(previous)updated++;else inserted++;
-  }
-  await db.prepare("UPDATE import_runs SET status='success',inserted_count=?,updated_count=?,completed_at=? WHERE id=?").bind(inserted,updated,new Date().toISOString(),id).run();
-  return {status:"success",inserted,updated,run_id:id};
+  // D1 batch is a transaction: either ALL cases, provenance and success
+  // audit are written, or the entire sequence rolls back.
+  await db.batch(statements);
+  return {status:"success",inserted,updated,preserved,run_id:id};
  }catch(e){
-  await db.prepare("UPDATE import_runs SET status='failed',details=?,completed_at=? WHERE id=?").bind(String(e).slice(0,600),new Date().toISOString(),id).run().catch(()=>{});
+  // Failed audit is deliberately separate; no public rows were committed.
+  await db.prepare("INSERT INTO import_runs(id,source_id,run_type,status,started_at,completed_at,details) VALUES(?,?,?,'failed',?,?,?)")
+   .bind(id,s.id,kind,startedAt,new Date().toISOString(),String(e).slice(0,600)).run().catch(()=>{});
   throw e;
  }
 }
