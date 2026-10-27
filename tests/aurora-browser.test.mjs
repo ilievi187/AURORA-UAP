@@ -133,6 +133,59 @@ try{
     assert.deepEqual(errors,[]);
     await context.close();
   });
+
+  await test('V1.3 Earth globe renders sourced cases and case selection rotates to location',async()=>{
+    const context=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'reduce'});
+    const page=await context.newPage(),errors=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    await page.goto('http://127.0.0.1:'+port+'/');
+    await page.locator('button[data-language="bg"]').click();
+    await page.locator('#gateContinue').click();
+    await page.locator('#languageGate').waitFor({state:'hidden',timeout:1000});
+    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length===8);
+    assert.equal(await page.locator('#globeCount').textContent(),'8 случая');
+    assert.equal(await page.locator('#globeCaseList button').count(),8);
+    assert.equal(await page.locator('#globeCaseTitle').textContent(),'Светлините над Финикс');
+    const opaque=await page.locator('#caseGlobe').evaluate(canvas=>{
+      const c=canvas.getContext('2d'),p=c.getImageData(220,220,1,1).data;return p[3]>0;
+    });
+    assert.equal(opaque,true,'center of globe must be rendered');
+    await page.locator('#globeCaseList button[data-case-id="westall-1966"]').click();
+    assert.equal(await page.locator('#globeCaseTitle').textContent(),'Свидетелствата от Уестол');
+    assert.ok((await page.locator('#globeCaseSource').getAttribute('href')).startsWith('https://www.abc.net.au/'));
+    assert.equal(await page.locator('#globeCaseSource').getAttribute('rel'),'noopener noreferrer');
+    const lon=await page.locator('#globeHeading').textContent();
+    assert.match(lon,/^\d{3}°$/);
+    await page.locator('#globeFilter').selectOption('instrument');
+    assert.equal(await page.locator('#globeCaseList button').count(),3);
+    await page.locator('#globeFilter').selectOption('explained');
+    assert.equal(await page.locator('#globeCaseList button').count(),1);
+    assert.equal(await page.locator('#globeCaseTitle').textContent(),'Случаят „Розуел“');
+    await page.locator('#globeRotate').click();
+    assert.equal(await page.locator('#globeRotate').getAttribute('aria-pressed'),'true');
+    await page.locator('#globeLeft').click();
+    await page.locator('#globeRight').click();
+    assert.deepEqual(errors,[]);
+    await context.close();
+  });
+  await test('V1.3 mobile globe has accessible atlas and no horizontal overflow',async()=>{
+    const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});
+    const page=await context.newPage(),errors=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    await page.goto('http://127.0.0.1:'+port+'/');
+    await page.locator('button[data-language="en"]').click();
+    await page.locator('#gateContinue').click();
+    await page.locator('#languageGate').waitFor({state:'hidden',timeout:1200});
+    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length===8);
+    assert.equal(await page.locator('#atlasHeading').textContent(),'DOCUMENTED CASES');
+    assert.equal(await page.locator('#globeFilter option').count(),6);
+    await page.locator('#globeFilter').selectOption('lights');
+    assert.equal(await page.locator('#globeCaseList button').count(),3);
+    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+    assert.ok(overflow<=1,'mobile layout overflow: '+overflow);
+    assert.deepEqual(errors,[]);
+    await context.close();
+  });
 }finally{
   if(browser)await browser.close();
   await new Promise(resolve=>server.close(resolve));
