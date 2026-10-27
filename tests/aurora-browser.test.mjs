@@ -232,7 +232,8 @@ try{
     assert.equal(await page.locator('#countryCases .case-card').count(),1);
     await page.locator('#countryCases .case-card').click();
     assert.equal(await page.locator('.case-details').isVisible(),true);
-    assert.ok((await page.locator('.case-details a').getAttribute('href')).startsWith('https://www.aaro.mil/'));
+    assert.equal(await page.locator('.case-details .case-dossier-link').getAttribute('href'),'/cases/aaro-pr-2013');
+    assert.ok((await page.locator('.case-details a[target="_blank"]').getAttribute('href')).startsWith('https://www.aaro.mil/'));
     assert.equal(await page.locator('#reportLink').getAttribute('href'),'/?report=draft&country=PR');
     assert.deepEqual(errors,[]);
     await context.close();
