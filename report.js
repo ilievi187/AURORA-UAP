@@ -70,7 +70,9 @@
     return;
    }
    if(!state.site_key||!state.policy_version)throw Error("incomplete");
+   if(state.policy_url!=="https://aurorauap.org/privacy")throw Error("missing reviewed privacy URL");
    enabled=true;siteKey=state.site_key;policyVersion=state.policy_version;
+   $("privacyLink").href=state.policy_url;
    $("reportStatus").classList.add("ready");
    $("reportStatus").textContent="PRIVATE INTAKE ACTIVE · Приемаме само текстови сигнали за човешка проверка. Не публикуваме автоматично.";
    $("activationControls").hidden=false;
