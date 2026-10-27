@@ -110,6 +110,10 @@
   const p=document.createElement("p");p.textContent=x.summary[language]||x.summary.en;
   const precision=document.createElement("p");precision.textContent=label("approx")+" "+x.location_precision;
   details.append(p,precision);
+  const dossierLink=document.createElement("a");dossierLink.href="/cases/"+encodeURIComponent(x.id);
+  dossierLink.className="case-dossier-link";
+  dossierLink.textContent=isBg?"ОТВОРИ ПЪЛНОТО ДОСИЕ ↗":"OPEN FULL DOSSIER ↗";
+  details.append(dossierLink);
   if(x.assessment_authority){const finding=document.createElement("p");finding.textContent=(isBg?"Оценка: ":"Assessment: ")+x.assessment_authority+" · "+x.assessment_status+" ("+x.assessment_confidence+")";details.append(finding)}
   if(x.media?.length){const media=document.createElement("p");media.textContent=isBg?"Медийни материали с потвърдени права:":"Rights-verified media:";details.append(media)}
   try{
