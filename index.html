@@ -13,12 +13,14 @@
   <link rel="stylesheet" href="jarvis-hud.css">
   <link rel="stylesheet" href="mission-control.css">
   <link rel="stylesheet" href="globe.css">
+  <link rel="stylesheet" href="register.css">
   <script defer src="i18n-extra.js"></script>
   <script defer src="script.js"></script>
   <script defer src="aurora-v1.js"></script>
   <script defer src="jarvis-hud.js"></script>
   <script defer src="mission-control.js"></script>
   <script defer src="globe.js"></script>
+  <script defer src="register.js"></script>
 </head>
 <body class="gate-open">
 <noscript><style>#languageGate{display:none!important}body.gate-open{overflow:auto}.site-shell{pointer-events:auto!important}</style></noscript>
@@ -97,6 +99,16 @@
   </section>
   <div class="signal-ribbon" aria-hidden="true"><span>01 / THE INITIATIVE</span><span class="ribbon-line"></span><b>WE DOCUMENT. WE VERIFY. WE QUESTION.</b><span>OPEN SOURCE MINDSET · 2026</span></div>
 
+  <section class="global-register" id="globalRegister" aria-label="Global registered UAP sightings">
+    <div class="register-heading"><span>◉ / AURORA GLOBAL REGISTER</span><span id="registerHealth" role="status">D1 CONNECTION: CHECKING</span></div>
+    <div class="register-metrics">
+      <div><strong id="registeredSightings">—</strong><span data-register-t="registered">GLOBAL REGISTERED SIGHTINGS</span></div>
+      <div><strong id="registeredCountries">—</strong><span data-register-t="countries">COUNTRIES COVERED</span></div>
+      <div><strong id="lastSync">—</strong><span data-register-t="sync">LAST SUCCESSFUL SYNC</span></div>
+    </div>
+    <p id="registerNotice">Броят включва само одобрени и публикувани записи от базата. Демо случаите са изключени.</p>
+    <a href="/countries/DE" class="register-link" data-register-t="explore">EXPLORE COUNTRIES ↗</a>
+  </section>
   <section class="stats" aria-label="Статистика на демонстрацията">
     <div class="stat"><span class="stat-icon"><svg class="icon"><use href="#i-target"/></svg></span><div><b id="statSignals">08</b><p data-i18n="statSignals">Примерни сигнали</p><small data-i18n="statDemo">Демо данни</small></div></div>
     <div class="stat"><span class="stat-icon"><svg class="icon"><use href="#i-folder"/></svg></span><div><b>04</b><p data-i18n="statTopics">Изследователски направления</p><small data-i18n="statDemo">Демо данни</small></div></div>
@@ -158,9 +170,10 @@
         <option value="lights" data-globe-t="lights">Светлини</option>
         <option value="object" data-globe-t="object">Обекти</option>
         <option value="instrument" data-globe-t="instrument">Записи от прибори</option>
-        <option value="official_record" data-globe-t="official">Официално документирани</option>
-        <option value="explained" data-globe-t="explained">С известно обяснение</option>
+        <option value="approved" data-globe-t="official">Публично одобрени</option>
       </select></label>
+      <label class="atlas-filter"><span>COUNTRY</span><select id="globeCountry"><option value="">ALL COUNTRIES</option><option value="DE">Deutschland (DE)</option></select></label>
+      <label class="atlas-filter"><span>YEAR</span><select id="globeYear"><option value="">ALL YEARS</option></select></label>
     </div>
     <div class="atlas-body">
       <div class="atlas-case-list" id="globeCaseList" aria-label="Списък на документирани случаи"></div>
@@ -170,6 +183,7 @@
         <p id="globeCaseLocation"></p>
         <p id="globeCaseSummary" data-globe-t="loading">Зареждане на архив...</p>
         <p class="atlas-precision" id="globeCasePrecision"></p>
+        <a id="globeCaseCountry" class="atlas-source" href="/countries/DE" hidden>COUNTRY ARCHIVE ↗</a>
         <a id="globeCaseSource" class="atlas-source" href="#caseAtlas" target="_blank" rel="noopener noreferrer" hidden><span data-globe-t="source">ОТВОРИ ОРИГИНАЛНИЯ ИЗТОЧНИК</span> ↗</a>
       </article>
     </div>
