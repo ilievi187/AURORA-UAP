@@ -177,6 +177,8 @@ try{
     await page.waitForFunction(()=>document.querySelector('#registeredSightings')?.textContent==='3');
     assert.equal(await page.locator('#registeredCountries').textContent(),'3');
     assert.equal(await page.locator('#globeCaseList button').count(),3);
+    assert.equal(await page.locator('#globeCaseTitle').textContent(),'Светлини над западните САЩ');
+    await page.locator('#globeCaseList button[data-case-id="aaro-pr-2013"]').click();
     assert.equal(await page.locator('#globeCaseTitle').textContent(),'Инфрачервени обекти над Пуерто Рико');
     assert.equal(await page.locator('#globeCaseSource').getAttribute('rel'),'noopener noreferrer');
     assert.ok((await page.locator('#globeCaseSource').getAttribute('href')).includes('aaro.mil/'));
