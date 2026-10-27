@@ -1,4 +1,4 @@
-import {intakeEnabled,normalizeSubmission,verifyTurnstile,storeSubmission} from "../../_lib/intake.js";
+import {intakeEnabled,intakeSchemaReady,normalizeSubmission,verifyTurnstile,storeSubmission} from "../../_lib/intake.js";
 const respond=(body,status)=>Response.json(body,{status,headers:{
  "Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer",
  "Content-Security-Policy":"default-src 'none'"
@@ -7,7 +7,7 @@ export async function onRequestPost({request,env}){
  const url=new URL(request.url),origin=request.headers.get("Origin");
  // The origin must be exact and secure. Refuse generic cross-origin requests.
  if(url.protocol!=="https:"||origin!==url.origin)return respond({error:"origin_rejected"},403);
- if(!intakeEnabled(env,url.hostname))return respond({error:"intake_disabled"},503);
+ if(!intakeEnabled(env,url.hostname)||!await intakeSchemaReady(env.DB))return respond({error:"intake_disabled"},503);
  if(!/^application\/json(?:\s*;|$)/i.test(request.headers.get("Content-Type")||""))
   return respond({error:"unsupported_media_type"},415);
  const declared=Number(request.headers.get("Content-Length")||"0");
