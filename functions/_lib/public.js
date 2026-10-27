@@ -79,12 +79,13 @@ export async function getCase(db,id){
  return row?adapt(row):null;
 }
 export async function getStats(db){
- const [overall,countries,last]=await Promise.all([
+ const [overall,countries,years,last]=await Promise.all([
   db.prepare("SELECT COUNT(*) AS sightings,COUNT(DISTINCT country_code) AS countries FROM cases WHERE "+PUBLIC).first(),
   db.prepare("SELECT country_code AS code,COUNT(*) AS count FROM cases WHERE "+PUBLIC+" AND country_code IS NOT NULL GROUP BY country_code ORDER BY count DESC,code").all(),
+  db.prepare("SELECT substr(date,1,4) AS year,COUNT(*) AS count FROM cases WHERE "+PUBLIC+" GROUP BY 1 ORDER BY 1 DESC").all(),
   db.prepare("SELECT MAX(completed_at) AS last_successful_sync FROM import_runs WHERE status='success' AND run_type IN ('manual_import','weekly_import')").first()
  ]);
- return {sightings:overall?.sightings||0,countries:overall?.countries||0,by_country:countries.results||[],last_successful_sync:last?.last_successful_sync||null,source:"D1",includes_demo:false};
+ return {sightings:overall?.sightings||0,countries:overall?.countries||0,by_country:countries.results||[],by_year:years.results||[],last_successful_sync:last?.last_successful_sync||null,source:"D1",includes_demo:false};
 }
 export async function countryStats(db,code){
  const c=countryCode(code);if(!c)throw Error("Invalid country");
