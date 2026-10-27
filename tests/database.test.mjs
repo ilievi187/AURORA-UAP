@@ -245,3 +245,9 @@ test("monthly audit fails closed if a published historical case loses verified p
  assert.equal(JSON.parse(audit.details).missing_verified_provenance,1);
  sqlite.close();
 });
+
+test("duplicate case IDs with different source record IDs are never imported",()=>{
+ const duplicate=structuredClone(manifest);
+ duplicate.cases[1].id=duplicate.cases[0].id;
+ assert.throws(()=>validateManifest(duplicate),/Bad duplicate\/id/);
+});
