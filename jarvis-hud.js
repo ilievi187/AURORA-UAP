@@ -9,7 +9,6 @@
     {canvas:document.getElementById("gateCanvas"),kind:"gate",active:()=>!gate.hidden},
     {canvas:document.getElementById("heroHudCanvas"),kind:"hero",active:()=>heroVisible}
   ];
-  let heroVisible=true;
   const shapes=[];
   for(const cfg of configs){
     if(!cfg.canvas)continue;
