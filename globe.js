@@ -196,6 +196,8 @@
     else{
       ui.title.textContent=l().noResults;ui.summary.textContent="";ui.location.textContent="";
       ui.precision.textContent="";ui.source.hidden=true;
+      document.getElementById("globeCaseCountry").hidden=true;
+      ui.status.textContent="";ui.date.textContent="";
     }
   }
   function updateLanguage(){
