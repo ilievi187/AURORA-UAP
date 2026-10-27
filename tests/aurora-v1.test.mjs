@@ -32,7 +32,7 @@ test('no duplicate HTML ids or broken in-page links',()=>{
 });
 
 test('Javascript syntax parses without external toolchain',()=>{
-  for(const file of ['script.js','i18n-extra.js','aurora-v1.js','jarvis-hud.js','mission-control.js','donate.js','donate-i18n.js','payment-config.js']){
+  for(const file of ['script.js','i18n-extra.js','aurora-v1.js','jarvis-hud.js','mission-control.js','globe.js','donate.js','donate-i18n.js','payment-config.js']){
     assert.doesNotThrow(()=>new Script(read(file),{filename:file}),file);
   }
 });
@@ -80,4 +80,37 @@ test('Mission Control v1.2 has working semantic navigation and progressive workf
   assert.match(read('mission-control.js'),/function activate\(index/);
   assert.match(read('mission-control.css'),/prefers-reduced-motion:reduce/);
   assert.match(read('mission-control.css'),/mc-pin-pulse/);
+});
+
+test('V1.3 globe is self-hosted and integrates a sourced case atlas',()=>{
+  assert.match(html,/id="caseGlobe"/);
+  assert.match(html,/id="globePins"/);
+  assert.match(html,/id="globeCaseList"/);
+  assert.match(html,/id="globeCaseSource"/);
+  assert.match(html,/id="globeFilter"/);
+  assert.match(html,/href="globe\.css"/);
+  assert.match(html,/src="globe\.js"/);
+  assert.ok(existsSync(new URL('../globe.css',import.meta.url)));
+  assert.ok(existsSync(new URL('../data/cases.json',import.meta.url)));
+  assert.ok(existsSync(new URL('../data/earth-land.json',import.meta.url)));
+});
+test('case data has sourced prose, conservative statuses and approximate map anchors',()=>{
+  const raw=JSON.parse(read('data/cases.json'));
+  const ids=new Set();
+  assert.ok(raw.cases.length>=7);
+  for(const c of raw.cases){
+    assert.equal(ids.has(c.id),false,'duplicate case '+c.id);ids.add(c.id);
+    assert.ok(Number.isFinite(c.lat)&&Math.abs(c.lat)<=90);
+    assert.ok(Number.isFinite(c.lng)&&Math.abs(c.lng)<=180);
+    assert.match(c.source.url,/^https:\/\//);
+    assert.ok(c.summary.bg.length>=45&&c.summary.en.length>=45);
+    assert.ok(['reported','official_record','explained'].includes(c.status));
+    assert.ok(c.location_precision.length>=8,'location precision is explicit');
+  }
+});
+test('globe respects reduced motion and links to external sources safely',()=>{
+  assert.match(read('globe.js'),/prefers-reduced-motion: reduce/);
+  assert.match(read('globe.js'),/target/); // source link target is in HTML
+  assert.match(read('globe.css'),/prefers-reduced-motion:reduce/);
+  assert.match(html,/target="_blank" rel="noopener noreferrer"/);
 });
