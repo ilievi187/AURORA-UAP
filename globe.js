@@ -52,7 +52,7 @@
   const prefersReduced=window.matchMedia("(prefers-reduced-motion: reduce)");
   const l=()=>T[document.documentElement.lang]||T.en;
   const localized=o=>o?.[document.documentElement.lang]||o?.en||"";
-  const validUrl=url=>{try{const a=new URL(url);return a.protocol==="https:"&&["nuforc.org","www.nationalarchives.gov.uk","www.abc.net.au","realufo.org","www.defense.gov","www.af.mil"].includes(a.hostname)}catch{return false}};
+  const validUrl=url=>{try{const a=new URL(url);return a.protocol==="https:"&&["nuforc.org","www.nationalarchives.gov.uk","www.abc.net.au","realufo.org","www.defense.gov","www.af.mil","www.aaro.mil"].includes(a.hostname)}catch{return false}};
   function texture(){
     const g=tctx.createLinearGradient(0,0,0,T_H);g.addColorStop(0,"#082a38");g.addColorStop(.4,"#0a3642");g.addColorStop(1,"#061d34");
     tctx.fillStyle=g;tctx.fillRect(0,0,T_W,T_H);
@@ -124,6 +124,7 @@
     for(const c of filtered){
       const b=pinNodes.get(c.id);
       if(!b)continue;
+      if(!Number.isFinite(c.lat)||!Number.isFinite(c.lng)){b.hidden=true;continue}
       const p=point(c.lat,c.lng);
       b.hidden=!p.visible;
       if(p.visible){b.style.left=p.x+"%";b.style.top=p.y+"%"}
@@ -148,6 +149,7 @@
       const place=document.createElement("span");place.className="atlas-case-place";place.textContent=localized(c.city);
       b.append(top,name,place);b.addEventListener("click",()=>select(c.id,true));
       ui.list.append(b);
+      if(!Number.isFinite(c.lat)||!Number.isFinite(c.lng))continue;
       const pin=document.createElement("button");pin.type="button";pin.className="globe-pin";
       pin.textContent="·";pin.title=localized(c.title);
       pin.setAttribute("aria-label",localized(c.title)+" — "+localized(c.city));
@@ -162,7 +164,7 @@
     const c=filtered.find(x=>x.id===id);
     if(!c)return;
     selected=c.id;
-    if(orient){lon=c.lng;temporaryPause=performance.now()+9000;sphere()}
+    if(orient&&Number.isFinite(c.lng)){lon=c.lng;temporaryPause=performance.now()+9000;sphere()}
     ui.date.textContent=c.date;
     ui.title.textContent=localized(c.title);
     ui.location.textContent=localized(c.city)+" · "+c.country;
@@ -170,6 +172,9 @@
     ui.precision.textContent=l().prec+": "+c.location_precision;
     ui.status.textContent=c.status==="explained"?l().explained_status:c.status==="official_record"?l().official_record:l().reported;
     ui.status.dataset.status=c.status;
+    const countryLink=document.getElementById("globeCaseCountry");
+    countryLink.hidden=!c.country||!/^[A-Z]{2}$/.test(c.country);
+    if(!countryLink.hidden)countryLink.href="/countries/"+c.country;
     ui.source.hidden=!validUrl(c.source?.url);
     if(!ui.source.hidden)ui.source.href=c.source.url;
     ui.list.querySelectorAll(".atlas-case").forEach(btn=>btn.setAttribute("aria-current",String(btn.dataset.caseId===id)));
@@ -177,7 +182,9 @@
     updatePins();
   }
   function applyFilter(){
-    filtered=cases.filter(c=>matches(c,ui.filter.value));
+    filtered=cases.filter(c=>matches(c,ui.filter.value)&&
+      (!document.getElementById("globeCountry")?.value||c.country===document.getElementById("globeCountry").value)&&
+      (!document.getElementById("globeYear")?.value||c.date.startsWith(document.getElementById("globeYear").value)));
     if(!filtered.some(c=>c.id===selected))selected=filtered[0]?.id||null;
     renderList();
     if(selected)select(selected,false);
@@ -218,6 +225,8 @@
   ui.left.addEventListener("click",()=>shift(-22));
   ui.right.addEventListener("click",()=>shift(22));
   ui.filter.addEventListener("change",applyFilter);
+  document.getElementById("globeCountry")?.addEventListener("change",applyFilter);
+  document.getElementById("globeYear")?.addEventListener("change",applyFilter);
   ui.shell.addEventListener("keydown",event=>{
     if(event.key==="ArrowLeft"||event.key==="ArrowRight"){
       event.preventDefault();shift(event.key==="ArrowLeft"?-10:10);
@@ -244,26 +253,44 @@
   async function load(){
     updateLanguage();
     const [geoRes,caseRes]=await Promise.all([
-      fetch("data/earth-land.json",{cache:"force-cache"}),
-      fetch("data/cases.json",{cache:"no-cache"})
+      fetch("/data/earth-land.json",{cache:"force-cache"}),
+      fetch("/api/cases?limit=250",{cache:"no-store"})
     ]);
-    if(!caseRes.ok)throw Error("Cases HTTP "+caseRes.status);
+    if(!caseRes.ok)throw Error("D1 cases unavailable: HTTP "+caseRes.status);
     const dataset=await caseRes.json();
+    // Do not use static DEMO cases or V1.3 JSON as a substitute for live D1 rows.
     cases=(Array.isArray(dataset.cases)?dataset.cases:[]).filter(c=>
-      typeof c.id==="string"&&Number.isFinite(c.lat)&&Number.isFinite(c.lng)&&
-      c.lat>=-90&&c.lat<=90&&c.lng>=-180&&c.lng<=180&&
-      c.title?.en&&c.summary?.en&&validUrl(c.source?.url));
+      typeof c.id==="string"&&c.title?.en&&c.summary?.en&&validUrl(c.source?.url)&&
+      (c.lat===null&&c.lng===null||
+       Number.isFinite(c.lat)&&Number.isFinite(c.lng)&&Math.abs(c.lat)<=90&&Math.abs(c.lng)<=180));
+    const countrySelect=document.getElementById("globeCountry"),yearSelect=document.getElementById("globeYear");
+    const countries=[...new Set(cases.map(c=>c.country).filter(Boolean))].sort();
+    for(const c of countries){
+      if(countrySelect.querySelector('option[value="'+c+'"]'))continue;
+      const option=document.createElement("option");option.value=c;
+      option.textContent=c+" — "+(new Intl.DisplayNames([document.documentElement.lang,"en"],{type:"region"}).of(c)||c);
+      countrySelect.append(option);
+    }
+    const years=[...new Set(cases.map(c=>c.date.slice(0,4)))].sort().reverse();
+    for(const y of years){
+      const option=document.createElement("option");option.value=y;option.textContent=y;
+      yearSelect.append(option);
+    }
     if(geoRes.ok){
       const geo=await geoRes.json();
       if(Array.isArray(geo.polygons))land=geo.polygons;
     }
-    texture();initialized=true;
-    applyFilter();run();
+    texture();initialized=true;applyFilter();run();
+    if(dataset.has_more){
+      const note=document.createElement("span");note.textContent=" / VIEWING FIRST 250 — USE COUNTRY PAGES FOR FULL REGISTER";
+      document.getElementById("globeCount")?.append(note);
+    }
   }
   load().catch(error=>{
     console.warn("AURORA case atlas: unable to load sourced dataset",error);
     texture();run();
-    ui.summary.textContent=document.documentElement.lang==="bg"?"Архивът не е достъпен в момента. Опитай да презаредиш страницата.":"Archive unavailable. Please refresh the page.";
-    ui.title.textContent="AURORA / ATLAS OFFLINE";
+    ui.summary.textContent=document.documentElement.lang==="bg"?"D1 базата още не е свързана или архивът не отговаря. Реалните случаи няма да бъдат заменени с демо записи.":"D1 database unavailable or unbound. No demo fallback is shown.";
+    ui.title.textContent="AURORA / D1 OFFLINE";
+    ui.counter.textContent="—";
   });
 })();
