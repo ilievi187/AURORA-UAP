@@ -2,6 +2,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import {DatabaseSync} from "node:sqlite";
+import {execFileSync} from "node:child_process";
+import {fileURLToPath} from "node:url";
 import {importReviewed,validateManifest,monthlyAudit} from "../worker/import-core.js";
 import {getCases,getCase,getStats,countryStats} from "../functions/_lib/public.js";
 import {onRequestGet as listHandler} from "../functions/api/cases.js";
@@ -94,4 +96,18 @@ test("public Pages Functions exercise actual SQLite data and fail closed without
 test("monthly audit records success after clean state",async()=>{
  assert.equal((await monthlyAudit(db)).status,"success");
  assert.ok(sql.prepare("SELECT COUNT(*) AS n FROM import_runs WHERE status='success'").get().n>=3);
+});
+
+test("manual seed SQL generator applies real reviewed cases and is idempotent",()=>{
+ const generator=fileURLToPath(new URL("../scripts/build-seed.mjs",import.meta.url));
+ const seed=execFileSync(process.execPath,[generator],{encoding:"utf8"});
+ const sqlite=new DatabaseSync(":memory:");
+ sqlite.exec(read("migrations/0001_init.sql"));
+ sqlite.exec(seed);
+ assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM cases").get().n,3);
+ assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM case_sources").get().n,3);
+ sqlite.exec(seed);
+ assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM cases").get().n,3,"no duplicate records after repeated seed");
+ assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM import_runs WHERE status='success'").get().n,1);
+ sqlite.close();
 });
