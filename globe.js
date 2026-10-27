@@ -52,7 +52,7 @@
   const prefersReduced=window.matchMedia("(prefers-reduced-motion: reduce)");
   const l=()=>T[document.documentElement.lang]||T.en;
   const localized=o=>o?.[document.documentElement.lang]||o?.en||"";
-  const validUrl=url=>{try{const a=new URL(url);return a.protocol==="https:"&&["nuforc.org","www.nationalarchives.gov.uk","www.abc.net.au","realufo.org","www.defense.gov","www.af.mil","www.aaro.mil"].includes(a.hostname)}catch{return false}};
+  const validUrl=url=>{try{const a=new URL(url);return a.protocol==="https:"&&!a.username&&!a.password&&/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(a.hostname)&&!a.hostname.endsWith(".local")}catch{return false}};
   function texture(){
     const g=tctx.createLinearGradient(0,0,0,T_H);g.addColorStop(0,"#082a38");g.addColorStop(.4,"#0a3642");g.addColorStop(1,"#061d34");
     tctx.fillStyle=g;tctx.fillRect(0,0,T_W,T_H);
@@ -170,7 +170,13 @@
     ui.location.textContent=localized(c.city)+" · "+c.country;
     ui.summary.textContent=localized(c.summary);
     ui.precision.textContent=l().prec+": "+c.location_precision;
-    ui.status.textContent=c.status==="resolved"?l().explained_status:c.status==="official_record"?l().official_record:l().reported;
+    const words={
+      resolved:l().explained_status,
+      unresolved:document.documentElement.lang==="bg"?"НЕОБЯСНЕН СПОРЕД ИЗТОЧНИКА":"UNRESOLVED PER SOURCE",
+      undetermined:document.documentElement.lang==="bg"?"БЕЗ ЗАКЛЮЧЕНИЕ":"NO FINDING YET",
+      disputed:document.documentElement.lang==="bg"?"ОСПОРВАНА ОЦЕНКА":"DISPUTED ASSESSMENT"
+    };
+    ui.status.textContent=words[c.status]||l().reported;
     ui.status.dataset.status=c.status;
     const countryLink=document.getElementById("globeCaseCountry");
     countryLink.hidden=!c.country||!/^[A-Z]{2}$/.test(c.country);
@@ -201,6 +207,11 @@
     });
     ui.rotate.setAttribute("aria-label",paused?trans.resume:trans.pause);
     if(cases.length)applyFilter();
+    else if(ui.title.textContent==="AURORA / D1 OFFLINE"){
+      ui.summary.textContent=document.documentElement.lang==="bg"
+       ?"Базата е недостъпна. Няма заместител с демо данни."
+       :"Database unavailable; no demo fallback.";
+    }
   }
   function tick(time){
     raf=0;
@@ -318,7 +329,7 @@
   load().catch(error=>{
     console.warn("AURORA case atlas: unable to load sourced dataset",error);
     texture();run();
-    ui.summary.textContent=document.documentElement.lang==="bg"?"D1 базата още не е свързана или архивът не отговаря. Реалните случаи няма да бъдат заменени с демо записи.":"D1 database unavailable or unbound. No demo fallback is shown.";
+    ui.summary.textContent=document.documentElement.lang==="bg"?"Базата е недостъпна. Няма заместител с демо данни.":"Database unavailable; no demo fallback.";
     ui.title.textContent="AURORA / D1 OFFLINE";
     ui.counter.textContent="—";
   });
