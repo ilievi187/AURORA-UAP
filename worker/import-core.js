@@ -9,6 +9,7 @@ export function validateManifest(m) {
   if(!/^aaro-[a-z0-9-]{3,80}$/.test(x.id)||!/^[a-z0-9-]{3,80}$/.test(x.source_record_id)||ids.has(x.source_record_id))throw Error("Bad duplicate/id");
   ids.add(x.source_record_id);
   if(x.curation_status!=="editor_approved"||x.review_status!=="approved")throw Error("Not editor-approved");
+  if(!["resolved","unresolved","undetermined","disputed"].includes(x.assessment_status)||!["high","moderate","low","not_stated"].includes(x.assessment_confidence)||!x.assessment_authority?.includes("AARO"))throw Error("Missing evidence assessment");
   if(!x.source_url?.startsWith("https://www.aaro.mil/"))throw Error("Unapproved source URL");
   if(x.title?.length<6||x.title?.length>220||x.description?.length<50||x.description?.length>2500||x.description_bg?.length<35)throw Error("Bad summary");
   if(!/^\d{4}(-\d{2})?(-\d{2})?$/.test(x.date)||!["day","month","year"].includes(x.date_precision))throw Error("Bad date");
@@ -34,6 +35,7 @@ export async function importReviewed(db,m,kind="manual_import"){
     "ON CONFLICT(id) DO UPDATE SET title=excluded.title,title_bg=excluded.title_bg,description=excluded.description,description_bg=excluded.description_bg,date=excluded.date,date_precision=excluded.date_precision,country_code=excluded.country_code,region=excluded.region,location=excluded.location,latitude=excluded.latitude,longitude=excluded.longitude,location_precision=excluded.location_precision,category=excluded.category,source_name=excluded.source_name,source_url=excluded.source_url,license=excluded.license,updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') "+
     "WHERE cases.record_kind='historical_import' AND cases.review_status='approved' AND cases.publication_status='published'";
    await db.prepare(sql).bind(x.id,x.title,x.title_bg,x.description,x.description_bg,x.date,x.date_precision,x.country_code,x.region,x.location,x.latitude,x.longitude,x.location_precision,x.category,s.name,x.source_url,x.license).run();
+   await db.prepare("UPDATE cases SET assessment_status=?,assessment_authority=?,assessment_confidence=? WHERE id=? AND record_kind='historical_import' AND review_status='approved' AND publication_status='published'").bind(x.assessment_status,x.assessment_authority,x.assessment_confidence,x.id).run();
    // Keep all original cross-references, even after a case is manually withdrawn.
    await db.prepare("INSERT INTO case_sources(case_id,source_id,source_record_id,source_url) VALUES(?,?,?,?) ON CONFLICT(source_id,source_record_id) DO UPDATE SET source_url=excluded.source_url").bind(x.id,s.id,x.source_record_id,x.source_url).run();
    if(previous)updated++;else inserted++;
