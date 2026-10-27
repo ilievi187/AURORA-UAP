@@ -15,3 +15,17 @@ jobs:
           node-version: '22'
       - name: HTML, JavaScript and accessibility smoke
         run: node --test tests/aurora-v1.test.mjs
+  browser-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser test tooling
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Test real Canvas animation, gate, Continue and mobile behavior
+        run: node --test tests/aurora-browser.test.mjs
