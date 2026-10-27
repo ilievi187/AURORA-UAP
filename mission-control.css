@@ -141,3 +141,27 @@
  .mission-console.panel-transition .console-detail>p,
  .mission-console.panel-transition .console-checklist{animation:none!important}
 }
+
+/* Radar treatment for the existing interactive DEMO map. Filters and pin clicks stay intact. */
+.map-area{isolation:isolate;background:radial-gradient(ellipse at 50% 52%,#0c3942,#041418 78%)}
+.map-area:after{content:"";position:absolute;inset:-75%;z-index:1;pointer-events:none;border-radius:50%;
+ background:conic-gradient(from 8deg at center,transparent 0deg,transparent 331deg,#81fff500 335deg,#60dbe321 352deg,#b4ffff3f 359deg,transparent 360deg);
+ animation:mc-spin 19s linear infinite;mix-blend-mode:screen}
+.map-area .world-map{opacity:.79;filter:hue-rotate(25deg) saturate(.65)}
+.map-area .orbit-line{animation:mc-map-dash 16s linear infinite}
+.map-area .orbit-line.faint{animation-duration:23s;animation-direction:reverse}
+.map-area .map-pins{z-index:2}
+.map-area .map-pin:after{animation:mc-pin-pulse 3.3s ease-in-out infinite;border-color:#85e9e777}
+.map-area .map-pin:nth-child(3n):after{animation-delay:-1s}
+.map-area .map-pin:nth-child(3n+1):after{animation-delay:-2s}
+.map-area .map-pin:before{background:#9bfbf2;border-color:#e8fffb;box-shadow:0 0 16px #71ffffc7}
+.map-area .map-pin[aria-pressed="true"]:after{border-color:#d1fff8;background:#7ae4dd1a}
+.map-area .map-pin[aria-pressed="true"]:before{background:#ddffeb;box-shadow:0 0 20px #a1ffff}
+.map-area .map-tooltip{z-index:4;border-color:#75c9c2;background:#04191de8;backdrop-filter:blur(14px)}
+.map-area .tooltip-tag{color:#b5ffed}
+.map-area .map-tooltip button{color:#8bf5e3}
+@keyframes mc-map-dash{to{stroke-dashoffset:-160}}
+@keyframes mc-pin-pulse{0%,100%{transform:scale(.8);opacity:.38}50%{transform:scale(1.22);opacity:.85}}
+@media(prefers-reduced-motion:reduce){
+ .map-area:after,.map-area .orbit-line,.map-area .map-pin:after{animation:none!important}
+}
