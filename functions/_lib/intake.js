@@ -20,6 +20,7 @@ export function intakeEnabled(env,hostname){
  env.AURORA_INTAKE_LEGAL_APPROVED==="yes"&&
  env.AURORA_INTAKE_WAF_REVIEWED==="yes"&&
  env.AURORA_INTAKE_POLICY_VERSION==="intake-v1-reviewed"&&
+ env.AURORA_INTAKE_POLICY_URL==="https://aurorauap.org/privacy"&&
  env.AURORA_INTAKE_HOSTNAME===hostname&&
  hostname==="aurorauap.org"&&
  typeof env.AURORA_TURNSTILE_SECRET==="string"&&env.AURORA_TURNSTILE_SECRET.length>10&&
