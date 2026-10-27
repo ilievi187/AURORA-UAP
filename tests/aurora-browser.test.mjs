@@ -176,6 +176,9 @@ try{
     await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length===3);
     await page.waitForFunction(()=>document.querySelector('#registeredSightings')?.textContent==='3');
     assert.equal(await page.locator('#registeredCountries').textContent(),'3');
+    assert.equal(await page.locator('#globeCountry option[value="PR"]').count(),1);
+    assert.equal(await page.locator('#globeYear option[value="2013"]').count(),1);
+    assert.equal(await page.locator('#globeCaseStatus').textContent(),'ИЗВЕСТНО ОБЯСНЕНИЕ');
     assert.equal(await page.locator('#globeCaseList button').count(),3);
     assert.equal(await page.locator('#globeCaseTitle').textContent(),'Светлини над западните САЩ');
     await page.locator('#globeCaseList button[data-case-id="aaro-pr-2013"]').click();
@@ -186,10 +189,10 @@ try{
     const opaque=await page.locator('#caseGlobe').evaluate(canvas=>canvas.getContext('2d').getImageData(220,220,1,1).data[3]>0);
     assert.equal(opaque,true);
     await page.locator('#globeFilter').selectOption('lights');
-    assert.equal(await page.locator('#globeCaseList button').count(),1);
+    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length===1);
     await page.locator('#globeFilter').selectOption('all');
     await page.locator('#globeCountry').selectOption('IQ');
-    assert.equal(await page.locator('#globeCaseList button').count(),1);
+    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length===1 && document.querySelector('#globeCaseTitle')?.textContent?.includes('Ал Таккадум'));
     await page.locator('#globeCaseList button[data-case-id="aaro-iraq-2017"]').click();
     assert.equal(await page.locator('#globeCaseCountry').getAttribute('href'),'/countries/IQ');
     await page.locator('#globeRotate').click();
@@ -233,7 +236,7 @@ try{
     await page.locator('#languageGate').waitFor({state:'hidden',timeout:1000});
     await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length===3);
     await page.locator('#globeFilter').selectOption('instrument');
-    assert.equal(await page.locator('#globeCaseList button').count(),2);
+    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length===2);
     assert.equal(await page.locator('#registeredSightings').textContent(),'3');
     assert.deepEqual(errors,[]);
     await context.close();
