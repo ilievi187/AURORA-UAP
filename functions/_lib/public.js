@@ -5,7 +5,7 @@ export function reply(data,status=200){
 export const unavailable=()=>reply({error:"database_unavailable",message:"D1 binding DB is not configured. No demo data are used as registered cases."},503);
 export const invalid=reason=>reply({error:"invalid_query",message:reason},400);
 const PUBLIC="publication_status='published' AND review_status='approved' AND record_kind!='demo'";
-const fields="id,record_kind,title,title_bg,description,description_bg,date,date_precision,country_code,region,location,latitude,longitude,location_precision,category,review_status,source_name,source_url,license,media,created_at,updated_at";
+const fields="id,record_kind,title,title_bg,description,description_bg,date,date_precision,country_code,region,location,latitude,longitude,location_precision,category,assessment_status,assessment_authority,assessment_confidence,review_status,source_name,source_url,license,media,created_at,updated_at";
 export const countryCode=value=>typeof value==="string"&&/^[A-Z]{2}$/.test(value.toUpperCase())?value.toUpperCase():null;
 const year=value=>/^(?:19|20)\d{2}$/.test(value||"")?String(value):null;
 function adapt(row){
@@ -18,7 +18,7 @@ function adapt(row){
  region:row.region,city:{en:row.location,bg:row.location},
  location:row.location,lat:row.latitude,lng:row.longitude,
  latitude:row.latitude,longitude:row.longitude,location_precision:row.location_precision,
- category:row.category,review_status:row.review_status,status:row.review_status,
+ category:row.category,assessment_status:row.assessment_status,assessment_authority:row.assessment_authority,assessment_confidence:row.assessment_confidence,review_status:row.review_status,status:row.assessment_status,
  source_name:row.source_name,source_url:row.source_url,
  source:{name:row.source_name,url:row.source_url},license:row.license,media,
  created_at:row.created_at,updated_at:row.updated_at,record_kind:row.record_kind
@@ -41,6 +41,11 @@ function conditions(params){
  if(params.has("status")){
   const status=params.get("status");if(status!=="approved")throw Error("Only public approved status is available");
   where+=" AND review_status=?";bind.push(status);
+ }
+ if(params.has("assessment")){
+  const state=params.get("assessment");
+  if(!["resolved","unresolved","undetermined","disputed"].includes(state))throw Error("Invalid assessment");
+  where+=" AND assessment_status=?";bind.push(state);
  }
  if(params.has("region")){
   const r=params.get("region")?.trim();if(!r||r.length>80)throw Error("Invalid region");
