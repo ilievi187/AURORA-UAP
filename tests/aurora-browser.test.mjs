@@ -17,15 +17,30 @@ const root=resolve(fileURLToPath(new URL('..',import.meta.url)));
 const mime={'.html':'text/html','.css':'text/css','.js':'application/javascript','.webp':'image/webp','.svg':'image/svg+xml','.txt':'text/plain'};
 const sqlite=new DatabaseSync(':memory:');
 sqlite.exec(await readFile(join(root,'migrations/0001_init.sql'),'utf8'));
-const db={prepare(query){const stmt=sqlite.prepare(query);
- const statement=(args=[])=>({
-  bind(...values){return statement(values)},
-  async run(){return stmt.run(...args)},
-  async first(){return stmt.get(...args)||null},
-  async all(){return {results:stmt.all(...args)}}
- });
- return statement();
-}};
+const db={
+ prepare(query){
+  const stmt=sqlite.prepare(query);
+  const statement=(args=[])=>({
+   bind(...values){return statement(values)},
+   async run(){return stmt.run(...args)},
+   async first(){return stmt.get(...args)||null},
+   async all(){return {results:stmt.all(...args)}}
+  });
+  return statement();
+ },
+ async batch(statements){
+  sqlite.exec("BEGIN IMMEDIATE TRANSACTION");
+  try{
+   const results=[];
+   for(const stmt of statements)results.push(await stmt.run());
+   sqlite.exec("COMMIT");
+   return results;
+  }catch(error){
+   sqlite.exec("ROLLBACK");
+   throw error;
+  }
+ }
+};
 await importReviewed(db,JSON.parse(await readFile(join(root,'data/imports/aaro-reviewed.json'),'utf8')));
 
 const server=createServer(async(req,res)=>{
