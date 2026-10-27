@@ -85,11 +85,25 @@ export async function importReviewed(db,m,kind="manual_import"){
  }
 }
 export async function monthlyAudit(db){
- const id=crypto.randomUUID();
- await db.prepare("INSERT INTO import_runs(id,source_id,run_type,status,started_at) VALUES(?,?,'monthly_audit','started',?)").bind(id,SOURCE_ID,new Date().toISOString()).run();
- const issues=await db.prepare("SELECT (SELECT COUNT(*) FROM cases WHERE publication_status='published' AND (review_status!='approved' OR record_kind='demo')) AS exposed,(SELECT COUNT(*) FROM cases WHERE publication_status='published' AND (source_url='' OR license='')) AS unattributed").first();
- const ok=Number(issues.exposed)===0&&Number(issues.unattributed)===0;
- await db.prepare("UPDATE import_runs SET status=?,details=?,completed_at=? WHERE id=?").bind(ok?"success":"failed",JSON.stringify(issues),new Date().toISOString(),id).run();
- if(!ok)throw Error("Publication integrity audit failed");
- return {status:"success",issues};
+ const id=crypto.randomUUID(),started=new Date().toISOString();
+ await db.prepare("INSERT INTO import_runs(id,source_id,run_type,status,started_at) VALUES(?,?,'monthly_audit','started',?)").bind(id,SOURCE_ID,started).run();
+ try{
+  const issues=await db.prepare(
+   "SELECT "+
+   "(SELECT COUNT(*) FROM cases WHERE publication_status='published' AND (review_status!='approved' OR record_kind='demo')) AS exposed,"+
+   "(SELECT COUNT(*) FROM cases WHERE publication_status='published' AND (source_url='' OR license='')) AS unattributed,"+
+   "(SELECT COUNT(*) FROM cases AS c WHERE c.record_kind='historical_import' AND c.publication_status='published' AND NOT EXISTS("+
+     "SELECT 1 FROM case_sources cs JOIN sources s ON s.id=cs.source_id "+
+     "WHERE cs.case_id=c.id AND s.approved_for_ingest=1)) AS missing_verified_provenance"
+  ).first();
+  if(!issues)throw Error("Audit returned no results");
+  const ok=Object.values(issues).every(value=>Number(value)===0);
+  await db.prepare("UPDATE import_runs SET status=?,details=?,completed_at=? WHERE id=?").bind(ok?"success":"failed",JSON.stringify(issues),new Date().toISOString(),id).run();
+  if(!ok)throw Error("Publication integrity audit failed");
+  return {status:"success",issues,run_id:id};
+ }catch(error){
+  await db.prepare("UPDATE import_runs SET status='failed',details=?,completed_at=? WHERE id=? AND status='started'")
+   .bind(String(error).slice(0,600),new Date().toISOString(),id).run().catch(()=>{});
+  throw error;
+ }
 }
