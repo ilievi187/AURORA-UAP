@@ -2,7 +2,7 @@
 const locales=window.AURORA_DONATION_TRANSLATIONS;
 const options=['bg','en','de','ru','zh-CN'];
 let lang='bg';
-try{const stored=localStorage.getItem('aurora-lang');if(options.includes(stored))lang=stored;}catch(_){}
+try{const stored=localStorage.getItem('aurora-lang');if(options.includes(stored))lang=stored;else if(stored)lang='en';}catch(_){}
 const sel=document.getElementById('langSelect');
 const checkout=document.getElementById('donateCheckout');
 const status=document.getElementById('paymentStatus');
