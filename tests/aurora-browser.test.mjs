@@ -241,6 +241,51 @@ try{
     assert.deepEqual(errors,[]);
     await context.close();
   });
+  await test('V1.4 country search cancels stale filter requests instead of showing outdated rows',async()=>{
+    const context=await browser.newContext({viewport:{width:1280,height:850},reducedMotion:'reduce'});
+    const page=await context.newPage(),errors=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    await page.goto('http://127.0.0.1:'+port+'/countries/PR');
+    await page.waitForFunction(()=>document.querySelector('#countryTotal')?.textContent==='1');
+    let slowRequests=0;
+    await page.route('**/api/cases?*',async route=>{
+      const url=new URL(route.request().url());
+      if(url.searchParams.get('type')==='lights'){
+        slowRequests++;
+        await new Promise(resolve=>setTimeout(resolve,320));
+      }
+      try{await route.continue()}catch{/* aborted superseded request */}
+    });
+    await page.locator('#typeFilter').selectOption('lights');
+    await page.locator('#typeFilter').selectOption('instrument');
+    await page.waitForFunction(()=>document.querySelectorAll('#countryCases .case-card').length===1 &&
+      document.querySelector('#countryCases .case-title')?.textContent==='Puerto Rico infrared objects');
+    await page.waitForTimeout(460);
+    assert.ok(slowRequests>=1,'delayed older filter must have occurred');
+    assert.equal(await page.locator('#countryCases .case-card').count(),1);
+    assert.equal(await page.locator('#typeFilter').inputValue(),'instrument');
+    assert.deepEqual(errors,[]);
+    await context.close();
+  });
+  await test('V1.4 partial locale uses English fallback for offline D1 and country filters',async()=>{
+    const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});
+    const page=await context.newPage(),errors=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/api/stats',route=>route.fulfill({status:503,contentType:'application/json',body:'{"error":"database_unavailable"}'}));
+    await page.goto('http://127.0.0.1:'+port+'/');
+    await page.locator('button[data-language="fr"]').click();
+    await page.locator('#gateContinue').click();
+    await page.locator('#languageGate').waitFor({state:'hidden',timeout:1500});
+    await page.waitForFunction(()=>document.querySelector('#registerHealth')?.textContent==='D1 / NOT CONNECTED');
+    assert.match(await page.locator('#registerNotice').textContent(),/Database not connected/);
+    assert.match(await page.locator('#globeCaseSummary').textContent(),/Database unavailable/);
+    await page.goto('http://127.0.0.1:'+port+'/countries/DE');
+    await page.waitForFunction(()=>document.querySelector('#countryTotal')?.textContent==='0');
+    assert.equal(await page.locator('#typeFilter option[value="lights"]').textContent(),'Lights');
+    assert.equal(await page.locator('#statusFilter option[value="resolved"]').textContent(),'Resolved');
+    assert.deepEqual(errors,[]);
+    await context.close();
+  });
 }finally{
   if(browser)await browser.close();
   await new Promise(resolve=>server.close(resolve));
