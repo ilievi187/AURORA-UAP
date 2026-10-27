@@ -96,7 +96,7 @@ radial-gradient(circle at 50% -20%,#24494550 0,transparent 52%),#020508}
 .section-heading{margin-bottom:30px}
 .section-heading h2,.map-top h2,.methodology h2,.join-section h2,.donate-banner h2{font-size:clamp(32px,4.4vw,66px);line-height:1.08;letter-spacing:-.045em;font-weight:520}
 .section-heading p{max-width:510px;color:#94aba2;font-size:15px;line-height:1.8}
-.feature-grid{gap:16px}
+.feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .feature-card{position:relative;min-height:365px;overflow:hidden;border:1px solid #739b8652;border-radius:3px;
  background:#07110f;transition:border-color .35s,transform .5s,box-shadow .35s}
 .feature-card:hover{border-color:#b1f2d198;transform:translateY(-6px);box-shadow:0 24px 75px #0008}
@@ -216,7 +216,7 @@ body.gate-open .site-shell{pointer-events:none;user-select:none}
  mask-image:linear-gradient(180deg,#000 0,#000 45%,transparent 97%)}
  .hero:before{background:linear-gradient(0deg,#020709 7%,#020809d6 36%,#02080a26 94%)}
  .hero-content{margin:0 24px;width:calc(100% - 48px)}
- .hero h1{font-size:clamp(50px,12vw,79px);line-height:.94;margin-bottom:20px}
+ .hero h1{font-size:clamp(37px,10.8vw,70px);line-height:.96;margin-bottom:20px}
  .hero-copy{font-size:14px;line-height:1.65;margin-bottom:23px}
  .hero-buttons{gap:9px}.button{padding:13px 15px;min-height:47px;font-size:10px}
  .hero-meta{left:24px;right:24px;bottom:25px;font-size:8px}
@@ -228,7 +228,7 @@ body.gate-open .site-shell{pointer-events:none;user-select:none}
  .section{margin:56px 0}.section-heading h2,.map-top h2{font-size:clamp(32px,7.8vw,48px)}
  .section-heading p{font-size:13px}
  .feature-grid,.report-grid{grid-template-columns:1fr;gap:12px}
- .feature-card{min-height:310px}.feature-card>img{height:100%}.feature-content{display:flex;padding:20px;min-height:110px}
+ .feature-grid{grid-template-columns:1fr}.feature-card{min-height:310px}.feature-card>img{height:100%}.feature-content{display:flex;padding:20px;min-height:110px}
  .feature-content .round-icon{display:grid}.feature-content h3{font-size:17px}.feature-content p{font-size:12px}
  .map-panel{padding:19px 12px;margin:0 -7px 60px}.map-area{min-height:260px}
  .report-card>img{height:170px}.report-card h3{font-size:18px}.report-card .desc{font-size:12px}
@@ -249,3 +249,7 @@ body.gate-open .site-shell{pointer-events:none;user-select:none}
  .hero-content .eyebrow,.hero h1,.hero-copy,.hero-buttons,.tiny-rule{animation:none!important}
  .has-motion .reveal-section{opacity:1;transform:none;transition:none}
 }
+
+/* Keep hero copy legible over immersive artwork. */
+.hero h1{overflow-wrap:normal}
+@media(max-width:420px){.hero-content{margin:0 19px;width:calc(100% - 38px)}.hero h1{font-size:clamp(34px,10.2vw,44px)}}
