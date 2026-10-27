@@ -4,7 +4,7 @@
     "id": "aaro-official-resolution",
     "name": "AARO Case Resolution Reports",
     "publisher": "U.S. Department of Defense / All-domain Anomaly Resolution Office",
-    "homepage_url": "https://www.aaro.mil/uap-cases/case-resolution-reports/",
+    "homepage_url": "https://www.aaro.mil/Next-AARO-Home-redesign/Next-Parent/AARO-UAP-Case-DT/",
     "license": "US federal government work (17 U.S.C. § 105), original factual paraphrases only",
     "license_url": "https://www.copyright.gov/title17/92chap1.html",
     "rights_note": "Official AARO/DoD-authored public case-resolution reports. Use factual assertions and original AURORA summaries only; no third-party images, videos or archival attachments copied. Government work status does not imply all embedded third-party works are free.",
@@ -32,7 +32,10 @@
       "curation_status": "editor_approved",
       "source_url": "https://www.aaro.mil/Portals/136/PDFs/case_resolution_reports/AARO_Puerto_Rico_UAP_Case_Resolution.pdf",
       "license": "US federal government work; original summary",
-      "media": []
+      "media": [],
+      "assessment_status": "resolved",
+      "assessment_authority": "All-domain Anomaly Resolution Office (AARO)",
+      "assessment_confidence": "moderate"
     },
     {
       "id": "aaro-iraq-2017",
@@ -54,7 +57,10 @@
       "curation_status": "editor_approved",
       "source_url": "https://www.aaro.mil/Portals/136/PDFs/case_resolution_reports/AARO_Al_Taqaddam_Case_Resolution_Final.pdf",
       "license": "US federal government work; original summary",
-      "media": []
+      "media": [],
+      "assessment_status": "resolved",
+      "assessment_authority": "All-domain Anomaly Resolution Office (AARO)",
+      "assessment_confidence": "high"
     },
     {
       "id": "aaro-west-us-2021",
@@ -76,7 +82,10 @@
       "curation_status": "editor_approved",
       "source_url": "https://www.aaro.mil/Portals/136/PDFs/case_resolution_reports/Case_Resolution_of_Western_United_States_Uap_508-02262024.pdf",
       "license": "US federal government work; original summary",
-      "media": []
+      "media": [],
+      "assessment_status": "resolved",
+      "assessment_authority": "All-domain Anomaly Resolution Office (AARO)",
+      "assessment_confidence": "not_stated"
     }
   ]
 }
