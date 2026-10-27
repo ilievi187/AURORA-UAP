@@ -89,7 +89,7 @@
   const wrap=document.createElement("div");
   const button=document.createElement("button");button.type="button";button.className="case-card";button.id="case-"+x.id;
   button.setAttribute("aria-expanded","false");
-  const top=document.createElement("span");top.className="case-top";top.textContent=x.date+" · "+(x.region||x.location)+" · "+label("verified");
+  const top=document.createElement("span");top.className="case-top";top.textContent=x.date+" · "+(x.region||x.location)+" · "+(x.assessment_status==="resolved"?(isBg?"ОБЯСНЕН СПОРЕД ИЗТОЧНИКА":"ASSESSED RESOLVED"):(isBg?"ОЦЕНКА: ":"ASSESSMENT: ")+String(x.assessment_status||"undetermined").toUpperCase());
   const title=document.createElement("strong");title.className="case-title";title.textContent=x.title[language]||x.title.en;
   const excerpt=document.createElement("span");excerpt.className="case-excerpt";excerpt.textContent=(x.summary[language]||x.summary.en).slice(0,165)+"…";
   button.append(top,title,excerpt);
@@ -97,6 +97,7 @@
   const p=document.createElement("p");p.textContent=x.summary[language]||x.summary.en;
   const precision=document.createElement("p");precision.textContent=label("approx")+" "+x.location_precision;
   details.append(p,precision);
+  if(x.assessment_authority){const finding=document.createElement("p");finding.textContent=(isBg?"Оценка: ":"Assessment: ")+x.assessment_authority+" · "+x.assessment_status+" ("+x.assessment_confidence+")";details.append(finding)}
   if(x.media?.length){const media=document.createElement("p");media.textContent=isBg?"Медийни материали с потвърдени права:":"Rights-verified media:";details.append(media)}
   try{
    const u=new URL(x.source_url);
@@ -113,7 +114,7 @@
  }
  function queryParams(){
   const p=new URLSearchParams({country:code,limit:String(PAGE),offset:String(page*PAGE)});
-  const val=[["yearFilter","year"],["regionFilter","region"],["typeFilter","type"],["statusFilter","status"],["caseSearch","q"]];
+  const val=[["yearFilter","year"],["regionFilter","region"],["typeFilter","type"],["statusFilter","assessment"],["caseSearch","q"]];
   for(const [id,key] of val){const value=el(id).value.trim();if(value)p.set(key,value)}
   return p;
  }
