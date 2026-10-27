@@ -1,7 +1,6 @@
 name: Publish AURORA design preview
+# Optional GitHub Pages preview only. Production uses Cloudflare Pages Git integration.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
