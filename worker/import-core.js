@@ -2,7 +2,12 @@
 export const SOURCE_ID="aaro-official-resolution";
 export function validateManifest(m) {
  if(m?.schema_version!==1||m.source?.id!==SOURCE_ID||m.source?.approved_for_ingest!==true)throw Error("Unapproved source");
- if(!m.source.license_url?.startsWith("https://www.copyright.gov/")||!m.source.rights_checked_at)throw Error("Rights review missing");
+ if(m.source.license_url!=="https://www.copyright.gov/title17/92chap1.html"||!/^\d{4}-\d{2}-\d{2}$/.test(m.source.rights_checked_at))throw Error("Rights review missing");
+ // Source control: exact HTTPS hosts, not startsWith (which accepts e.g. aaro.mil.evil).
+ let home;
+ try{home=new URL(m.source.homepage_url)}catch{throw Error("Untrusted source homepage")}
+ if(home.protocol!=="https:"||home.hostname!=="www.aaro.mil"||home.username||home.password)
+  throw Error("Untrusted source homepage");
  if(!Array.isArray(m.cases)||!m.cases.length||m.cases.length>100)throw Error("Invalid batch");
  const ids=new Set();
  for(const x of m.cases){
@@ -10,7 +15,12 @@ export function validateManifest(m) {
   ids.add(x.source_record_id);
   if(x.curation_status!=="editor_approved"||x.review_status!=="approved")throw Error("Not editor-approved");
   if(!["resolved","unresolved","undetermined","disputed"].includes(x.assessment_status)||!["high","moderate","low","not_stated"].includes(x.assessment_confidence)||!x.assessment_authority?.includes("AARO"))throw Error("Missing evidence assessment");
-  if(!x.source_url?.startsWith("https://www.aaro.mil/"))throw Error("Unapproved source URL");
+  let sourceLink;
+  try{sourceLink=new URL(x.source_url)}catch{throw Error("Unapproved source URL")}
+  if(sourceLink.protocol!=="https:"||sourceLink.hostname!=="www.aaro.mil"||sourceLink.username||sourceLink.password||
+     !sourceLink.pathname.startsWith("/Portals/136/PDFs/case_resolution_reports/")||
+     !sourceLink.pathname.toLowerCase().endsWith(".pdf"))
+     throw Error("Unapproved source URL");
   if(x.title?.length<6||x.title?.length>220||x.description?.length<50||x.description?.length>2500||x.description_bg?.length<35)throw Error("Bad summary");
   if(!/^\d{4}(-\d{2})?(-\d{2})?$/.test(x.date)||!["day","month","year"].includes(x.date_precision))throw Error("Bad date");
   if(x.country_code!==null&&!/^[A-Z]{2}$/.test(x.country_code))throw Error("Bad country");
