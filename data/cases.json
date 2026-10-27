@@ -1,0 +1,223 @@
+{
+  "schema_version": 1,
+  "curation": "hand-reviewed starter set; no live scraping or automatic publishing",
+  "notice": "Historical reports and released recordings are not proof of extraterrestrial origin. Coordinates are approximate display anchors, not measured incident locations.",
+  "cases": [
+    {
+      "id": "phoenix-1997",
+      "date": "1997-03-13",
+      "date_precision": "day",
+      "lat": 33.448,
+      "lng": -112.074,
+      "location_precision": "city anchor; reports span Arizona",
+      "category": "lights",
+      "status": "reported",
+      "country": "US",
+      "city": {
+        "bg": "Финикс, Аризона",
+        "en": "Phoenix, Arizona"
+      },
+      "title": {
+        "bg": "Светлините над Финикс",
+        "en": "Phoenix Lights"
+      },
+      "summary": {
+        "bg": "На 13 март 1997 г. NUFORC получава множество обаждания от жители на Аризона за групи светлини, описвани като V-образна формация. Разказите се различават, а съобщенията сами по себе си не установяват произхода на явлението.",
+        "en": "On March 13, 1997, NUFORC logged multiple calls from Arizona residents reporting lights, often in a V-shaped formation. Witness descriptions vary; the reports do not establish what caused every observation."
+      },
+      "source": {
+        "name": "National UFO Reporting Center (NUFORC)",
+        "url": "https://nuforc.org/phoenix/"
+      }
+    },
+    {
+      "id": "rendlesham-1980",
+      "date": "1980-12",
+      "date_precision": "month",
+      "lat": 52.086,
+      "lng": 1.436,
+      "location_precision": "Rendlesham Forest area",
+      "category": "lights",
+      "status": "reported",
+      "country": "GB",
+      "city": {
+        "bg": "Рендълшъм, Великобритания",
+        "en": "Rendlesham, United Kingdom"
+      },
+      "title": {
+        "bg": "Инцидентът в гората Рендълшъм",
+        "en": "Rendlesham Forest incident"
+      },
+      "summary": {
+        "bg": "През декември 1980 г. американски военнослужещи съобщават за необичайни светлини край RAF Woodbridge. За случая има кореспонденция и документи в британските архиви, но свидетелските твърдения и възможните обяснения остават предмет на спорове.",
+        "en": "In December 1980, US service personnel reported unusual lights near RAF Woodbridge. UK archival files document the correspondence, while interpretations of the eyewitness accounts remain disputed."
+      },
+      "source": {
+        "name": "The National Archives (UK), UFO research guide",
+        "url": "https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/ufos/"
+      }
+    },
+    {
+      "id": "westall-1966",
+      "date": "1966-04-06",
+      "date_precision": "day",
+      "lat": -37.94,
+      "lng": 145.14,
+      "location_precision": "Westall / Clayton South area",
+      "category": "object",
+      "status": "reported",
+      "country": "AU",
+      "city": {
+        "bg": "Уестол, Австралия",
+        "en": "Westall, Australia"
+      },
+      "title": {
+        "bg": "Свидетелствата от Уестол",
+        "en": "Westall witnesses"
+      },
+      "summary": {
+        "bg": "На 6 април 1966 г. ученици и учители близо до Мелбърн разказват, че са видели необичаен обект в небето. Публикуваните от ABC интервюта са исторически свидетелства, а не доказателство за конкретен произход.",
+        "en": "On April 6, 1966, schoolchildren and teachers near Melbourne reported seeing an unusual object. ABC interviews preserve witness memories, not proof of any particular origin."
+      },
+      "source": {
+        "name": "ABC Australia — The Westall UFO Mystery",
+        "url": "https://www.abc.net.au/news/2026-04-06/the-westall-ufo-mystery-/106528518"
+      }
+    },
+    {
+      "id": "jal-1628-1986",
+      "date": "1986-11-17",
+      "date_precision": "day",
+      "lat": 64.8,
+      "lng": -147.7,
+      "location_precision": "Fairbanks-area route approximation",
+      "category": "lights",
+      "status": "official_record",
+      "country": "US",
+      "city": {
+        "bg": "Близо до Феърбанкс, Аляска",
+        "en": "Near Fairbanks, Alaska"
+      },
+      "title": {
+        "bg": "Полет JAL 1628",
+        "en": "Japan Airlines Flight 1628"
+      },
+      "summary": {
+        "bg": "Екипажът на товарен полет JAL 1628 докладва необичайни светлини над Аляска през ноември 1986 г. Федералната авиационна администрация документира разговорите и проверките, но заявява, че не е потвърдила наличието на друг въздушен обект.",
+        "en": "The crew of Japan Airlines cargo flight 1628 reported unusual lights over Alaska in November 1986. FAA records document the interviews and checks, but the agency said it could not confirm another aircraft or object."
+      },
+      "source": {
+        "name": "FAA records (archived transcription)",
+        "url": "https://realufo.org/doc/NARA-JAL1628-733667-001-024"
+      }
+    },
+    {
+      "id": "nimitz-2004",
+      "date": "2004-11",
+      "date_precision": "month",
+      "lat": 31.7,
+      "lng": -118.2,
+      "location_precision": "off Southern California; approximate map anchor",
+      "category": "instrument",
+      "status": "official_record",
+      "country": "US",
+      "city": {
+        "bg": "Тихи океан, край Калифорния",
+        "en": "Pacific Ocean, off California"
+      },
+      "title": {
+        "bg": "Записът FLIR1 / Nimitz",
+        "en": "FLIR1 / Nimitz footage"
+      },
+      "summary": {
+        "bg": "Американското Министерство на отбраната потвърждава произхода на заснет през ноември 2004 г. видеоклип от ВМС и го публикува официално през 2020 г. Това удостоверява произхода на записа, но не доказва извънземен обект.",
+        "en": "The US Department of Defense authenticated Navy footage from November 2004 and officially released it in 2020. Authentication establishes the footage's origin, not an extraterrestrial explanation."
+      },
+      "source": {
+        "name": "U.S. Department of Defense — Navy video release",
+        "url": "https://www.defense.gov/News/Releases/Release/Article/2165713/statement-by-the-department-of-defense-on-the-release-of-historical-navy-videos/"
+      }
+    },
+    {
+      "id": "gimbal-2015",
+      "date": "2015-01",
+      "date_precision": "month",
+      "lat": 35,
+      "lng": -72,
+      "location_precision": "US East Coast offshore; illustrative regional anchor",
+      "category": "instrument",
+      "status": "official_record",
+      "country": "US",
+      "city": {
+        "bg": "Атлантически океан, САЩ",
+        "en": "Atlantic Ocean, US East Coast"
+      },
+      "title": {
+        "bg": "Видеозаписът GIMBAL",
+        "en": "GIMBAL Navy video"
+      },
+      "summary": {
+        "bg": "GIMBAL е един от видеозаписите от януари 2015 г., публикувани официално от Пентагона през април 2020 г. Описанията на видяното и неговата интерпретация трябва да се разглеждат отделно от потвърдената автентичност на записа.",
+        "en": "GIMBAL is one of the January 2015 Navy clips officially released by the Pentagon in April 2020. The video is authenticated, but interpretations of what it depicts are separate claims."
+      },
+      "source": {
+        "name": "U.S. Department of Defense — Navy video release",
+        "url": "https://www.defense.gov/News/Releases/Release/Article/2165713/statement-by-the-department-of-defense-on-the-release-of-historical-navy-videos/"
+      }
+    },
+    {
+      "id": "gofast-2015",
+      "date": "2015-01",
+      "date_precision": "month",
+      "lat": 34,
+      "lng": -75.5,
+      "location_precision": "US East Coast offshore; illustrative regional anchor",
+      "category": "instrument",
+      "status": "official_record",
+      "country": "US",
+      "city": {
+        "bg": "Атлантически океан, край САЩ",
+        "en": "Atlantic Ocean, off the US"
+      },
+      "title": {
+        "bg": "Видеозаписът GOFAST",
+        "en": "GOFAST Navy video"
+      },
+      "summary": {
+        "bg": "GOFAST е друг запис от януари 2015 г., официално публикуван от Пентагона. Записът е реален, но привидната скорост и разстояние могат да се тълкуват неправилно заради паралакса; самото видео не определя произхода на обекта.",
+        "en": "GOFAST is another January 2015 Navy recording officially released by the Pentagon. The footage is genuine, but apparent speed and range require care with parallax; the clip alone does not settle the object's identity."
+      },
+      "source": {
+        "name": "U.S. Department of Defense — Navy video release",
+        "url": "https://www.defense.gov/News/Releases/Release/Article/2165713/statement-by-the-department-of-defense-on-the-release-of-historical-navy-videos/"
+      }
+    },
+    {
+      "id": "roswell-1947",
+      "date": "1947-07",
+      "date_precision": "month",
+      "lat": 33.4,
+      "lng": -104.52,
+      "location_precision": "Roswell regional anchor; not crash site",
+      "category": "object",
+      "status": "explained",
+      "country": "US",
+      "city": {
+        "bg": "Розуел, Ню Мексико",
+        "en": "Roswell, New Mexico"
+      },
+      "title": {
+        "bg": "Случаят „Розуел“",
+        "en": "Roswell incident"
+      },
+      "summary": {
+        "bg": "През юли 1947 г. се появяват съобщения за намерени останки край Розуел. По-късни американски държавни разследвания свързват материалите с балонна програма, а твърденията за извънземен кораб не са потвърдени.",
+        "en": "Reports of recovered debris near Roswell emerged in July 1947. Later US government investigations linked the material to balloon research, and claims of an alien craft were not substantiated."
+      },
+      "source": {
+        "name": "US Air Force — Roswell Report",
+        "url": "https://www.af.mil/The-Roswell-Report/About-Us/AF-75th-Anniversary/"
+      }
+    }
+  ]
+}

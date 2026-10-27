@@ -12,11 +12,13 @@
   <link rel="stylesheet" href="aurora-v1.css">
   <link rel="stylesheet" href="jarvis-hud.css">
   <link rel="stylesheet" href="mission-control.css">
+  <link rel="stylesheet" href="globe.css">
   <script defer src="i18n-extra.js"></script>
   <script defer src="script.js"></script>
   <script defer src="aurora-v1.js"></script>
   <script defer src="jarvis-hud.js"></script>
   <script defer src="mission-control.js"></script>
+  <script defer src="globe.js"></script>
 </head>
 <body class="gate-open">
 <noscript><style>#languageGate{display:none!important}body.gate-open{overflow:auto}.site-shell{pointer-events:auto!important}</style></noscript>
@@ -121,18 +123,20 @@
       </div>
       <p class="console-smallprint" data-control-t="disclaimer">Илюстративен процес. Не обработваме реални сигнали онлайн.</p>
     </div>
-    <div class="console-visual" aria-hidden="true">
-      <div class="console-grid-overlay"></div>
-      <div class="console-orbit console-orbit-outer"></div>
-      <div class="console-orbit console-orbit-middle"></div>
-      <div class="console-orbit console-orbit-inner"></div>
-      <div class="console-sweep"></div>
-      <div class="console-core"><span>✦</span></div>
-      <span class="console-coordinate console-coordinate-a">AZIMUTH / 0° — 360°</span>
-      <span class="console-coordinate console-coordinate-b">PROTOCOL / 0<span id="controlVisualStage">1</span></span>
-      <div class="console-markers"><i></i><i></i><i></i><i></i></div>
-      <span class="console-crosshair console-crosshair-a">+</span>
-      <span class="console-crosshair console-crosshair-b">+</span>
+    <div class="console-visual globe-console">
+      <div class="console-grid-overlay" aria-hidden="true"></div>
+      <div class="globe-topline" aria-hidden="true"><span>GLOBAL CASE ATLAS / SOURCED</span><span>EARTH : LIVE MOTION, HISTORIC DATA</span></div>
+      <div class="globe-shell" id="globeShell">
+        <canvas id="caseGlobe" aria-hidden="true"></canvas>
+        <div id="globePins" class="globe-pins" aria-label="Маркери на документирани случаи"></div>
+        <div class="globe-crosshair" aria-hidden="true"></div>
+      </div>
+      <div class="globe-bottomline" aria-hidden="true"><span>ROTATION / <span id="globeHeading">000°</span></span><span>PROTOCOL / 0<span id="controlVisualStage">1</span></span></div>
+      <div class="globe-controls">
+        <button id="globeRotate" type="button" aria-pressed="false">Ⅱ <span data-globe-t="pause">Пауза</span></button>
+        <button id="globeLeft" type="button" aria-label="Завърти на запад">‹</button>
+        <button id="globeRight" type="button" aria-label="Завърти на изток">›</button>
+      </div>
     </div>
     <div class="console-detail" id="controlPanel" role="tabpanel" aria-labelledby="controlTab0" tabindex="0">
       <div class="console-small-label"><span data-control-t="activeStage">АКТИВЕН ЕТАП</span> / <span id="controlCounter">01</span></div>
@@ -145,6 +149,31 @@
       </div>
       <div class="console-progress" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
     </div>
+  </div>
+  <div class="case-atlas" id="caseAtlas" aria-labelledby="atlasHeading">
+    <div class="atlas-header"><div><p class="console-kicker">ARCHIVE / DOCUMENTED REPORTS / SOURCED</p><h3 id="atlasHeading" data-globe-t="heading">ДОКУМЕНТИРАНИ СЛУЧАИ</h3>
+      <p class="atlas-disclaimer" data-globe-t="disclaimer">Исторически свидетелства и документирани записи, не доказателства за извънземен произход. Маркерите показват приблизителен район, а не точна траектория.</p></div>
+      <label class="atlas-filter"><span data-globe-t="filterLabel">ФИЛТЪР</span><select id="globeFilter">
+        <option value="all" data-globe-t="all">Всички</option>
+        <option value="lights" data-globe-t="lights">Светлини</option>
+        <option value="object" data-globe-t="object">Обекти</option>
+        <option value="instrument" data-globe-t="instrument">Записи от прибори</option>
+        <option value="official_record" data-globe-t="official">Официално документирани</option>
+        <option value="explained" data-globe-t="explained">С известно обяснение</option>
+      </select></label>
+    </div>
+    <div class="atlas-body">
+      <div class="atlas-case-list" id="globeCaseList" aria-label="Списък на документирани случаи"></div>
+      <article class="atlas-detail" id="globeDetail" aria-live="polite">
+        <div class="atlas-detail-kicker"><span id="globeCaseStatus" class="atlas-status">SOURCE REVIEW</span><span id="globeCaseDate"></span></div>
+        <h4 id="globeCaseTitle">AURORA / CASE ATLAS</h4>
+        <p id="globeCaseLocation"></p>
+        <p id="globeCaseSummary" data-globe-t="loading">Зареждане на архив...</p>
+        <p class="atlas-precision" id="globeCasePrecision"></p>
+        <a id="globeCaseSource" class="atlas-source" href="#caseAtlas" target="_blank" rel="noopener noreferrer" hidden><span data-globe-t="source">ОТВОРИ ОРИГИНАЛНИЯ ИЗТОЧНИК</span> ↗</a>
+      </article>
+    </div>
+    <p class="atlas-footer"><span id="globeCount" role="status" aria-live="polite">...</span> <span data-globe-t="footer">Случаите са подбрани ръчно. Няма автоматично копиране на текстове или изображения.</span></p>
   </div>
   <div class="console-feed">
     <div><span class="console-feed-label" data-control-t="feedLabel">ПРИМЕРНИ ДОСИЕТА / ДЕМО</span><p data-control-t="feedIntro">Разгледай примерните случаи или отвори пълния архив.</p></div>
