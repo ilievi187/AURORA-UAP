@@ -234,3 +234,14 @@ test("source-record provenance collision stops import instead of generating dupl
  assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM case_sources").get().n,1);
  sqlite.close();
 });
+
+test("monthly audit fails closed if a published historical case loses verified provenance",async()=>{
+ const {db:isolated,sql:sqlite}=localDatabase();
+ await importReviewed(isolated,manifest);
+ sqlite.prepare("DELETE FROM case_sources WHERE case_id='aaro-pr-2013'").run();
+ await assert.rejects(()=>monthlyAudit(isolated),/Publication integrity audit failed/);
+ const audit=sqlite.prepare("SELECT status,details FROM import_runs WHERE run_type='monthly_audit' ORDER BY rowid DESC LIMIT 1").get();
+ assert.equal(audit.status,"failed");
+ assert.equal(JSON.parse(audit.details).missing_verified_provenance,1);
+ sqlite.close();
+});
