@@ -1,0 +1,20 @@
+
+@import url("styles.css");
+.donation-page{max-width:1100px;margin:auto;padding:26px 18px 80px}
+.donate-hero{border-radius:14px;padding:65px clamp(22px,5vw,75px);border:1px solid #513c57;background:linear-gradient(110deg,#061625ea,#1b0c1ef2),url('assets/hero-ufo.webp') right center/cover no-repeat;box-shadow:0 20px 65px #0008}
+.donate-hero h1{font-size:clamp(38px,6vw,70px);letter-spacing:-.035em;line-height:1.05;margin:14px 0}
+.donate-hero h1 span{color:#ff6b7c}.donate-hero p{max-width:700px;color:#d5ddea;line-height:1.7;font-size:16px}
+.donate-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:28px}
+.donate-primary{font-size:25px;padding:22px 42px;height:auto;min-height:74px;border-radius:12px;cursor:pointer}
+.donate-primary:disabled{cursor:default;opacity:.66;box-shadow:none}
+.notice-payment{font-size:13px;color:#f1b4bc;padding:14px 18px;border:1px solid #79495a;background:#300f204d;border-radius:9px;line-height:1.7}
+.use-funds{margin:44px 0}.use-funds h2{font-size:clamp(24px,4vw,33px)}
+.fund-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:25px}
+.fund-card{padding:24px 23px;background:#091e2e;border:1px solid #24536d;border-radius:10px}
+.fund-card .emoji{font-size:26px}.fund-card h3{font-size:16px;margin:12px 0 8px}.fund-card p{color:#b1c9d8;line-height:1.55;font-size:12px;margin:0}
+.transparency{margin-top:38px;padding:26px 30px;border:1px solid #285473;border-radius:10px;background:#071e2b}
+.transparency h2{margin:0 0 15px;font-size:23px}.transparency p{color:#b9d3df;line-height:1.7;font-size:14px}
+.footer-donate{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-top:33px;font-size:12px;color:#92aab7}
+.footer-donate a{color:#7ed9fa}
+@media(max-width:800px){.fund-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:580px){.donation-page{padding:13px 11px 50px}.donate-hero{padding:46px 21px}.donate-hero p{font-size:14px}.fund-grid{grid-template-columns:1fr}.donate-primary{width:100%;justify-content:center}.transparency{padding:23px 18px}}
