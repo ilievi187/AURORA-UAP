@@ -1,0 +1,35 @@
+name: AURORA Registry Release Verification
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Production domain or Cloudflare Pages preview URL'
+        type: string
+        required: true
+        default: 'https://aurorauap.org'
+      expected_state:
+        description: 'staged = D1 deliberately disabled; active = real published register'
+        type: choice
+        options: [staged, active]
+        required: true
+        default: staged
+permissions:
+  contents: read
+concurrency:
+  group: aurora-readonly-registry-check-${{ inputs.target }}
+  cancel-in-progress: true
+jobs:
+  release-gate:
+    name: Verify deployed public registry
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate staged/active live endpoints (read-only)
+        env:
+          TARGET: ${{ inputs.target }}
+          EXPECTED_STATE: ${{ inputs.expected_state }}
+        run: node scripts/check-registry.mjs --base "$TARGET" --mode "$EXPECTED_STATE"
