@@ -22,6 +22,9 @@ CREATE TABLE IF NOT EXISTS cases (
  latitude REAL CHECK(latitude BETWEEN -90 AND 90), longitude REAL CHECK(longitude BETWEEN -180 AND 180),
  location_precision TEXT NOT NULL,
  category TEXT NOT NULL CHECK(category IN ('lights','object','instrument','other')),
+ assessment_status TEXT NOT NULL DEFAULT 'undetermined' CHECK(assessment_status IN ('resolved','unresolved','undetermined','disputed')),
+ assessment_authority TEXT,
+ assessment_confidence TEXT NOT NULL DEFAULT 'not_stated' CHECK(assessment_confidence IN ('high','moderate','low','not_stated')),
  review_status TEXT NOT NULL CHECK(review_status IN ('pending','approved','rejected','needs_clarification')),
  publication_status TEXT NOT NULL DEFAULT 'draft' CHECK(publication_status IN ('draft','published','withdrawn')),
  source_name TEXT NOT NULL, source_url TEXT NOT NULL, license TEXT NOT NULL,
@@ -30,6 +33,7 @@ CREATE TABLE IF NOT EXISTS cases (
  updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
 );
 CREATE INDEX IF NOT EXISTS idx_cases_public_country_date ON cases(publication_status, review_status, country_code, date);
+CREATE INDEX IF NOT EXISTS idx_cases_assessment ON cases(publication_status,review_status,assessment_status);
 CREATE INDEX IF NOT EXISTS idx_cases_public_category ON cases(publication_status, review_status, category);
 CREATE INDEX IF NOT EXISTS idx_cases_region ON cases(country_code,region);
 CREATE TABLE IF NOT EXISTS case_sources (
