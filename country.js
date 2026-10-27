@@ -34,7 +34,7 @@
  choose.value=code;
  choose.addEventListener("change",()=>{location.href="/countries/"+encodeURIComponent(choose.value)});
  el("caseSearch").placeholder=isBg?"Търси по място или описание":"Search place or description";
- let land=[],entries=[],page=0,total=0,busy=false;
+ let land=[],entries=[],page=0,total=0,requestToken=0,controller=null,loadMoreBusy=false;
  const PAGE=30;
  const canvas=el("countryMap"),ctx=canvas.getContext("2d");
  function paint(){
@@ -112,24 +112,36 @@
   wrap.append(button,details);
   return wrap;
  }
- function queryParams(){
-  const p=new URLSearchParams({country:code,limit:String(PAGE),offset:String(page*PAGE)});
+ function queryParams(requestedPage){
+  const p=new URLSearchParams({country:code,limit:String(PAGE),offset:String(requestedPage*PAGE)});
   const val=[["yearFilter","year"],["regionFilter","region"],["typeFilter","type"],["statusFilter","assessment"],["caseSearch","q"]];
   for(const [id,key] of val){const value=el(id).value.trim();if(value)p.set(key,value)}
   return p;
  }
- async function api(path){
-  const resp=await fetch(path,{headers:{accept:"application/json"},cache:"no-store"});
+ async function api(path,signal){
+  const resp=await fetch(path,{headers:{accept:"application/json"},cache:"no-store",...(signal?{signal}:{})});
   if(!resp.ok)throw Error("HTTP "+resp.status);
   return resp.json();
  }
  async function load(reset=true){
-  if(busy)return;
-  busy=true;status.classList.remove("error");
-  if(reset){page=0;entries=[];el("countryCases").replaceChildren()}
+  // A new filter selection must win even when an older network request finishes later.
+  if(!reset&&loadMoreBusy)return;
+  const token=reset?++requestToken:requestToken;
+  if(reset){
+   controller?.abort();controller=new AbortController();
+   page=0;entries=[];el("countryCases").replaceChildren();
+  }
+  if(!controller)controller=new AbortController();
+  const requestedPage=reset?0:page+1;
+  loadMoreBusy=true;
+  el("loadMore").disabled=true;
+  status.classList.remove("error");
   status.textContent=label("loading");
   try{
-   const response=await api("/api/cases?"+queryParams());
+   const response=await api("/api/cases?"+queryParams(requestedPage),controller.signal);
+   if(token!==requestToken)return;
+   if(!Array.isArray(response.cases)||!Number.isInteger(response.total))throw Error("Invalid API response");
+   page=requestedPage;
    total=response.total;
    entries.push(...response.cases);
    for(const item of response.cases)el("countryCases").append(formatCase(item));
@@ -139,9 +151,12 @@
    el("loadMore").hidden=!response.has_more;
    el("loadMore").textContent=label("more");
   }catch(error){
+   if(token!==requestToken||error.name==="AbortError")return;
    status.classList.add("error");status.textContent=label("error");
    el("loadMore").hidden=true;
-  }finally{busy=false}
+  }finally{
+   if(token===requestToken){loadMoreBusy=false;el("loadMore").disabled=false}
+  }
  }
  async function init(){
   const local=names.includes(code);
@@ -165,7 +180,7 @@
  for(const id of ["yearFilter","regionFilter","typeFilter","statusFilter"])el(id).addEventListener("change",()=>load());
  let timer;
  el("caseSearch").addEventListener("input",()=>{clearTimeout(timer);timer=setTimeout(()=>load(),280)});
- el("loadMore").addEventListener("click",()=>{page++;load(false)});
+ el("loadMore").addEventListener("click",()=>load(false));
  window.addEventListener("resize",renderPins,{passive:true});
  init();
 })();
