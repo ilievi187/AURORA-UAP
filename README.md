@@ -3,9 +3,11 @@
 Multilingual static website for the independent AURORA UAP initiative.
 Domain: **aurorauap.org** on Cloudflare Pages. Current release: public design preview.
 
-## V1.4 — Database & Country Explorer (deployment gated)
+## Current release: V1.4.1 in safe staged mode
 
-Cloudflare D1 schema, real read-only API, sourced AARO import pipeline, country explorer and D1-powered globe are implemented on feature branch. **Production remains V1.3** until a real D1 is provisioned and bound. The initial approved manifest contains 3 unique historical records (US, IQ, PR); CI imports three into test SQLite only. No production import has been confirmed. Follow the exact commands and limitations in [V1.4 rollout instructions](docs/V1.4-DEPLOYMENT.md). Private submissions, email, R2 and payments remain disabled.
+The AURORA Pages site now includes the implemented Cloudflare D1 read-only API, migrations, sourced AARO import pipeline and dynamic country explorer. **The new public registry is deliberately disabled** until a real Cloudflare D1 database has been created, migrated, seeded, bound and verified. The rotating globe still shows the eight sourced V1.3 historical reference cases, clearly outside D1 statistics; eight fictional DEMO records remain separate. CI has imported the first three rights-reviewed AARO cases (US, IQ, PR) into test SQLite. **No production D1 import is yet confirmed.**
+
+The V1.4.2 rollout work adds safe read-only verification and manual, approval-gated Cloudflare D1 bootstrap through GitHub Actions. Review [the exact release procedure](docs/V1.4.2-REGISTRY-RELEASE.md) and [the longer database runbook](docs/V1.4-DEPLOYMENT.md). Public personal-data submissions, R2 uploads, AI moderation writes and donations remain inactive.
 
 ## AURORA V1.3 — Rotating Earth / sourced case atlas
 The Mission Control radar has been upgraded to a self-hosted, procedural rotating orthographic Earth globe. The globe uses simplified polygon geography bundled in `data/earth-land.json`, sourced from the [D3 Graph Gallery world GeoJSON](https://github.com/holtzy/D3-graph-gallery/blob/master/DATA/world.geojson) (simplified for visualization; not an authoritative political-boundary product). No external mapping SDK, token, tracker, or third-party image is loaded at runtime.
