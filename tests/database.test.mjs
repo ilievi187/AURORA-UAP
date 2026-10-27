@@ -10,6 +10,7 @@ import {onRequestGet as listHandler} from "../functions/api/cases.js";
 import {onRequestGet as statsHandler} from "../functions/api/stats.js";
 import {onRequestGet as countryHandler} from "../functions/api/countries/[code].js";
 import {onRequestGet as detailHandler} from "../functions/api/cases/[id].js";
+import {onRequestGet as serveCountry} from "../functions/countries/[code].js";
 const read=name=>readFileSync(new URL("../"+name,import.meta.url),"utf8");
 export function localDatabase(){
  const sql=new DatabaseSync(":memory:");
@@ -110,4 +111,17 @@ test("manual seed SQL generator applies real reviewed cases and is idempotent",(
  assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM cases").get().n,3,"no duplicate records after repeated seed");
  assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM import_runs WHERE status='success'").get().n,1);
  sqlite.close();
+});
+
+test("dynamic Pages country route serves shared extensionless country asset",async()=>{
+ let seen="";
+ const response=await serveCountry({
+  request:new Request("https://aurorauap.org/countries/DE"),
+  params:{code:"DE"},
+  env:{ASSETS:{fetch:async request=>{seen=new URL(request.url).pathname;return new Response("country fixture",{status:200})}}}
+ });
+ assert.equal(response.status,200);
+ assert.equal(seen,"/country");
+ const invalid=await serveCountry({request:new Request("https://aurorauap.org/countries/INVALID"),params:{code:"INVALID"},env:{}});
+ assert.equal(invalid.status,400);
 });
