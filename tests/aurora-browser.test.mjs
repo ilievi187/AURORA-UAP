@@ -159,7 +159,7 @@ try{
     assert.equal(await page.locator('#controlVisualStage').textContent(),'4');
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
     assert.ok(overflow<=1,'no unintended horizontal overflow: '+overflow);
-    const animation=await page.locator('.console-sweep').evaluate(el=>getComputedStyle(el).animationName);
+    const animation=await page.locator('.globe-shell').evaluate(el=>getComputedStyle(el,'::before').animationName);
     assert.equal(animation,'none','respects reduced-motion preference');
     assert.deepEqual(errors,[]);
     await context.close();
@@ -190,6 +190,10 @@ try{
     assert.equal(await page.locator('#globeCaseList button').count(),1);
     await page.locator('#globeCaseList button[data-case-id="aaro-iraq-2017"]').click();
     assert.equal(await page.locator('#globeCaseCountry').getAttribute('href'),'/countries/IQ');
+    await page.locator('#globeRotate').click();
+    assert.equal(await page.locator('#globeRotate').getAttribute('aria-pressed'),'true');
+    await page.locator('#globeLeft').click();
+    await page.locator('#globeRight').click();
     assert.deepEqual(errors,[]);
     await context.close();
   });
