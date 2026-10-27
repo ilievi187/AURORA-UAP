@@ -222,3 +222,15 @@ test("import allowlist rejects lookalike hostnames, HTTP and stolen embedded med
  media.cases[0].media=[{url:"https://some-site.example/photo.jpg"}];
  assert.throws(()=>validateManifest(media),/Uncertain location or unapproved media/);
 });
+
+test("source-record provenance collision stops import instead of generating duplicate sightings",async()=>{
+ const {db:isolated,sql:sqlite}=localDatabase();
+ const one=structuredClone(manifest);one.cases=one.cases.slice(0,1);
+ await importReviewed(isolated,one);
+ sqlite.prepare("INSERT INTO cases(id,record_kind,title,description,date,date_precision,country_code,location,location_precision,category,review_status,publication_status,source_name,source_url,license) VALUES('fixture-alt-case','historical_import','Collision fixture','Source collision test','2024','year','PR','Aguadilla','test','lights','approved','published','Fixture','https://example.org','test')").run();
+ sqlite.prepare("UPDATE case_sources SET case_id='fixture-alt-case' WHERE source_record_id='puerto-rico-object-2013'").run();
+ await assert.rejects(()=>importReviewed(isolated,manifest),/Provenance collision/);
+ assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM cases").get().n,2,"no other reviewed cases imported");
+ assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM case_sources").get().n,1);
+ sqlite.close();
+});
