@@ -184,3 +184,26 @@ test("country/year facets and API filters work beyond the first 250 globally pag
  assert.equal(oldYear.total,1);
  sql.close();
 });
+
+test("atomic D1-style batch rolls back every case and provenance write after a mid-import failure",async()=>{
+ const {db:isolated,sql:sqlite}=localDatabase();
+ // The second case fails *after* the first case insert; no public case should remain.
+ sqlite.exec("CREATE TRIGGER fail_second_case BEFORE INSERT ON cases WHEN NEW.id='aaro-iraq-2017' BEGIN SELECT RAISE(ABORT, 'injected midway failure'); END;");
+ await assert.rejects(()=>importReviewed(isolated,manifest),/injected midway failure/);
+ assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM cases").get().n,0,"first case rolled back");
+ assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM case_sources").get().n,0,"provenance rolled back too");
+ assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM import_runs WHERE status='success'").get().n,0,"no false successful sync timestamp");
+ assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM import_runs WHERE status='failed'").get().n,1,"durable failed import audit");
+ sqlite.exec("DROP TRIGGER fail_second_case");
+ const recovered=await importReviewed(isolated,manifest);
+ assert.equal(recovered.inserted,3);
+ assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM cases").get().n,3);
+ sqlite.close();
+});
+test("scheduled import refuses a D1 adapter without atomic batch support",async()=>{
+ const {db:isolated,sql:sqlite}=localDatabase();
+ const old=isolated.batch;isolated.batch=undefined;
+ await assert.rejects(()=>importReviewed(isolated,manifest),/Atomic D1 batch API is required/);
+ assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM cases").get().n,0);
+ isolated.batch=old;sqlite.close();
+});
