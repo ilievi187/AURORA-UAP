@@ -26,6 +26,14 @@ export function intakeEnabled(env,hostname){
  typeof env.AURORA_TURNSTILE_SECRET==="string"&&env.AURORA_TURNSTILE_SECRET.length>10&&
  typeof env.AURORA_TURNSTILE_SITE_KEY==="string"&&env.AURORA_TURNSTILE_SITE_KEY.length>10);
 }
+export async function intakeSchemaReady(db){
+ if(!db||typeof db.prepare!=="function")return false;
+ try{
+  const record=await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='intake_submissions'").first();
+  const events=await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='intake_review_events'").first();
+  return record?.name==="intake_submissions"&&events?.name==="intake_review_events";
+ }catch{return false}
+}
 export function normalizeSubmission(value,policyVersion){
  if(!value||typeof value!=="object"||Array.isArray(value))throw Error("Invalid report payload");
  if(Object.keys(value).some(key=>!KEYS.has(key)))throw Error("Unsupported report fields");
