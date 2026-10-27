@@ -47,12 +47,12 @@
     ru:{heading:"ДОКУМЕНТИРОВАННЫЕ СЛУЧАИ",disclaimer:"Исторические сообщения и записи не доказывают внеземное происхождение. Точки лишь показывают примерный район.",filterLabel:"ФИЛЬТР",all:"Все",lights:"Огни",object:"Объекты",instrument:"Записи приборов",official:"Официальные записи",explained:"Есть объяснение",pause:"Пауза",resume:"Вращать",loading:"Загрузка дел…",noResults:"Нет подходящих случаев.",source:"ОТКРЫТЬ ПЕРВОИСТОЧНИК",footer:"Авторские пересказы с указанием источников.",prec:"Примерная точка",reported:"СВИДЕТЕЛЬСКОЕ СООБЩЕНИЕ",official_record:"ДОКУМЕНТАЛЬНАЯ ЗАПИСЬ",explained_status:"ИЗВЕСТНО ОБЪЯСНЕНИЕ",dateNote:"Дата",locationNote:"Регион",count:"случаев"},
     "zh-CN":{heading:"有来源的历史案例",disclaimer:"历史报告和已公布的影像并非外星来源的证据。标记仅表示近似区域。",filterLabel:"筛选",all:"全部",lights:"光点",object:"物体",instrument:"仪器影像",official:"官方记录",explained:"已有解释",pause:"暂停",resume:"旋转",loading:"正在加载案例…",noResults:"没有符合条件的案例。",source:"查看原始来源",footer:"案例内容均为原创摘要，附有来源链接。",prec:"近似地图位置",reported:"目击报告",official_record:"正式记录",explained_status:"已有解释",dateNote:"日期",locationNote:"区域",count:"个案例"}
   };
-  let cases=[],land=[],filtered=[],selected=null,texturePixels=null,pinNodes=new Map();
+  let cases=[],land=[],filtered=[],selected=null,texturePixels=null,pinNodes=new Map(),legacyArchive=false;
   let lon=-15,paused=false,temporaryPause=0,wasVisible=false,raf=0,last=0,initialized=false;
   const prefersReduced=window.matchMedia("(prefers-reduced-motion: reduce)");
   const l=()=>T[document.documentElement.lang]||T.en;
   const localized=o=>o?.[document.documentElement.lang]||o?.en||"";
-  const validUrl=url=>{try{const a=new URL(url);return a.protocol==="https:"&&["nuforc.org","www.nationalarchives.gov.uk","www.abc.net.au","realufo.org","www.defense.gov","www.af.mil"].includes(a.hostname)}catch{return false}};
+  const validUrl=url=>{try{const a=new URL(url);return a.protocol==="https:"&&!a.username&&!a.password&&/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(a.hostname)&&!a.hostname.endsWith(".local")}catch{return false}};
   function texture(){
     const g=tctx.createLinearGradient(0,0,0,T_H);g.addColorStop(0,"#082a38");g.addColorStop(.4,"#0a3642");g.addColorStop(1,"#061d34");
     tctx.fillStyle=g;tctx.fillRect(0,0,T_W,T_H);
@@ -124,6 +124,7 @@
     for(const c of filtered){
       const b=pinNodes.get(c.id);
       if(!b)continue;
+      if(!Number.isFinite(c.lat)||!Number.isFinite(c.lng)){b.hidden=true;continue}
       const p=point(c.lat,c.lng);
       b.hidden=!p.visible;
       if(p.visible){b.style.left=p.x+"%";b.style.top=p.y+"%"}
@@ -148,6 +149,7 @@
       const place=document.createElement("span");place.className="atlas-case-place";place.textContent=localized(c.city);
       b.append(top,name,place);b.addEventListener("click",()=>select(c.id,true));
       ui.list.append(b);
+      if(!Number.isFinite(c.lat)||!Number.isFinite(c.lng))continue;
       const pin=document.createElement("button");pin.type="button";pin.className="globe-pin";
       pin.textContent="·";pin.title=localized(c.title);
       pin.setAttribute("aria-label",localized(c.title)+" — "+localized(c.city));
@@ -162,14 +164,25 @@
     const c=filtered.find(x=>x.id===id);
     if(!c)return;
     selected=c.id;
-    if(orient){lon=c.lng;temporaryPause=performance.now()+9000;sphere()}
+    if(orient&&Number.isFinite(c.lng)){lon=c.lng;temporaryPause=performance.now()+9000;sphere()}
     ui.date.textContent=c.date;
     ui.title.textContent=localized(c.title);
     ui.location.textContent=localized(c.city)+" · "+c.country;
     ui.summary.textContent=localized(c.summary);
     ui.precision.textContent=l().prec+": "+c.location_precision;
-    ui.status.textContent=c.status==="explained"?l().explained_status:c.status==="official_record"?l().official_record:l().reported;
+    const words={
+      resolved:l().explained_status,
+      explained:l().explained_status,
+      official_record:l().official_record,
+      unresolved:document.documentElement.lang==="bg"?"НЕОБЯСНЕН СПОРЕД ИЗТОЧНИКА":"UNRESOLVED PER SOURCE",
+      undetermined:document.documentElement.lang==="bg"?"БЕЗ ЗАКЛЮЧЕНИЕ":"NO FINDING YET",
+      disputed:document.documentElement.lang==="bg"?"ОСПОРВАНА ОЦЕНКА":"DISPUTED ASSESSMENT"
+    };
+    ui.status.textContent=words[c.status]||l().reported;
     ui.status.dataset.status=c.status;
+    const countryLink=document.getElementById("globeCaseCountry");
+    countryLink.hidden=legacyArchive||!c.country||!/^[A-Z]{2}$/.test(c.country);
+    if(!countryLink.hidden)countryLink.href="/countries/"+c.country;
     ui.source.hidden=!validUrl(c.source?.url);
     if(!ui.source.hidden)ui.source.href=c.source.url;
     ui.list.querySelectorAll(".atlas-case").forEach(btn=>btn.setAttribute("aria-current",String(btn.dataset.caseId===id)));
@@ -177,13 +190,23 @@
     updatePins();
   }
   function applyFilter(){
-    filtered=cases.filter(c=>matches(c,ui.filter.value));
+    // The API already applied country, year, category and assessment filters.
+    const category=ui.filter.value;
+    const country=document.getElementById("globeCountry").value;
+    const year=document.getElementById("globeYear").value;
+    filtered=legacyArchive?cases.filter(c=>
+      (category==="all"||c.category===category||
+       (category==="resolved"&&c.status==="explained"))&&
+      (!country||c.country===country)&&(!year||c.date.startsWith(year))
+    ):cases;
     if(!filtered.some(c=>c.id===selected))selected=filtered[0]?.id||null;
     renderList();
     if(selected)select(selected,false);
     else{
       ui.title.textContent=l().noResults;ui.summary.textContent="";ui.location.textContent="";
       ui.precision.textContent="";ui.source.hidden=true;
+      document.getElementById("globeCaseCountry").hidden=true;
+      ui.status.textContent="";ui.date.textContent="";
     }
   }
   function updateLanguage(){
@@ -194,7 +217,19 @@
       else if(key!=="loading"&&trans[key])el.textContent=trans[key];
     });
     ui.rotate.setAttribute("aria-label",paused?trans.resume:trans.pause);
+    if(legacyArchive){
+      document.getElementById("atlasHeading").textContent=document.documentElement.lang==="bg"
+        ?"ИСТОРИЧЕСКИ СЛУЧАИ · СПРАВОЧЕН АРХИВ":"HISTORICAL CASES · REFERENCE ARCHIVE";
+      document.querySelector(".atlas-footer [data-globe-t='footer']").textContent=document.documentElement.lang==="bg"
+        ?"Исторически справочен архив V1.3 — извън D1. Не влиза в броя регистрирани сигнали."
+        :"V1.3 sourced reference archive — outside D1. Excluded from registered sighting counts.";
+    }
     if(cases.length)applyFilter();
+    else if(ui.title.textContent==="AURORA / D1 OFFLINE"){
+      ui.summary.textContent=document.documentElement.lang==="bg"
+       ?"Базата е недостъпна. Няма заместител с демо данни."
+       :"Database unavailable; no demo fallback.";
+    }
   }
   function tick(time){
     raf=0;
@@ -217,7 +252,9 @@
   function shift(amount){lon=((lon+amount+540)%360)-180;temporaryPause=performance.now()+9000;run()}
   ui.left.addEventListener("click",()=>shift(-22));
   ui.right.addEventListener("click",()=>shift(22));
-  ui.filter.addEventListener("change",applyFilter);
+  ui.filter.addEventListener("change",()=>refreshCases());
+  document.getElementById("globeCountry")?.addEventListener("change",()=>refreshCases());
+  document.getElementById("globeYear")?.addEventListener("change",()=>refreshCases());
   ui.shell.addEventListener("keydown",event=>{
     if(event.key==="ArrowLeft"||event.key==="ArrowRight"){
       event.preventDefault();shift(event.key==="ArrowLeft"?-10:10);
@@ -241,29 +278,105 @@
   if("IntersectionObserver" in window){
     new IntersectionObserver(entries=>{wasVisible=entries[0]?.isIntersecting||false;run()},{threshold:0}).observe(ui.shell);
   }else wasVisible=true;
-  async function load(){
-    updateLanguage();
-    const [geoRes,caseRes]=await Promise.all([
-      fetch("data/earth-land.json",{cache:"force-cache"}),
-      fetch("data/cases.json",{cache:"no-cache"})
-    ]);
-    if(!caseRes.ok)throw Error("Cases HTTP "+caseRes.status);
-    const dataset=await caseRes.json();
+  let refreshSequence=0;
+  async function refreshCases(){
+    const seq=++refreshSequence;
+    const query=new URLSearchParams({limit:"250"});
+    const country=document.getElementById("globeCountry").value;
+    const year=document.getElementById("globeYear").value;
+    const filter=ui.filter.value;
+    if(legacyArchive){applyFilter();return}
+    if(country)query.set("country",country);
+    if(year)query.set("year",year);
+    if(filter==="resolved")query.set("assessment","resolved");
+    else if(filter!=="all")query.set("type",filter);
+    ui.counter.textContent="…";
+    try{
+      const response=await fetch("/api/cases?"+query.toString(),{cache:"no-store"});
+      if(!response.ok)throw Error("D1 cases unavailable: HTTP "+response.status);
+      const dataset=await response.json();
+      if(seq!==refreshSequence)return;
+      cases=(Array.isArray(dataset.cases)?dataset.cases:[]).filter(c=>
+        typeof c.id==="string"&&c.title?.en&&c.summary?.en&&validUrl(c.source?.url)&&
+        (c.lat===null&&c.lng===null||
+         Number.isFinite(c.lat)&&Number.isFinite(c.lng)&&Math.abs(c.lat)<=90&&Math.abs(c.lng)<=180));
+      applyFilter();run();
+      if(dataset.has_more){
+        const more=document.createElement("span");
+        more.textContent=" / "+(document.documentElement.lang==="bg"?"Първи 250 — пълният списък е по държави":"First 250 — open a country for all cases");
+        ui.counter.append(more);
+      }
+    }catch(error){
+      if(seq!==refreshSequence)return;
+      console.warn("AURORA globe API error",error);
+      cases=[];applyFilter();
+      ui.title.textContent="AURORA / D1 OFFLINE";ui.counter.textContent="—";
+      ui.summary.textContent=document.documentElement.lang==="bg"?"Базата е недостъпна. Няма заместител с демо данни.":"Database unavailable; no demo fallback.";
+    }
+  }
+  function facets(rows){
+    const countrySelect=document.getElementById("globeCountry"),yearSelect=document.getElementById("globeYear");
+    const locale=document.documentElement.lang;
+    const names=new Intl.DisplayNames([locale,"en"],{type:"region"});
+    for(const row of rows.countries){
+      const code=row.code;
+      if(!/^[A-Z]{2}$/.test(code)||countrySelect.querySelector('option[value="'+code+'"]'))continue;
+      const option=document.createElement("option");option.value=code;
+      option.textContent=code+" — "+(names.of(code)||code)+" ("+row.count+")";
+      countrySelect.append(option);
+    }
+    for(const row of rows.years){
+      if(!/^\d{4}$/.test(row.year))continue;
+      if(yearSelect.querySelector('option[value="'+row.year+'"]'))continue;
+      const option=document.createElement("option");option.value=row.year;
+      option.textContent=row.year+" ("+row.count+")";
+      yearSelect.append(option);
+    }
+  }
+  async function useLegacyArchive(){
+    const response=await fetch("/data/cases.json",{cache:"force-cache"});
+    if(!response.ok)throw Error("Sourced archive unavailable");
+    const dataset=await response.json();
+    legacyArchive=true;
     cases=(Array.isArray(dataset.cases)?dataset.cases:[]).filter(c=>
       typeof c.id==="string"&&Number.isFinite(c.lat)&&Number.isFinite(c.lng)&&
-      c.lat>=-90&&c.lat<=90&&c.lng>=-180&&c.lng<=180&&
-      c.title?.en&&c.summary?.en&&validUrl(c.source?.url));
+      Math.abs(c.lat)<=90&&Math.abs(c.lng)<=180&&c.title?.en&&c.summary?.en&&validUrl(c.source?.url));
+    const counts=new Map(),years=new Map();
+    for(const c of cases){
+      counts.set(c.country,(counts.get(c.country)||0)+1);
+      const year=c.date.slice(0,4);years.set(year,(years.get(year)||0)+1);
+    }
+    facets({countries:[...counts].map(([code,count])=>({code,count})).sort((a,b)=>a.code.localeCompare(b.code)),
+      years:[...years].map(([year,count])=>({year,count})).sort((a,b)=>b.year.localeCompare(a.year))});
+    updateLanguage();applyFilter();run();
+  }
+  async function load(){
+    updateLanguage();
+    const [geoRes,statsRes]=await Promise.all([
+      fetch("/data/earth-land.json",{cache:"force-cache"}),
+      fetch("/api/stats",{cache:"no-store"})
+    ]);
     if(geoRes.ok){
       const geo=await geoRes.json();
       if(Array.isArray(geo.polygons))land=geo.polygons;
     }
     texture();initialized=true;
-    applyFilter();run();
+    if(!statsRes.ok){await useLegacyArchive();return}
+    const stats=await statsRes.json();
+    if(stats.includes_demo!==false||!Array.isArray(stats.by_country)||!Array.isArray(stats.by_year))
+      throw Error("Invalid D1 country/year facets");
+    legacyArchive=false;
+    facets({countries:stats.by_country,years:stats.by_year});
+    await refreshCases();
   }
   load().catch(error=>{
     console.warn("AURORA case atlas: unable to load sourced dataset",error);
     texture();run();
-    ui.summary.textContent=document.documentElement.lang==="bg"?"Архивът не е достъпен в момента. Опитай да презаредиш страницата.":"Archive unavailable. Please refresh the page.";
-    ui.title.textContent="AURORA / ATLAS OFFLINE";
+    // Even if API fails, keep the existing sourced V1.3 archive available;
+    // this is NOT a D1 count, user submission, or fictional demonstration case.
+    useLegacyArchive().catch(()=>{
+      ui.summary.textContent=document.documentElement.lang==="bg"?"Няма връзка с архива.":"Archive unavailable.";
+      ui.title.textContent="AURORA / ARCHIVE OFFLINE";ui.counter.textContent="—";
+    });
   });
 })();

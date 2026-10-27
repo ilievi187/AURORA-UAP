@@ -85,3 +85,6 @@ display:flex;flex-direction:column;align-items:flex-start;min-width:0}
 }
 @media(max-width:400px){.globe-shell{width:88%}.globe-console{min-height:345px}.atlas-case-list{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.globe-shell:before,.globe-shell:after,.globe-pin:after{animation:none!important}}
+
+/* The V1.2 console visual used pointer-events:none; V1.3 interactive Earth needs these restored. */
+.globe-shell,.globe-controls,.globe-controls button{pointer-events:auto}

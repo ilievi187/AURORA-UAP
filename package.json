@@ -1,0 +1,10 @@
+{
+  "name": "aurora-uap",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:db": "node --experimental-sqlite --test tests/database.test.mjs",
+    "test:static": "node --test tests/aurora-v1.test.mjs",
+    "test:browser": "node --test tests/aurora-browser.test.mjs"
+  }
+}

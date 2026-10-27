@@ -1,0 +1,11 @@
+# Copy this to wrangler.sync.toml ONLY after D1 has been provisioned.
+name = "aurora-uap-curated-sync"
+main = "worker/scheduled.js"
+compatibility_date = "2026-10-27"
+[triggers]
+crons = ["0 3 * * MON", "0 3 1 * *"]
+[[d1_databases]]
+binding = "DB"
+database_name = "aurora-uap-cases"
+database_id = "REPLACE_WITH_REAL_D1_DATABASE_ID"
+migrations_dir = "migrations"

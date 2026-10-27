@@ -15,6 +15,15 @@ jobs:
           node-version: '22'
       - name: HTML, JavaScript and accessibility smoke
         run: node --test tests/aurora-v1.test.mjs
+  database-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Migrations, idempotent import and real SQLite API tests
+        run: node --experimental-sqlite --test tests/database.test.mjs
   browser-e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 12
@@ -28,4 +37,4 @@ jobs:
           npm install --no-save playwright@1.56.1
           npx playwright install --with-deps chromium
       - name: Test real Canvas animation, gate, Continue and mobile behavior
-        run: node --test tests/aurora-browser.test.mjs
+        run: node --experimental-sqlite --test tests/aurora-browser.test.mjs
