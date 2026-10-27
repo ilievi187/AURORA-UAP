@@ -3,6 +3,17 @@
 Multilingual static website for the independent AURORA UAP initiative.
 Domain: **aurorauap.org** on Cloudflare Pages. Current release: public design preview.
 
+## AURORA V1.3 — Rotating Earth / sourced case atlas
+The Mission Control radar has been upgraded to a self-hosted, procedural rotating orthographic Earth globe. The globe uses simplified polygon geography bundled in `data/earth-land.json`, sourced from the [D3 Graph Gallery world GeoJSON](https://github.com/holtzy/D3-graph-gallery/blob/master/DATA/world.geojson) (simplified for visualization; not an authoritative political-boundary product). No external mapping SDK, token, tracker, or third-party image is loaded at runtime.
+
+`data/cases.json` contains **8 individually attributed historical incidents and official records**. Each entry has original Bulgarian and English summaries, date and date precision, approximate location coordinates and explicit precision notes, conservative status, and an HTTPS source link. These are *reports and documented recordings*, not a claim that alien technology was established. Some records have known explanations; recorded reports must not be conflated with independently verified extraordinary claims. Several markers are at representative city or coastal-region coordinates, not precisely measured sighting positions.
+
+Interaction: globe auto-rotates, case pins track geography and disappear behind the horizon; visitors can pause, step rotation, use the case list to orient the globe, filter by observation category or archival status, and follow original sources. The previous eight synthetic DEMO cases and the original map remain explicitly labeled and separate from the sourced archive, so older working controls are preserved.
+
+**Curation policy:** Use the source only to verify date, place and reported facts. Write original paraphrases; record primary-source citation links. Never scrape/copy full stories or licensed photographs. Review ambiguities, contested interpretations, and whether an event has since been identified. Do not equate a released military video with proof of extraterrestrial origin. There is no unattended scraper, report submission, live satellite feed, or backend in V1.3.
+
+Run CI smoke and Chromium browser tests, including desktop/mobile canvas rendering, original source links and filters, before merging to `main`. Cloudflare Pages deployment is connected to `main`.
+
 ## Mission Control V1.2 — interactive research workflow (2026-10-27)
 - New **Mission Control** section linked from desktop, mobile and footer navigation.
 - Four keyboard-accessible research tabs: Document → Verify → Analyze → Conclude. Each changes the explanatory checklist and phase visualization; Next cycles through all phases.
