@@ -56,7 +56,8 @@ const server=createServer(async(req,res)=>{
     else response=new Response('Not found',{status:404});
     res.writeHead(response.status,Object.fromEntries(response.headers));res.end(await response.text());return;
   }
-  const resolved=/^\/countries\/[A-Za-z]{2}$/.test(decoded)?'/country.html':decoded;
+  const resolved=/^\/countries\/[A-Za-z]{2}$/.test(decoded)?'/country.html':
+    /^\/(?:cases|archive)\/[a-z0-9-]{3,90}$/.test(decoded)?'/dossier.html':decoded;
   const filename=resolve(join(root,resolved==='/'?'index.html':resolved.replace(/^\/+/,'')));
   if(filename!==root&&!filename.startsWith(root+sep)){res.writeHead(403).end();return}
   try{
@@ -323,6 +324,70 @@ try{
     assert.equal(await page.locator('#statusFilter option[value="resolved"]').textContent(),'Resolved');
     assert.deepEqual(errors,[]);
     await context.close();
+  });
+  await test('Permanent historical dossiers are sourced, shareable and excluded from D1',async()=>{
+    const ctx=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});
+    const page=await ctx.newPage(),errors=[];
+    page.on("pageerror",error=>errors.push(error.message));
+    await page.goto('http://127.0.0.1:'+port+'/archive/phoenix-1997');
+    await page.waitForFunction(()=>document.querySelector('#dossierContent')?.hidden===false);
+    assert.equal(await page.locator('#dossierTitle').textContent(),'Светлините над Финикс');
+    assert.match(await page.locator('#dossierKind').textContent(),/REFERENCE/);
+    assert.match(await page.locator('#factPublication').textContent(),/извън D1|Не е потребителски сигнал/);
+    assert.equal(await page.locator('#dossierCountry').isVisible(),false);
+    assert.equal(await page.locator('#dossierSourceUrl').getAttribute('rel'),'noopener noreferrer');
+    assert.ok((await page.locator('#dossierSourceUrl').getAttribute('href')).startsWith('https://nuforc.org/'));
+    assert.match(await page.locator('#dossierLocationCaveat').textContent(),/ориентировъчна/);
+    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+    assert.ok(overflow<=1,'dossier mobile overflow: '+overflow);
+    assert.deepEqual(errors,[]);
+    await ctx.close();
+  });
+  await test('Live D1 case page displays editorial review, source finding and exact provenance separately',async()=>{
+    const ctx=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'reduce'});
+    const page=await ctx.newPage(),errors=[];
+    page.on("pageerror",error=>errors.push(error.message));
+    await page.goto('http://127.0.0.1:'+port+'/cases/aaro-pr-2013');
+    await page.waitForFunction(()=>document.querySelector('#dossierContent')?.hidden===false);
+    assert.equal(await page.locator('#dossierTitle').textContent(),'Инфрачервени обекти над Пуерто Рико');
+    assert.match(await page.locator('#dossierKind').textContent(),/GLOBAL REGISTER/);
+    assert.match(await page.locator('#factPublication').textContent(),/Одобрено за публично показване/);
+    assert.match(await page.locator('#factAssessment').textContent(),/Обяснено според/);
+    assert.equal(await page.locator('#factIdentifier').textContent(),'aaro-pr-2013');
+    assert.match(await page.locator('#dossierAssessmentAuthority').textContent(),/AARO/);
+    assert.equal(await page.locator('#dossierCountry').getAttribute('href'),'/countries/PR');
+    assert.ok((await page.locator('#dossierSourceUrl').getAttribute('href')).includes('aaro.mil/'));
+    assert.deepEqual(errors,[]);
+    await ctx.close();
+  });
+  await test('Inactive D1 cannot reveal a case dossier or silently fall back to legacy archive',async()=>{
+    const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
+    const page=await ctx.newPage(),errors=[];
+    page.on("pageerror",error=>errors.push(error.message));
+    await page.route('**/api/cases/aaro-pr-2013',route=>route.fulfill({status:503,contentType:'application/json',body:'{"error":"database_unavailable"}'}));
+    await page.goto('http://127.0.0.1:'+port+'/cases/aaro-pr-2013');
+    await page.waitForFunction(()=>document.querySelector('#dossierFeedback')?.textContent?.includes('не е активиран'));
+    assert.equal(await page.locator('#dossierContent').isVisible(),false);
+    assert.equal(await page.locator('#dossierSourceUrl').isVisible(),false);
+    await page.goto('http://127.0.0.1:'+port+'/archive/not-a-real-case');
+    await page.waitForFunction(()=>document.querySelector('#dossierFeedback')?.textContent?.includes('не е налично'));
+    assert.equal(await page.locator('#dossierContent').isVisible(),false);
+    assert.deepEqual(errors,[]);
+    await ctx.close();
+  });
+  await test('Globe dossier action links to the selected historical record',async()=>{
+    const ctx=await browser.newContext({viewport:{width:1300,height:900},reducedMotion:'reduce'});
+    const page=await ctx.newPage();
+    await page.route('**/api/stats',route=>route.fulfill({status:503,contentType:'application/json',body:'{"error":"database_unavailable"}'}));
+    await page.goto('http://127.0.0.1:'+port+'/');
+    await page.locator('button[data-language="en"]').click();
+    await page.locator('#gateContinue').click();
+    await page.locator('#languageGate').waitFor({state:'hidden',timeout:1500});
+    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length===8);
+    assert.equal(await page.locator('#globeCaseDossier').getAttribute('href'),'/archive/phoenix-1997');
+    await page.locator('#globeCaseList button[data-case-id="westall-1966"]').click();
+    assert.equal(await page.locator('#globeCaseDossier').getAttribute('href'),'/archive/westall-1966');
+    await ctx.close();
   });
 }finally{
   if(browser)await browser.close();
