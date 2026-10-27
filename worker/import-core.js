@@ -43,6 +43,13 @@ export async function importReviewed(db,m,kind="manual_import"){
  // Read-only preflight gives human-readable inserted/updated counts. D1 batch is
  // the only place where public case mutations and the success record are committed.
  const previous=await Promise.all(m.cases.map(x=>db.prepare("SELECT id,review_status,publication_status,record_kind FROM cases WHERE id=?").bind(x.id).first()));
+ // The same archive source record must never silently point at a second case.
+ // Reconciliation requires an editorial decision rather than auto-publishing a duplicate.
+ const links=await Promise.all(m.cases.map(x=>db.prepare("SELECT case_id FROM case_sources WHERE source_id=? AND source_record_id=?").bind(s.id,x.source_record_id).first()));
+ for(let i=0;i<m.cases.length;i++){
+  if(links[i]&&links[i].case_id!==m.cases[i].id)
+   throw Error("Provenance collision: source record is already linked to another case");
+ }
  let inserted=0,updated=0,preserved=0;
  const statements=[];
  for(let i=0;i<m.cases.length;i++){
