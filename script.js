@@ -117,13 +117,13 @@ function renderReports(){
 }
 function openReport(){
   $('#formResponse').textContent='';
-  try {const draft=JSON.parse(localStorage.getItem('aurora-demo-draft')||'null');if(draft){$('#fPlace').value=draft.place||'';$('#fDate').value=draft.date||'';$('#fType').value=draft.type||'light';$('#fDescription').value=draft.description||'';}}
+  try {const draft=JSON.parse(localStorage.getItem('aurora-demo-draft')||'null');if(draft){$('#fPlace').value=draft.place||'';$('#fCountry').value=draft.country||'';$('#fDate').value=draft.date||'';$('#fType').value=draft.type||'light';$('#fDescription').value=draft.description||'';}}
   catch (_) {/* No saved draft available. */}
   reportDialog.showModal();
 }
 function saveReport(event){
   event.preventDefault();
-  const data={place:$('#fPlace').value.trim(),date:$('#fDate').value,type:$('#fType').value,description:$('#fDescription').value.trim()};
+  const data={country:$('#fCountry').value.trim().toUpperCase(),place:$('#fPlace').value.trim(),date:$('#fDate').value,type:$('#fType').value,description:$('#fDescription').value.trim()};
   if(data.place.length<1||data.description.length<15||!data.date){$('#reportForm').reportValidity();return;}
   try{localStorage.setItem('aurora-demo-draft',JSON.stringify(data));$('#formResponse').textContent=txt('saved');}catch(_){$('#formResponse').textContent=txt('storageError');}
 }
@@ -146,5 +146,15 @@ function setup(){
   $('#tooltipRead').addEventListener('click',()=>{const c=cases.find(x=>x.id===selectedId);if(c)openCase(c);});
   // Leave the selected language and drafts private to the current browser.
   translate();
+  // Optional link from country explorer; still a local-only draft and NEVER submitted.
+  const url=new URL(location.href);
+  if(url.searchParams.get('report')==='draft'&&/^[A-Za-z]{2}$/.test(url.searchParams.get('country')||'')){
+    const requested=url.searchParams.get('country').toUpperCase();
+    window.addEventListener('aurora:gate-closed',()=>{
+      if(!reportDialog.open){openReport();$('#fCountry').value=requested;}
+      url.searchParams.delete('report');url.searchParams.delete('country');
+      history.replaceState(null,'',url.pathname+(url.search||'')+url.hash);
+    },{once:true});
+  }
 }
 setup();
