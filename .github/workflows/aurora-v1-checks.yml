@@ -1,0 +1,17 @@
+name: AURORA V1 quality gate
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  static-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: HTML, JavaScript and accessibility smoke
+        run: node --test tests/aurora-v1.test.mjs
