@@ -3,6 +3,10 @@
 Multilingual static website for the independent AURORA UAP initiative.
 Domain: **aurorauap.org** on Cloudflare Pages. Current release: public design preview.
 
+## V1.5 — Private text-only intake foundation (disabled by default)
+
+The site now includes a standalone [Observation Center](/report.html) for locally saved drafts and a real but **locked** D1 submission API. Incoming reports, once all legal, WAF, Turnstile and database gates have actually been reviewed and configured, go only to a separate quarantine table with human moderation and no automatic publication. Email, contact fields, precise GPS and media upload are not supported. **The live site must not be described as accepting reports while the gates are off.** See [V1.5 readiness and release checklist](docs/V1.5-INTAKE-READINESS.md).
+
 ## V1.4.3 — Shareable public case dossiers
 
 Each historical reference case now has a shareable page under `/archive/<id>` (live even while D1 is disabled). Every approved D1 case will have `/cases/<id>` after the gated registry is activated. Both use one accessible cinematic template showing provenance, source status and geographic uncertainty, with no synthetic evidence or private data. [Dossier architecture, tests and boundaries](docs/V1.4.3-DOSSIERS.md).
