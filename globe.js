@@ -47,7 +47,7 @@
     ru:{heading:"ДОКУМЕНТИРОВАННЫЕ СЛУЧАИ",disclaimer:"Исторические сообщения и записи не доказывают внеземное происхождение. Точки лишь показывают примерный район.",filterLabel:"ФИЛЬТР",all:"Все",lights:"Огни",object:"Объекты",instrument:"Записи приборов",official:"Официальные записи",explained:"Есть объяснение",pause:"Пауза",resume:"Вращать",loading:"Загрузка дел…",noResults:"Нет подходящих случаев.",source:"ОТКРЫТЬ ПЕРВОИСТОЧНИК",footer:"Авторские пересказы с указанием источников.",prec:"Примерная точка",reported:"СВИДЕТЕЛЬСКОЕ СООБЩЕНИЕ",official_record:"ДОКУМЕНТАЛЬНАЯ ЗАПИСЬ",explained_status:"ИЗВЕСТНО ОБЪЯСНЕНИЕ",dateNote:"Дата",locationNote:"Регион",count:"случаев"},
     "zh-CN":{heading:"有来源的历史案例",disclaimer:"历史报告和已公布的影像并非外星来源的证据。标记仅表示近似区域。",filterLabel:"筛选",all:"全部",lights:"光点",object:"物体",instrument:"仪器影像",official:"官方记录",explained:"已有解释",pause:"暂停",resume:"旋转",loading:"正在加载案例…",noResults:"没有符合条件的案例。",source:"查看原始来源",footer:"案例内容均为原创摘要，附有来源链接。",prec:"近似地图位置",reported:"目击报告",official_record:"正式记录",explained_status:"已有解释",dateNote:"日期",locationNote:"区域",count:"个案例"}
   };
-  let cases=[],land=[],filtered=[],selected=null,texturePixels=null,pinNodes=new Map();
+  let cases=[],land=[],filtered=[],selected=null,texturePixels=null,pinNodes=new Map(),legacyArchive=false;
   let lon=-15,paused=false,temporaryPause=0,wasVisible=false,raf=0,last=0,initialized=false;
   const prefersReduced=window.matchMedia("(prefers-reduced-motion: reduce)");
   const l=()=>T[document.documentElement.lang]||T.en;
@@ -172,6 +172,8 @@
     ui.precision.textContent=l().prec+": "+c.location_precision;
     const words={
       resolved:l().explained_status,
+      explained:l().explained_status,
+      official_record:l().official_record,
       unresolved:document.documentElement.lang==="bg"?"НЕОБЯСНЕН СПОРЕД ИЗТОЧНИКА":"UNRESOLVED PER SOURCE",
       undetermined:document.documentElement.lang==="bg"?"БЕЗ ЗАКЛЮЧЕНИЕ":"NO FINDING YET",
       disputed:document.documentElement.lang==="bg"?"ОСПОРВАНА ОЦЕНКА":"DISPUTED ASSESSMENT"
@@ -179,7 +181,7 @@
     ui.status.textContent=words[c.status]||l().reported;
     ui.status.dataset.status=c.status;
     const countryLink=document.getElementById("globeCaseCountry");
-    countryLink.hidden=!c.country||!/^[A-Z]{2}$/.test(c.country);
+    countryLink.hidden=legacyArchive||!c.country||!/^[A-Z]{2}$/.test(c.country);
     if(!countryLink.hidden)countryLink.href="/countries/"+c.country;
     ui.source.hidden=!validUrl(c.source?.url);
     if(!ui.source.hidden)ui.source.href=c.source.url;
@@ -189,7 +191,14 @@
   }
   function applyFilter(){
     // The API already applied country, year, category and assessment filters.
-    filtered=cases;
+    const category=ui.filter.value;
+    const country=document.getElementById("globeCountry").value;
+    const year=document.getElementById("globeYear").value;
+    filtered=legacyArchive?cases.filter(c=>
+      (category==="all"||c.category===category||
+       (category==="resolved"&&c.status==="explained"))&&
+      (!country||c.country===country)&&(!year||c.date.startsWith(year))
+    ):cases;
     if(!filtered.some(c=>c.id===selected))selected=filtered[0]?.id||null;
     renderList();
     if(selected)select(selected,false);
@@ -208,6 +217,13 @@
       else if(key!=="loading"&&trans[key])el.textContent=trans[key];
     });
     ui.rotate.setAttribute("aria-label",paused?trans.resume:trans.pause);
+    if(legacyArchive){
+      document.getElementById("atlasHeading").textContent=document.documentElement.lang==="bg"
+        ?"ИСТОРИЧЕСКИ СЛУЧАИ · СПРАВОЧЕН АРХИВ":"HISTORICAL CASES · REFERENCE ARCHIVE";
+      document.querySelector(".atlas-footer [data-globe-t='footer']").textContent=document.documentElement.lang==="bg"
+        ?"Исторически справочен архив V1.3 — извън D1. Не влиза в броя регистрирани сигнали."
+        :"V1.3 sourced reference archive — outside D1. Excluded from registered sighting counts.";
+    }
     if(cases.length)applyFilter();
     else if(ui.title.textContent==="AURORA / D1 OFFLINE"){
       ui.summary.textContent=document.documentElement.lang==="bg"
@@ -269,6 +285,7 @@
     const country=document.getElementById("globeCountry").value;
     const year=document.getElementById("globeYear").value;
     const filter=ui.filter.value;
+    if(legacyArchive){applyFilter();return}
     if(country)query.set("country",country);
     if(year)query.set("year",year);
     if(filter==="resolved")query.set("assessment","resolved");
@@ -297,42 +314,69 @@
       ui.summary.textContent=document.documentElement.lang==="bg"?"Базата е недостъпна. Няма заместител с демо данни.":"Database unavailable; no demo fallback.";
     }
   }
-  async function load(){
-    updateLanguage();
-    const [geoRes,statsRes]=await Promise.all([
-      fetch("/data/earth-land.json",{cache:"force-cache"}),
-      fetch("/api/stats",{cache:"no-store"})
-    ]);
-    if(!statsRes.ok)throw Error("D1 statistics unavailable: HTTP "+statsRes.status);
-    const stats=await statsRes.json();
-    if(stats.includes_demo!==false||!Array.isArray(stats.by_country)||!Array.isArray(stats.by_year))throw Error("Invalid D1 country/year facets");
+  function facets(rows){
     const countrySelect=document.getElementById("globeCountry"),yearSelect=document.getElementById("globeYear");
-    const names=new Intl.DisplayNames([document.documentElement.lang,"en"],{type:"region"});
-    for(const row of stats.by_country){
+    const locale=document.documentElement.lang;
+    const names=new Intl.DisplayNames([locale,"en"],{type:"region"});
+    for(const row of rows.countries){
       const code=row.code;
       if(!/^[A-Z]{2}$/.test(code)||countrySelect.querySelector('option[value="'+code+'"]'))continue;
       const option=document.createElement("option");option.value=code;
       option.textContent=code+" — "+(names.of(code)||code)+" ("+row.count+")";
       countrySelect.append(option);
     }
-    for(const row of stats.by_year){
+    for(const row of rows.years){
       if(!/^\d{4}$/.test(row.year))continue;
+      if(yearSelect.querySelector('option[value="'+row.year+'"]'))continue;
       const option=document.createElement("option");option.value=row.year;
       option.textContent=row.year+" ("+row.count+")";
       yearSelect.append(option);
     }
+  }
+  async function useLegacyArchive(){
+    const response=await fetch("/data/cases.json",{cache:"force-cache"});
+    if(!response.ok)throw Error("Sourced archive unavailable");
+    const dataset=await response.json();
+    legacyArchive=true;
+    cases=(Array.isArray(dataset.cases)?dataset.cases:[]).filter(c=>
+      typeof c.id==="string"&&Number.isFinite(c.lat)&&Number.isFinite(c.lng)&&
+      Math.abs(c.lat)<=90&&Math.abs(c.lng)<=180&&c.title?.en&&c.summary?.en&&validUrl(c.source?.url));
+    const counts=new Map(),years=new Map();
+    for(const c of cases){
+      counts.set(c.country,(counts.get(c.country)||0)+1);
+      const year=c.date.slice(0,4);years.set(year,(years.get(year)||0)+1);
+    }
+    facets({countries:[...counts].map(([code,count])=>({code,count})).sort((a,b)=>a.code.localeCompare(b.code)),
+      years:[...years].map(([year,count])=>({year,count})).sort((a,b)=>b.year.localeCompare(a.year))});
+    updateLanguage();applyFilter();run();
+  }
+  async function load(){
+    updateLanguage();
+    const [geoRes,statsRes]=await Promise.all([
+      fetch("/data/earth-land.json",{cache:"force-cache"}),
+      fetch("/api/stats",{cache:"no-store"})
+    ]);
     if(geoRes.ok){
       const geo=await geoRes.json();
       if(Array.isArray(geo.polygons))land=geo.polygons;
     }
     texture();initialized=true;
+    if(!statsRes.ok){await useLegacyArchive();return}
+    const stats=await statsRes.json();
+    if(stats.includes_demo!==false||!Array.isArray(stats.by_country)||!Array.isArray(stats.by_year))
+      throw Error("Invalid D1 country/year facets");
+    legacyArchive=false;
+    facets({countries:stats.by_country,years:stats.by_year});
     await refreshCases();
   }
   load().catch(error=>{
     console.warn("AURORA case atlas: unable to load sourced dataset",error);
     texture();run();
-    ui.summary.textContent=document.documentElement.lang==="bg"?"Базата е недостъпна. Няма заместител с демо данни.":"Database unavailable; no demo fallback.";
-    ui.title.textContent="AURORA / D1 OFFLINE";
-    ui.counter.textContent="—";
+    // Even if API fails, keep the existing sourced V1.3 archive available;
+    // this is NOT a D1 count, user submission, or fictional demonstration case.
+    useLegacyArchive().catch(()=>{
+      ui.summary.textContent=document.documentElement.lang==="bg"?"Няма връзка с архива.":"Archive unavailable.";
+      ui.title.textContent="AURORA / ARCHIVE OFFLINE";ui.counter.textContent="—";
+    });
   });
 })();
