@@ -3,6 +3,10 @@
 Multilingual static website for the independent AURORA UAP initiative.
 Domain: **aurorauap.org** on Cloudflare Pages. Current release: public design preview.
 
+## V1.4 — Database & Country Explorer (deployment gated)
+
+Cloudflare D1 schema, real read-only API, sourced AARO import pipeline, country explorer and D1-powered globe are implemented on feature branch. **Production remains V1.3** until a real D1 is provisioned and bound. The initial approved manifest contains 3 unique historical records (US, IQ, PR); CI imports three into test SQLite only. No production import has been confirmed. Follow the exact commands and limitations in [V1.4 rollout instructions](docs/V1.4-DEPLOYMENT.md). Private submissions, email, R2 and payments remain disabled.
+
 ## AURORA V1.3 — Rotating Earth / sourced case atlas
 The Mission Control radar has been upgraded to a self-hosted, procedural rotating orthographic Earth globe. The globe uses simplified polygon geography bundled in `data/earth-land.json`, sourced from the [D3 Graph Gallery world GeoJSON](https://github.com/holtzy/D3-graph-gallery/blob/master/DATA/world.geojson) (simplified for visualization; not an authoritative political-boundary product). No external mapping SDK, token, tracker, or third-party image is loaded at runtime.
 
