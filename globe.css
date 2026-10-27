@@ -88,3 +88,6 @@ display:flex;flex-direction:column;align-items:flex-start;min-width:0}
 
 /* The V1.2 console visual used pointer-events:none; V1.3 interactive Earth needs these restored. */
 .globe-shell,.globe-controls,.globe-controls button{pointer-events:auto}
+
+#globeCaseDossier{display:inline-block;padding:10px 12px;border:1px solid #7ddad6;background:#133f43;margin:7px 0 10px;font-weight:700}
+#globeCaseDossier:hover{background:#1b5158}
