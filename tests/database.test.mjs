@@ -46,6 +46,7 @@ test("idempotent import updates existing rows with no duplicates",async()=>{
  assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM case_sources").get().n,3);
  const stats=await getStats(db);
  assert.equal(stats.sightings,3);assert.equal(stats.countries,3);
+ assert.deepEqual(stats.by_year.map(x=>x.year),["2021","2017","2013"]);
  assert.ok(stats.last_successful_sync);
 });
 test("country code, region, year, type and search filters use real D1 SQL",async()=>{
