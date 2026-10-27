@@ -207,3 +207,18 @@ test("scheduled import refuses a D1 adapter without atomic batch support",async(
  assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM cases").get().n,0);
  isolated.batch=old;sqlite.close();
 });
+
+test("import allowlist rejects lookalike hostnames, HTTP and stolen embedded media",()=>{
+ const spoofed=structuredClone(manifest);
+ spoofed.cases[0].source_url="https://www.aaro.mil.evil.example/Portals/136/PDFs/case_resolution_reports/thing.pdf";
+ assert.throws(()=>validateManifest(spoofed),/Unapproved source URL/);
+ const ftp=structuredClone(manifest);
+ ftp.cases[0].source_url="http://www.aaro.mil/Portals/136/PDFs/case_resolution_reports/thing.pdf";
+ assert.throws(()=>validateManifest(ftp),/Unapproved source URL/);
+ const spoofedLicense=structuredClone(manifest);
+ spoofedLicense.source.license_url="https://www.copyright.gov.evil.example/title17/92chap1.html";
+ assert.throws(()=>validateManifest(spoofedLicense),/Rights review missing/);
+ const media=structuredClone(manifest);
+ media.cases[0].media=[{url:"https://some-site.example/photo.jpg"}];
+ assert.throws(()=>validateManifest(media),/Uncertain location or unapproved media/);
+});
