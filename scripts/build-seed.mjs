@@ -16,5 +16,6 @@ for(const c of data.cases){
  console.log("INSERT INTO case_sources(case_id,source_id,source_record_id,source_url) VALUES("+values([c.id,s.id,c.source_record_id,c.source_url])+") ON CONFLICT(source_id,source_record_id) DO NOTHING;");
 }
 const id="seed-aarov14-reviewed";
-console.log("INSERT INTO import_runs(id,source_id,run_type,status,inserted_count,updated_count,started_at,completed_at,details) VALUES("+values([id,s.id,"manual_import","success",data.cases.length,0,"2026-10-27T00:00:00Z","2026-10-27T00:00:00Z","Reviewed static seed; idempotent on reruns; seed timestamp is publication date, not a live synchronization clock."])+") ON CONFLICT(id) DO NOTHING;");
+const executedAt=new Date().toISOString();
+console.log("INSERT INTO import_runs(id,source_id,run_type,status,inserted_count,updated_count,started_at,completed_at,details) VALUES("+values([id,s.id,"manual_import","success",data.cases.length,0,executedAt,executedAt,"Reviewed static seed; idempotent on reruns; timestamp is the local seed generation time, not independently verified D1 sync time."])+") ON CONFLICT(id) DO NOTHING;");
 console.log("COMMIT;");
