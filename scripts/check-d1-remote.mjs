@@ -1,3 +1,5 @@
+import {fileURLToPath} from "node:url";
+import {resolve} from "node:path";
 // Validate Wrangler --json responses without assuming a database exists.
 import {readFileSync} from "node:fs";
 const ids=new Set(["aaro-pr-2013","aaro-iraq-2017","aaro-west-us-2021"]);
@@ -26,7 +28,7 @@ export function verifySeedRows(payload){
  if(byId.size!==ids.size)throw Error("Seed record count mismatch");
  return byId.size;
 }
-if(process.argv[1]&&new URL("file://"+process.argv[1]).pathname===new URL(import.meta.url).pathname){
+if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
  const [action,file,uuid]=process.argv.slice(2);
  try{
   const data=JSON.parse(readFileSync(file,"utf8"));
