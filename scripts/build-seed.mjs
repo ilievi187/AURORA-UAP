@@ -13,6 +13,7 @@ const s=data.source;
 console.log("INSERT INTO sources(id,name,publisher,homepage_url,license,license_url,rights_note,rights_checked_at,approved_for_ingest) VALUES("+values([s.id,s.name,s.publisher,s.homepage_url,s.license,s.license_url,s.rights_note,s.rights_checked_at,1])+") ON CONFLICT(id) DO NOTHING;");
 for(const c of data.cases){
  console.log("INSERT INTO cases(id,record_kind,title,title_bg,description,description_bg,date,date_precision,country_code,region,location,latitude,longitude,location_precision,category,review_status,publication_status,source_name,source_url,license,media) VALUES("+values([c.id,"historical_import",c.title,c.title_bg,c.description,c.description_bg,c.date,c.date_precision,c.country_code,c.region,c.location,c.latitude,c.longitude,c.location_precision,c.category,"approved","published",s.name,c.source_url,c.license,"[]"])+") ON CONFLICT(id) DO NOTHING;");
+ console.log("UPDATE cases SET assessment_status="+literal(c.assessment_status)+",assessment_authority="+literal(c.assessment_authority)+",assessment_confidence="+literal(c.assessment_confidence)+" WHERE id="+literal(c.id)+" AND record_kind='historical_import' AND review_status='approved' AND publication_status='published';");
  console.log("INSERT INTO case_sources(case_id,source_id,source_record_id,source_url) VALUES("+values([c.id,s.id,c.source_record_id,c.source_url])+") ON CONFLICT(source_id,source_record_id) DO NOTHING;");
 }
 const id="seed-aarov14-reviewed";
