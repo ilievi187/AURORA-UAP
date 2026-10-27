@@ -8,7 +8,7 @@ const data=validateManifest(JSON.parse(readFileSync(new URL("../data/imports/aar
 const literal=value=>value===null?"NULL":typeof value==="number"?String(value):"'"+String(value).replaceAll("'","''")+"'";
 function values(xs){return xs.map(literal).join(",")}
 console.log("-- GENERATED; V1.4 reviewed AARO factual records only. Do not edit generated output.");
-console.log("BEGIN TRANSACTION;");
+// Cloudflare Wrangler d1 execute wraps uploaded SQL in a transaction; do not emit explicit BEGIN.
 const s=data.source;
 console.log("INSERT INTO sources(id,name,publisher,homepage_url,license,license_url,rights_note,rights_checked_at,approved_for_ingest) VALUES("+values([s.id,s.name,s.publisher,s.homepage_url,s.license,s.license_url,s.rights_note,s.rights_checked_at,1])+") ON CONFLICT(id) DO NOTHING;");
 for(const c of data.cases){
@@ -19,4 +19,4 @@ for(const c of data.cases){
 const id="seed-aarov14-reviewed";
 const executedAt=new Date().toISOString();
 console.log("INSERT INTO import_runs(id,source_id,run_type,status,inserted_count,updated_count,started_at,completed_at,details) VALUES("+values([id,s.id,"manual_import","success",data.cases.length,0,executedAt,executedAt,"Reviewed static seed; idempotent on reruns; timestamp is the local seed generation time, not independently verified D1 sync time."])+") ON CONFLICT(id) DO NOTHING;");
-console.log("COMMIT;");
+// No COMMIT: D1 executes the SQL file atomically.
