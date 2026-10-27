@@ -44,9 +44,9 @@
    const data=await res.json();
    if(!Number.isInteger(data.sightings)||!Number.isInteger(data.countries)||data.includes_demo!==false)
     throw Error("Invalid stats");
-   stats=data;render();
+   stats=data;document.getElementById("globalRegister").hidden=false;render();
    window.dispatchEvent(new CustomEvent("aurora:register-stats",{detail:data}));
-  }catch{stats=null;render()}
+  }catch{stats=null;document.getElementById("globalRegister").hidden=true;render()}
  }
  new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:["lang"]});
  render();refresh();
