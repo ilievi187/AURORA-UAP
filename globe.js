@@ -170,6 +170,10 @@
     ui.location.textContent=localized(c.city)+" · "+c.country;
     ui.summary.textContent=localized(c.summary);
     ui.precision.textContent=l().prec+": "+c.location_precision;
+    const dossier=document.getElementById("globeCaseDossier");
+    dossier.hidden=false;
+    dossier.href=(legacyArchive?"/archive/":"/cases/")+encodeURIComponent(c.id);
+    dossier.textContent=document.documentElement.lang==="bg"?"ОТВОРИ ДОСИЕТО ↗":"OPEN CASE DOSSIER ↗";
     const words={
       resolved:l().explained_status,
       explained:l().explained_status,
@@ -206,6 +210,7 @@
       ui.title.textContent=l().noResults;ui.summary.textContent="";ui.location.textContent="";
       ui.precision.textContent="";ui.source.hidden=true;
       document.getElementById("globeCaseCountry").hidden=true;
+      document.getElementById("globeCaseDossier").hidden=true;
       ui.status.textContent="";ui.date.textContent="";
     }
   }

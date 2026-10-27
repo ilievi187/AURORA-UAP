@@ -2,7 +2,9 @@
   "version": 1,
   "include": [
     "/api/*",
-    "/countries/*"
+    "/countries/*",
+    "/archive/*",
+    "/cases/*"
   ],
   "exclude": []
 }

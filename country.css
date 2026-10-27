@@ -64,3 +64,6 @@ footer{font:10px/1.5 Consolas,monospace;letter-spacing:.16em;color:#6a9ca5;paddi
 .world-map-frame{min-height:260px}.results{padding:15px;min-height:200px}.report-cta{flex-direction:column;align-items:flex-start}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.country-hero:after,.map-point:after{animation:none!important}}
+
+.case-dossier-link{display:inline-block;margin:4px 0 12px;padding:10px 12px;border:1px solid #7fcbd0;background:#12343e;color:#c7ffff;font:11px/1.6 Consolas,monospace;letter-spacing:.06em}
+.case-dossier-link:hover{background:#1a4d56}

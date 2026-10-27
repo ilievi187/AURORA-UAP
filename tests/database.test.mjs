@@ -251,3 +251,21 @@ test("duplicate case IDs with different source record IDs are never imported",()
  duplicate.cases[1].id=duplicate.cases[0].id;
  assert.throws(()=>validateManifest(duplicate),/Bad duplicate\/id/);
 });
+
+test("shared dossier Pages routes reject invalid IDs and serve only the common template",async()=>{
+ const {onRequestGet:legacyPage}=await import("../functions/archive/[id].js");
+ const {onRequestGet:casePage}=await import("../functions/cases/[id].js");
+ let fetched="";
+ const env={ASSETS:{fetch:async request=>{
+  fetched=new URL(request.url).pathname;return new Response("dossier fixture",{status:200});
+ }}};
+ for(const [method,route,id] of [
+  [legacyPage,"/archive/phoenix-1997","phoenix-1997"],
+  [casePage,"/cases/aaro-pr-2013","aaro-pr-2013"]]){
+  const response=await method({request:new Request("https://aurorauap.org"+route),params:{id},env});
+  assert.equal(response.status,200);
+  assert.equal(fetched,"/dossier");
+ }
+ const denied=await casePage({request:new Request("https://aurorauap.org/cases/NOT-VALID!"),params:{id:"NOT-VALID!"},env});
+ assert.equal(denied.status,400);
+});

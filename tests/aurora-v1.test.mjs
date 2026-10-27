@@ -131,3 +131,21 @@ test('V1.4 static country template, D1 APIs and real register controls exist',()
  assert.doesNotMatch(read('globe.js'),/fetch\("data\/cases\.json"/);
  assert.match(read('register.js'),/includes_demo!==false/);
 });
+
+test('case dossiers reuse one template with separate legacy and gated D1 routes',()=>{
+  const routes=JSON.parse(read('_routes.json'));
+  assert.ok(routes.include.includes('/archive/*'));
+  assert.ok(routes.include.includes('/cases/*'));
+  for(const path of ['dossier.html','dossier.css','dossier.js','functions/archive/[id].js','functions/cases/[id].js'])
+   assert.ok(existsSync(new URL('../'+path,import.meta.url)),'missing '+path);
+  const dossier=read('dossier.html'),script=read('dossier.js');
+  assert.match(dossier,/id="dossierFeedback"[^>]*role="status"/);
+  assert.match(dossier,/id="dossierSourceUrl"/);
+  assert.match(dossier,/id="dossierLocationCaveat"/);
+  assert.match(html,/id="globeCaseDossier"/);
+  assert.match(read('globe.js'),/legacyArchive\?"\/archive\/":"\/cases\/"/);
+  assert.match(read('country.js'),/className="case-dossier-link"/);
+  assert.match(script,/c\.review_status!=="approved"\|\|c\.record_kind==="demo"/);
+  assert.match(script,/res\.status===503/);
+  assert.doesNotMatch(script,/innerHTML\s*=/);
+});
