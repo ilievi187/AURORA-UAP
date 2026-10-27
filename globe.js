@@ -170,7 +170,7 @@
     ui.location.textContent=localized(c.city)+" · "+c.country;
     ui.summary.textContent=localized(c.summary);
     ui.precision.textContent=l().prec+": "+c.location_precision;
-    ui.status.textContent=c.status==="explained"?l().explained_status:c.status==="official_record"?l().official_record:l().reported;
+    ui.status.textContent=c.status==="resolved"?l().explained_status:c.status==="official_record"?l().official_record:l().reported;
     ui.status.dataset.status=c.status;
     const countryLink=document.getElementById("globeCaseCountry");
     countryLink.hidden=!c.country||!/^[A-Z]{2}$/.test(c.country);
