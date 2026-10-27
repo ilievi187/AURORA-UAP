@@ -175,3 +175,16 @@ test("D1-like transactional batch aborts receipt and audit together on storage e
  assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM intake_review_events").get().n,0);
  sql.close();
 });
+
+test("intake status cannot claim readiness when private D1 migration is missing",async()=>{
+ const {db,sql}=database();const env=environment(db);
+ const ready=await getStatus({request:new Request("https://aurorauap.org/api/intake/status"),env});
+ assert.equal((await ready.json()).accepting,true);
+ sql.exec("DROP TABLE intake_review_events;DROP TABLE intake_submissions;");
+ const stopped=await getStatus({request:new Request("https://aurorauap.org/api/intake/status"),env});
+ assert.equal((await stopped.json()).accepting,false);
+ const requestResult=await submit({request:request(body()),env});
+ assert.equal(requestResult.status,503);
+ assert.equal((await requestResult.json()).error,"intake_disabled");
+ sql.close();
+});
