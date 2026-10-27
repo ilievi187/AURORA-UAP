@@ -125,3 +125,19 @@ test("dynamic Pages country route serves shared extensionless country asset",asy
  const invalid=await serveCountry({request:new Request("https://aurorauap.org/countries/INVALID"),params:{code:"INVALID"},env:{}});
  assert.equal(invalid.status,400);
 });
+
+test("source finding is separate from editorial publication approval",async()=>{
+ const item=await getCase(db,"aaro-pr-2013");
+ assert.equal(item.review_status,"approved");
+ assert.equal(item.assessment_status,"resolved");
+ assert.equal(item.assessment_confidence,"moderate");
+ assert.equal(item.assessment_authority,"All-domain Anomaly Resolution Office (AARO)");
+ assert.equal((await getCases(db,new URLSearchParams({assessment:"resolved"}))).total,3);
+ assert.equal((await getCases(db,new URLSearchParams({assessment:"unresolved"}))).total,0);
+ await assert.rejects(()=>getCases(db,new URLSearchParams({assessment:"bogus"})),/Invalid assessment/);
+ const seed=execFileSync(process.execPath,[fileURLToPath(new URL("../scripts/build-seed.mjs",import.meta.url))],{encoding:"utf8"});
+ const storage=new DatabaseSync(":memory:");
+ storage.exec(read("migrations/0001_init.sql"));storage.exec(seed);
+ assert.equal(storage.prepare("SELECT COUNT(*) AS n FROM cases WHERE assessment_status='resolved' AND review_status='approved'").get().n,3);
+ storage.close();
+});
