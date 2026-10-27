@@ -12,11 +12,15 @@ const read=name=>readFileSync(new URL("../"+name,import.meta.url),"utf8");
 export function localDatabase(){
  const sql=new DatabaseSync(":memory:");
  sql.exec(read("migrations/0001_init.sql"));
- const db={prepare(query){const stmt=sql.prepare(query);return {bind(...args){return {
+ const db={prepare(query){const stmt=sql.prepare(query);
+ const statement=(args=[])=>({
+  bind(...values){return statement(values)},
   async run(){return stmt.run(...args)},
   async first(){return stmt.get(...args)||null},
   async all(){return {results:stmt.all(...args)}}
- }}}}};
+ });
+ return statement();
+}};
  return {db,sql};
 }
 const {db,sql}=localDatabase();
