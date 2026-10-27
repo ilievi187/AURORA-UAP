@@ -56,4 +56,4 @@ jobs:
       - name: Report remaining Pages binding gate
         run: |
           echo "Verified reviewed D1 seed rows. The public registry is NOT activated."
-          echo "Next: bind this D1 as DB in the correct Cloudflare Pages project, then set AURORA_REGISTRY_PUBLIC=enabled only after verifying preview and production routes."
+          echo "Next: bind this D1 as DB in the correct Cloudflare Pages project. Enable the public registry separately only after verifying preview and production routes."
