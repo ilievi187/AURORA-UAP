@@ -40,3 +40,4 @@ window.AURORA_LOCALES = {
     protoLabel:'原型网站：',protoNote:'组织和平台仍在筹备中。地图和案例均为演示内容；目前不接收在线报告、注册或捐款。',footerSub:'共同探索天空。',methodNav:'研究方法',
     dialogKicker:'演示表单',dialogTitle:'描述您的所见',dialogExplain:'这是演示表单。草稿只保存在当前设备的浏览器中，不会发送到服务器。',formPlace:'地点 / 城市',formDate:'日期与时间',formType:'观测类型',typeLight:'光点',typeObject:'物体',typeOther:'其他 / 不确定',formDesc:'您看到了什么？',deleteDraft:'删除草稿',saveDraft:'保存草稿',saved:'草稿仅保存在浏览器中，未发送任何数据。',deleted:'草稿已从浏览器删除。',storageError:'无法使用浏览器本地存储，请尝试本地服务器。',caseCaution:'虚构示例。并非真实目击报告、已核实证据或记录。'
   },
+};

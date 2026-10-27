@@ -1,10 +1,21 @@
 # AURORA — UAP Bulgaria 🛸
 
 Multilingual static website for the independent AURORA UAP initiative.
-Planned domain: **aurorauap.org**. Preview release: public design demo.
+Domain: **aurorauap.org** on Cloudflare Pages. Current release: public design preview.
+
+## AURORA cinematic V1 — 2026-10-27
+This design-first release adds an original cinematic dark-science theme inspired by immersive motion-design websites (without copying a third-party page), an accessible first-visit language gateway, persistent language selection, reduced-motion support, scroll reveal/progress effects, redesigned research panels, and a matching donation page.
+
+**Language coverage:** Bulgarian, English, German, Russian and Simplified Chinese retain the original full translated prototype. French, Spanish, Italian, Portuguese, Turkish, Romanian, Greek, Serbian, Ukrainian, Polish, Arabic, Japanese and Korean offer preview translations of the entry/hero/navigation with **English fallback** in other sections. The UI labels these as preview, not as full localization. Further translated content, RTL review and specialist terminology review are still required before the public release.
+
+**Important:** Report submission, email delivery and evidence uploads are NOT implemented in V1. Report forms still store a local draft only. No real reports or personal data are collected on this static site. The map/archive still contain labelled synthetic demo cases. Payments remain inactive without a verified Buy Me a Coffee profile link. This build remains noindex while features and privacy disclosures are built out.
+
+**Deployment:** Cloudflare Pages is connected to the `main` branch. When the V1 branch is merged after CI validation, Pages automatically starts a production deployment. Verify at `https://aurora-uap.pages.dev/` and `https://aurorauap.org/` when Cloudflare reports success.
+
+**Testing:** `node --test tests/aurora-v1.test.mjs` (Node.js 22); GitHub Actions runs the same smoke suite on PRs.
 
 ## Features
-- Five interface languages: Bulgarian, English, German, Russian and Simplified Chinese.
+- Five complete prototype locales plus 13 preview locales with explicit English fallback (see V1 notes).
 - Responsive sci-fi homepage, illustrated research sections, demo sightings map and demo case archive.
 - Local-only draft report form. **No data is submitted to a server.**
 - Support page explaining intended spending on equipment, expeditions, workspace, technology and expert review.
@@ -20,7 +31,7 @@ After the owner finishes Buy Me a Coffee registration and verification:
 
 Never put private IBANs, identity documents, bank statements, account tokens or payment secrets in this public repository. Donations always require explicit donor authorization on the hosted provider page. AURORA is not represented as a registered charitable organization.
 
-## Cloudflare Pages (production target)
+## Cloudflare Pages (connected)
 Connect GitHub repository `ilievi187/AURORA-UAP` to Cloudflare Pages:
 - Framework preset: None / Static HTML
 - Production branch: `main`
