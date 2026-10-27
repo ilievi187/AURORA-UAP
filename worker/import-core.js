@@ -9,10 +9,10 @@ export function validateManifest(m) {
  if(home.protocol!=="https:"||home.hostname!=="www.aaro.mil"||home.username||home.password)
   throw Error("Untrusted source homepage");
  if(!Array.isArray(m.cases)||!m.cases.length||m.cases.length>100)throw Error("Invalid batch");
- const ids=new Set();
+ const ids=new Set(),caseIds=new Set();
  for(const x of m.cases){
-  if(!/^aaro-[a-z0-9-]{3,80}$/.test(x.id)||!/^[a-z0-9-]{3,80}$/.test(x.source_record_id)||ids.has(x.source_record_id))throw Error("Bad duplicate/id");
-  ids.add(x.source_record_id);
+  if(!/^aaro-[a-z0-9-]{3,80}$/.test(x.id)||!/^[a-z0-9-]{3,80}$/.test(x.source_record_id)||ids.has(x.source_record_id)||caseIds.has(x.id))throw Error("Bad duplicate/id");
+  ids.add(x.source_record_id);caseIds.add(x.id);
   if(x.curation_status!=="editor_approved"||x.review_status!=="approved")throw Error("Not editor-approved");
   if(!["resolved","unresolved","undetermined","disputed"].includes(x.assessment_status)||!["high","moderate","low","not_stated"].includes(x.assessment_confidence)||!x.assessment_authority?.includes("AARO"))throw Error("Missing evidence assessment");
   let sourceLink;
@@ -42,12 +42,19 @@ export async function importReviewed(db,m,kind="manual_import"){
   .bind(s.id,s.name,s.publisher,s.homepage_url,s.license,s.license_url,s.rights_note,s.rights_checked_at).run();
  // Read-only preflight gives human-readable inserted/updated counts. D1 batch is
  // the only place where public case mutations and the success record are committed.
- const previous=await Promise.all(m.cases.map(x=>db.prepare("SELECT id,review_status,publication_status,record_kind FROM cases WHERE id=?").bind(x.id).first()));
- // The same archive source record must never silently point at a second case.
- // Reconciliation requires an editorial decision rather than auto-publishing a duplicate.
- const links=await Promise.all(m.cases.map(x=>db.prepare("SELECT case_id FROM case_sources WHERE source_id=? AND source_record_id=?").bind(s.id,x.source_record_id).first()));
- for(let i=0;i<m.cases.length;i++){
-  if(links[i]&&links[i].case_id!==m.cases[i].id)
+ // Two bounded preflight SELECTs regardless of batch size, avoiding >6 concurrent
+ // D1 connections and unnecessary network round trips for 100-case imports.
+ const markers=m.cases.map(()=>"?").join(",");
+ const existing=await db.prepare("SELECT id,review_status,publication_status,record_kind FROM cases WHERE id IN ("+markers+")")
+  .bind(...m.cases.map(x=>x.id)).all();
+ const byId=new Map((existing.results||[]).map(row=>[row.id,row]));
+ const previous=m.cases.map(x=>byId.get(x.id)||null);
+ const provenance=await db.prepare("SELECT case_id,source_record_id FROM case_sources WHERE source_id=? AND source_record_id IN ("+markers+")")
+  .bind(s.id,...m.cases.map(x=>x.source_record_id)).all();
+ const byRecord=new Map((provenance.results||[]).map(row=>[row.source_record_id,row.case_id]));
+ for(const item of m.cases){
+  const linkedCase=byRecord.get(item.source_record_id);
+  if(linkedCase&&linkedCase!==item.id)
    throw Error("Provenance collision: source record is already linked to another case");
  }
  let inserted=0,updated=0,preserved=0;
