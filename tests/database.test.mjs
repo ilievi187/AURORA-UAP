@@ -15,15 +15,30 @@ const read=name=>readFileSync(new URL("../"+name,import.meta.url),"utf8");
 export function localDatabase(){
  const sql=new DatabaseSync(":memory:");
  sql.exec(read("migrations/0001_init.sql"));
- const db={prepare(query){const stmt=sql.prepare(query);
- const statement=(args=[])=>({
-  bind(...values){return statement(values)},
-  async run(){return stmt.run(...args)},
-  async first(){return stmt.get(...args)||null},
-  async all(){return {results:stmt.all(...args)}}
- });
- return statement();
-}};
+ const db={
+ prepare(query){
+  const stmt=sql.prepare(query);
+  const statement=(args=[])=>({
+   bind(...values){return statement(values)},
+   async run(){return stmt.run(...args)},
+   async first(){return stmt.get(...args)||null},
+   async all(){return {results:stmt.all(...args)}}
+  });
+  return statement();
+ },
+ async batch(statements){
+  sql.exec("BEGIN IMMEDIATE TRANSACTION");
+  try{
+   const results=[];
+   for(const stmt of statements)results.push(await stmt.run());
+   sql.exec("COMMIT");
+   return results;
+  }catch(error){
+   sql.exec("ROLLBACK");
+   throw error;
+  }
+ }
+};
  return {db,sql};
 }
 const {db,sql}=localDatabase();
@@ -168,4 +183,71 @@ test("country/year facets and API filters work beyond the first 250 globally pag
  const oldYear=await getCases(db,new URLSearchParams({year:"2013",limit:"250"}));
  assert.equal(oldYear.total,1);
  sql.close();
+});
+
+test("atomic D1-style batch rolls back every case and provenance write after a mid-import failure",async()=>{
+ const {db:isolated,sql:sqlite}=localDatabase();
+ // The second case fails *after* the first case insert; no public case should remain.
+ sqlite.exec("CREATE TRIGGER fail_second_case BEFORE INSERT ON cases WHEN NEW.id='aaro-iraq-2017' BEGIN SELECT RAISE(ABORT, 'injected midway failure'); END;");
+ await assert.rejects(()=>importReviewed(isolated,manifest),/injected midway failure/);
+ assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM cases").get().n,0,"first case rolled back");
+ assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM case_sources").get().n,0,"provenance rolled back too");
+ assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM import_runs WHERE status='success'").get().n,0,"no false successful sync timestamp");
+ assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM import_runs WHERE status='failed'").get().n,1,"durable failed import audit");
+ sqlite.exec("DROP TRIGGER fail_second_case");
+ const recovered=await importReviewed(isolated,manifest);
+ assert.equal(recovered.inserted,3);
+ assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM cases").get().n,3);
+ sqlite.close();
+});
+test("scheduled import refuses a D1 adapter without atomic batch support",async()=>{
+ const {db:isolated,sql:sqlite}=localDatabase();
+ const old=isolated.batch;isolated.batch=undefined;
+ await assert.rejects(()=>importReviewed(isolated,manifest),/Atomic D1 batch API is required/);
+ assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM cases").get().n,0);
+ isolated.batch=old;sqlite.close();
+});
+
+test("import allowlist rejects lookalike hostnames, HTTP and stolen embedded media",()=>{
+ const spoofed=structuredClone(manifest);
+ spoofed.cases[0].source_url="https://www.aaro.mil.evil.example/Portals/136/PDFs/case_resolution_reports/thing.pdf";
+ assert.throws(()=>validateManifest(spoofed),/Unapproved source URL/);
+ const ftp=structuredClone(manifest);
+ ftp.cases[0].source_url="http://www.aaro.mil/Portals/136/PDFs/case_resolution_reports/thing.pdf";
+ assert.throws(()=>validateManifest(ftp),/Unapproved source URL/);
+ const spoofedLicense=structuredClone(manifest);
+ spoofedLicense.source.license_url="https://www.copyright.gov.evil.example/title17/92chap1.html";
+ assert.throws(()=>validateManifest(spoofedLicense),/Rights review missing/);
+ const media=structuredClone(manifest);
+ media.cases[0].media=[{url:"https://some-site.example/photo.jpg"}];
+ assert.throws(()=>validateManifest(media),/Uncertain location or unapproved media/);
+});
+
+test("source-record provenance collision stops import instead of generating duplicate sightings",async()=>{
+ const {db:isolated,sql:sqlite}=localDatabase();
+ const one=structuredClone(manifest);one.cases=one.cases.slice(0,1);
+ await importReviewed(isolated,one);
+ sqlite.prepare("INSERT INTO cases(id,record_kind,title,description,date,date_precision,country_code,location,location_precision,category,review_status,publication_status,source_name,source_url,license) VALUES('fixture-alt-case','historical_import','Collision fixture','Source collision test','2024','year','PR','Aguadilla','test','lights','approved','published','Fixture','https://example.org','test')").run();
+ sqlite.prepare("UPDATE case_sources SET case_id='fixture-alt-case' WHERE source_record_id='puerto-rico-object-2013'").run();
+ await assert.rejects(()=>importReviewed(isolated,manifest),/Provenance collision/);
+ assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM cases").get().n,2,"no other reviewed cases imported");
+ assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM case_sources").get().n,1);
+ sqlite.close();
+});
+
+test("monthly audit fails closed if a published historical case loses verified provenance",async()=>{
+ const {db:isolated,sql:sqlite}=localDatabase();
+ await importReviewed(isolated,manifest);
+ sqlite.prepare("DELETE FROM case_sources WHERE case_id='aaro-pr-2013'").run();
+ await assert.rejects(()=>monthlyAudit(isolated),/Publication integrity audit failed/);
+ const audit=sqlite.prepare("SELECT status,details FROM import_runs WHERE run_type='monthly_audit' ORDER BY rowid DESC LIMIT 1").get();
+ assert.equal(audit.status,"failed");
+ assert.equal(JSON.parse(audit.details).missing_verified_provenance,1);
+ sqlite.close();
+});
+
+test("duplicate case IDs with different source record IDs are never imported",()=>{
+ const duplicate=structuredClone(manifest);
+ duplicate.cases[1].id=duplicate.cases[0].id;
+ assert.throws(()=>validateManifest(duplicate),/Bad duplicate\/id/);
 });
