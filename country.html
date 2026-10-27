@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#061217">
+<title>AURORA — Country Explorer</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/country.css">
+<script defer src="/country.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="country-shell">
+<header class="country-header"><a class="logo" href="/">✦ A U R O R A <small>GLOBAL RESEARCH REGISTER</small></a><a href="/" class="home-link">← <span id="backLabel">НАЧАЛО</span></a></header>
+<main id="main">
+<section class="country-hero">
+<div class="eyebrow">◉ / EARTH NETWORK / COUNTRY NODE / <span id="countryCode">--</span></div>
+<h1 id="countryName">COUNTRY EXPLORER</h1>
+<p id="countryIntro">Исторически наблюдения с проверени източници и ясен статус на прегледа.</p>
+<div class="country-kpis">
+<div><strong id="countryTotal">—</strong><span id="sightingsLabel">РЕГИСТРИРАНИ СЛУЧАИ</span></div>
+<div><strong id="countryYears">—</strong><span id="yearsLabel">ГОДИНИ СЪС СЛУЧАИ</span></div>
+<div><strong id="countryRegions">—</strong><span id="regionsLabel">РЕГИОНИ</span></div>
+</div></section>
+<section class="country-content">
+<div class="controls">
+<label><span id="chooseCountryLabel">ДЪРЖАВА</span><select id="chooseCountry"></select></label>
+<label><span id="yearLabel">ГОДИНА</span><select id="yearFilter"><option value="">Всички</option></select></label>
+<label><span id="regionLabel">РЕГИОН</span><select id="regionFilter"><option value="">Всички</option></select></label>
+<label><span id="typeLabel">ТИП</span><select id="typeFilter"><option value=""><span>Всички</span></option><option value="lights">Светлини</option><option value="object">Обекти</option><option value="instrument">Инструментален запис</option><option value="other">Други</option></select></label>
+<label><span id="statusLabel">СТАТУС</span><select id="statusFilter"><option value="approved">Публично одобрени</option></select></label>
+<label class="search"><span id="searchLabel">ТЪРСЕНЕ</span><input id="caseSearch" type="search" maxlength="100" placeholder="Търси по място или описание"></label>
+</div>
+<div id="countryFeedback" role="status" aria-live="polite" class="feedback">Зареждане на данни...</div>
+<div class="country-grid">
+<div class="world-map-frame">
+<div class="map-heading"><span>GEO / LOCATION ANCHORS</span><span id="visibleMapCount">—</span></div>
+<canvas id="countryMap" width="1000" height="480" aria-label="Карта със съответните случаи"></canvas>
+<div id="mapPoints" class="map-points"></div>
+<p id="mapCaveat">Показани са приблизителни райони, не точни траектории или лични адреси.</p>
+</div>
+<div class="results">
+<h2 id="resultsHeading">РЕГИСТЪР НА СЛУЧАИТЕ</h2>
+<div id="countryCases" class="country-cases"></div>
+<button type="button" id="loadMore" hidden>ПОКАЖИ ОЩЕ ↓</button>
+</div></div>
+<a id="reportLink" class="report-cta" href="/?report=draft"><span id="reportLabel">✦ ПОДАЙ НАБЛЮДЕНИЕ</span><small id="reportNotice">Засега само локална чернова — публичното изпращане не е активно.</small></a>
+</section>
+</main><footer>THE SKY BELONGS TO EVERYONE · FREE PUBLIC ACCESS · AURORA UAP</footer>
+</div>
+</body></html>
