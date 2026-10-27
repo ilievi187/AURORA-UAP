@@ -65,59 +65,110 @@
     ru:["Выберите язык","Выберите язык интерфейса AURORA.","Языки PREVIEW переведены частично, остальной текст на английском."],
     "zh-CN":["选择语言","选择进入 AURORA 的界面语言。","预览版语言只翻译部分内容，其余为英语。"]
   };
-  let prevFocus=null;
+  // Mandatory two-step entry: select a language, then explicitly continue.
+  // Stored language is preselected but NEVER bypasses the welcome screen.
+  let previousFocus=null;
+  let isMandatoryEntry=true;
+  let selectedLanguage=null;
+  let transitionPending=false;
+  const continueButton=document.getElementById("gateContinue");
+  const continueLabel=document.getElementById("gateContinueLabel");
+  const cancelButton=document.getElementById("gateCancel");
+  const selectionStatus=document.getElementById("gateSelection");
   const getStored=()=>{try{return localStorage.getItem("aurora-lang")}catch(_){return null}};
+  const continueTranslations={
+    bg:"ПРОДЪЛЖИ",en:"CONTINUE",de:"WEITER",ru:"ПРОДОЛЖИТЬ","zh-CN":"继续",
+    fr:"CONTINUER",es:"CONTINUAR",it:"CONTINUA",pt:"CONTINUAR",tr:"DEVAM ET",
+    ro:"CONTINUĂ",el:"ΣΥΝΕΧΕΙΑ",sr:"НАСТАВИ",uk:"ПРОДОВЖИТИ",pl:"KONTYNUUJ",
+    ar:"متابعة",ja:"続ける",ko:"계속"
+  };
   function updateGateText(code){
     const labels=t[code]||t.en;
     document.getElementById("gateHeading").textContent=labels[0];
     document.getElementById("gateSubtitle").textContent=labels[1];
     document.getElementById("gateDisclaimer").textContent=labels[2];
-    document.querySelectorAll("[data-language]").forEach(btn=>btn.setAttribute("aria-pressed",String(btn.dataset.language===code)));
+    continueLabel.textContent=continueTranslations[code]||continueTranslations.en;
+    document.querySelectorAll("[data-language]").forEach(btn=>{
+      const active=btn.dataset.language===selectedLanguage;
+      btn.setAttribute("aria-pressed",String(active));
+      btn.classList.toggle("is-selected",active);
+    });
+    continueButton.disabled=!selectedLanguage;
+    const chosen=languages.find(item=>item[0]===selectedLanguage);
+    selectionStatus.textContent=chosen
+      ? "✓ "+chosen[1]+" / "+chosen[2]+" — "+(code==="bg"?"избран език":"language selected")
+      : "AWAITING LANGUAGE SELECTION";
   }
-  function openGate(){
-    prevFocus=document.activeElement;
-    updateGateText(lang);
-    gate.hidden=false;document.body.classList.add("gate-open");
+  function openGate(mandatory=false){
+    previousFocus=document.activeElement;
+    isMandatoryEntry=mandatory;
+    transitionPending=false;
+    gate.hidden=false;
+    gate.classList.remove("gate-exit");
+    gate.dataset.entry=mandatory?"required":"optional";
+    cancelButton.hidden=mandatory;
+    document.body.classList.add("gate-open");
     document.querySelector(".site-shell").inert=true;
-    const first=options.querySelector('[data-language="'+lang+'"]')||options.querySelector("button");
-    if(first)first.focus();
+    updateGateText(selectedLanguage||lang);
+    const current=options.querySelector('[data-language="'+selectedLanguage+'"]');
+    (current||options.querySelector("button"))?.focus();
+    window.dispatchEvent(new CustomEvent("aurora:gate-open"));
   }
   function closeGate(){
-    gate.hidden=true;document.body.classList.remove("gate-open");
+    gate.hidden=true;
+    gate.classList.remove("gate-exit");
+    document.body.classList.remove("gate-open");
     document.querySelector(".site-shell").inert=false;
-    if(prevFocus&&typeof prevFocus.focus==="function")prevFocus.focus();
+    if(previousFocus&&previousFocus.isConnected&&typeof previousFocus.focus==="function"){
+      previousFocus.focus();
+    }else{
+      document.querySelector(".site-header .brand")?.focus();
+    }
+    window.dispatchEvent(new CustomEvent("aurora:gate-closed"));
   }
-  function pickLanguage(code){
-    if(!languages.some(item=>item[0]===code))return;
-    lang=code;
-    try{localStorage.setItem("aurora-lang",code)}catch(_){}
-    translate();
+  function selectLanguage(code){
+    if(!languages.some(item=>item[0]===code)||transitionPending)return;
+    selectedLanguage=code;
     updateGateText(code);
-    closeGate();
+    continueButton.focus();
   }
-  options.addEventListener("click",e=>{
-    const btn=e.target.closest("button[data-language]");
-    if(btn)pickLanguage(btn.dataset.language);
+  function continueToAurora(){
+    if(!selectedLanguage||transitionPending)return;
+    transitionPending=true;
+    lang=selectedLanguage;
+    try{localStorage.setItem("aurora-lang",lang)}catch(_){}
+    translate();
+    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+      closeGate();return;
+    }
+    gate.classList.add("gate-exit");
+    window.setTimeout(closeGate,650);
+  }
+  options.addEventListener("click",event=>{
+    const btn=event.target.closest("button[data-language]");
+    if(btn)selectLanguage(btn.dataset.language);
   });
-  gate.addEventListener("keydown",e=>{
-    if(e.key==="Escape"){
-      if(getStored()){e.preventDefault();closeGate()}
+  continueButton.addEventListener("click",continueToAurora);
+  cancelButton.addEventListener("click",()=>{if(!isMandatoryEntry&&!transitionPending)closeGate()});
+  gate.addEventListener("keydown",event=>{
+    if(event.key==="Escape"){
+      event.preventDefault();
+      if(!isMandatoryEntry&&!transitionPending)closeGate();
       return;
     }
-    if(e.key!=="Tab")return;
-    const btns=Array.from(options.querySelectorAll("button"));
-    const first=btns[0],last=btns[btns.length-1];
-    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
-    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+    if(event.key!=="Tab")return;
+    const focusables=[...options.querySelectorAll("button"),continueButton];
+    if(!cancelButton.hidden)focusables.push(cancelButton);
+    const first=focusables[0],last=focusables[focusables.length-1];
+    if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}
+    else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
   });
-  trigger.addEventListener("click",openGate);
-  if(document.getElementById("footerLanguageGate")){
-    document.getElementById("footerLanguageGate").addEventListener("click",openGate);
-  }
+  trigger.addEventListener("click",()=>openGate(false));
+  document.getElementById("footerLanguageGate")?.addEventListener("click",()=>openGate(false));
   const stored=getStored();
-  if(stored&&languages.some(x=>x[0]===stored)&&lang!==stored){lang=stored;translate()}
-  if(!stored||!languages.some(x=>x[0]===stored))openGate();
-  else updateGateText(lang);
+  selectedLanguage=languages.some(item=>item[0]===stored)?stored:null;
+  if(selectedLanguage&&lang!==selectedLanguage){lang=selectedLanguage;translate()}
+  openGate(true);
 
   const prefersReduced=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if(!prefersReduced&&"IntersectionObserver" in window){

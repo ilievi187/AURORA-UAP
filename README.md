@@ -3,6 +3,13 @@
 Multilingual static website for the independent AURORA UAP initiative.
 Domain: **aurorauap.org** on Cloudflare Pages. Current release: public design preview.
 
+## JARVIS-style HUD update (2026-10-27)
+- **Two-step entrance required on every homepage visit:** select from the language cards and then press the separately translated **Continue** button. A saved language preselects the card but never silently skips the gateway.
+- The welcome scene and homepage now display real animated 2D Canvas radar sweeps, arcs, star-like signal particles, scan-line layers, instrument readouts and pointer parallax. These are **artistic interface effects**, not live UFO detections.
+- Motion is rate-limited and paused when the tab is hidden; reduced-motion accessibility preference disables continuous animation.
+- Chromium end-to-end tests verify the actual entry flow on desktop/mobile and drawn Canvas pixels, alongside the lightweight static CI suite.
+- There is no change to the privacy posture: report submissions remain local drafts, reports remain labelled DEMO and payment processing remains inactive.
+
 ## AURORA cinematic V1 — 2026-10-27
 This design-first release adds an original cinematic dark-science theme inspired by immersive motion-design websites (without copying a third-party page), an accessible first-visit language gateway, persistent language selection, reduced-motion support, scroll reveal/progress effects, redesigned research panels, and a matching donation page.
 

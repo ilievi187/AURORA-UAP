@@ -1,0 +1,160 @@
+/* AURORA / JARVIS-inspired HUD layer: original visual language, no film assets */
+:root{--hud-cyan:#70e6eb;--hud-ice:#b7ffff;--hud-fog:rgba(89,209,205,.18)}
+.system-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;display:block}
+.language-gate{background:
+ radial-gradient(circle at 50% 50%,#0c2227 0%,#071016 36%,#03070c 75%),
+ #03070c;z-index:200}
+.language-gate:before{opacity:.8;background:
+ repeating-linear-gradient(90deg,transparent 0,transparent calc(10% - 1px),#71d6d20c 10%),
+ repeating-linear-gradient(0deg,transparent 0,transparent calc(10% - 1px),#71d6d207 10%)}
+.language-gate:after{opacity:.35;box-shadow:
+ 0 0 0 92px #4acccc06,0 0 0 205px #4adfdf05,
+ inset 0 0 42px #4cffff0d;border:1px solid #8ef7eb29}
+.language-gate .gate-inner{width:min(1040px,100%);z-index:3;padding:64px 0 20px}
+.gate-canvas{z-index:0;opacity:.9}
+.gate-scanner-beam{z-index:1;position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.gate-scanner-beam:before{content:"";position:absolute;width:100%;height:2px;top:0;
+ background:linear-gradient(90deg,transparent,#73ffff12 20%,#a6ffff8c 50%,#73ffff12 80%,transparent);
+ box-shadow:0 0 28px 2px #3ce4e63d;animation:gate-scan-line 9s linear infinite}
+.gate-hud-side{position:absolute;z-index:2;bottom:36px;display:flex;flex-direction:column;gap:8px;line-height:1.3;
+ color:#72cfcba0;font-size:9px;letter-spacing:.18em;font-family:Consolas,"Courier New",monospace;pointer-events:none}
+.gate-hud-left{left:clamp(20px,4vw,74px)}
+.gate-hud-right{right:clamp(20px,4vw,74px);text-align:right}
+.gate-symbol{width:86px;height:86px;margin:0 auto 13px;display:grid;place-items:center;position:relative;
+ color:#c0ffff;text-shadow:0 0 30px #67f8fa;filter:drop-shadow(0 0 17px #46fff955)}
+.gate-symbol-ring{position:absolute;inset:4px;border:1px solid #7cfbffab;border-left-color:transparent;
+ border-bottom-color:#61f0ed25;border-radius:50%;animation:hud-spin 6s linear infinite}
+.gate-symbol-ring:after{content:"";position:absolute;inset:9px;border:1px dashed #79d3d58a;border-radius:50%;
+ animation:hud-counter 9s linear infinite}
+.gate-symbol-core{font-size:35px}
+.gate-overline{color:#91f4ea;font-family:Consolas,monospace;letter-spacing:.3em;font-weight:600;font-size:11px}
+.gate-online{display:inline-block;width:7px;height:7px;vertical-align:middle;margin-right:5px;
+ border-radius:50%;background:#8df9e2;box-shadow:0 0 18px #79ffff;animation:hud-heartbeat 2.3s ease-in-out infinite}
+.gate-inner h2{font-size:clamp(42px,6vw,78px);font-weight:570;letter-spacing:-.045em;margin-bottom:16px;
+ text-shadow:0 0 55px #77f9f72d}
+.gate-subtitle{margin-bottom:23px}
+.gate-language-grid{gap:9px;grid-template-columns:repeat(6,minmax(0,1fr))}
+.gate-language-grid button{min-height:92px;background:linear-gradient(125deg,#081a20e8,#041018e0);border:1px solid #4598a55d;
+ box-shadow:inset 0 0 0 1px #50cad212;position:relative;overflow:hidden}
+.gate-language-grid button:after{content:"";position:absolute;left:0;top:0;width:0;height:2px;background:#8fffff;
+ box-shadow:0 0 12px #9fffff;transition:width .3s ease}
+.gate-language-grid button:hover:after,.gate-language-grid button.is-selected:after{width:100%}
+.gate-language-grid button:hover{border-color:#84fbf2;background:#143341}
+.gate-language-grid button.is-selected{border-color:#a1ffff;background:#173b43;
+ box-shadow:inset 0 0 27px #36cccc29,0 0 23px #37ffff2c;transform:translateY(-2px)}
+.gate-language-grid button.is-selected:before{content:"✓";position:absolute;right:9px;top:7px;font-size:14px;color:#b5fff4}
+.gate-language-grid button .flag{font:750 10px/1.2 Consolas,monospace;color:#69dddd;letter-spacing:.13em}
+.gate-language-grid button strong{font-size:13px;white-space:normal;overflow-wrap:anywhere}
+.gate-language-grid button small{font-size:9px;line-height:1.25}
+.gate-selection{min-height:21px;margin:23px auto 10px;text-transform:uppercase;letter-spacing:.16em;
+ color:#99e2db;font-size:10px;font-family:Consolas,"Courier New",monospace}
+.gate-actions{display:flex;flex-direction:column;align-items:center;gap:10px}
+.gate-continue{display:inline-flex;align-items:center;justify-content:space-between;gap:40px;min-width:255px;
+ min-height:54px;padding:12px 15px 12px 27px;border-radius:2px;border:1px solid #98faff;
+ background:linear-gradient(105deg,#75d8d9,#c9ffff);color:#041218;box-shadow:0 0 35px #55f0eb24;
+ font-weight:850;letter-spacing:.18em;font-size:12px;text-transform:uppercase;
+ transition:transform .25s,box-shadow .25s,opacity .2s}
+.gate-continue:disabled{cursor:not-allowed;background:#0a1d23;color:#89acaf;border-color:#4c747b;opacity:.65;box-shadow:none}
+.gate-continue:not(:disabled):hover{transform:translateY(-3px);box-shadow:0 0 48px #72ffff69}
+.gate-continue-icon{font-size:22px;font-weight:400}
+.gate-cancel{font-size:10px;letter-spacing:.14em;border:none;background:none;color:#a5b9b8;text-decoration:underline;text-underline-offset:3px;padding:7px}
+.gate-cancel[hidden]{display:none!important}
+.gate-foot{margin-top:17px;font-size:10px;max-width:610px;margin-left:auto;margin-right:auto;line-height:1.5;color:#8eafb1}
+.language-gate.gate-exit{animation:gate-complete .65s cubic-bezier(.16,.9,.3,1) both;pointer-events:none}
+.language-gate.gate-exit .gate-inner{animation:gate-content-out .5s ease both}
+@keyframes hud-spin{to{transform:rotate(360deg)}}
+@keyframes hud-counter{to{transform:rotate(-360deg)}}
+@keyframes hud-heartbeat{0%,100%{opacity:.45}50%{opacity:1}}
+@keyframes gate-scan-line{from{transform:translateY(-5vh)}to{transform:translateY(110vh)}}
+@keyframes gate-complete{0%{opacity:1;clip-path:inset(0 0 0 0)}72%{opacity:1;clip-path:inset(49.9% 0 49.9% 0)}100%{opacity:0;clip-path:inset(50% 50% 50% 50%)}}
+@keyframes gate-content-out{to{opacity:0;transform:scale(1.08);filter:blur(9px)}}
+
+/* Persistent holographic observation HUD: clear motion and restrained typography */
+.hero{background:#02070a;min-height:clamp(720px,94vh,1040px)}
+.hero:before{background:
+ linear-gradient(90deg,#020608 5%,#020608f7 22%,#041014bb 51%,#030a0b72 100%),
+ radial-gradient(circle at 72% 42%,#047d8830,transparent 49%);
+ z-index:-1}
+.hero-image{opacity:.48;filter:saturate(.56) hue-rotate(20deg) contrast(1.2)}
+.hero-hud-canvas{z-index:2;opacity:.94}
+.orbital-stage{z-index:1;opacity:.35}
+.hero-content{z-index:8}
+.hero h1{color:#f1faf8}
+.hero h1 strong{color:#bafaff;text-shadow:0 0 43px #22e0ff61}
+.hero-content .eyebrow{color:#a8f2ef}
+.hero-content .eyebrow:before{background:#7be9e9}
+.hero-copy{color:#c2d6d6}
+.hud-reticle{position:absolute;z-index:3;right:clamp(4%,14vw,23%);top:37%;width:105px;height:105px;
+ border:1px solid #77faffab;border-radius:50%;pointer-events:none;transform:translate(50%,-50%);box-shadow:0 0 25px #5cffff3d,inset 0 0 20px #5cffff20;
+ animation:reticle-pulse 4s ease-in-out infinite}
+.hud-reticle:before,.hud-reticle:after{content:"";position:absolute;inset:-16px;border:1px dashed #69d8e47a;border-radius:50%;animation:hud-spin 24s linear infinite}
+.hud-reticle:after{inset:18px;border:1px solid #8afbff65;border-left-color:transparent;animation:hud-counter 10s linear infinite}
+.reticle-inner{position:absolute;inset:46px;background:#b6ffff;border-radius:50%;box-shadow:0 0 18px 4px #82fcff}
+.reticle-cross{position:absolute;left:110%;top:48%;color:#b5faff;font-size:18px}
+.hud-telemetry{position:absolute;z-index:4;pointer-events:none;display:flex;flex-direction:column;gap:7px;
+ color:#83d4d4;font:10px/1.35 Consolas,monospace;letter-spacing:.08em;opacity:.89;
+ text-shadow:0 0 12px #2ddfd844}
+.hud-telemetry b{font-weight:650;color:#b9fcff;font-size:11px}
+.hud-telemetry-top{right:clamp(24px,5vw,85px);top:60px;border-right:1px solid #65fafb6b;padding-right:12px;text-align:right}
+.hud-telemetry-bottom{right:clamp(24px,5vw,85px);bottom:175px;border-left:1px solid #65fafb6b;padding-left:12px}
+.telemetry-wave{display:flex;align-items:flex-end;gap:3px;height:25px}
+.telemetry-wave i{width:4px;height:24px;background:#6efff9;transform-origin:bottom;animation:bar-signal 1.35s ease-in-out infinite alternate;opacity:.7}
+.telemetry-wave i:nth-child(3n){animation-delay:.4s;height:14px}
+.telemetry-wave i:nth-child(3n+1){animation-delay:.8s;height:9px}
+@keyframes bar-signal{from{transform:scaleY(.2)}to{transform:scaleY(1)}}
+@keyframes reticle-pulse{0%,100%{opacity:.48}50%{opacity:.9}}
+.hero-meta{z-index:8}
+.hero-meta .live-dot{background:#8ffbf7;box-shadow:0 0 19px #8ffbf7}
+.signal-ribbon{color:#8ac3c5;border-color:#44b3b351}
+.signal-ribbon b{color:#b8f8f8}
+.button-primary{background:#b5fcff;color:#03161b;border-color:#90faff;box-shadow:0 8px 32px #24e7ef42}
+.button-primary:hover{background:#e5ffff;color:#03161b;box-shadow:0 8px 45px #6ffafa60}
+.gate-trigger{border-color:#70cdd27f;color:#bbfaff}
+.gate-trigger:before{color:#8afaff}
+.map-panel{background:radial-gradient(circle at 30% 20%,#082c32,#061215 70%)}
+.map-area{background:#04191e}
+.reveal-section.is-visible{transition-delay:0s}
+.hud-ready .section-heading h2{text-shadow:0 0 60px #34bfaf0b}
+.feature-card{transform-style:preserve-3d;will-change:transform}
+.feature-card:hover{transform:perspective(950px) rotateX(var(--tilt-x,0deg)) rotateY(var(--tilt-y,0deg)) translateY(-6px)}
+@media(max-width:1100px){
+ .gate-language-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .gate-hud-side{display:none}
+ .hero .hud-reticle{right:20%;opacity:.4}
+ .hud-telemetry-bottom{display:none}
+}
+@media(max-width:700px){
+ .language-gate{padding:40px 18px;align-items:flex-start}
+ .language-gate .gate-inner{padding:45px 0 30px}
+ .gate-corner{position:absolute}
+ .gate-language-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .gate-language-grid button{min-height:83px;padding:11px}
+ .gate-language-grid button strong{font-size:12px}
+ .gate-language-grid button small{font-size:8px}
+ .gate-symbol{width:68px;height:68px;margin-bottom:12px}
+ .gate-inner h2{font-size:clamp(38px,9vw,60px)}
+ .gate-overline{letter-spacing:.1em;font-size:9px}
+ .gate-subtitle{font-size:12px;margin-bottom:17px}
+ .gate-selection{margin-top:15px}
+ .gate-foot{font-size:9px}
+ .hero-hud-canvas{opacity:.76}
+ .hero .hud-reticle{top:23%;right:31%;width:65px;height:65px}
+ .hero .reticle-inner{inset:28px}
+ .hud-telemetry-top{top:36px;right:20px;font-size:8px}
+ .hud-telemetry-top b{font-size:9px}
+ .hero{min-height:820px}
+ .hero-content{z-index:8}
+ .feature-card:hover{transform:translateY(-4px)}
+}
+@media(max-width:420px){.gate-language-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .gate-language-grid button{min-height:76px}
+ .gate-continue{min-width:230px}
+ .hud-telemetry-top{font-size:7px}
+}
+@media(prefers-reduced-motion:reduce){
+ .gate-symbol-ring,.gate-symbol-ring:after,.gate-online,.gate-scanner-beam:before,
+ .hud-reticle,.hud-reticle:before,.hud-reticle:after,.telemetry-wave i,
+ .language-gate:after{animation:none!important}
+ .gate-exit,.gate-exit .gate-inner{animation:none!important}
+ .feature-card:hover{transform:none}
+}
