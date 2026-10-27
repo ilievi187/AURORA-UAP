@@ -170,7 +170,7 @@ test("human review updates private status with audit; even approval never publis
 test("D1-like transactional batch aborts receipt and audit together on storage error",async()=>{
  const {db,sql}=database();
  sql.exec("CREATE TRIGGER fail_first_intake_review BEFORE INSERT ON intake_review_events BEGIN SELECT RAISE(ABORT,'audit trigger failure'); END;");
- await assert.rejects(()=>storeSubmission(db,normalizeSubmission(body(),"intake-v1-reviewed"))),/audit trigger failure/);
+ await assert.rejects(()=>storeSubmission(db,normalizeSubmission(body(),"intake-v1-reviewed")) ,/audit trigger failure/);
  assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM intake_submissions").get().n,0);
  assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM intake_review_events").get().n,0);
  sql.close();
