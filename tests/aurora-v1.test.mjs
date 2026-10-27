@@ -127,7 +127,7 @@ test('V1.4 static country template, D1 APIs and real register controls exist',()
  assert.match(html,/id="lastSync"/);
  assert.match(html,/id="globeCountry"/);
  assert.match(html,/id="globeYear"/);
- assert.match(read('globe.js'),/fetch\("\/api\/cases\?limit=250"/);
+ assert.match(read('globe.js'),/fetch\("\/api\/cases\?"\+query\.toString\(\)/);
  assert.doesNotMatch(read('globe.js'),/fetch\("data\/cases\.json"/);
  assert.match(read('register.js'),/includes_demo!==false/);
 });
