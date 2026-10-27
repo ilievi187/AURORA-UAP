@@ -3,6 +3,10 @@
 Multilingual static website for the independent AURORA UAP initiative.
 Domain: **aurorauap.org** on Cloudflare Pages. Current release: public design preview.
 
+## V1.4.3 — Shareable public case dossiers
+
+Each historical reference case now has a shareable page under `/archive/<id>` (live even while D1 is disabled). Every approved D1 case will have `/cases/<id>` after the gated registry is activated. Both use one accessible cinematic template showing provenance, source status and geographic uncertainty, with no synthetic evidence or private data. [Dossier architecture, tests and boundaries](docs/V1.4.3-DOSSIERS.md).
+
 ## Current release: V1.4.1 in safe staged mode
 
 The AURORA Pages site now includes the implemented Cloudflare D1 read-only API, migrations, sourced AARO import pipeline and dynamic country explorer. **The new public registry is deliberately disabled** until a real Cloudflare D1 database has been created, migrated, seeded, bound and verified. The rotating globe still shows the eight sourced V1.3 historical reference cases, clearly outside D1 statistics; eight fictional DEMO records remain separate. CI has imported the first three rights-reviewed AARO cases (US, IQ, PR) into test SQLite. **No production D1 import is yet confirmed.**
