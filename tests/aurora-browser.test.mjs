@@ -34,10 +34,10 @@ const server=createServer(async(req,res)=>{
   if(decoded.startsWith('/api/')){
     const url=new URL(req.url,'http://127.0.0.1');
     let response;
-    if(decoded==='/api/stats')response=await listStats({env:{DB:db}});
-    else if(decoded==='/api/cases')response=await listCases({env:{DB:db},request:new Request(url)});
-    else if(/^\/api\/countries\/[A-Za-z]{2}$/.test(decoded))response=await countryStats({env:{DB:db},params:{code:decoded.slice(-2)}});
-    else if(decoded.startsWith('/api/cases/'))response=await oneCase({env:{DB:db},params:{id:decoded.split('/').at(-1)}});
+    if(decoded==='/api/stats')response=await listStats({env:{DB:db,AURORA_REGISTRY_PUBLIC:"enabled"}});
+    else if(decoded==='/api/cases')response=await listCases({env:{DB:db,AURORA_REGISTRY_PUBLIC:"enabled"},request:new Request(url)});
+    else if(/^\/api\/countries\/[A-Za-z]{2}$/.test(decoded))response=await countryStats({env:{DB:db,AURORA_REGISTRY_PUBLIC:"enabled"},params:{code:decoded.slice(-2)}});
+    else if(decoded.startsWith('/api/cases/'))response=await oneCase({env:{DB:db,AURORA_REGISTRY_PUBLIC:"enabled"},params:{id:decoded.split('/').at(-1)}});
     else response=new Response('Not found',{status:404});
     res.writeHead(response.status,Object.fromEntries(response.headers));res.end(await response.text());return;
   }
@@ -267,6 +267,29 @@ try{
     assert.deepEqual(errors,[]);
     await context.close();
   });
+  await test('Staged rollout preserves eight sourced historical cases when D1 is unavailable',async()=>{
+    const context=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:'reduce'});
+    const page=await context.newPage(),errors=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/api/stats',route=>route.fulfill({status:503,contentType:'application/json',body:'{"error":"database_unavailable"}'}));
+    await page.goto('http://127.0.0.1:'+port+'/');
+    await page.locator('button[data-language="bg"]').click();
+    await page.locator('#gateContinue').click();
+    await page.locator('#languageGate').waitFor({state:'hidden',timeout:1500});
+    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length===8);
+    assert.equal(await page.locator('#globalRegister').isVisible(),false);
+    assert.match(await page.locator('#atlasHeading').textContent(),/СПРАВОЧЕН АРХИВ/);
+    assert.match(await page.locator('.atlas-footer').textContent(),/извън D1/);
+    assert.equal(await page.locator('#globeCaseTitle').textContent(),'Светлините над Финикс');
+    assert.equal(await page.locator('#globeCaseCountry').isVisible(),false);
+    await page.locator('#globeFilter').selectOption('resolved');
+    assert.equal(await page.locator('#globeCaseList button').count(),1);
+    assert.equal(await page.locator('#globeCaseTitle').textContent(),'Случаят „Розуел“');
+    await page.locator('#globeCountry').selectOption('US');
+    assert.equal(await page.locator('#globeCaseList button').count(),1);
+    assert.deepEqual(errors,[]);
+    await context.close();
+  });
   await test('V1.4 partial locale uses English fallback for offline D1 and country filters',async()=>{
     const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});
     const page=await context.newPage(),errors=[];
@@ -278,7 +301,7 @@ try{
     await page.locator('#languageGate').waitFor({state:'hidden',timeout:1500});
     await page.waitForFunction(()=>document.querySelector('#registerHealth')?.textContent==='D1 / NOT CONNECTED');
     assert.match(await page.locator('#registerNotice').textContent(),/Database not connected/);
-    assert.match(await page.locator('#globeCaseSummary').textContent(),/Database unavailable/);
+    assert.match(await page.locator('.atlas-footer').textContent(),/outside D1/);
     await page.goto('http://127.0.0.1:'+port+'/countries/DE');
     await page.waitForFunction(()=>document.querySelector('#countryTotal')?.textContent==='0');
     assert.equal(await page.locator('#typeFilter option[value="lights"]').textContent(),'Lights');
