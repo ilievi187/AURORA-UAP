@@ -228,3 +228,13 @@ test('global newsroom and airspace pages load 18-locale language controls',()=>{
  assert.match(read('news.js'),/AURORA_SUBPAGES/);
  assert.match(read('sky.js'),/AURORA_SUBPAGES/);
 });
+
+
+test('dedicated media library exposes real source links without copying media',()=>{
+ const html=read('media.html'),js=read('media.js');
+ assert.match(html,/id="mediaGallery"/);
+ assert.match(html,/id="mediaType"/);
+ assert.match(js,/fetch\("\/data\/cases\.json"/);
+ assert.match(js,/rel="noopener noreferrer"/);
+ assert.match(read('index.html'),/href="\/media\.html" class="feature-card"/);
+});
