@@ -1,5 +1,15 @@
 # Active Task
 
+## PR #30 — clean-route subpage localization
+
+Status: implementation and local verification complete; the code-only PR run passed all checks and the Pages deployment check. A project-state documentation follow-up is being added and must pass its rerun. Do not claim production deployment until the merged result is checked live.
+
+Scope: normalize the final path segment in `subpage-i18n.js` so Cloudflare Pages clean routes `/news`, `/news/` and `/sky/` receive the same locale pack as `.html` routes. Browser E2E now serves clean routes and asserts localized page title, heading, navigation and saved language across newsroom/radar navigation.
+
+Evidence: based on main `b06a3c9`; implementation commit `a2deddb` is in PR #30. The regression test failed against the previous route check (`/news` remained Bulgarian under Spanish), then passed after the fix. Full local suite passed; see `TEST-RESULTS.md`.
+
+Next: check PR #30's latest checks and Pages preview, merge only when all required checks pass, then verify `/news` and `/sky` on production with a saved non-Bulgarian locale.
+
 ## PR #14 — gated moderation queue
 
 Status: draft PR; implementation exists and tests are green, but final approval/merge is pending.
