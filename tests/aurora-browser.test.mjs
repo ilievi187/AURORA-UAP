@@ -94,6 +94,40 @@ try{
     assert.deepEqual(errors,[]);
     await ctx.close();
   });
+  await test("search translates matching headlines outside the initial page, including Show More",async()=>{
+    const ctx=await browser.newContext({viewport:{width:1200,height:800},reducedMotion:"reduce"});
+    const page=await ctx.newPage(),errors=[],offsets=[];
+    const entries=Array.from({length:48},(_,i)=>({
+      title:i<16?"Routine coverage "+i:"Special sighting "+i,
+      url:"https://publisher.example.test/story/"+i,
+      source:"Example Press",published:new Date().toISOString(),language:"en"
+    }));
+    page.on("pageerror",e=>errors.push(e.message));
+    await page.route("**/api/news?*",route=>{
+      const u=new URL(route.request().url()),offset=Number(u.searchParams.get("offset")||"0");
+      offsets.push(offset);
+      const items=entries.map((item,i)=>i>=offset&&i<offset+12?
+        {...item,translated_title:"ПРЕВОД "+item.title}:item);
+      return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
+        status:"live",edition:"global",updated_at:"2026-10-28T12:00:00Z",items,
+        translation:{target:"bg",status:"translated",translated:12}
+      })});
+    });
+    await page.goto("http://127.0.0.1:"+port+"/news.html");
+    await page.locator("#newsSearch").fill("Special sighting");
+    await page.waitForFunction(()=>document.querySelector(".live-card h2 a")?.textContent==="ПРЕВОД Special sighting 16");
+    assert.equal(await page.locator(".live-card").count(),12);
+    assert.ok(offsets.includes(12)&&offsets.includes(24),"search must translate matching source pages, not filtered positions");
+    await page.locator("#showMoreNews").click();
+    await page.waitForFunction(()=>[...document.querySelectorAll(".live-card h2 a")]
+      .some(link=>link.textContent==="ПРЕВОД Special sighting 39"));
+    assert.equal(await page.locator(".live-card").count(),24);
+    assert.ok(offsets.includes(36),"filtered Show More must translate subsequent source pages");
+    assert.equal(await page.locator(".live-card h2 a").last().getAttribute("href"),
+      "https://publisher.example.test/story/39");
+    assert.deepEqual(errors,[]);
+    await ctx.close();
+  });
   await test('localized news and sky pages keep language across navigation without reopening the welcome gate',async()=>{
     const ctx=await browser.newContext({viewport:{width:1280,height:850},reducedMotion:'reduce'});
     const page=await ctx.newPage(),errors=[];
