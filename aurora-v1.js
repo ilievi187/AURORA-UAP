@@ -65,8 +65,8 @@
     ru:["Выберите язык","Выберите язык интерфейса AURORA.","Языки PREVIEW переведены частично, остальной текст на английском."],
     "zh-CN":["选择语言","选择进入 AURORA 的界面语言。","预览版语言只翻译部分内容，其余为英语。"]
   };
-  // Mandatory two-step entry: select a language, then explicitly continue.
-  // Stored language is preselected but NEVER bypasses the welcome screen.
+  // First visit: choose language and Continue. Returning visitors enter immediately.
+  // The LANGUAGE button always offers an optional, accessible re-selection.
   let previousFocus=null;
   let isMandatoryEntry=true;
   let selectedLanguage=null;
@@ -168,7 +168,13 @@
   const stored=getStored();
   selectedLanguage=languages.some(item=>item[0]===stored)?stored:null;
   if(selectedLanguage&&lang!==selectedLanguage){lang=selectedLanguage;translate()}
-  openGate(true);
+  if(selectedLanguage){
+    // Remove initial modal and body scroll lock when visitor already opted in.
+    // Keep the selector accessible through the header/footer LANGUAGE controls.
+    closeGate();
+  }else{
+    openGate(true);
+  }
 
   const prefersReduced=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if(!prefersReduced&&"IntersectionObserver" in window){

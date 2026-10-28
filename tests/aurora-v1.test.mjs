@@ -53,7 +53,7 @@ test('Cloudflare Pages remains configured as a static site',()=>{
   assert.ok(existsSync(new URL('../_headers',import.meta.url)));
 });
 
-test('language gate is mandatory even when saved and Continue is a separate click',()=>{
+test('language gate is first-visit only; explicit Continue and manual reopening remain',()=>{
   const source=read('aurora-v1.js');
   assert.match(source,/openGate\(true\)/);
   assert.match(source,/continueButton\.addEventListener\("click",continueToAurora\)/);

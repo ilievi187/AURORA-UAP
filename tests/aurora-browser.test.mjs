@@ -70,7 +70,7 @@ const port=server.address().port;
 let browser;
 try{
   browser=await chromium.launch({headless:true});
-  await test('language must be selected then explicitly continued, and gate reappears on reload',async()=>{
+  await test('first visit asks once and returning visitors enter with saved language',async()=>{
     const context=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'no-preference'});
     const page=await context.newPage(),errors=[];
     page.on('pageerror',e=>errors.push(e.message));
@@ -93,10 +93,11 @@ try{
     assert.equal(await page.locator('html').getAttribute('lang'),'bg');
     assert.equal(await page.locator('.site-shell').getAttribute('inert'),null);
     await page.reload();
-    assert.equal(await page.locator('#languageGate').isVisible(),true,'welcome even with saved preference');
-    assert.equal(await page.locator('#gateContinue').isEnabled(),true,'saved language preselected');
-    await page.locator('#gateContinue').click();
-    await page.locator('#languageGate').waitFor({state:'hidden',timeout:2500});
+    assert.equal(await page.locator('#languageGate').isVisible(),false,'welcome must not reappear after choosing language');
+    assert.equal(await page.locator('html').getAttribute('lang'),'bg');
+    await page.goto('http://127.0.0.1:'+port+'/news.html');
+    await page.goBack();
+    assert.equal(await page.locator('#languageGate').isVisible(),false,'returning from another page must not prompt again');
     await page.locator('#openLanguageGate').click();
     assert.equal(await page.locator('#languageGate').isVisible(),true);
     await page.locator('button[data-language="en"]').click();
