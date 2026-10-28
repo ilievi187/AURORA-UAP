@@ -70,6 +70,30 @@ const port=server.address().port;
 let browser;
 try{
   browser=await chromium.launch({headless:true});
+  await test("news automatically renders generated language text and exposes original title",async()=>{
+    const ctx=await browser.newContext({viewport:{width:1200,height:800},reducedMotion:"reduce"});
+    const page=await ctx.newPage(),errors=[],queryLanguages=[];
+    page.on("pageerror",e=>errors.push(e.message));
+    await page.route("**/api/news?*",route=>{
+      const u=new URL(route.request().url()),lang=u.searchParams.get("lang");
+      queryLanguages.push(lang);
+      route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
+       status:"live",edition:"global",updated_at:new Date().toISOString(),
+       items:[{title:"UFO recorded in the sky",translated_title:lang==="es"?"OVNI grabado en el cielo":"НЛО заснето в небето",
+       url:"https://publisher.example.test/story",source:"Example Press",published:new Date().toISOString(),language:"en"}],
+       translation:{target:lang,status:"translated",translated:1}
+      })});
+    });
+    await page.goto("http://127.0.0.1:"+port+"/news.html");
+    await page.waitForFunction(()=>document.querySelector(".live-card h2 a")?.textContent==="НЛО заснето в небето");
+    assert.equal(await page.locator(".news-original p").textContent(),"UFO recorded in the sky");
+    await page.locator("#pageLanguage").selectOption("es");
+    await page.waitForFunction(()=>document.querySelector(".live-card h2 a")?.textContent==="OVNI grabado en el cielo");
+    assert.equal(await page.locator(".live-card h2 a").getAttribute("href"),"https://publisher.example.test/story");
+    assert.ok(queryLanguages.includes("bg")&&queryLanguages.includes("es"));
+    assert.deepEqual(errors,[]);
+    await ctx.close();
+  });
   await test('localized news and sky pages keep language across navigation without reopening the welcome gate',async()=>{
     const ctx=await browser.newContext({viewport:{width:1280,height:850},reducedMotion:'reduce'});
     const page=await ctx.newPage(),errors=[];
