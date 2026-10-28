@@ -2,7 +2,7 @@
 (()=>{
  const $=id=>document.getElementById(id);
  let news=[],shown=0;
- const date=iso=>{try{return new Intl.DateTimeFormat("bg-BG",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(iso))}catch{return "—"}};
+ const date=iso=>{try{return new Intl.DateTimeFormat(document.documentElement.lang||"en",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(iso))}catch{return "—"}};
  function filtered(){
   const q=$("newsSearch").value.trim().toLocaleLowerCase();
   return news.filter(x=>!q||(x.title+" "+x.source).toLocaleLowerCase().includes(q));
@@ -21,11 +21,11 @@
   }
   shown=amount;
   $("showMoreNews").hidden=amount>=items.length;
-  if(news.length)$("newsStatus").textContent="Показани "+amount+" от "+items.length+" заглавия · Външни медии, не потвърдени наблюдения.";
+  if(news.length)$("newsStatus").textContent=amount+" / "+items.length+" · "+(window.AURORA_SUBPAGES?.text("news")||"News");
  }
  async function load(){
   const edition=$("edition").value;
-  $("newsStatus").textContent="Обновяваме световните източници…";
+  $("newsStatus").textContent=window.AURORA_SUBPAGES?.text("loading")||"Зареждане…";
   $("newsStatus").dataset.state="loading";$("refreshNews").disabled=true;
   try{
    const response=await fetch("/api/news?edition="+encodeURIComponent(edition),{cache:"no-store"});
@@ -33,11 +33,11 @@
    const result=await response.json();
    if(result.status!=="live"||!Array.isArray(result.items))throw Error("invalid_feed");
    news=result.items;render(true);
-   if(!news.length)$("newsStatus").textContent="Няма намерени заглавия за този филтър.";
+   if(!news.length)$("newsStatus").textContent="0 / 0";
   }catch{
    news=[];$("newsList").replaceChildren();$("showMoreNews").hidden=true;
    $("newsStatus").dataset.state="error";
-   $("newsStatus").textContent="Източникът временно не отговаря. Не показваме измислени или стари новини — използвай директната връзка към Google News.";
+   $("newsStatus").textContent=window.AURORA_SUBPAGES?.text("offline")||"Източникът временно не отговаря.";
   }finally{$("refreshNews").disabled=false}
  }
  $("edition").addEventListener("change",load);

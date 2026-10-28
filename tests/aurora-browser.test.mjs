@@ -70,6 +70,25 @@ const port=server.address().port;
 let browser;
 try{
   browser=await chromium.launch({headless:true});
+  await test('localized news and sky pages keep language across navigation without reopening the welcome gate',async()=>{
+    const ctx=await browser.newContext({viewport:{width:1280,height:850},reducedMotion:'reduce'});
+    const page=await ctx.newPage(),errors=[];
+    page.on("pageerror",e=>errors.push(e.message));
+    await page.goto('http://127.0.0.1:'+port+'/news.html');
+    await page.locator('#pageLanguage').selectOption('es');
+    assert.equal(await page.locator('html').getAttribute('lang'),'es');
+    assert.equal(await page.locator('.live-hero h1').textContent(),'NOTICIAS UAP DEL MUNDO');
+    await page.goto('http://127.0.0.1:'+port+'/sky.html');
+    assert.equal(await page.locator('#pageLanguage').inputValue(),'es');
+    assert.equal(await page.locator('.live-hero h1').textContent(),'RADAR DE AVIONES');
+    await page.goto('http://127.0.0.1:'+port+'/');
+    assert.equal(await page.locator('#languageGate').isVisible(),false,'home must remember language after subpage');
+    assert.equal(await page.locator('html').getAttribute('lang'),'es');
+    await page.locator('#openLanguageGate').click();
+    assert.equal(await page.locator('#languageGate').isVisible(),true,'manual language selection remains available');
+    assert.deepEqual(errors,[],'no page errors during cross-page language navigation');
+    await ctx.close();
+  });
   await test('first visit asks once and returning visitors enter with saved language',async()=>{
     const context=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'no-preference'});
     const page=await context.newPage(),errors=[];

@@ -2,7 +2,7 @@
 (()=>{
  const $=id=>document.getElementById(id),NS="http://www.w3.org/2000/svg";
  const map=$("skyMap");let rows=[];
- const round=(x,u="")=>Number.isFinite(x)?Math.round(x)+u:"неизвестно";
+ const round=(x,u="")=>Number.isFinite(x)?Math.round(x)+u:"—";
  function render(data){
   rows=data.aircraft;map.replaceChildren();
   const make=(name,attrs)=>{const e=document.createElementNS(NS,name);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));map.append(e);return e};
@@ -26,7 +26,7 @@
    button.append(strong,small);button.addEventListener("click",()=>select(i));list.append(button);
   }
   $("skyDetail").textContent=rows.length?"Избери маркер или самолет за техническите данни.":"Няма достъпни публични транспондерни позиции за тази зона в този момент.";
-  $("skyStatus").textContent="Източник: "+data.source+" · "+rows.length+" видими самолета · наблюдение "+new Date(data.observed_at).toLocaleString("bg-BG")+" · данните може да са забавени.";
+  $("skyStatus").textContent=data.source+" · "+rows.length+" aircraft · "+new Date(data.observed_at).toLocaleString(document.documentElement.lang||"en");
  }
  function select(i){
   const r=rows[i];if(!r)return;
@@ -35,7 +35,7 @@
  }
  async function load(){
   const region=$("skyRegion").value;
-  $("skyStatus").dataset.state="loading";$("skyStatus").textContent="Проверяваме наличните транспондерни данни…";$("refreshSky").disabled=true;
+  $("skyStatus").dataset.state="loading";$("skyStatus").textContent=window.AURORA_SUBPAGES?.text("loading")||"Loading…";$("refreshSky").disabled=true;
   try{
    const res=await fetch("/api/air-traffic?region="+encodeURIComponent(region),{cache:"no-store"});
    if(!res.ok)throw Error("unavailable");
@@ -44,7 +44,7 @@
   }catch{
    rows=[];map.replaceChildren();$("skyList").replaceChildren();$("skyDetail").textContent="Няма потвърдени данни за показване.";
    $("skyStatus").dataset.state="error";
-   $("skyStatus").textContent="OpenSky временно не отговаря или лимитът е достигнат. Не показваме измислени точки; опитай пак по-късно.";
+   $("skyStatus").textContent=window.AURORA_SUBPAGES?.text("offline")||"OpenSky unavailable";
   }finally{$("refreshSky").disabled=false}
  }
  $("skyRegion").addEventListener("change",load);$("refreshSky").addEventListener("click",load);load();
