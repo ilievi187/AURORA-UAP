@@ -86,6 +86,45 @@
   label("factAssessment",t.statusName[assessment]||t.statusName.undetermined);
   label("factPrecision",c.location_precision||"—");
   label("dossierSummary",summary);
+  // Source provenance is preserved; visuals are labelled if illustrative.
+  const visual=c.visual;
+  const visualBox=$("caseVisual"),visualImage=$("caseVisualImage");
+  const allowedVisual=typeof visual?.src==="string"&&/^\/assets\/[a-z0-9-]+\.webp$/.test(visual.src);
+  visualBox.hidden=!allowedVisual;
+  if(allowedVisual){
+   visualImage.src=visual.src;
+   visualImage.alt=local(visual.caption)||"Case illustration";
+   $("caseVisualCaption").textContent=local(visual.caption)||"Illustrative image";
+  }else{visualImage.removeAttribute("src")}
+  const story=$("dossierStory");story.replaceChildren();
+  const narrative=c.story?.[language]||c.story?.en;
+  if(Array.isArray(narrative)){
+   for(const passage of narrative.slice(0,10)){
+    if(typeof passage!=="string"||passage.length<15)continue;
+    const paragraph=document.createElement("p");
+    paragraph.textContent=passage;story.append(paragraph);
+   }
+  }
+  const mediaBox=$("caseMediaSection"),mediaGrid=$("caseMediaGrid");
+  mediaGrid.replaceChildren();
+  $("caseMediaTitle").textContent=lang==="bg"?"СНИМКИ, ВИДЕО И ДОКУМЕНТИ":"PHOTOS, VIDEO & SOURCE DOCUMENTS";
+  const approvedTypes=new Set(["video","documents","archive","photo"]);
+  for(const m of (Array.isArray(c.media)?c.media:[]).slice(0,12)){
+   if(!approvedTypes.has(m.type))continue;
+   const safe=sourceUrl(m.url);if(!safe)continue;
+   const anchor=document.createElement("a");anchor.href=safe;anchor.target="_blank";anchor.rel="noopener noreferrer";
+   anchor.className="case-media-link";
+   const icon=document.createElement("span");
+   icon.className="case-media-icon";icon.setAttribute("aria-hidden","true");
+   icon.textContent=m.type==="video"?"▶":m.type==="photo"?"▧":"▤";
+   const text=document.createElement("strong");
+   text.textContent=local(m.title)||m.type;
+   const type=document.createElement("small");
+   type.textContent=({video:"VIDEO",photo:"PHOTO",documents:"DOCUMENTS",archive:"ARCHIVE"})[m.type];
+   anchor.append(icon,text,type);mediaGrid.append(anchor);
+  }
+  mediaBox.hidden=mediaGrid.childElementCount===0;
+
   label("dossierCaution",t.caution);
   const source=sourceUrl(c.source_url||c.source?.url);
   label("dossierSourceName",c.source_name||c.source?.name||t.sourceMissing);
