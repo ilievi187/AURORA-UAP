@@ -21,6 +21,21 @@
    msg("Черновата е запазена само в този браузър. Не е изпратена към AURORA. / Draft saved locally. Nothing was submitted.");
   }catch{msg("Този браузър не разрешава съхранение на чернова. / Local storage unavailable.",true)}
  }
+ function downloadDraft(){
+  const data=getDraft();
+  if(!data.description.trim()){
+   msg("Попълни описание, преди да изтеглиш черновата. / Enter a description first.",true);
+   return;
+  }
+  try{
+   // Explicit local export: no network, email, consent tokens, or request IDs.
+   const file=new Blob([JSON.stringify({format:"aurora-report-draft-v1",exported_at:new Date().toISOString(),...data},null,2)],{type:"application/json"});
+   const url=URL.createObjectURL(file),a=document.createElement("a");
+   a.href=url;a.download="aurora-observation-draft.json";document.body.append(a);a.click();a.remove();
+   setTimeout(()=>URL.revokeObjectURL(url),1000);
+   msg("Черновата е изтеглена на устройството. НИЩО не е изпратено към AURORA.");
+  }catch{msg("Изтеглянето не е разрешено в този браузър.",true)}
+ }
  function restoreDraft(){
   try{
    const draft=JSON.parse(localStorage.getItem(STORAGE)||"null");
@@ -58,6 +73,7 @@
   try{$("timezone").value||=Intl.DateTimeFormat().resolvedOptions().timeZone||"Europe/Sofia"}catch{$("timezone").value="Europe/Sofia"}
   $("country").addEventListener("input",()=>{$("country").value=$("country").value.toUpperCase()});
   $("saveDraft").addEventListener("click",saveDraft);
+  $("downloadDraft").addEventListener("click",downloadDraft);
   $("clearDraft").addEventListener("click",clearDraft);
   $("copyReceipt").addEventListener("click",async()=>{
    const receipt=$("receiptValue").textContent;if(!receipt)return;

@@ -15,6 +15,24 @@ jobs:
           node-version: '22'
       - name: HTML, JavaScript and accessibility smoke
         run: node --test tests/aurora-v1.test.mjs
+  live-public-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate RSS headlines, OpenSky schema, and non-fake offline responses
+        run: node --test tests/live-feeds.test.mjs
+  pages-function-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compile Cloudflare Pages Functions exactly as deployment does
+        run: npx --yes wrangler@4 pages functions build functions --outfile /tmp/aurora-pages-functions.mjs
   database-api:
     runs-on: ubuntu-latest
     steps:
