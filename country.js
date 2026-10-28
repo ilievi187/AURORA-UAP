@@ -199,5 +199,32 @@
  el("caseSearch").addEventListener("input",()=>{clearTimeout(timer);timer=setTimeout(()=>load(),280)});
  el("loadMore").addEventListener("click",()=>load(false));
  window.addEventListener("resize",renderPins,{passive:true});
+ // Historical dossiers do not depend on D1 activation or moderation and keep
+ // their own provenance, separate from the protected registry statistics.
+ async function loadCountryHistory(){
+  const host=el("countryHistoryGrid"),message=el("countryHistoryStatus");
+  el("countryHistoryTitle").textContent=isBg?"ИСТОРИЧЕСКИ СЛУЧАИ ОТ "+countryName.toUpperCase():"HISTORICAL CASES FROM "+countryName.toUpperCase();
+  try{
+   const res=await fetch("/data/cases.json",{cache:"force-cache"});if(!res.ok)throw Error("Source archive unavailable");
+   const data=await res.json();if(!Array.isArray(data.cases))throw Error("Invalid source data");
+   const cases=data.cases.filter(c=>c.country===code&&/^[a-z0-9-]{3,90}$/.test(c.id)&&c.title?.en&&c.summary?.en&&c.source?.url?.startsWith("https://"))
+    .sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+   host.replaceChildren();
+   for(const c of cases){
+    const a=document.createElement("a");a.className="country-history-card";a.href="/archive/"+encodeURIComponent(c.id);
+    const img=document.createElement("img");img.loading="lazy";
+    img.src=/^\/assets\/[a-z0-9-]+\.webp$/.test(c.visual?.src||"")?c.visual.src:"/assets/feature-cases.webp";
+    img.alt=isBg?"Художествена илюстрация, не оригинална снимка":"Thematic illustration, not original incident photography";
+    const body=document.createElement("div");
+    const meta=document.createElement("small");meta.textContent=c.date+" · "+c.source.name;
+    const title=document.createElement("strong");title.textContent=c.title[language]||c.title.en;
+    const p=document.createElement("p");p.textContent=c.summary[language]||c.summary.en;
+    const more=document.createElement("span");more.textContent=isBg?"ОТВОРИ ДОСИЕТО ↗":"OPEN CASE DOSSIER ↗";
+    body.append(meta,title,p,more);a.append(img,body);host.append(a);
+   }
+   message.textContent=cases.length?(isBg?"Архивни досиета с източници: ":"Source-linked archive cases: ")+cases.length:(isBg?"Все още няма архивни случаи за тази държава.":"No historical cases for this country yet.");
+  }catch{message.textContent=isBg?"Историческият архив временно не е достъпен.":"Historical archive temporarily unavailable."}
+ }
  init();
+ loadCountryHistory();
 })();
