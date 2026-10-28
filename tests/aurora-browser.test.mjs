@@ -218,6 +218,22 @@ try{
     assert.deepEqual(errors,[]);
     await context.close();
   });
+  await test('country directory uses approved D1 stats, filters and fits small screens',async()=>{
+    const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});
+    const page=await context.newPage(),errors=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    await page.goto('http://127.0.0.1:'+port+'/countries.html');
+    await page.locator('#countryGrid a[href="/countries/PR"]').waitFor();
+    assert.equal(await page.locator('#countryDirectoryStatus').getAttribute('data-state'),'ready');
+    assert.equal(await page.locator('#countryGrid a[href="/countries/PR"]').count(),1);
+    await page.locator('#countrySearch').fill('PR');
+    assert.equal(await page.locator('#countryGrid a').count(),1);
+    assert.equal(await page.locator('#countryGrid a').first().getAttribute('href'),'/countries/PR');
+    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+    assert.ok(overflow<=1,'country directory must not overflow mobile viewport: '+overflow);
+    assert.deepEqual(errors,[]);
+    await context.close();
+  });
   await test('V1.4 desktop country route and Germany empty state use real SQLite backend',async()=>{
     const context=await browser.newContext({viewport:{width:1365,height:900},reducedMotion:'reduce'});
     const page=await context.newPage(),errors=[];

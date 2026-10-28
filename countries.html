@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#061217">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="AURORA UAP — explore countries with public, approved observations from the live research registry.">
+<title>AURORA — Държави / Country Directory</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/countries.css">
+<script defer src="/countries.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Към съдържанието / Skip to content</a>
+<div class="page-shell">
+<header class="directory-header">
+<a class="brand" href="/" aria-label="AURORA — Home">✦ <span>A U R O R A</span><small>UAP GLOBAL REGISTER</small></a>
+<a class="back-link" href="/">← <span data-t="home">НАЧАЛО</span></a>
+</header>
+<main id="main">
+<section class="hero" aria-labelledby="directoryTitle">
+<p class="kicker"><span class="dot" aria-hidden="true"></span> AURORA / EARTH NETWORK / COUNTRIES</p>
+<h1 id="directoryTitle" data-t="title">НАБЛЮДЕНИЯ ПО ДЪРЖАВИ</h1>
+<p class="lede" data-t="intro">Разгледай държавите с публикувани и проверени за допустимост записи. Данните идват от публичния регистър, не от демонстрационните случаи.</p>
+<div class="metrics" id="directoryMetrics" hidden>
+<div><strong id="directoryCaseCount">—</strong><span data-t="cases">ПУБЛИКУВАНИ НАБЛЮДЕНИЯ</span></div>
+<div><strong id="directoryCountryCount">—</strong><span data-t="countries">ДЪРЖАВИ СЪС ЗАПИСИ</span></div>
+<div><strong id="directoryLastSync">—</strong><span data-t="sync">ПОСЛЕДНО ОБНОВЯВАНЕ</span></div>
+</div>
+</section>
+<section class="directory-panel" aria-labelledby="browseTitle">
+<div class="panel-top"><div><span class="kicker" data-t="indexLabel">PUBLIC DATA / COUNTRY INDEX</span><h2 id="browseTitle" data-t="browse">ИЗБЕРИ ДЪРЖАВА</h2></div>
+<label class="search-label"><span data-t="search">ТЪРСИ ДЪРЖАВА</span><input id="countrySearch" type="search" maxlength="80" autocomplete="off" placeholder="BG / България" aria-controls="countryGrid"></label>
+</div>
+<p id="countryDirectoryStatus" role="status" aria-live="polite" data-state="loading" data-t="loading">Проверяваме публичния регистър…</p>
+<div id="countryGrid" class="country-grid" aria-label="Countries with published observations"></div>
+<div class="empty-help"><a href="/#control" data-t="archive">Исторически архив с източници ↗</a><a href="/report.html" data-t="prepare">Подготви сигнал (локална чернова) ↗</a></div>
+</section>
+<p class="footnote" data-t="privacy">Не показваме лични адреси, точни координати или непубликувани сигнали. DEMO записите са изключени.</p>
+</main>
+<footer>SCIENCE FIRST · OPEN SKIES · AURORA / UAP BULGARIA</footer>
+</div>
+</body>
+</html>
