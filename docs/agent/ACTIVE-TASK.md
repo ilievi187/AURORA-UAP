@@ -1,14 +1,14 @@
 # Active Task
 
-## PR #30 — clean-route subpage localization
+## P1 — restore the production global newsroom feed
 
-Status: implementation and local verification complete; the code-only PR run passed all checks and the Pages deployment check. A project-state documentation follow-up is being added and must pass its rerun. Do not claim production deployment until the merged result is checked live.
+Status: production `/api/news` remains unavailable; root cause is not established. Keep this issue separate from the completed locale fix and do not synthesize headlines.
 
-Scope: normalize the final path segment in `subpage-i18n.js` so Cloudflare Pages clean routes `/news`, `/news/` and `/sky/` receive the same locale pack as `.html` routes. Browser E2E now serves clean routes and asserts localized page title, heading, navigation and saved language across newsroom/radar navigation.
+Evidence: at 2026-10-28 21:33:21Z, `/api/news?edition=global&lang=en&offset=0` returned HTTP 503 `news_source_unavailable`, zero items, and no last-good result. Two representative source RSS URLs returned HTTP 200 from this host; this does not establish the Cloudflare Worker outcome. Cloudflare runtime logs/cache state are unavailable.
 
-Evidence: based on main `b06a3c9`; implementation commit `a2deddb` is in PR #30. The regression test failed against the previous route check (`/news` remained Bulgarian under Spanish), then passed after the fix. Full local suite passed; see `TEST-RESULTS.md`.
+Next: get authorized Cloudflare runtime/log access and, if external Cache API documentation is needed, use Gemini in the browser after the owner signs into the existing guest session or explicitly authorizes another research route. Then isolate fetch versus cache failure, add a failing regression test, and fix only the evidenced cause.
 
-Next: check PR #30's latest checks and Pages preview, merge only when all required checks pass, then verify `/news` and `/sky` on production with a saved non-Bulgarian locale.
+Do not change production bindings, add stale-as-live data, or expose unpublished reports.
 
 ## PR #14 — gated moderation queue
 
