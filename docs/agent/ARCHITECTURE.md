@@ -1,7 +1,7 @@
 # Architecture Map (repository inspection, 2026-10-28)
 
 - Hosting: static HTML/CSS/ES modules on Cloudflare Pages; Pages Functions under `functions/`; production custom domain `aurorauap.org`.
-- Front end: homepage, report, country directory/detail, archive/case dossier, donation, mission-control/HUD and globe assets. Bulgarian and English are primary; several additional locales are complete or explicitly partial/preview (see README).
+- Front end: homepage, report, country directory/detail, archive/case dossier, donation, mission-control/HUD and globe assets. Bulgarian and English are primary; several additional locales are complete or explicitly partial/preview (see README). Cloudflare Pages clean URLs serve the newsroom/radar HTML at `/news` and `/sky`; locale selection is stored in `aurora-lang`.
 - Public data: `data/cases.json` is a sourced historical reference archive; `data/imports/aaro-reviewed.json` is a curated import manifest; `data/earth-land.json` is simplified visualization geography. Fictional DEMO records are explicitly separate. Do not treat demos or unresolved cases as evidence.
 - Public API: `/api/cases`, `/api/cases/:id`, `/api/countries/:code`, `/api/stats`; `functions/_lib/public.js` and `AURORA_REGISTRY_PUBLIC` gate public D1 exposure.
 - Intake API: `functions/api/intake/status.js`, `submit.js`, shared `functions/_lib/intake.js`. Requires D1, explicit legal/WAF/policy/hostname flags and Turnstile; accepted records are private quarantine only. `report.html` saves local drafts when unavailable. No receipt lookup endpoint exists, avoiding identifier enumeration/data exposure.
