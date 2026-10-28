@@ -1,9 +1,9 @@
 # Current State
 
-Verified: 2026-10-28 10:46 UTC+02 (live checks at 08:45 UTC)
+Verified: 2026-10-28 10:50 UTC+02 (live checks at 08:45 UTC)
 
-- Main SHA: `da3e42d34f1076d3068bd83680fe3cfbaa0cb6ca` (`Fix concurrent intake review audit (#13)`).
-- Working branch at state capture: `docs/agent-project-state` (documentation PR in progress).
+- Main SHA: `3d7ff4b3f6724454dd87f44b6fabd87293522795` (`docs: record verified AURORA project state (#15)`).
+- Agent state docs PR #15 merged at 2026-10-28 08:49:35Z; preview deployment succeeded. State snapshot content was last refreshed at 10:50 UTC+02.
 - Open PR: #14 `Prepare gated Cloudflare Access moderation queue`, draft, head `b089eb254ecb714df39bcd89653e6db01452aabf`; all six required checks passed; Cloudflare preview deploy reported successful.
 - Production: `https://aurorauap.org/` and `/report` returned HTTP 200 after canonical redirects. `/api/intake/status` returned `accepting:false`, `mode:local_draft_only`.
 - Production public D1 registry: staged-mode release verifier passed; public registry endpoints correctly gated and sourced reference archive remains separate.
