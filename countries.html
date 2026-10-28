@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#061217">
-<meta name="robots" content="noindex,nofollow">
+<meta name="robots" content="index,follow">
 <meta name="description" content="AURORA UAP — explore countries with public, approved observations from the live research registry.">
 <title>AURORA — Държави / Country Directory</title>
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
@@ -35,7 +35,13 @@
 </div>
 <p id="countryDirectoryStatus" role="status" aria-live="polite" data-state="loading" data-t="loading">Проверяваме публичния регистър…</p>
 <div id="countryGrid" class="country-grid" aria-label="Countries with published observations"></div>
-<div class="empty-help"><a href="/#control" data-t="archive">Исторически архив с източници ↗</a><a href="/report.html" data-t="prepare">Подготви сигнал (локална чернова) ↗</a></div>
+<div class="empty-help"><a href="/#worldAtlas" data-t="archive">Исторически архив с източници ↗</a><a href="/report.html" data-t="prepare">Подготви сигнал (локална чернова) ↗</a></div>
+</section>
+<section id="sourcedCountryArchive" class="sourced-country-archive" aria-labelledby="sourcedCountryTitle">
+ <p class="kicker">AURORA / ORIGINAL SOURCES / WORLDWIDE</p>
+ <h2 id="sourcedCountryTitle">ИСТОРИЧЕСКИ СЛУЧАИ ПО ДЪРЖАВИ</h2>
+ <p id="sourcedCountryStatus" role="status" aria-live="polite">Зареждане на архивните досиета…</p>
+ <div id="sourcedCountryGrid" class="country-grid"></div>
 </section>
 <p class="footnote" data-t="privacy">Не показваме лични адреси, точни координати или непубликувани сигнали. DEMO записите са изключени.</p>
 </main>
