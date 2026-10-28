@@ -53,7 +53,10 @@ const cases = [
 
 let lang = (()=>{try{const s=localStorage.getItem('aurora-lang');return ['bg','en','de','ru','zh-CN','fr','es','it','pt','tr','ro','el','sr','uk','pl','ar','ja','ko'].includes(s)?s:'bg';}catch(_){return 'bg';}})();
 let selectedId = null;
-let showAll = false;
+let editorialCases=[];
+let editorialLoaded=false;
+let editorialError=false;
+let reportPageSize=24;
 const $ = selector => document.querySelector(selector);
 const txt = key => translations[lang]?.[key] || translations.en[key] || key;
 const reportDialog = $('#reportDialog');
@@ -94,26 +97,72 @@ function openCase(c){
   $('#caseTitle').textContent=(c.title[lang] || c.title.en);$('#caseImage').src=c.img;$('#caseDate').textContent=`${c.date} · ${(c.city[lang] || c.city.en)} · DEMO`;
   $('#caseDescription').textContent=(c.description[lang] || c.description.en);caseDialog.showModal();
 }
+// This homepage panel intentionally uses the sourced case archive, never the
+// eight fictional cards used in the optional historical UI prototype.
+const editorialText={
+ bg:{loading:"Зареждаме архивните истории…",error:"Архивът временно не е достъпен. Използвай световната карта.",empty:"Няма случаи за това търсене.",more:"Покажи още случаи",count:"досиета с източници",media:"ВИДЕО",archive:"АРХИВ",art:"Илюстрация към случая — не оригинален кадър",heading:"СЛУЧАИ ОТ СВЕТА",kicker:"СВЕТОВЕН АРХИВ"},
+ en:{loading:"Loading case files…",error:"The case archive is temporarily unavailable. Explore the world map.",empty:"No matching cases.",more:"Load more cases",count:"source-linked case files",media:"VIDEO",archive:"ARCHIVE",art:"Illustration only — not original footage",heading:"CASES FROM AROUND THE WORLD",kicker:"WORLD ARCHIVE"}
+};
+const editorialLang=()=>editorialText[lang]||editorialText.en;
 function renderReports(){
-  const query=$('#reportSearch').value.trim().toLocaleLowerCase(lang);
-  const matching=cases.filter(c=>[c.city.bg,c.city.en,c.title.bg,c.title.en,c.description.bg,c.description.en].some(t=>t.toLocaleLowerCase(lang).includes(query)));
-  const display=showAll||query?matching:matching.slice(0,4);const grid=$('#reportGrid');grid.replaceChildren();
-  display.forEach(c=>{
-    const btn=document.createElement('button');btn.type='button';btn.className='report-card';
-    const img=document.createElement('img');img.src=c.img;img.alt=lang==='bg'?'Художествена илюстрация':'Illustrative artwork';img.loading='lazy';
-    const date=document.createElement('span');date.className='date';date.textContent=`${c.date} · ${(c.city[lang] || c.city.en)}`;
-    const heading=document.createElement('h3');heading.textContent=(c.title[lang] || c.title.en);
-    const p=document.createElement('p');p.className='desc';p.textContent=(c.description[lang] || c.description.en);
-    const foot=document.createElement('div');foot.className='report-bottom';
-    const tag=document.createElement('span');tag.className='report-badge';tag.textContent='DEMO';
-    const arrow=document.createElement('span');arrow.className='circle-arrow';arrow.setAttribute('aria-hidden','true');arrow.textContent='→';foot.append(tag,arrow);
-    btn.append(img,date,heading,p,foot);btn.addEventListener('click',()=>openCase(c));grid.append(btn);
-  });
-  if(!display.length){const empty=document.createElement('p');empty.className='empty-results';empty.textContent=txt('nothingFound');grid.append(empty);}
-  const note=$('#reportResultsNote');note.replaceChildren();
-  const text=document.createElement('span');text.textContent=txt('resultsSample')+' ';
-  note.append(text);
-  if(!query){const toggle=document.createElement('button');toggle.className='show-all';toggle.type='button';toggle.textContent=txt(showAll?'showLess':'showAll')+' →';toggle.addEventListener('click',()=>{showAll=!showAll;renderReports();});note.append(toggle);}
+ const grid=$('#reportGrid'),note=$('#reportResultsNote');
+ grid.replaceChildren();note.replaceChildren();
+ const title=$('#reports .section-heading h2'),kicker=$('#reports .section-heading .eyebrow');
+ if(title)title.textContent=editorialLang().heading;
+ if(kicker)kicker.textContent=editorialLang().kicker;
+ if(!editorialLoaded){
+  const el=document.createElement('p');el.className='empty-results';
+  el.textContent=editorialError?editorialLang().error:editorialLang().loading;
+  grid.append(el);return;
+ }
+ const q=$('#reportSearch').value.trim().toLocaleLowerCase();
+ const filtered=editorialCases.filter(c=>{
+  if(!q)return true;
+  const pieces=[...Object.values(c.title||{}),...Object.values(c.city||{}),...Object.values(c.summary||{}),c.country,c.date,c.source?.name];
+  return pieces.some(v=>typeof v==='string'&&v.toLocaleLowerCase().includes(q));
+ });
+ const visible=filtered.slice(0,reportPageSize);
+ for(const c of visible){
+  const card=document.createElement('a');
+  card.className='report-card';card.href='/archive/'+encodeURIComponent(c.id);
+  const img=document.createElement('img');
+  // No remote images or unverified footage: artwork is visibly identified.
+  img.src=/^\/assets\/[a-z0-9-]+\.webp$/.test(c.visual?.src||'')?c.visual.src:'/assets/feature-cases.webp';
+  img.alt=(c.visual?.caption?.[lang]||c.visual?.caption?.en||editorialLang().art);
+  img.loading='lazy';img.decoding='async';
+  const attribution=document.createElement('span');attribution.className='editorial-image-credit';
+  attribution.textContent=editorialLang().art;
+  const meta=document.createElement('span');meta.className='date';
+  meta.textContent=[c.date,c.country].filter(Boolean).join(' · ');
+  const title=document.createElement('h3');title.textContent=c.title?.[lang]||c.title?.en||'';
+  const desc=document.createElement('p');desc.className='desc';
+  desc.textContent=c.summary?.[lang]||c.summary?.en||'';
+  const bottom=document.createElement('div');bottom.className='report-bottom';
+  const type=document.createElement('span');type.className='report-badge';
+  type.textContent=Array.isArray(c.media)&&c.media.some(m=>m.type==='video')?editorialLang().media:editorialLang().archive;
+  const arrow=document.createElement('span');arrow.className='circle-arrow';arrow.setAttribute('aria-hidden','true');arrow.textContent='→';
+  bottom.append(type,arrow);card.append(img,attribution,meta,title,desc,bottom);grid.append(card);
+ }
+ if(!visible.length){const el=document.createElement('p');el.className='empty-results';el.textContent=editorialLang().empty;grid.append(el)}
+ const count=document.createElement('span');count.textContent=visible.length+' / '+filtered.length+' '+editorialLang().count;note.append(count);
+ if(filtered.length>visible.length){
+  const button=document.createElement('button');button.type='button';button.className='show-all';button.textContent=editorialLang().more+' ↓';
+  button.addEventListener('click',()=>{reportPageSize+=24;renderReports()});note.append(button);
+ }
+}
+async function loadEditorialCases(){
+ try{
+  const r=await fetch('/data/cases.json',{cache:'force-cache'});
+  if(!r.ok)throw Error('archive_unavailable');
+  const data=await r.json();
+  if(!Array.isArray(data.cases))throw Error('invalid_archive');
+  editorialCases=data.cases.filter(c=>c&&/^[a-z0-9-]{3,90}$/.test(c.id)&&c.title?.en&&c.summary?.en&&c.source?.url?.startsWith('https://'))
+    .sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  editorialLoaded=true;editorialError=false;
+ }catch{
+  editorialError=true;editorialLoaded=false;
+ }
+ renderReports();
 }
 function openReport(){
   $('#formResponse').textContent='';
@@ -141,11 +190,12 @@ function setup(){
   reportDialog.addEventListener('click',e=>{if(e.target===reportDialog)reportDialog.close();});
   caseDialog.addEventListener('click',e=>{if(e.target===caseDialog)caseDialog.close();});
   $('#reportForm').addEventListener('submit',saveReport);$('#clearDraft').addEventListener('click',clearDraft);
-  $('#reportSearch').addEventListener('input',renderReports);
+  $('#reportSearch').addEventListener('input',()=>{reportPageSize=24;renderReports()});
   document.querySelectorAll('input[name="mapFilter"]').forEach(x=>x.addEventListener('change',renderMap));
   $('#tooltipRead').addEventListener('click',()=>{const c=cases.find(x=>x.id===selectedId);if(c)openCase(c);});
   // Leave the selected language and drafts private to the current browser.
   translate();
+  loadEditorialCases();
   // Optional link from country explorer; still a local-only draft and NEVER submitted.
   const url=new URL(location.href);
   if(url.searchParams.get('report')==='draft'&&/^[A-Za-z]{2}$/.test(url.searchParams.get('country')||'')){
