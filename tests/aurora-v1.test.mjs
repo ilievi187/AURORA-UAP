@@ -149,7 +149,7 @@ test('case dossiers reuse one template with separate legacy and gated D1 routes'
   assert.match(dossier,/id="dossierSourceUrl"/);
   assert.match(dossier,/id="dossierLocationCaveat"/);
   assert.match(html,/id="globeCaseDossier"/);
-  assert.match(read('globe.js'),/legacyArchive\?"\/archive\/":"\/cases\/"/);
+  assert.ok(read('globe.js').includes('c.recordOrigin==="d1"'));
   assert.match(read('country.js'),/className="case-dossier-link"/);
   assert.match(script,/c\.review_status!=="approved"\|\|c\.record_kind==="demo"/);
   assert.match(script,/res\.status===503/);
