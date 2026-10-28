@@ -175,3 +175,12 @@ test('country directory is discoverable and never invents live registry statisti
  assert.match(script,/createElement\("a"\)/);
  assert.match(style,/@media\s*\(max-width:\s*640px\)/);
 });
+
+test("front page report actions point to actual private intake UI",()=>{
+ assert.match(html,/<a href="\/report\.html" class="button button-primary">/);
+ assert.match(html,/<a href="\/report\.html" class="button button-primary button-join">/);
+ assert.doesNotMatch(html,/<button[^>]*data-open-report/);
+ assert.match(read("report.html"),/id="receiptPanel"[^>]*hidden/);
+ assert.match(read("report.js"),/result\.status!=="pending"/);
+ assert.doesNotMatch(read("functions/_lib/intake.js"),/env\.AURORA_REGISTRY_PUBLIC/);
+});
