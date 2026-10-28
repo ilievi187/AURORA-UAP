@@ -32,7 +32,7 @@ jobs:
         with:
           node-version: '22'
       - name: Test quarantined text intake, Turnstile verification and private moderation
-        run: node --experimental-sqlite --test tests/intake.test.mjs
+        run: node --experimental-sqlite --test tests/intake.test.mjs tests/moderation.test.mjs
   deployment-readiness:
     runs-on: ubuntu-latest
     steps:
