@@ -72,5 +72,36 @@
    status.dataset.state="offline";status.textContent=messages.offline;
   }
  }
+ let sourceCountries=[];
+ function renderSourceCountries(){
+  const host=$("sourcedCountryGrid"),q=search.value.trim().toLocaleLowerCase(locale);
+  host.replaceChildren();
+  const visible=sourceCountries.filter(x=>(x.name+" "+x.code).toLocaleLowerCase(locale).includes(q));
+  for(const c of visible){
+   const a=document.createElement("a");a.className="country-card";a.href="/countries/"+c.code;
+   const label=document.createElement("span"),name=document.createElement("strong"),iso=document.createElement("small");
+   name.textContent=c.name;iso.textContent=c.code+" · "+(bg?"АРХИВНИ ДОСИЕТА":"HISTORICAL CASE FILES");
+   label.append(name,iso);
+   const number=document.createElement("span");number.className="count";number.textContent=c.count;
+   a.append(label,number);host.append(a);
+  }
+  $("sourcedCountryTitle").textContent=bg?"ИСТОРИЧЕСКИ СЛУЧАИ ПО ДЪРЖАВИ":"HISTORICAL CASES BY COUNTRY";
+  $("sourcedCountryStatus").textContent=(bg?"Държави с исторически досиета: ":"Countries with historical case files: ")+visible.length;
+ }
+ search.addEventListener("input",renderSourceCountries);
+ async function loadSourceCountries(){
+  try{
+   const res=await fetch("/data/cases.json",{cache:"force-cache"});if(!res.ok)throw Error("Archive offline");
+   const json=await res.json(),counts=new Map();
+   if(!Array.isArray(json.cases))throw Error("Bad archive");
+   for(const c of json.cases)if(/^[A-Z]{2}$/.test(c.country||"")&&c.title?.en&&c.source?.url?.startsWith("https://"))
+    counts.set(c.country,(counts.get(c.country)||0)+1);
+   sourceCountries=[...counts].map(([code,count])=>({code,count,name:nameOf(code)})).sort((a,b)=>a.name.localeCompare(b.name,locale));
+   renderSourceCountries();
+  }catch{
+   $("sourcedCountryStatus").textContent=bg?"Архивът е временно недостъпен.":"Archive temporarily unavailable.";
+  }
+ }
  start();
+ loadSourceCountries();
 })();
