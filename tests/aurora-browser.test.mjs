@@ -401,6 +401,24 @@ try{
     assert.deepEqual(errors,[]);
     await context.close();
   });
+  await test('country directory and country explorer show source-linked archives with D1 offline',async()=>{
+    const ctx=await browser.newContext({viewport:{width:1280,height:850},reducedMotion:'reduce'});
+    const page=await ctx.newPage(),errors=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/api/stats',r=>r.fulfill({status:503,contentType:'application/json',body:'{"error":"database_unavailable"}'}));
+    await page.route('**/api/countries/US',r=>r.fulfill({status:503,contentType:'application/json',body:'{"error":"database_unavailable"}'}));
+    await page.route('**/api/cases?*',r=>r.fulfill({status:503,contentType:'application/json',body:'{"error":"database_unavailable"}'}));
+    await page.goto('http://127.0.0.1:'+port+'/countries.html');
+    await page.waitForFunction(()=>document.querySelector('#sourcedCountryGrid')?.children.length>=5);
+    assert.equal(await page.locator('#sourcedCountryGrid a[href="/countries/US"]').count(),1);
+    assert.equal(await page.locator('#directoryMetrics').isVisible(),false,'D1 metrics must not contain historical counts');
+    await page.goto('http://127.0.0.1:'+port+'/countries/US');
+    await page.waitForFunction(()=>document.querySelector('#countryHistoryGrid')?.children.length>=6);
+    assert.equal(await page.locator('#countryHistoryGrid a[href="/archive/phoenix-1997"]').count(),1);
+    assert.equal(await page.locator('#countryTotal').textContent(),'—','D1 statistics remain unavailable, not invented');
+    assert.deepEqual(errors,[]);
+    await ctx.close();
+  });
   await test('Permanent historical dossiers are sourced, shareable and excluded from D1',async()=>{
     const ctx=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});
     const page=await ctx.newPage(),errors=[];
