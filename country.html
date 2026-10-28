@@ -2,7 +2,7 @@
 <html lang="bg">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#061217">
+<meta name="robots" content="index,follow"><meta name="theme-color" content="#061217">
 <title>AURORA — Country Explorer</title>
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/country.css">
@@ -45,6 +45,12 @@
 <div id="countryCases" class="country-cases"></div>
 <button type="button" id="loadMore" hidden>ПОКАЖИ ОЩЕ ↓</button>
 </div></div>
+<section class="country-history" id="sourcedCountryCases" aria-labelledby="countryHistoryTitle">
+ <p class="eyebrow">AURORA / HISTORICAL WORLD ARCHIVE</p>
+ <h2 id="countryHistoryTitle">ИСТОРИЧЕСКИ СЛУЧАИ ОТ ТАЗИ ДЪРЖАВА</h2>
+ <p id="countryHistoryStatus" role="status">Зареждане на архивни случаи…</p>
+ <div id="countryHistoryGrid" class="country-history-grid"></div>
+</section>
 <a id="reportLink" class="report-cta" href="/?report=draft"><span id="reportLabel">✦ ПОДАЙ НАБЛЮДЕНИЕ</span><small id="reportNotice">Засега само локална чернова — публичното изпращане не е активно.</small></a>
 </section>
 </main><footer>THE SKY BELONGS TO EVERYONE · FREE PUBLIC ACCESS · AURORA UAP</footer>
