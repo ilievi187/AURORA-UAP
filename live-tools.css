@@ -39,3 +39,10 @@
 .data-hub-cards strong{display:block;font-size:19px;margin-bottom:8px}
 .data-hub-cards span{display:block;font-size:13px;line-height:1.6;color:#b7d7d9}
 @media(max-width:650px){.data-hub-cards{grid-template-columns:1fr}.live-header{align-items:flex-start;flex-direction:column}.live-hero h1{font-size:34px}}
+
+.demo-archive{margin:24px auto;border:1px solid #376876;background:#071823}
+.demo-archive>summary{list-style:none;cursor:pointer;color:#baf4ef;padding:19px 24px;font:13px/1.65 Consolas,monospace}
+.demo-archive>summary::before{content:"▸";margin-right:12px;color:#7fd6d3}
+.demo-archive[open]>summary::before{content:"▾"}
+.demo-archive>summary::-webkit-details-marker{display:none}
+.demo-archive .map-panel{margin:0}

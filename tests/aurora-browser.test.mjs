@@ -155,6 +155,7 @@ try{
     assert.equal(await page.locator('#caseDialog').evaluate(el=>el.open),true,'demo case dialog is opened');
     await page.locator('#caseClose').click();
 
+    await page.locator('#historicDemoMap > summary').click();
     await page.locator('input[name="mapFilter"][value="light"]').check();
     assert.equal(await page.locator('#visibleCount').textContent(),'4');
     assert.deepEqual(errors,[]);
