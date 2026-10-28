@@ -273,7 +273,8 @@ try{
     await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length>=15);
     await page.waitForFunction(()=>!!document.querySelector('#globeCaseList button[data-case-id="aaro-pr-2013"]'));
     await page.locator('#globeFilter').selectOption('instrument');
-    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length===2);
+    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length>=6);
+    assert.equal(await page.locator('#globeCaseList button[data-case-id="nimitz-2004"]').count(),1,'historic documented footage remains visible with live records');
     assert.equal(await page.locator('#registeredSightings').textContent(),'3');
     assert.deepEqual(errors,[]);
     await context.close();
