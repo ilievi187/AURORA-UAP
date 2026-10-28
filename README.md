@@ -3,6 +3,10 @@
 Multilingual static website for the independent AURORA UAP initiative.
 Domain: **aurorauap.org** on Cloudflare Pages. Current release: public design preview.
 
+## V1.7 — Real submission visitor journey (production activation still gated)
+
+The primary homepage and Join calls to action now open the real [Observation Center](/report.html), instead of a legacy demo modal. The text-only quarantined backend is independent from public registry discovery and produces an opaque receipt on accepted reports. It still **fails closed** without a verified production database migration, genuine reviewed privacy notice, WAF protections, Turnstile keys and explicit enablement. [Production activation checklist](docs/V1.7-LIVE-SUBMISSION-ACTIVATION.md). Until those checks are satisfied the form intentionally allows local drafts only.
+
 ## V1.6 — Country directory (public read-only registry UX)
 
 The global directory at [countries.html](/countries.html) lists **only** countries with approved, published non-demo observations returned by the guarded D1 `/api/stats` endpoint. Counts are neither cached as fake defaults nor drawn from the demonstration atlas. When the D1 public registry is disabled, the page explains the limitation and offers the separate sourced historical archive. Every country card links to its real `/countries/XX` dossier browser. The landing page and country detail page now link to the directory instead of an arbitrary German default.
