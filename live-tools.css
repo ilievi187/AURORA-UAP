@@ -46,3 +46,6 @@
 .demo-archive[open]>summary::before{content:"▾"}
 .demo-archive>summary::-webkit-details-marker{display:none}
 .demo-archive .map-panel{margin:0}
+
+.page-language{color:#eafffb;background:#0b2b38;border:1px solid #4b8d97;padding:10px 12px;min-height:43px;max-width:170px;font:12px/1.4 "Segoe UI",sans-serif}
+@media(max-width:650px){.live-header{flex-wrap:wrap}.page-language{max-width:100%;width:auto}}

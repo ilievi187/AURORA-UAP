@@ -25,7 +25,7 @@
  }
  async function load(){
   const edition=$("edition").value;
-  $("newsStatus").textContent="Обновяваме световните източници…";
+  $("newsStatus").textContent=window.AURORA_SUBPAGES?.text("loading")||"Зареждане…";
   $("newsStatus").dataset.state="loading";$("refreshNews").disabled=true;
   try{
    const response=await fetch("/api/news?edition="+encodeURIComponent(edition),{cache:"no-store"});
@@ -37,7 +37,7 @@
   }catch{
    news=[];$("newsList").replaceChildren();$("showMoreNews").hidden=true;
    $("newsStatus").dataset.state="error";
-   $("newsStatus").textContent="Източникът временно не отговаря. Не показваме измислени или стари новини — използвай директната връзка към Google News.";
+   $("newsStatus").textContent=window.AURORA_SUBPAGES?.text("offline")||"Източникът временно не отговаря.";
   }finally{$("refreshNews").disabled=false}
  }
  $("edition").addEventListener("change",load);
