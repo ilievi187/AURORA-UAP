@@ -107,7 +107,7 @@
   }
   const mediaBox=$("caseMediaSection"),mediaGrid=$("caseMediaGrid");
   mediaGrid.replaceChildren();
-  $("caseMediaTitle").textContent=lang==="bg"?"СНИМКИ, ВИДЕО И ДОКУМЕНТИ":"PHOTOS, VIDEO & SOURCE DOCUMENTS";
+  $("caseMediaTitle").textContent=window.AURORA_UI?.label("mediaTitle")||(lang==="bg"?"СНИМКИ, ВИДЕО И ДОКУМЕНТИ":"PHOTOS, VIDEO & SOURCE DOCUMENTS");
   const approvedTypes=new Set(["video","documents","archive","photo"]);
   for(const m of (Array.isArray(c.media)?c.media:[]).slice(0,12)){
    if(!approvedTypes.has(m.type))continue;
@@ -129,7 +129,7 @@
   if(c.id==="al-taqaddum-2017"&&legacy){
    const watch=document.createElement("button");
    watch.type="button";watch.className="case-watch-button";
-   watch.textContent=lang==="bg"?"▶ ГЛЕДАЙ ОРИГИНАЛНИЯ ЗАПИС":"▶ WATCH THE ORIGINAL FOOTAGE";
+   watch.textContent=window.AURORA_UI?.label("watch")||(lang==="bg"?"▶ ГЛЕДАЙ ОРИГИНАЛНИЯ ЗАПИС":"▶ WATCH THE ORIGINAL FOOTAGE");
    watch.addEventListener("click",()=>{
     if(mediaGrid.querySelector("iframe"))return;
     const frame=document.createElement("iframe");
