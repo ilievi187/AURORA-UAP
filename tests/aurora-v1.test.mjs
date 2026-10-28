@@ -162,3 +162,16 @@ test("V1.5 intake keeps public submission disabled and links only to an honest l
  assert.doesNotMatch(read("report.js"),/innerHTML\s*=/);
  assert.doesNotMatch(read("functions/api/intake/submit.js"),/insert\s+into\s+cases/i);
 });
+
+test('country directory is discoverable and never invents live registry statistics',()=>{
+ const page=read('countries.html'),script=read('countries.js'),style=read('countries.css');
+ assert.match(html,/href="\/countries\.html" class="register-link"/);
+ assert.match(html,/href="\/countries\.html" class="console-archive-link"/);
+ assert.doesNotMatch(html,/href="\/countries\/DE"/);
+ assert.match(page,/id="countryGrid"/);
+ assert.match(page,/id="countryDirectoryStatus"[^>]*role="status"/);
+ assert.match(script,/fetch\("\/api\/stats"/);
+ assert.match(script,/includes_demo!==false/);
+ assert.match(script,/createElement\("a"\)/);
+ assert.match(style,/@media\s*\(max-width:\s*640px\)/);
+});
