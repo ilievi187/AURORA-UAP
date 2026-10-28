@@ -104,7 +104,9 @@ export async function reviewSubmission(db,id,{decision,actor_id,rationale}){
  const updated=await db.batch([
   db.prepare("UPDATE intake_submissions SET status=?,updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE id=? AND status=?")
    .bind(decision,id,old.status),
-  db.prepare("INSERT INTO intake_review_events(submission_id,actor_type,actor_id,action,previous_status,new_status,rationale) SELECT id,'admin',?,'review',?,?,? FROM intake_submissions WHERE id=? AND status=?")
+  // The audit entry must only be written when this batch's UPDATE actually won.
+  // A concurrent moderator may already have made the same decision after our read.
+  db.prepare("INSERT INTO intake_review_events(submission_id,actor_type,actor_id,action,previous_status,new_status,rationale) SELECT id,'admin',?,'review',?,?,? FROM intake_submissions WHERE id=? AND status=? AND changes()=1")
    .bind(actor_id,old.status,decision,rationale,id,decision)
  ]);
  if(!updated?.[0]?.meta||updated[0].meta.changes!==1)throw Error("Review transition conflict");

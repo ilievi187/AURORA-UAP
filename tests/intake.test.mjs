@@ -169,6 +169,20 @@ test("human review updates private status with audit; even approval never publis
   rationale:"Cannot override a terminal moderator outcome."}),/not reviewable/);
  sql.close();
 });
+test("a concurrent identical review cannot create a false audit event",async()=>{
+ const {db,sql}=database();
+ const {receipt_id}=await storeSubmission(db,normalizeSubmission(body(),"intake-v1-reviewed"));
+ const batch=db.batch.bind(db);
+ db.batch=async statements=>{
+  // Simulate another moderator committing after this request read pending status.
+  sql.prepare("UPDATE intake_submissions SET status='approved' WHERE id=?").run(receipt_id);
+  return batch(statements);
+ };
+ await assert.rejects(()=>reviewSubmission(db,receipt_id,{decision:"approved",actor_id:"reviewer",
+  rationale:"Reviewed the report and available context."}),/transition conflict/);
+ assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM intake_review_events WHERE action='review'").get().n,0);
+ sql.close();
+});
 test("D1-like transactional batch aborts receipt and audit together on storage error",async()=>{
  const {db,sql}=database();
  sql.exec("CREATE TRIGGER fail_first_intake_review BEFORE INSERT ON intake_review_events BEGIN SELECT RAISE(ABORT,'audit trigger failure'); END;");
