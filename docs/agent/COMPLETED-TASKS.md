@@ -1,0 +1,10 @@
+# Completed Tasks (verified)
+
+- PR #10 — Secure Intake Foundation — merged (repository history).
+- PR #11 — Country Directory UX — merged (repository history).
+- PR #12 — Real Report Submission Flow — merged (repository history).
+- PR #13 — Concurrent intake review audit fix — merged; current main contains `da3e42d`.
+- 2026-10-28: live intake status verified fail-closed (`accepting:false`, `local_draft_only`).
+- 2026-10-28: live staged registry release verification passed; no fabricated public D1 activation.
+- 2026-10-28: local main Node test set passed 60/60.
+- 2026-10-28: PR #14 local targeted tests passed 15/15 and static/DB/deployment tests passed 48/48; PR CI six checks green. PR remains draft/open, so its feature is not complete/deployed to production.
