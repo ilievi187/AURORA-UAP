@@ -23,26 +23,47 @@
   $("showMoreNews").hidden=amount>=items.length;
   if(news.length)$("newsStatus").textContent=amount+" / "+items.length+" · "+(window.AURORA_SUBPAGES?.text("news")||"News");
  }
+ const STORAGE="aurora-news-cache-v2-";
+ let requestSeq=0;
+ function restore(edition){
+  try{
+   const stored=JSON.parse(localStorage.getItem(STORAGE+edition)||"null");
+   if(!stored||Date.now()-stored.saved_at>12*3600000||!Array.isArray(stored.items)||!stored.items.length)return false;
+   news=stored.items;render(true);
+   $("newsStatus").dataset.state="cached";
+   $("newsStatus").textContent="CACHED · "+news.length+" headlines · "+new Date(stored.updated_at).toLocaleString(document.documentElement.lang||"en");
+   return true;
+  }catch{return false}
+ }
  async function load(){
-  const edition=$("edition").value;
-  $("newsStatus").textContent=window.AURORA_SUBPAGES?.text("loading")||"Зареждане…";
-  $("newsStatus").dataset.state="loading";$("refreshNews").disabled=true;
+  const edition=$("edition").value,seq=++requestSeq;
+  const recovered=restore(edition);
+  if(!recovered)$("newsStatus").textContent=window.AURORA_SUBPAGES?.text("loading")||"Loading…";
+  $("refreshNews").disabled=true;
   try{
    const response=await fetch("/api/news?edition="+encodeURIComponent(edition),{cache:"no-store"});
-   if(!response.ok)throw Error("source_offline");
-   const result=await response.json();
-   if(result.status!=="live"||!Array.isArray(result.items))throw Error("invalid_feed");
-   news=result.items;render(true);
-   if(!news.length)$("newsStatus").textContent="0 / 0";
+   if(!response.ok)throw Error("feed_unavailable");
+   const data=await response.json();
+   if(seq!==requestSeq||data.edition!==edition||!["live","cached"].includes(data.status)||!Array.isArray(data.items))return;
+   news=data.items;render(true);
+   $("newsStatus").dataset.state=data.status;
+   $("newsStatus").textContent=news.length+" headlines · "+(data.status==="cached"?"CACHED / ":"")+
+     new Date(data.updated_at).toLocaleString(document.documentElement.lang||"en");
+   if(data.status==="live")try{localStorage.setItem(STORAGE+edition,JSON.stringify({saved_at:Date.now(),updated_at:data.updated_at,items:news}))}catch{}
   }catch{
-   news=[];$("newsList").replaceChildren();$("showMoreNews").hidden=true;
-   $("newsStatus").dataset.state="error";
-   $("newsStatus").textContent=window.AURORA_SUBPAGES?.text("offline")||"Източникът временно не отговаря.";
-  }finally{$("refreshNews").disabled=false}
+   if(seq!==requestSeq)return;
+   if(!recovered&&!news.length){
+    $("newsList").replaceChildren();$("showMoreNews").hidden=true;
+    $("newsStatus").dataset.state="error";
+    $("newsStatus").textContent=window.AURORA_SUBPAGES?.text("offline")||"Source temporarily unavailable.";
+   }
+  }finally{if(seq===requestSeq)$("refreshNews").disabled=false}
  }
- $("edition").addEventListener("change",load);
+ $("edition").addEventListener("change",()=>{news=[];$("newsList").replaceChildren();load()});
  $("newsSearch").addEventListener("input",()=>render(true));
  $("showMoreNews").addEventListener("click",()=>render());
  $("refreshNews").addEventListener("click",load);
+ document.addEventListener("visibilitychange",()=>{if(!document.hidden)load()});
+ setInterval(()=>{if(!document.hidden)load()},15*60*1000);
  load();
 })();

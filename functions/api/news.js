@@ -1,14 +1,27 @@
 // Public headlines only: linked Google News RSS search results, NOT verified UAP cases.
 // Fixed upstream feeds, no arbitrary network URLs, no private user data.
+// Independent source regions improve global coverage without invented articles.
 const EDITIONS={
-  global:[
-    {q:'("UAP" OR "UFO" OR "unidentified anomalous phenomena") when:14d',hl:'en-US',gl:'US',ceid:'US:en'},
-    {q:'("unidentified aerial phenomena" OR "AARO" OR "UAP hearing") when:30d',hl:'en-GB',gl:'GB',ceid:'GB:en'},
-    {q:'("OVNI" OR "UFO sighting" OR "UAP report") when:14d',hl:'es-ES',gl:'ES',ceid:'ES:es'},
-    {q:'("НЛО" OR "неидентифициран летящ обект") when:30d',hl:'bg',gl:'BG',ceid:'BG:bg'}
-  ],
-  bulgaria:[{q:'("НЛО" OR "неидентифициран летящ обект" OR "необяснимо явление") when:30d',hl:'bg',gl:'BG',ceid:'BG:bg'}],
-  official:[{q:'("AARO" OR "unidentified anomalous phenomena" OR "UAP congressional hearing") when:30d',hl:'en-US',gl:'US',ceid:'US:en'}]
+ global:[
+  {q:'(UAP OR UFO OR "unidentified anomalous phenomena") when:30d',hl:'en-US',gl:'US',ceid:'US:en'},
+  {q:'("UFO sighting" OR "UAP hearing" OR "AARO") when:60d',hl:'en-GB',gl:'GB',ceid:'GB:en'},
+  {q:'("OVNI" OR "fenómeno aéreo no identificado") when:45d',hl:'es-ES',gl:'ES',ceid:'ES:es'},
+  {q:'("НЛО" OR "неидентифициран обект") when:60d',hl:'bg',gl:'BG',ceid:'BG:bg'},
+  {q:'("OVNI" OR "phénomène aérien non identifié") when:45d',hl:'fr-FR',gl:'FR',ceid:'FR:fr'},
+  {q:'("UFO" OR "UAP" OR "unbekanntes Flugobjekt") when:45d',hl:'de-DE',gl:'DE',ceid:'DE:de'},
+  {q:'("OVNI" OR "UFO avvistamento") when:45d',hl:'it-IT',gl:'IT',ceid:'IT:it'},
+  {q:'("OVNI" OR "objeto voador não identificado") when:45d',hl:'pt-BR',gl:'BR',ceid:'BR:pt'},
+  {q:'("UFO" OR "未確認飛行物体") when:45d',hl:'ja',gl:'JP',ceid:'JP:ja'},
+  {q:'("UFO" OR "НЛО" OR "аномальные явления") when:45d',hl:'ru',gl:'RU',ceid:'RU:ru'}
+ ],
+ bulgaria:[
+  {q:'("НЛО" OR "неидентифициран летящ обект") when:75d',hl:'bg',gl:'BG',ceid:'BG:bg'},
+  {q:'("необяснима светлина" OR "необичаен обект" OR "UAP") when:75d',hl:'bg',gl:'BG',ceid:'BG:bg'}
+ ],
+ official:[
+  {q:'("AARO" OR "UAP hearing" OR "unidentified anomalous phenomena") when:75d',hl:'en-US',gl:'US',ceid:'US:en'},
+  {q:'("UAP" OR "UFO" OR "Pentagon footage") when:75d',hl:'en-GB',gl:'GB',ceid:'GB:en'}
+ ]
 };
 const decode=s=>String(s||"").replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g,"$1")
  .replace(/&#(x[0-9a-f]+|\d+);/gi,(_,v)=>{const n=v[0].toLowerCase()==="x"?parseInt(v.slice(1),16):Number(v);return n>0&&n<=0x10ffff?String.fromCodePoint(n):""})
@@ -24,7 +37,7 @@ export function parseNewsRss(xml){
   const ms=Date.parse(decode(field(raw,"pubDate")));
   if(title.length<8||!/^https:\/\/[^\s<>]+$/.test(url)||!Number.isFinite(ms))return null;
   const age=Date.now()-ms;
-  if(age>45*86400000||age< -2*86400000)return null;
+  if(age>76*86400000||age< -2*86400000)return null;
   return {title,url,source,published:new Date(ms).toISOString()};
  }).filter(Boolean);
 }
@@ -41,19 +54,47 @@ export async function fetchHeadlines(edition,fetcher=fetch){
  const results=fetched.flatMap(x=>x.status==="fulfilled"?x.value:[]);
  const seen=new Set();
  return results.filter(x=>{
-  const key=x.title.toLocaleLowerCase().replace(/\W/g,"").slice(0,110);
+  const key=x.title.normalize("NFKC").toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu,"").slice(0,150);
   if(seen.has(key))return false;
   seen.add(key);return true;
- }).sort((a,b)=>Date.parse(b.published)-Date.parse(a.published)).slice(0,100);
+ }).sort((a,b)=>Date.parse(b.published)-Date.parse(a.published)).slice(0,200);
 }
-export async function onRequestGet({request,env,ctx}){
+const FRESH_AGE=900;
+const FALLBACK_AGE=43200;
+const response=(data,age)=>Response.json(data,{headers:{
+ "Cache-Control":"public, max-age=60, s-maxage="+age,
+ "X-Content-Type-Options":"nosniff"
+}});
+export async function onRequestGet({request,ctx}){
  const edition=new URL(request.url).searchParams.get("edition")||"global";
  if(!Object.hasOwn(EDITIONS,edition))return Response.json({error:"invalid_edition"},{status:400});
- const cacheKey=new Request("https://aurora-cache.invalid/news/"+edition);
- let cache;try{cache=caches.default;const found=await cache.match(cacheKey);if(found)return found}catch{}
+ const key=new Request("https://aurora-cache.invalid/news/fresh/"+edition);
+ const backup=new Request("https://aurora-cache.invalid/news/last-good/"+edition);
+ let cache;try{
+  if(typeof caches!=="undefined")cache=caches.default;
+  const saved=cache&&await cache.match(key);if(saved)return saved;
+ }catch{}
  const items=await fetchHeadlines(edition);
- if(!items.length)return Response.json({status:"unavailable",error:"news_source_unavailable",items:[]},{status:503,headers:{"Cache-Control":"no-store"}});
- const out=Response.json({status:"live",edition,updated_at:new Date().toISOString(),count:items.length,items,disclaimer:"Third-party headlines. A headline is not verification of a UAP claim."},{headers:{"Cache-Control":"public, max-age=60, s-maxage=900","X-Content-Type-Options":"nosniff"}});
- if(cache&&ctx?.waitUntil)ctx.waitUntil(cache.put(cacheKey,out.clone()).catch(()=>{}));
- return out;
+ if(items.length){
+  const payload={status:"live",edition,updated_at:new Date().toISOString(),count:items.length,items};
+  const out=response(payload,FRESH_AGE);
+  if(cache&&ctx?.waitUntil)ctx.waitUntil(Promise.all([
+   cache.put(key,out.clone()).catch(()=>{}),
+   cache.put(backup,response(payload,FALLBACK_AGE)).catch(()=>{})
+  ]));
+  return out;
+ }
+ if(cache){
+  try{
+   const saved=await cache.match(backup);
+   if(saved){
+    const payload=await saved.json();
+    const age=Date.now()-Date.parse(payload.updated_at);
+    if(age>=0&&age<FALLBACK_AGE*1000&&Array.isArray(payload.items)&&payload.items.length){
+     return response({...payload,status:"cached"},120);
+    }
+   }
+  }catch{}
+ }
+ return Response.json({status:"unavailable",error:"news_source_unavailable",items:[]},{status:503,headers:{"Cache-Control":"no-store"}});
 }

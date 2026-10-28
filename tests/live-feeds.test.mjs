@@ -34,3 +34,18 @@ test("upstream failures never masquerade as live data",async()=>{
  const items=await fetchHeadlines("official",fetcher);assert.deepEqual(items,[]);
  assert.equal(normalizeTraffic({time:0}, "bg"),null);
 });
+
+test("Unicode deduplication preserves distinct Bulgarian, Chinese and Japanese titles",async()=>{
+ const titles=["НЛО над Шумен днес","НЛО над Варна днес","日本でUFO発見","中国发现不明飞行物"];
+ const rss='<rss><channel>'+titles.map((title,i)=>'<item><title>'+title+'</title><link>https://news.google.com/rss/articles/'+i+'</link><source>World Press</source><pubDate>'+new Date().toUTCString()+'</pubDate></item>').join('')+'</channel></rss>';
+ const mock=async()=>({ok:true,text:async()=>rss});
+ const result=await fetchHeadlines("global",mock);
+ assert.equal(result.length,4,"non-Latin titles must not collapse to the same empty deduplication key");
+ assert.deepEqual(new Set(result.map(x=>x.title)),new Set(titles));
+});
+test("global headlines query multiple regions without trusting arbitrary URLs",async()=>{
+ let regions=new Set;
+ const feed=async url=>{const u=new URL(url);assert.equal(u.hostname,"news.google.com");regions.add(u.searchParams.get("gl"));return {ok:true,text:async()=>xml}};
+ await fetchHeadlines("global",feed);
+ assert.ok(regions.size>=7,"global edition must cover multiple regions");
+});
