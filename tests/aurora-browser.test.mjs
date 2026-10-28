@@ -348,6 +348,23 @@ try{
     assert.deepEqual(errors,[]);
     await context.close();
   });
+  await test('global flat atlas displays all sourced markers before optional D1 enrichment',async()=>{
+    const ctx=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'reduce'});
+    const page=await ctx.newPage(),errors=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/api/stats',route=>route.fulfill({status:503,contentType:'application/json',body:'{"error":"database_unavailable"}'}));
+    await page.goto('http://127.0.0.1:'+port+'/');
+    await page.locator('button[data-language="bg"]').click();
+    await page.locator('#gateContinue').click();
+    await page.waitForFunction(()=>document.querySelector('#worldMapPins')?.children.length>=15);
+    assert.equal(await page.locator('#worldMapCount').textContent(),'15');
+    assert.equal(await page.locator('#worldMapPins button').count(),15);
+    await page.locator('#worldCountry').selectOption('BR');
+    assert.equal(await page.locator('#worldMapPins button').count(),1);
+    assert.equal(await page.locator('#worldCaseDetail a').getAttribute('href'),'/archive/colares-1977');
+    assert.deepEqual(errors,[]);
+    await ctx.close();
+  });
   await test('Permanent historical dossiers are sourced, shareable and excluded from D1',async()=>{
     const ctx=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});
     const page=await ctx.newPage(),errors=[];
