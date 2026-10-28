@@ -384,6 +384,23 @@ try{
     assert.deepEqual(errors,[]);
     await ctx.close();
   });
+  await test('homepage lists the real 15-case archive rather than eight demo case cards',async()=>{
+    const context=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'reduce'});
+    const page=await context.newPage(),errors=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    await page.goto('http://127.0.0.1:'+port+'/');
+    await page.locator('button[data-language="bg"]').click();
+    await page.locator('#gateContinue').click();
+    await page.waitForFunction(()=>document.querySelectorAll('#reportGrid a.report-card').length===15);
+    assert.equal(await page.locator('#reportGrid a.report-card').count(),15);
+    assert.equal(await page.locator('#reportGrid .report-badge').allTextContents().then(x=>x.includes('DEMO')),false);
+    assert.equal(await page.locator('#reportGrid a[href="/archive/al-taqaddum-2017"]').count(),1);
+    await page.locator('#reportSearch').fill('Техеран');
+    assert.equal(await page.locator('#reportGrid a.report-card').count(),1);
+    assert.equal(await page.locator('#reportGrid a.report-card').first().getAttribute('href'),'/archive/tehran-1976');
+    assert.deepEqual(errors,[]);
+    await context.close();
+  });
   await test('Permanent historical dossiers are sourced, shareable and excluded from D1',async()=>{
     const ctx=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});
     const page=await ctx.newPage(),errors=[];
