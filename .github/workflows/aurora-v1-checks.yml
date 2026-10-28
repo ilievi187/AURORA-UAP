@@ -62,6 +62,7 @@ jobs:
       - name: Install browser test tooling
         run: |
           npm install --no-save playwright@1.56.1
-          npx playwright install --with-deps chromium
+          # Download only Playwright's headless Chromium shell; system apt upgrades routinely exceed the 12-minute job limit.
+          npx playwright install --only-shell chromium
       - name: Test real Canvas animation, gate, Continue and mobile behavior
         run: node --experimental-sqlite --test tests/aurora-browser.test.mjs
