@@ -234,7 +234,7 @@ try{
     assert.equal(await page.locator('.case-details').isVisible(),true);
     assert.equal(await page.locator('.case-details .case-dossier-link').getAttribute('href'),'/cases/aaro-pr-2013');
     assert.ok((await page.locator('.case-details a[target="_blank"]').getAttribute('href')).startsWith('https://www.aaro.mil/'));
-    assert.equal(await page.locator('#reportLink').getAttribute('href'),'/?report=draft&country=PR');
+    assert.equal(await page.locator('#reportLink').getAttribute('href'),'/report.html?country=PR');
     assert.deepEqual(errors,[]);
     await context.close();
   });
@@ -389,6 +389,68 @@ try{
     await page.locator('#globeCaseList button[data-case-id="westall-1966"]').click();
     assert.equal(await page.locator('#globeCaseDossier').getAttribute('href'),'/archive/westall-1966');
     await ctx.close();
+  });
+  await test('V1.5 mobile intake remains local-only when policy and D1 are not activated',async()=>{
+    const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});
+    const page=await context.newPage(),errors=[],posts=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/api/intake/submit',async route=>{posts.push(route.request().postData());await route.fulfill({status:503,body:'{"error":"intake_disabled"}',contentType:'application/json'})});
+    await page.goto('http://127.0.0.1:'+port+'/report.html?country=DE');
+    await page.waitForFunction(()=>document.querySelector('#reportStatus')?.textContent.includes('INTAKE OFFLINE'));
+    assert.equal(await page.locator('#country').inputValue(),'DE');
+    assert.equal(await page.locator('#sendReport').isDisabled(),true);
+    assert.equal(await page.locator('#activationControls').isVisible(),false);
+    await page.locator('#region').fill('Bavaria');
+    await page.locator('#location').fill('Munich area');
+    await page.locator('#description').fill('A group of unusual silent lights moved in formation above the town for several minutes under clear skies.');
+    await page.locator('#saveDraft').click();
+    await page.reload();
+    await page.waitForFunction(()=>document.querySelector('#reportStatus')?.textContent.includes('INTAKE OFFLINE'));
+    assert.equal(await page.locator('#region').inputValue(),'Bavaria');
+    assert.equal(await page.locator('#description').inputValue(),'A group of unusual silent lights moved in formation above the town for several minutes under clear skies.');
+    assert.equal(posts.length,0);
+    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+    assert.ok(overflow<=1,'mobile report overflow: '+overflow);
+    assert.deepEqual(errors,[]);
+    await context.close();
+  });
+  await test('V1.5 simulated fully-approved private intake submits a text-only pending report',async()=>{
+    const context=await browser.newContext({viewport:{width:1250,height:950},reducedMotion:'reduce'});
+    const page=await context.newPage(),errors=[],sent=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/api/intake/status',route=>route.fulfill({status:200,contentType:'application/json',
+      body:JSON.stringify({accepting:true,mode:'text_only_quarantine',site_key:'testing-site-key',
+       policy_version:'intake-v1-reviewed',policy_url:'https://aurorauap.org/privacy',automatic_publication:false})}));
+    await page.route('https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',route=>
+      route.fulfill({status:200,contentType:'application/javascript',
+       body:'window.turnstile={render:function(s,opts){queueMicrotask(()=>opts.callback("fake-widget-token"));return 1},reset:function(){}}'}));
+    await page.route('**/api/intake/submit',async route=>{
+      sent.push(route.request().postDataJSON());
+      await route.fulfill({status:202,contentType:'application/json',
+       body:JSON.stringify({receipt_id:'aur-int-123e4567-e89b-42d3-a456-426614174000',status:'pending',published:false})});
+    });
+    await page.goto('http://127.0.0.1:'+port+'/report.html?country=BG');
+    await page.waitForFunction(()=>document.querySelector('#reportStatus')?.textContent.includes('PRIVATE INTAKE ACTIVE'));
+    await page.locator('#region').fill('Shumen');
+    await page.locator('#location').fill('Shumen area');
+    await page.locator('#occurred').fill('2025-11-21T20:30');
+    await page.locator('#timezone').fill('Europe/Sofia');
+    await page.locator('#description').fill('Several silent moving lights were visible above the region for more than three minutes before they disappeared.');
+    await page.locator('#consent').check();
+    await page.locator('#sendReport').waitFor({state:'visible'});
+    await page.waitForFunction(()=>!document.querySelector('#sendReport').disabled);
+    await page.locator('#sendReport').click();
+    await page.waitForFunction(()=>document.querySelector('#formFeedback')?.textContent.includes('aur-int-123e4567-e89b-42d3-a456-426614174000'));
+    assert.equal(sent.length,1);
+    assert.equal(sent[0].country_code,'BG');
+    assert.equal(sent[0].consent,true);
+    assert.equal(sent[0].consent_version,'intake-v1-reviewed');
+    assert.equal(sent[0].turnstile_token,'fake-widget-token');
+    assert.equal('contact_email' in sent[0],false);
+    assert.equal('media' in sent[0],false);
+    assert.equal('latitude' in sent[0],false);
+    assert.deepEqual(errors,[]);
+    await context.close();
   });
 }finally{
   if(browser)await browser.close();

@@ -149,3 +149,16 @@ test('case dossiers reuse one template with separate legacy and gated D1 routes'
   assert.match(script,/res\.status===503/);
   assert.doesNotMatch(script,/innerHTML\s*=/);
 });
+
+test("V1.5 intake keeps public submission disabled and links only to an honest local draft",()=>{
+ for(const path of ["report.html","report.css","report.js","migrations/0002_intake_quarantine.sql",
+   "functions/_lib/intake.js","functions/api/intake/status.js","functions/api/intake/submit.js"])
+  assert.ok(existsSync(new URL("../"+path,import.meta.url)),"missing "+path);
+ assert.match(html,/href="\/report\.html"[^>]*id="openIntakeCenter"/);
+ assert.match(read("country.js"),/\/report\.html\?country=/);
+ assert.match(read("report.html"),/id="sendReport" disabled/);
+ assert.match(read("report.html"),/id="activationControls" hidden/);
+ assert.match(read("report.js"),/state\.accepting!==true/);
+ assert.doesNotMatch(read("report.js"),/innerHTML\s*=/);
+ assert.doesNotMatch(read("functions/api/intake/submit.js"),/insert\s+into\s+cases/i);
+});

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="bg"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#061217">
+<title>AURORA UAP | Report an Observation</title>
+<link rel="stylesheet" href="/report.css"><script defer src="/report.js"></script>
+</head>
+<body>
+<a class="skip" href="#reportMain">Към формуляра</a>
+<div class="report-shell">
+<header class="report-nav">
+<a class="report-brand" href="/">✦ A U R O R A <small>INDEPENDENT OBSERVATION NETWORK</small></a>
+<a class="report-back" href="/">← НАЧАЛО / HOME</a>
+</header>
+<main id="reportMain">
+<section class="report-hero">
+<p class="eyebrow">◉ / OBSERVATION INTAKE / V1.5</p>
+<h1>REPORT AN OBSERVATION</h1>
+<p>Документирай какво си видял. Разграничаваме свидетелските сведения от доказаните факти. Всички сигнали минават през човешка проверка.</p>
+<div class="report-status" id="reportStatus" role="status" aria-live="polite">Проверка на системата за приемане…</div>
+</section>
+<section class="report-section">
+<div class="report-form-head"><span>01 / FIELD REPORT</span><h2>Подготви своя сигнал</h2></div>
+<form id="observationForm" novalidate>
+<div class="report-grid">
+<label>Държава / Country <input id="country" maxlength="2" minlength="2" pattern="[A-Za-z]{2}" placeholder="BG" required autocomplete="off"></label>
+<label>Регион / Region <input id="region" maxlength="80" minlength="2" placeholder="напр. Шуменска област" required autocomplete="off"></label>
+<label>Приблизителен район / Approximate location <input id="location" maxlength="120" minlength="2" placeholder="град / населено място, без личен адрес" required autocomplete="off"></label>
+<label>Дата и местен час / Local date and time <input id="occurred" type="datetime-local" required></label>
+<label>Часова зона / Time zone <input id="timezone" maxlength="80" placeholder="Europe/Sofia" required></label>
+<label>Тип / Category <select id="category"><option value="lights">Светлини / Lights</option><option value="object">Обект / Object</option><option value="instrument">Инструментален запис / Instrument recording</option><option value="other">Друго / Other</option></select></label>
+</div>
+<label class="report-description">Описание / Your account
+<textarea id="description" rows="8" minlength="50" maxlength="5000" required placeholder="Какво видя, в каква посока, колко време продължи и какви бяха условията? Не споделяй имена, адреси или други лични данни."></textarea></label>
+<input id="website" type="text" tabindex="-1" autocomplete="off" class="trap" aria-hidden="true">
+<p class="form-advisory">Без имена, имейли, лични адреси, точни GPS координати или файлове. При активиране ще се записват само описанието, дата/час, часова зона и приблизителен район.</p>
+<div id="activationControls" hidden>
+<label class="consent"><input type="checkbox" id="consent"> Потвърждавам, че съм прочел/а <a id="privacyLink" href="/privacy" target="_blank" rel="noopener noreferrer">информацията за личните данни и условията</a> и разрешавам обработката на този сигнал за модерация.</label>
+<div id="turnstileMount"></div>
+</div>
+<div class="report-actions">
+<button type="button" id="saveDraft">ЗАПАЗИ ЧЕРНОВА</button>
+<button type="button" id="clearDraft">ИЗТРИЙ ЧЕРНОВА</button>
+<button type="submit" id="sendReport" disabled>ПОДАЙ НАБЛЮДЕНИЕ</button>
+</div>
+<p id="formFeedback" role="status" aria-live="polite"></p>
+</form>
+</section>
+<section class="report-section">
+<div class="report-form-head"><span>02 / RESEARCH ETHICS</span><h2>Какво следва?</h2></div>
+<p>Всеки действително приет сигнал получава уникален номер и влиза в частна опашка за човешка проверка. Първоначалната цел е преглед до 72 часа, но това не е гарантиран срок. Нищо не се публикува автоматично. Черновите остават само в текущия браузър.</p>
+<p>Няма публична система за снимки, видео или контактни данни на този етап. Автоматично публикуване от AI е изключено.</p>
+</section>
+</main><footer>THE SKY BELONGS TO EVERYONE · FREE PUBLIC ACCESS · AURORA UAP</footer>
+</div></body></html>

@@ -1,0 +1,33 @@
+/* AURORA / research intake with restrained sci-fi HUD */
+:root{color-scheme:dark;font-family:Inter,"Segoe UI",Arial,sans-serif;color:#e4f8f6;background:#030a10}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% 5%,#16465367,transparent 50%),#030a10;min-height:100vh}
+a{color:#affdfb}button,input,select,textarea{font:inherit}
+:focus-visible{outline:2px solid #a3ffff;outline-offset:3px}.trap{position:absolute;left:-10000px;width:1px;height:1px;opacity:0}
+.skip{position:absolute;top:-90px;left:8px;padding:12px;background:#123940;color:#fff}.skip:focus{top:8px}
+.report-shell{max-width:1050px;padding:0 clamp(16px,4vw,58px);margin:auto}
+.report-nav{height:82px;border-bottom:1px solid #4f899055;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.report-brand{font-size:20px;letter-spacing:.2em;text-decoration:none;font-weight:740;color:#e0fffc}.report-brand small{display:block;font:9px Consolas,monospace;color:#8accd2;margin-top:5px}
+.report-back{font:11px Consolas,monospace;text-decoration:none;border:1px solid #44818a;padding:11px;white-space:nowrap}
+.report-hero{padding:clamp(47px,9vw,94px) 0 25px;border-bottom:1px solid #4c969d77}
+.eyebrow{font:10px Consolas,monospace;letter-spacing:.2em;color:#93dedf}
+.report-hero h1{font-size:clamp(37px,7vw,72px);font-weight:550;letter-spacing:-.04em;line-height:1.1;margin:12px 0 17px}
+.report-hero>p:not(.eyebrow){max-width:730px;font-size:15px;line-height:1.8;color:#a9cdd1}
+.report-status{padding:16px 19px;border:1px solid #598a93;background:#0a242c;font:12px/1.65 Consolas,monospace;margin:23px 0;color:#d5f4f3}
+.report-status.ready{border-color:#83cec2;color:#aeffeb}.report-status.disabled{border-color:#aa8c6b;color:#ffe1c0}
+.report-section{margin:22px 0;border:1px solid #477e89;background:radial-gradient(circle at 92% 0,#16434a42,transparent 60%),#09181f;padding:clamp(18px,3vw,32px)}
+.report-form-head span{font:10px Consolas,monospace;letter-spacing:.19em;color:#90e5e4}.report-form-head h2{font-size:24px;margin:8px 0 22px;font-weight:540}
+.report-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
+label{font-size:12px;color:#a6d6d8;display:flex;flex-direction:column;gap:9px;min-width:0}
+input:not([type=checkbox]),select,textarea{width:100%;min-width:0;border:1px solid #477681;color:#e4ffff;background:#0d2a34;padding:13px 12px;border-radius:0;font-size:14px}
+textarea{resize:vertical;min-height:150px;line-height:1.6}
+.report-description{margin-top:19px}.form-advisory{font:12px/1.7 Consolas,monospace;color:#9fc9c6;margin:18px 0}
+.consent{flex-direction:row;align-items:flex-start;line-height:1.7;margin:16px 0}.consent input{margin-top:5px;accent-color:#70cdd2}
+.report-actions{display:flex;gap:9px;flex-wrap:wrap;margin:25px 0 12px}
+.report-actions button{border:1px solid #4e9295;background:#11343d;color:#d1ffff;padding:13px 17px;font:11px/1.5 Consolas,monospace;letter-spacing:.09em;cursor:pointer}
+.report-actions button:hover:not(:disabled){background:#1c5861}
+.report-actions #sendReport{border-color:#92e9df;background:#1b5759;font-weight:700}
+.report-actions button:disabled{opacity:.43;cursor:not-allowed}
+#formFeedback{min-height:20px;font:12px/1.7 Consolas,monospace;color:#aef0dc;overflow-wrap:anywhere}
+.report-section>p{font-size:13px;line-height:1.8;color:#b3d5d4}
+footer{padding:30px 0 50px;border-top:1px solid #45798255;font:10px Consolas,monospace;letter-spacing:.16em;color:#85afb4}
+@media(max-width:650px){.report-grid{grid-template-columns:1fr}.report-brand{font-size:15px}.report-nav{height:72px}.report-back{font-size:9px}.report-actions{display:grid}.report-actions button{width:100%}}
