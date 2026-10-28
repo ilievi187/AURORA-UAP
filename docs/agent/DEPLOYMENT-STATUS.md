@@ -1,12 +1,11 @@
 # Deployment Status
 
-Verified 2026-10-28 21:24 UTC.
+Verified 2026-10-28 21:33 UTC.
 
 - Production custom domain is reachable: `https://aurorauap.org/` responds 200 (canonical redirects may occur).
-- Production clean `/news` route loads and persists the selected locale, but its Bulgarian copy failed to follow `aurora-lang=en`; PR #30 fixes the route match. Production verification after merge is pending.
-- Production `/api/news?edition=global&lang=en&offset=0` returned HTTP 503 `news_source_unavailable` at 20:57:46Z; no successful or cached headlines were returned. Do not claim the global newsroom is currently live.
-- PR #29 merged to main at 20:59:01Z; its main-push quality gate passed. This is not independent evidence that a production Pages deployment completed.
-- PR #30 is open; its Cloudflare Pages deployment check passed, but the preview was not independently browsed and production verification is pending.
+- Production clean routes `/news` and `/sky` now render the selected English locale and retain it across navigation/reload after PR #30. Production browser verification passed on 2026-10-28.
+- Production `/api/news?edition=global&lang=en&offset=0` returned HTTP 503 `news_source_unavailable`, zero items and no last-good response at 21:33:21Z. Do not claim the global newsroom is currently live.
+- PR #29 merged to main at 20:59:01Z; its main-push quality gate passed. PR #30 merged at 21:29:04Z; its nine PR checks and main-push quality gate passed. The English clean-route behavior was independently verified on production.
 - Production report route responds 200.
 - Production intake is disabled: `/api/intake/status` reports `accepting:false`, `local_draft_only`.
 - Public registry is in staged mode; remote read-only verifier passes and public D1 endpoints are gated.
