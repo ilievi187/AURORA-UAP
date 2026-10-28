@@ -200,7 +200,8 @@ test('home opens a populated global case map and linked live headlines, with no 
  assert.match(page,/src="\/world-atlas\.js"/);
  assert.match(page,/src="\/home-news\.js"/);
  assert.match(read('world-atlas.js'),/fetch\("\/data\/cases\.json"/);
- assert.match(read('home-news.js'),/fetch\("\/api\/news\?edition=global"/);
+ assert.ok(read('home-news.js').includes('fetch("/api/news?edition=global&lang="'));
+ assert.match(read('home-news.js'),/translated_title/);
 });
 
 

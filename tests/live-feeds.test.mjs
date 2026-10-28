@@ -49,3 +49,35 @@ test("global headlines query multiple regions without trusting arbitrary URLs",a
  await fetchHeadlines("global",feed);
  assert.ok(regions.size>=7,"global edition must cover multiple regions");
 });
+
+import {NEWS_LANGUAGES,PAGE_SIZE,translateNewsPage} from "../functions/_lib/news-translation.js";
+test("translation changes headlines, not source publisher URL or original text",async()=>{
+ const calls=[],ai={async run(model,args){calls.push({model,args});return {translated_text:"ПРЕВОД "+args.text}}};
+ const items=[
+  {title:"UAP over the sea",language:"en",url:"https://publisher.test/a",source:"Example Press",published:"2026-10-28"},
+  {title:"НЛО над Шумен",language:"bg",url:"https://publisher.test/b",source:"Example Press",published:"2026-10-28"}
+ ];
+ const answer=await translateNewsPage(items,"bg",0,ai);
+ assert.equal(answer.items[0].translated_title,"ПРЕВОД UAP over the sea");
+ assert.equal(answer.items[0].title,items[0].title);
+ assert.equal(answer.items[0].url,items[0].url);
+ assert.equal(answer.items[1].translated_title,undefined);
+ assert.equal(answer.translation.status,"translated");
+ assert.equal(calls.length,1);
+ assert.equal(calls[0].args.source_lang,"en");
+ assert.equal(calls[0].args.target_lang,"bg");
+ assert.ok(calls[0].model.endsWith("/m2m100-1.2b"));
+});
+test("AI translation handles 18 locales, bounds calls and fails open",async()=>{
+ assert.equal(NEWS_LANGUAGES.size,18);
+ let calls=0;
+ const ai={async run(){calls++;return {translated_text:"مرحبا"}}};
+ const items=Array.from({length:40},(_,i)=>({title:"Title "+i,language:"en",url:"https://publisher.test/"+i}));
+ const data=await translateNewsPage(items,"ar",0,ai);
+ assert.equal(calls,PAGE_SIZE);
+ assert.equal(data.items.filter(x=>x.translated_title).length,PAGE_SIZE);
+ assert.equal(items[0].translated_title,undefined);
+ const missing=await translateNewsPage(items,"de",0,undefined);
+ assert.equal(missing.translation.status,"unavailable");
+ assert.equal(missing.items[0].title,items[0].title);
+});

@@ -39,6 +39,7 @@
    const value=sel.value;document.documentElement.lang=value;
    try{localStorage.setItem("aurora-lang",value)}catch{}
    apply();
+   window.dispatchEvent(new CustomEvent("aurora:language-changed",{detail:{language:value}}));
   });
  }
  window.AURORA_SUBPAGES={text,apply};

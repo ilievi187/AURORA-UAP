@@ -1,3 +1,4 @@
+import {NEWS_LANGUAGES,PAGE_SIZE,translateNewsPage} from "../_lib/news-translation.js";
 // Public headlines only: linked Google News RSS search results, NOT verified UAP cases.
 // Fixed upstream feeds, no arbitrary network URLs, no private user data.
 // Independent source regions improve global coverage without invented articles.
@@ -49,7 +50,7 @@ export async function fetchHeadlines(edition,fetcher=fetch){
   const r=await fetcher(url.toString(),{headers:{Accept:"application/rss+xml, application/xml"},signal:AbortSignal.timeout(9000)});
   if(!r.ok)throw Error("upstream_"+r.status);
   const xml=await r.text();
-  return parseNewsRss(xml);
+  return parseNewsRss(xml).map(item=>({...item,language:f.hl.split("-")[0]}));
  }));
  const results=fetched.flatMap(x=>x.status==="fulfilled"?x.value:[]);
  const seen=new Set();
@@ -65,7 +66,7 @@ const response=(data,age)=>Response.json(data,{headers:{
  "Cache-Control":"public, max-age=60, s-maxage="+age,
  "X-Content-Type-Options":"nosniff"
 }});
-export async function onRequestGet({request,ctx}){
+async function getRawNews({request,ctx}){
  const edition=new URL(request.url).searchParams.get("edition")||"global";
  if(!Object.hasOwn(EDITIONS,edition))return Response.json({error:"invalid_edition"},{status:400});
  const key=new Request("https://aurora-cache.invalid/news/fresh/"+edition);
@@ -97,4 +98,34 @@ export async function onRequestGet({request,ctx}){
   }catch{}
  }
  return Response.json({status:"unavailable",error:"news_source_unavailable",items:[]},{status:503,headers:{"Cache-Control":"no-store"}});
+}
+
+// Optional server translation is restricted to fixed, fetched news headlines.
+export async function onRequestGet({request,env,ctx}){
+ const u=new URL(request.url),lang=u.searchParams.get("lang");
+ if(lang!==null&&!NEWS_LANGUAGES.has(lang))
+  return Response.json({error:"unsupported_language"},{status:400});
+ const offsetValue=u.searchParams.get("offset")||"0";
+ if(!/^(0|[1-9]\d{0,2})$/.test(offsetValue)||Number(offsetValue)>192||Number(offsetValue)%PAGE_SIZE!==0)
+  return Response.json({error:"invalid_translation_offset"},{status:400});
+ const original=await getRawNews({request,ctx});
+ if(lang===null||original.status!==200)return original;
+ const data=await original.clone().json(),offset=Number(offsetValue);
+ if(!Array.isArray(data.items))return original;
+ const edition=u.searchParams.get("edition")||"global";
+ const key=new Request("https://aurora-cache.invalid/news/translated/v1/"+
+  encodeURIComponent(edition)+"/"+encodeURIComponent(lang)+"/"+offset+"/"+encodeURIComponent(data.updated_at||"unknown"));
+ let cache;
+ try{
+  if(typeof caches!=="undefined")cache=caches.default;
+  if(cache){const found=await cache.match(key);if(found)return found}
+ }catch{}
+ const {items,translation}=await translateNewsPage(data.items,lang,offset,env?.AI);
+ const out=Response.json({...data,items,translation},{headers:{
+  "Cache-Control":"public, max-age=60, s-maxage=900","X-Content-Type-Options":"nosniff"
+ }});
+ // Fail open: do not cache outages. When AI is connected later, it takes effect.
+ if(cache&&ctx?.waitUntil&&["translated","original"].includes(translation.status))
+  ctx.waitUntil(cache.put(key,out.clone()).catch(()=>{}));
+ return out;
 }
