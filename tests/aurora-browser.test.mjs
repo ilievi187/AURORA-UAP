@@ -419,6 +419,20 @@ try{
     assert.deepEqual(errors,[]);
     await ctx.close();
   });
+  await test('standalone media library shows original source links and supports video filter',async()=>{
+    const context=await browser.newContext({viewport:{width:1365,height:900},reducedMotion:'reduce'});
+    const page=await context.newPage(),errors=[];
+    page.on('pageerror',err=>errors.push(err.message));
+    await page.goto('http://127.0.0.1:'+port+'/media.html');
+    await page.waitForFunction(()=>document.querySelectorAll('#mediaGallery article').length>=15);
+    assert.ok((await page.locator('#mediaGallery article').count())>=15,'source media gallery should have substantial content');
+    assert.ok((await page.locator('#mediaGallery a[target="_blank"][rel="noopener noreferrer"]').count())>=15);
+    await page.locator('#mediaType').selectOption('video');
+    assert.ok((await page.locator('#mediaGallery article').count())>=5,'video filter should include documented recordings');
+    assert.ok((await page.locator('#mediaGallery a[href*="dvidshub.net/video/960331"]').count())>=1);
+    assert.deepEqual(errors,[]);
+    await context.close();
+  });
   await test('Permanent historical dossiers are sourced, shareable and excluded from D1',async()=>{
     const ctx=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});
     const page=await ctx.newPage(),errors=[];
