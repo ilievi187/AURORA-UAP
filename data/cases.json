@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "curation": "hand-reviewed starter set; no live scraping or automatic publishing",
-  "notice": "Historical reports and released recordings are not proof of extraterrestrial origin. Coordinates are approximate display anchors, not measured incident locations.",
+  "curation": "Sourced global editorial case archive. Original publisher media linked with attribution. Thematic visuals explicitly labelled.",
+  "notice": "Source reports, images and documents are attributed. Geographic markers locate reference areas rather than measured object positions.",
   "cases": [
     {
       "id": "phoenix-1997",
@@ -28,6 +28,32 @@
       "source": {
         "name": "National UFO Reporting Center (NUFORC)",
         "url": "https://nuforc.org/phoenix/"
+      },
+      "story": {
+        "bg": [
+          "Сведенията обхващат няколко района на Аризона и различни часове на вечерта. NUFORC записва множество индивидуални съобщения. Голямата V-образна формация и отделни групи светлини трябва да се разглеждат като различни свидетелски описания, а не като един установен обект."
+        ],
+        "en": [
+          "The reports cover multiple Arizona locations and different times that evening. NUFORC logged numerous individual accounts. The widely described V-shaped formation and other groups of lights should be read as separate witness descriptions rather than a single established object."
+        ]
+      },
+      "media": [
+        {
+          "type": "archive",
+          "title": {
+            "bg": "Оригинални свидетелски съобщения в NUFORC",
+            "en": "Original NUFORC witness accounts"
+          },
+          "url": "https://nuforc.org/phoenix/"
+        }
+      ],
+      "visual": {
+        "src": "/assets/feature-media.webp",
+        "kind": "illustration",
+        "caption": {
+          "bg": "Тематична илюстрация, не оригинална снимка от случая.",
+          "en": "Thematic illustration, not original incident photography."
+        }
       }
     },
     {
@@ -55,6 +81,32 @@
       "source": {
         "name": "The National Archives (UK), UFO research guide",
         "url": "https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/ufos/"
+      },
+      "story": {
+        "bg": [
+          "Американски военнослужещи от RAF Woodbridge съобщават за светлини край Рендълшъм през декември 1980 г. Меморандумът на полк. Чарлз Холт е съхранен в британския Национален архив. По-късна кореспонденция и интервюта предлагат допълнителни, понякога различаващи се версии."
+        ],
+        "en": [
+          "US personnel from RAF Woodbridge reported lights near Rendlesham in December 1980. Lieutenant Colonel Charles Halt's memorandum is held by the UK National Archives. Later correspondence and interviews provide additional, sometimes differing accounts."
+        ]
+      },
+      "media": [
+        {
+          "type": "documents",
+          "title": {
+            "bg": "Британски национален архив — документи и фотографии на писма",
+            "en": "UK National Archives — records and document photographs"
+          },
+          "url": "https://www.nationalarchives.gov.uk/explore-the-collection/explore-by-time-period/postwar/ufo-reports/"
+        }
+      ],
+      "visual": {
+        "src": "/assets/feature-media.webp",
+        "kind": "illustration",
+        "caption": {
+          "bg": "Тематична илюстрация, не оригинална снимка от случая.",
+          "en": "Thematic illustration, not original incident photography."
+        }
       }
     },
     {
@@ -82,6 +134,40 @@
       "source": {
         "name": "ABC Australia — The Westall UFO Mystery",
         "url": "https://www.abc.net.au/news/2026-04-06/the-westall-ufo-mystery-/106528518"
+      },
+      "story": {
+        "bg": [
+          "На 6 април 1966 г. ученици и преподаватели описват необичаен обект над училището в Уестол, край Мелбърн. През 2026 г. Australian Story събира нови интервюта с очевидци. Оригиналните телевизионни кадри от 1966 г. не са открити, затова съвременният филм представя спомени и журналистическо проучване."
+        ],
+        "en": [
+          "On April 6, 1966, students and teachers described an unusual object above Westall High School near Melbourne. In 2026, Australian Story collected new eyewitness interviews. The original 1966 television footage has not been found, so the modern documentary presents recollections and journalism."
+        ]
+      },
+      "media": [
+        {
+          "type": "video",
+          "title": {
+            "bg": "ABC Australian Story — 30-минутен документален филм",
+            "en": "ABC Australian Story — 30-minute documentary"
+          },
+          "url": "https://www.abc.net.au/news/2026-04-06/the-westall-ufo-mystery-/106528518"
+        },
+        {
+          "type": "video",
+          "title": {
+            "bg": "ABC — кратко интервю със свидетели",
+            "en": "ABC — short eyewitness interview"
+          },
+          "url": "https://www.abc.net.au/news/2026-04-08/we-saw-ufos-at-our-school-westall/106535264"
+        }
+      ],
+      "visual": {
+        "src": "/assets/feature-media.webp",
+        "kind": "illustration",
+        "caption": {
+          "bg": "Тематична илюстрация, не оригинална снимка от случая.",
+          "en": "Thematic illustration, not original incident photography."
+        }
       }
     },
     {
@@ -109,6 +195,32 @@
       "source": {
         "name": "FAA records (archived transcription)",
         "url": "https://realufo.org/doc/NARA-JAL1628-733667-001-024"
+      },
+      "story": {
+        "bg": [
+          "Екипажът на товарния полет на Japan Airlines съобщава за светлини над Аляска на 17 ноември 1986 г. FAA събира записи от разговори, интервюта с екипажа и материали за радарните проверки. Историческите файлове позволяват да се сравнят първоначалните твърдения и официалният анализ."
+        ],
+        "en": [
+          "The Japan Airlines cargo crew reported lights over Alaska on November 17, 1986. FAA files include communications, interviews and radar-related investigation records. The historical documents let readers compare the original accounts with the official analysis."
+        ]
+      },
+      "media": [
+        {
+          "type": "documents",
+          "title": {
+            "bg": "Документален архив на FAA с интервюта и записи",
+            "en": "FAA record archive with interviews and transcriptions"
+          },
+          "url": "https://www.theblackvault.com/documentarchive/ufo-case-japanese-airlines-jal1628-november-17-1986/"
+        }
+      ],
+      "visual": {
+        "src": "/assets/feature-media.webp",
+        "kind": "illustration",
+        "caption": {
+          "bg": "Тематична илюстрация, не оригинална снимка от случая.",
+          "en": "Thematic illustration, not original incident photography."
+        }
       }
     },
     {
@@ -136,6 +248,32 @@
       "source": {
         "name": "U.S. Department of Defense — Navy video release",
         "url": "https://www.defense.gov/News/Releases/Release/Article/2165713/statement-by-the-department-of-defense-on-the-release-of-historical-navy-videos/"
+      },
+      "story": {
+        "bg": [
+          "Видеото FLIR1 идва от военноморска авиационна система и е заснето през ноември 2004 г. по време на операции край Калифорния. Министерството на отбраната публикува официално клипа през април 2020 г. заедно с GIMBAL и GOFAST. Публикацията удостоверява произхода на кадрите."
+        ],
+        "en": [
+          "The FLIR1 video comes from a Navy aircraft infrared system and was recorded in November 2004 during operations near California. The Department of Defense officially released it in April 2020 together with GIMBAL and GOFAST. That announcement authenticates the footage's source."
+        ]
+      },
+      "media": [
+        {
+          "type": "video",
+          "title": {
+            "bg": "Пентагон — официално публикуваните FLIR1, GIMBAL и GOFAST",
+            "en": "Pentagon — official FLIR1, GIMBAL and GOFAST release"
+          },
+          "url": "https://www.defense.gov/News/Releases/release/article/2165713/statement-by-the-department-of-defense-on-the-release-of-historical-navy-videos/"
+        }
+      ],
+      "visual": {
+        "src": "/assets/feature-media.webp",
+        "kind": "illustration",
+        "caption": {
+          "bg": "Тематична илюстрация, не оригинална снимка от случая.",
+          "en": "Thematic illustration, not original incident photography."
+        }
       }
     },
     {
@@ -163,6 +301,32 @@
       "source": {
         "name": "U.S. Department of Defense — Navy video release",
         "url": "https://www.defense.gov/News/Releases/Release/Article/2165713/statement-by-the-department-of-defense-on-the-release-of-historical-navy-videos/"
+      },
+      "story": {
+        "bg": [
+          "GIMBAL е един от инфрачервените видеозаписи, заснети през януари 2015 г. от военноморски самолет. Пентагонът официално го публикува през април 2020 г. Разглеждането на видеото изисква внимание към движението на самата камера и към ограниченията на краткия откъс."
+        ],
+        "en": [
+          "GIMBAL is among the infrared clips recorded in January 2015 by a Navy aircraft. The Pentagon formally released it in April 2020. Interpretation of the footage depends in part on the camera's motion and the limits of the short excerpt."
+        ]
+      },
+      "media": [
+        {
+          "type": "video",
+          "title": {
+            "bg": "GIMBAL — официално публикуван запис на ВМС",
+            "en": "GIMBAL — official Navy video release"
+          },
+          "url": "https://www.defense.gov/News/Releases/release/article/2165713/statement-by-the-department-of-defense-on-the-release-of-historical-navy-videos/"
+        }
+      ],
+      "visual": {
+        "src": "/assets/feature-media.webp",
+        "kind": "illustration",
+        "caption": {
+          "bg": "Тематична илюстрация, не оригинална снимка от случая.",
+          "en": "Thematic illustration, not original incident photography."
+        }
       }
     },
     {
@@ -190,6 +354,32 @@
       "source": {
         "name": "U.S. Department of Defense — Navy video release",
         "url": "https://www.defense.gov/News/Releases/Release/Article/2165713/statement-by-the-department-of-defense-on-the-release-of-historical-navy-videos/"
+      },
+      "story": {
+        "bg": [
+          "GOFAST е официално публикуван военноморски инфрачервен запис от януари 2015 г. Видимото движение на обекта зависи от геометрията, височината и относителното движение на самолета. Оригиналният запис е достъпен чрез официалното съобщение и архива на ВМС."
+        ],
+        "en": [
+          "GOFAST is an officially released Navy infrared clip from January 2015. Apparent motion depends on viewing geometry, altitude and aircraft motion. The original record is available through the official Navy and Defense Department releases."
+        ]
+      },
+      "media": [
+        {
+          "type": "video",
+          "title": {
+            "bg": "GOFAST — официално публикуван запис на ВМС",
+            "en": "GOFAST — official Navy video release"
+          },
+          "url": "https://www.defense.gov/News/Releases/release/article/2165713/statement-by-the-department-of-defense-on-the-release-of-historical-navy-videos/"
+        }
+      ],
+      "visual": {
+        "src": "/assets/feature-media.webp",
+        "kind": "illustration",
+        "caption": {
+          "bg": "Тематична илюстрация, не оригинална снимка от случая.",
+          "en": "Thematic illustration, not original incident photography."
+        }
       }
     },
     {
@@ -217,7 +407,450 @@
       "source": {
         "name": "US Air Force — Roswell Report",
         "url": "https://www.af.mil/The-Roswell-Report/About-Us/AF-75th-Anniversary/"
+      },
+      "story": {
+        "bg": [
+          "Историята започва с намерени останки край Розуел през юли 1947 г. В следващите десетилетия тя става център на обществени спорове, книги и филми. Докладите на американските ВВС свързват откритите материали с височинна балонна програма, което е важно за историческата документация."
+        ],
+        "en": [
+          "The story began with recovered debris near Roswell in July 1947. Over subsequent decades it became the subject of books, films and public debate. U.S. Air Force investigations linked the recovered material to a high-altitude balloon program, an important part of the historical record."
+        ]
+      },
+      "media": [
+        {
+          "type": "documents",
+          "title": {
+            "bg": "Оригинален доклад на ВВС на САЩ",
+            "en": "Original U.S. Air Force investigation"
+          },
+          "url": "https://www.af.mil/The-Roswell-Report/About-Us/AF-75th-Anniversary/"
+        }
+      ],
+      "visual": {
+        "src": "/assets/feature-media.webp",
+        "kind": "illustration",
+        "caption": {
+          "bg": "Тематична илюстрация, не оригинална снимка от случая.",
+          "en": "Thematic illustration, not original incident photography."
+        }
       }
+    },
+    {
+      "id": "washington-1952",
+      "date": "1952-07-19",
+      "date_precision": "day",
+      "lat": 38.9072,
+      "lng": -77.0369,
+      "location_precision": "Washington DC city reference",
+      "category": "lights",
+      "status": "reported",
+      "country": "US",
+      "city": {
+        "bg": "Вашингтон",
+        "en": "Washington DC"
+      },
+      "title": {
+        "bg": "Радарните съобщения над Вашингтон",
+        "en": "Washington radar reports"
+      },
+      "summary": {
+        "bg": "Летищни диспечери и пилоти съобщават за необичайни радарни сигнали и светлини над Вашингтон през юли 1952 г. Историческата документация е запазена в Project Blue Book.",
+        "en": "Air traffic controllers and pilots reported unusual radar returns and lights over Washington during July 1952. Historical documents are held in Project Blue Book."
+      },
+      "source": {
+        "name": "National Archives / Project Blue Book",
+        "url": "https://prologue.blogs.archives.gov/2019/12/19/saucers-over-washington-the-history-of-project-blue-book/"
+      },
+      "story": {
+        "bg": [
+          "Летищни диспечери и пилоти съобщават за необичайни радарни сигнали и светлини над Вашингтон през юли 1952 г. Историческата документация е запазена в Project Blue Book.",
+          "Разгледай оригиналните документи и свидетелства чрез връзките по-долу; там са събрани детайлите, снимките и видеоматериалите, когато са публикувани."
+        ],
+        "en": [
+          "Air traffic controllers and pilots reported unusual radar returns and lights over Washington during July 1952. Historical documents are held in Project Blue Book.",
+          "Explore the original documents and testimony through the links below, including recordings and images where the publisher has released them."
+        ]
+      },
+      "visual": {
+        "src": "/assets/feature-map.webp",
+        "kind": "illustration",
+        "caption": {
+          "bg": "Тематична визуализация — не е оригинален кадър.",
+          "en": "Thematic illustration, not original footage."
+        }
+      },
+      "media": [
+        {
+          "type": "documents",
+          "title": {
+            "bg": "Документален източник и архив",
+            "en": "Original case documents and archive"
+          },
+          "url": "https://prologue.blogs.archives.gov/2019/12/19/saucers-over-washington-the-history-of-project-blue-book/"
+        }
+      ]
+    },
+    {
+      "id": "arnold-1947",
+      "date": "1947-06-24",
+      "date_precision": "day",
+      "lat": 46.8533,
+      "lng": -121.76,
+      "location_precision": "Mount Rainier regional reference",
+      "category": "object",
+      "status": "reported",
+      "country": "US",
+      "city": {
+        "bg": "Връх Рейниър, САЩ",
+        "en": "Mount Rainier, USA"
+      },
+      "title": {
+        "bg": "Докладът на пилота Кенет Арнолд",
+        "en": "Kenneth Arnold's pilot report"
+      },
+      "summary": {
+        "bg": "На 24 юни 1947 г. пилотът Кенет Арнолд съобщава за група бързо движещи се обекти близо до Рейниър. Запазени са първоначални документи, отразяващи началото на интереса към „летящите чинии“.",
+        "en": "On June 24, 1947, pilot Kenneth Arnold described fast-moving objects near Mount Rainier. Early records preserve one of the accounts that brought widespread attention to flying saucers."
+      },
+      "source": {
+        "name": "U.S. National Archives / Project Blue Book",
+        "url": "https://www.archives.gov/news/articles/project-blue-book-50th-anniversary"
+      },
+      "story": {
+        "bg": [
+          "На 24 юни 1947 г. пилотът Кенет Арнолд съобщава за група бързо движещи се обекти близо до Рейниър. Запазени са първоначални документи, отразяващи началото на интереса към „летящите чинии“.",
+          "Разгледай оригиналните документи и свидетелства чрез връзките по-долу; там са събрани детайлите, снимките и видеоматериалите, когато са публикувани."
+        ],
+        "en": [
+          "On June 24, 1947, pilot Kenneth Arnold described fast-moving objects near Mount Rainier. Early records preserve one of the accounts that brought widespread attention to flying saucers.",
+          "Explore the original documents and testimony through the links below, including recordings and images where the publisher has released them."
+        ]
+      },
+      "visual": {
+        "src": "/assets/feature-map.webp",
+        "kind": "illustration",
+        "caption": {
+          "bg": "Тематична визуализация — не е оригинален кадър.",
+          "en": "Thematic illustration, not original footage."
+        }
+      },
+      "media": [
+        {
+          "type": "documents",
+          "title": {
+            "bg": "Документален източник и архив",
+            "en": "Original case documents and archive"
+          },
+          "url": "https://www.archives.gov/news/articles/project-blue-book-50th-anniversary"
+        }
+      ]
+    },
+    {
+      "id": "tehran-1976",
+      "date": "1976-09-19",
+      "date_precision": "day",
+      "lat": 35.7219,
+      "lng": 51.3347,
+      "location_precision": "Tehran city reference; wider observation area",
+      "category": "lights",
+      "status": "official_record",
+      "country": "IR",
+      "city": {
+        "bg": "Техеран, Иран",
+        "en": "Tehran, Iran"
+      },
+      "title": {
+        "bg": "Нощните наблюдения над Техеран",
+        "en": "Tehran aerial observations"
+      },
+      "summary": {
+        "bg": "Разсекретен документ описва граждански обаждания и действия на ирански военни самолети през септември 1976 г., включително съобщения за необичайна светлина и прекъснати комуникации.",
+        "en": "A declassified U.S. document recounts civilian calls and Iranian military aircraft observations in September 1976, including reports of a bright light and interrupted communications."
+      },
+      "source": {
+        "name": "NSA — declassified Iran case",
+        "url": "https://www.nsa.gov/portals/75/documents/news-features/declassified-documents/ufo/us_gov_iran_case.pdf"
+      },
+      "story": {
+        "bg": [
+          "Разсекретен документ описва граждански обаждания и действия на ирански военни самолети през септември 1976 г., включително съобщения за необичайна светлина и прекъснати комуникации.",
+          "Разгледай оригиналните документи и свидетелства чрез връзките по-долу; там са събрани детайлите, снимките и видеоматериалите, когато са публикувани."
+        ],
+        "en": [
+          "A declassified U.S. document recounts civilian calls and Iranian military aircraft observations in September 1976, including reports of a bright light and interrupted communications.",
+          "Explore the original documents and testimony through the links below, including recordings and images where the publisher has released them."
+        ]
+      },
+      "visual": {
+        "src": "/assets/feature-map.webp",
+        "kind": "illustration",
+        "caption": {
+          "bg": "Тематична визуализация — не е оригинален кадър.",
+          "en": "Thematic illustration, not original footage."
+        }
+      },
+      "media": [
+        {
+          "type": "documents",
+          "title": {
+            "bg": "Документален източник и архив",
+            "en": "Original case documents and archive"
+          },
+          "url": "https://www.nsa.gov/portals/75/documents/news-features/declassified-documents/ufo/us_gov_iran_case.pdf"
+        }
+      ]
+    },
+    {
+      "id": "colares-1977",
+      "date": "1977",
+      "date_precision": "year",
+      "lat": -0.932,
+      "lng": -48.284,
+      "location_precision": "Colares municipal reference; reports across Pará",
+      "category": "lights",
+      "status": "official_record",
+      "country": "BR",
+      "city": {
+        "bg": "Коларес, Бразилия",
+        "en": "Colares, Brazil"
+      },
+      "title": {
+        "bg": "Операция „Плато“ в Бразилия",
+        "en": "Operação Prato, Brazil"
+      },
+      "summary": {
+        "bg": "През 1977–1978 г. бразилски военни събират свидетелства, снимки и скици за наблюдавани светлини в щата Пара. Достъпни са протоколи от операцията с дати, места и описания.",
+        "en": "In 1977–78 Brazilian military investigators collected testimony, photographs and sketches of lights in Pará. Surviving operation records include locations, times and descriptions."
+      },
+      "source": {
+        "name": "Brazilian UFO Archives — military records",
+        "url": "https://brazilianufoarchives.com/operacao-prato-operation-saucer-para-1977-1978/"
+      },
+      "story": {
+        "bg": [
+          "През 1977–1978 г. бразилски военни събират свидетелства, снимки и скици за наблюдавани светлини в щата Пара. Достъпни са протоколи от операцията с дати, места и описания.",
+          "Разгледай оригиналните документи и свидетелства чрез връзките по-долу; там са събрани детайлите, снимките и видеоматериалите, когато са публикувани."
+        ],
+        "en": [
+          "In 1977–78 Brazilian military investigators collected testimony, photographs and sketches of lights in Pará. Surviving operation records include locations, times and descriptions.",
+          "Explore the original documents and testimony through the links below, including recordings and images where the publisher has released them."
+        ]
+      },
+      "visual": {
+        "src": "/assets/feature-map.webp",
+        "kind": "illustration",
+        "caption": {
+          "bg": "Тематична визуализация — не е оригинален кадър.",
+          "en": "Thematic illustration, not original footage."
+        }
+      },
+      "media": [
+        {
+          "type": "documents",
+          "title": {
+            "bg": "Документален източник и архив",
+            "en": "Original case documents and archive"
+          },
+          "url": "https://brazilianufoarchives.com/operacao-prato-operation-saucer-para-1977-1978/"
+        },
+        {
+          "type": "documents",
+          "title": {
+            "bg": "Фотографски документи на операцията",
+            "en": "Operation photographic document archive"
+          },
+          "url": "https://brazilianufoarchives.com/operacao-prato-operation-saucer-para-1977-1978/"
+        }
+      ]
+    },
+    {
+      "id": "puerto-rico-2013",
+      "date": "2013-04-26",
+      "date_precision": "day",
+      "lat": 18.49485,
+      "lng": -67.12944,
+      "location_precision": "Aguadilla Airport reference, not tracked object",
+      "category": "instrument",
+      "status": "explained",
+      "country": "PR",
+      "city": {
+        "bg": "Агуадая, Пуерто Рико",
+        "en": "Aguadilla, Puerto Rico"
+      },
+      "title": {
+        "bg": "Инфрачервеният запис над Пуерто Рико",
+        "en": "Puerto Rico infrared footage"
+      },
+      "summary": {
+        "bg": "През 2013 г. инфрачервен сензор на самолет на граничните служби записва два обекта край Агуадая. AARO публикува анализ на кадрите и разглежда небесни фенери като вероятно обяснение.",
+        "en": "In 2013 a U.S. border patrol aircraft recorded two objects near Aguadilla. AARO analyzed the footage and assessed sky lanterns as a plausible explanation."
+      },
+      "source": {
+        "name": "AARO — Puerto Rico case resolution",
+        "url": "https://www.aaro.mil/Portals/136/PDFs/case_resolution_reports/AARO_Puerto_Rico_UAP_Case_Resolution.pdf"
+      },
+      "story": {
+        "bg": [
+          "През 2013 г. инфрачервен сензор на самолет на граничните служби записва два обекта край Агуадая. AARO публикува анализ на кадрите и разглежда небесни фенери като вероятно обяснение.",
+          "Разгледай оригиналните документи и свидетелства чрез връзките по-долу; там са събрани детайлите, снимките и видеоматериалите, когато са публикувани."
+        ],
+        "en": [
+          "In 2013 a U.S. border patrol aircraft recorded two objects near Aguadilla. AARO analyzed the footage and assessed sky lanterns as a plausible explanation.",
+          "Explore the original documents and testimony through the links below, including recordings and images where the publisher has released them."
+        ]
+      },
+      "visual": {
+        "src": "/assets/feature-map.webp",
+        "kind": "illustration",
+        "caption": {
+          "bg": "Тематична визуализация — не е оригинален кадър.",
+          "en": "Thematic illustration, not original footage."
+        }
+      },
+      "media": [
+        {
+          "type": "video",
+          "title": {
+            "bg": "Официален видеоархив AARO",
+            "en": "Official AARO video archive"
+          },
+          "url": "https://www.aaro.mil/UAP-Cases/Official-UAP-Imagery/"
+        },
+        {
+          "type": "documents",
+          "title": {
+            "bg": "Документален източник и архив",
+            "en": "Original case documents and archive"
+          },
+          "url": "https://www.aaro.mil/Portals/136/PDFs/case_resolution_reports/AARO_Puerto_Rico_UAP_Case_Resolution.pdf"
+        }
+      ]
+    },
+    {
+      "id": "al-taqaddum-2017",
+      "date": "2017-10-23",
+      "date_precision": "day",
+      "lat": 33.33944,
+      "lng": 43.59,
+      "location_precision": "Al Taqaddum Air Base reference point",
+      "category": "instrument",
+      "status": "explained",
+      "country": "IQ",
+      "city": {
+        "bg": "Ал Таккадум, Ирак",
+        "en": "Al Taqaddum, Iraq"
+      },
+      "title": {
+        "bg": "Записът над Ал Таккадум",
+        "en": "Al Taqaddum infrared footage"
+      },
+      "summary": {
+        "bg": "През октомври 2017 г. инфрачервен сензор от военна въздушна платформа заснема обект над Ал Таккадум. Официалният анализ на AARO го свързва с група балони.",
+        "en": "In October 2017 an infrared sensor aboard a military aerostat filmed an object above Al Taqaddum. AARO's published assessment found a cluster of balloons was consistent with the footage."
+      },
+      "source": {
+        "name": "AARO — Al Taqaddum report",
+        "url": "https://www.aaro.mil/Portals/136/PDFs/case_resolution_reports/AARO_Al_Taqaddam_Case_Resolution_Final.pdf"
+      },
+      "story": {
+        "bg": [
+          "През октомври 2017 г. инфрачервен сензор от военна въздушна платформа заснема обект над Ал Таккадум. Официалният анализ на AARO го свързва с група балони.",
+          "Разгледай оригиналните документи и свидетелства чрез връзките по-долу; там са събрани детайлите, снимките и видеоматериалите, когато са публикувани."
+        ],
+        "en": [
+          "In October 2017 an infrared sensor aboard a military aerostat filmed an object above Al Taqaddum. AARO's published assessment found a cluster of balloons was consistent with the footage.",
+          "Explore the original documents and testimony through the links below, including recordings and images where the publisher has released them."
+        ]
+      },
+      "visual": {
+        "src": "/assets/feature-map.webp",
+        "kind": "illustration",
+        "caption": {
+          "bg": "Тематична визуализация — не е оригинален кадър.",
+          "en": "Thematic illustration, not original footage."
+        }
+      },
+      "media": [
+        {
+          "type": "video",
+          "title": {
+            "bg": "Официално видео — DVIDS",
+            "en": "Official recorded video — DVIDS"
+          },
+          "url": "https://www.dvidshub.net/video/960331/al-taqaddum-object"
+        },
+        {
+          "type": "documents",
+          "title": {
+            "bg": "Документален източник и архив",
+            "en": "Original case documents and archive"
+          },
+          "url": "https://www.aaro.mil/Portals/136/PDFs/case_resolution_reports/AARO_Al_Taqaddam_Case_Resolution_Final.pdf"
+        }
+      ]
+    },
+    {
+      "id": "etna-2018",
+      "date": "2018-12",
+      "date_precision": "month",
+      "lat": 37.751,
+      "lng": 14.993,
+      "location_precision": "Mt. Etna regional reference; infrared sensor over sea",
+      "category": "instrument",
+      "status": "explained",
+      "country": "IT",
+      "city": {
+        "bg": "Етна, Сицилия",
+        "en": "Mt. Etna, Sicily"
+      },
+      "title": {
+        "bg": "Инфрачервеният запис край Етна",
+        "en": "Mt. Etna infrared video"
+      },
+      "summary": {
+        "bg": "Военен инфрачервен сензор заснема обект близо до вулкана Етна през 2018 г. AARO публикува анализ на оптичните ефекти от горещия вулканичен облак.",
+        "en": "A military infrared sensor recorded an object near Mt. Etna in 2018. AARO later published an analysis of optical effects near the hot volcanic plume."
+      },
+      "source": {
+        "name": "AARO — Mt Etna case",
+        "url": "https://www.aaro.mil/Next-AARO-Home-redesign/Next-Parent/AARO-UAP-Case-DT/"
+      },
+      "story": {
+        "bg": [
+          "Военен инфрачервен сензор заснема обект близо до вулкана Етна през 2018 г. AARO публикува анализ на оптичните ефекти от горещия вулканичен облак.",
+          "Разгледай оригиналните документи и свидетелства чрез връзките по-долу; там са събрани детайлите, снимките и видеоматериалите, когато са публикувани."
+        ],
+        "en": [
+          "A military infrared sensor recorded an object near Mt. Etna in 2018. AARO later published an analysis of optical effects near the hot volcanic plume.",
+          "Explore the original documents and testimony through the links below, including recordings and images where the publisher has released them."
+        ]
+      },
+      "visual": {
+        "src": "/assets/feature-map.webp",
+        "kind": "illustration",
+        "caption": {
+          "bg": "Тематична визуализация — не е оригинален кадър.",
+          "en": "Thematic illustration, not original footage."
+        }
+      },
+      "media": [
+        {
+          "type": "video",
+          "title": {
+            "bg": "Официален видеоархив AARO",
+            "en": "Official AARO video archive"
+          },
+          "url": "https://www.aaro.mil/UAP-Cases/Official-UAP-Imagery/"
+        },
+        {
+          "type": "documents",
+          "title": {
+            "bg": "Документален източник и архив",
+            "en": "Original case documents and archive"
+          },
+          "url": "https://www.aaro.mil/Next-AARO-Home-redesign/Next-Parent/AARO-UAP-Case-DT/"
+        }
+      ]
     }
   ]
 }

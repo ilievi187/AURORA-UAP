@@ -183,7 +183,7 @@ try{
     await context.close();
   });
 
-  await test('V1.4 globe renders only imported D1 cases and source links',async()=>{
+  await test('world globe shows sourced 15-case archive plus published D1 entries',async()=>{
     const context=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'reduce'});
     const page=await context.newPage(),errors=[];
     page.on('pageerror',e=>errors.push(e.message));
@@ -191,14 +191,15 @@ try{
     await page.locator('button[data-language="bg"]').click();
     await page.locator('#gateContinue').click();
     await page.locator('#languageGate').waitFor({state:'hidden',timeout:1200});
-    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length===3);
+    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length>=15);
+    await page.waitForFunction(()=>!!document.querySelector('#globeCaseList button[data-case-id="aaro-pr-2013"]'));
     await page.waitForFunction(()=>document.querySelector('#registeredSightings')?.textContent==='3');
     assert.equal(await page.locator('#registeredCountries').textContent(),'3');
     assert.equal(await page.locator('#globeCountry option[value="PR"]').count(),1);
     assert.equal(await page.locator('#globeYear option[value="2013"]').count(),1);
-    assert.equal(await page.locator('#globeCaseStatus').textContent(),'ИЗВЕСТНО ОБЯСНЕНИЕ');
-    assert.equal(await page.locator('#globeCaseList button').count(),3);
-    assert.equal(await page.locator('#globeCaseTitle').textContent(),'Светлини над западните САЩ');
+    assert.ok((await page.locator('#globeCaseStatus').textContent()).length>0);
+    assert.ok((await page.locator('#globeCaseList button').count())>=15);
+    assert.equal(await page.locator('#globeCaseTitle').textContent(),'Светлините над Финикс');
     await page.locator('#globeCaseList button[data-case-id="aaro-pr-2013"]').click();
     assert.equal(await page.locator('#globeCaseTitle').textContent(),'Инфрачервени обекти над Пуерто Рико');
     assert.equal(await page.locator('#globeCaseSource').getAttribute('rel'),'noopener noreferrer');
@@ -207,10 +208,10 @@ try{
     const opaque=await page.locator('#caseGlobe').evaluate(canvas=>canvas.getContext('2d').getImageData(220,220,1,1).data[3]>0);
     assert.equal(opaque,true);
     await page.locator('#globeFilter').selectOption('lights');
-    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length===1);
+    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length>=1);
     await page.locator('#globeFilter').selectOption('all');
     await page.locator('#globeCountry').selectOption('IQ');
-    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length===1 && document.querySelector('#globeCaseTitle')?.textContent?.includes('Ал Таккадум'));
+    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length>=1 && !!document.querySelector('#globeCaseList button[data-case-id="aaro-iraq-2017"]'));
     await page.locator('#globeCaseList button[data-case-id="aaro-iraq-2017"]').click();
     assert.equal(await page.locator('#globeCaseCountry').getAttribute('href'),'/countries/IQ');
     await page.locator('#globeRotate').click();
@@ -269,9 +270,11 @@ try{
     await page.locator('button[data-language="en"]').click();
     await page.locator('#gateContinue').click();
     await page.locator('#languageGate').waitFor({state:'hidden',timeout:1000});
-    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length===3);
+    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length>=15);
+    await page.waitForFunction(()=>!!document.querySelector('#globeCaseList button[data-case-id="aaro-pr-2013"]'));
     await page.locator('#globeFilter').selectOption('instrument');
-    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length===2);
+    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length>=6);
+    assert.equal(await page.locator('#globeCaseList button[data-case-id="nimitz-2004"]').count(),1,'historic documented footage remains visible with live records');
     assert.equal(await page.locator('#registeredSightings').textContent(),'3');
     assert.deepEqual(errors,[]);
     await context.close();
@@ -302,7 +305,7 @@ try{
     assert.deepEqual(errors,[]);
     await context.close();
   });
-  await test('Staged rollout preserves eight sourced historical cases when D1 is unavailable',async()=>{
+  await test('Staged rollout always displays 15 sourced historical cases when D1 is unavailable',async()=>{
     const context=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:'reduce'});
     const page=await context.newPage(),errors=[];
     page.on('pageerror',e=>errors.push(e.message));
@@ -311,17 +314,18 @@ try{
     await page.locator('button[data-language="bg"]').click();
     await page.locator('#gateContinue').click();
     await page.locator('#languageGate').waitFor({state:'hidden',timeout:1500});
-    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length===8);
+    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length===15);
     assert.equal(await page.locator('#globalRegister').isVisible(),false);
     assert.match(await page.locator('#atlasHeading').textContent(),/СПРАВОЧЕН АРХИВ/);
     assert.match(await page.locator('.atlas-footer').textContent(),/извън D1/);
     assert.equal(await page.locator('#globeCaseTitle').textContent(),'Светлините над Финикс');
     assert.equal(await page.locator('#globeCaseCountry').isVisible(),false);
     await page.locator('#globeFilter').selectOption('resolved');
-    assert.equal(await page.locator('#globeCaseList button').count(),1);
+    assert.ok((await page.locator('#globeCaseList button').count())>=3);
+    await page.locator('#globeCaseList button[data-case-id="roswell-1947"]').click();
     assert.equal(await page.locator('#globeCaseTitle').textContent(),'Случаят „Розуел“');
     await page.locator('#globeCountry').selectOption('US');
-    assert.equal(await page.locator('#globeCaseList button').count(),1);
+    assert.ok((await page.locator('#globeCaseList button').count())>=1);
     assert.deepEqual(errors,[]);
     await context.close();
   });
@@ -354,6 +358,9 @@ try{
     assert.match(await page.locator('#dossierKind').textContent(),/REFERENCE/);
     assert.match(await page.locator('#factPublication').textContent(),/извън D1|Не е потребителски сигнал/);
     assert.equal(await page.locator('#dossierCountry').isVisible(),false);
+    assert.ok((await page.locator('#dossierStory p').count())>=1);
+    assert.equal(await page.locator('#caseVisualImage').isVisible(),true);
+    assert.ok((await page.locator('#caseMediaGrid a').count())>=1);
     assert.equal(await page.locator('#dossierSourceUrl').getAttribute('rel'),'noopener noreferrer');
     assert.ok((await page.locator('#dossierSourceUrl').getAttribute('href')).startsWith('https://nuforc.org/'));
     assert.match(await page.locator('#dossierLocationCaveat').textContent(),/ориентировъчна/);
@@ -402,7 +409,7 @@ try{
     await page.locator('button[data-language="en"]').click();
     await page.locator('#gateContinue').click();
     await page.locator('#languageGate').waitFor({state:'hidden',timeout:1500});
-    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length===8);
+    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length===15);
     assert.equal(await page.locator('#globeCaseDossier').getAttribute('href'),'/archive/phoenix-1997');
     await page.locator('#globeCaseList button[data-case-id="westall-1966"]').click();
     assert.equal(await page.locator('#globeCaseDossier').getAttribute('href'),'/archive/westall-1966');

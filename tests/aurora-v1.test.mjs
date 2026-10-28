@@ -97,7 +97,7 @@ test('V1.3 globe is self-hosted and integrates a sourced case atlas',()=>{
 test('case data has sourced prose, conservative statuses and approximate map anchors',()=>{
   const raw=JSON.parse(read('data/cases.json'));
   const ids=new Set();
-  assert.ok(raw.cases.length>=7);
+  assert.ok(raw.cases.length>=15);
   for(const c of raw.cases){
     assert.equal(ids.has(c.id),false,'duplicate case '+c.id);ids.add(c.id);
     assert.ok(Number.isFinite(c.lat)&&Math.abs(c.lat)<=90);
@@ -106,6 +106,10 @@ test('case data has sourced prose, conservative statuses and approximate map anc
     assert.ok(c.summary.bg.length>=45&&c.summary.en.length>=45);
     assert.ok(['reported','official_record','explained'].includes(c.status));
     assert.ok(c.location_precision.length>=8,'location precision is explicit');
+    assert.ok(Array.isArray(c.story?.bg)&&c.story.bg.length>=1,'rich Bulgarian editorial context');
+    assert.ok(Array.isArray(c.story?.en)&&c.story.en.length>=1,'rich English editorial context');
+    assert.ok(Array.isArray(c.media)&&c.media.length>=1,'at least one real source-linked media asset');
+    assert.ok(c.media.every(m=>/^https:\/\//.test(m.url)),'media links should point to original sources');
   }
 });
 test('globe respects reduced motion and links to external sources safely',()=>{
@@ -127,7 +131,9 @@ test('V1.4 static country template, D1 APIs and real register controls exist',()
  assert.match(html,/id="lastSync"/);
  assert.match(html,/id="globeCountry"/);
  assert.match(html,/id="globeYear"/);
- assert.match(read('globe.js'),/fetch\("\/api\/cases\?"\+query\.toString\(\)/);
+ assert.ok(read('globe.js').includes('fetch("/api/cases?limit=250"'));
+ assert.ok(read('globe.js').includes('useLegacyArchive()'));
+ assert.ok(read('globe.js').includes('archiveCases.filter'));
  assert.doesNotMatch(read('globe.js'),/fetch\("data\/cases\.json"/);
  assert.match(read('register.js'),/includes_demo!==false/);
 });
@@ -143,7 +149,7 @@ test('case dossiers reuse one template with separate legacy and gated D1 routes'
   assert.match(dossier,/id="dossierSourceUrl"/);
   assert.match(dossier,/id="dossierLocationCaveat"/);
   assert.match(html,/id="globeCaseDossier"/);
-  assert.match(read('globe.js'),/legacyArchive\?"\/archive\/":"\/cases\/"/);
+  assert.ok(read('globe.js').includes('c.recordOrigin==="d1"'));
   assert.match(read('country.js'),/className="case-dossier-link"/);
   assert.match(script,/c\.review_status!=="approved"\|\|c\.record_kind==="demo"/);
   assert.match(script,/res\.status===503/);

@@ -47,7 +47,8 @@
     ru:{heading:"ДОКУМЕНТИРОВАННЫЕ СЛУЧАИ",disclaimer:"Исторические сообщения и записи не доказывают внеземное происхождение. Точки лишь показывают примерный район.",filterLabel:"ФИЛЬТР",all:"Все",lights:"Огни",object:"Объекты",instrument:"Записи приборов",official:"Официальные записи",explained:"Есть объяснение",pause:"Пауза",resume:"Вращать",loading:"Загрузка дел…",noResults:"Нет подходящих случаев.",source:"ОТКРЫТЬ ПЕРВОИСТОЧНИК",footer:"Авторские пересказы с указанием источников.",prec:"Примерная точка",reported:"СВИДЕТЕЛЬСКОЕ СООБЩЕНИЕ",official_record:"ДОКУМЕНТАЛЬНАЯ ЗАПИСЬ",explained_status:"ИЗВЕСТНО ОБЪЯСНЕНИЕ",dateNote:"Дата",locationNote:"Регион",count:"случаев"},
     "zh-CN":{heading:"有来源的历史案例",disclaimer:"历史报告和已公布的影像并非外星来源的证据。标记仅表示近似区域。",filterLabel:"筛选",all:"全部",lights:"光点",object:"物体",instrument:"仪器影像",official:"官方记录",explained:"已有解释",pause:"暂停",resume:"旋转",loading:"正在加载案例…",noResults:"没有符合条件的案例。",source:"查看原始来源",footer:"案例内容均为原创摘要，附有来源链接。",prec:"近似地图位置",reported:"目击报告",official_record:"正式记录",explained_status:"已有解释",dateNote:"日期",locationNote:"区域",count:"个案例"}
   };
-  let cases=[],land=[],filtered=[],selected=null,texturePixels=null,pinNodes=new Map(),legacyArchive=false;
+  let cases=[],land=[],filtered=[],selected=null,texturePixels=null,pinNodes=new Map(),legacyArchive=true;
+  let archiveCases=[],liveCases=[];
   let lon=-15,paused=false,temporaryPause=0,wasVisible=false,raf=0,last=0,initialized=false;
   const prefersReduced=window.matchMedia("(prefers-reduced-motion: reduce)");
   const l=()=>T[document.documentElement.lang]||T.en;
@@ -172,7 +173,7 @@
     ui.precision.textContent=l().prec+": "+c.location_precision;
     const dossier=document.getElementById("globeCaseDossier");
     dossier.hidden=false;
-    dossier.href=(legacyArchive?"/archive/":"/cases/")+encodeURIComponent(c.id);
+    dossier.href=(c.recordOrigin==="d1"?"/cases/":"/archive/")+encodeURIComponent(c.id);
     dossier.textContent=document.documentElement.lang==="bg"?"ОТВОРИ ДОСИЕТО ↗":"OPEN CASE DOSSIER ↗";
     const words={
       resolved:l().explained_status,
@@ -185,7 +186,7 @@
     ui.status.textContent=words[c.status]||l().reported;
     ui.status.dataset.status=c.status;
     const countryLink=document.getElementById("globeCaseCountry");
-    countryLink.hidden=legacyArchive||!c.country||!/^[A-Z]{2}$/.test(c.country);
+    countryLink.hidden=c.recordOrigin!=="d1"||!c.country||!/^[A-Z]{2}$/.test(c.country);
     if(!countryLink.hidden)countryLink.href="/countries/"+c.country;
     ui.source.hidden=!validUrl(c.source?.url);
     if(!ui.source.hidden)ui.source.href=c.source.url;
@@ -198,11 +199,11 @@
     const category=ui.filter.value;
     const country=document.getElementById("globeCountry").value;
     const year=document.getElementById("globeYear").value;
-    filtered=legacyArchive?cases.filter(c=>
+    filtered=cases.filter(c=>
       (category==="all"||c.category===category||
        (category==="resolved"&&c.status==="explained"))&&
       (!country||c.country===country)&&(!year||c.date.startsWith(year))
-    ):cases;
+    );
     if(!filtered.some(c=>c.id===selected))selected=filtered[0]?.id||null;
     renderList();
     if(selected)select(selected,false);
@@ -222,7 +223,7 @@
       else if(key!=="loading"&&trans[key])el.textContent=trans[key];
     });
     ui.rotate.setAttribute("aria-label",paused?trans.resume:trans.pause);
-    if(legacyArchive){
+    if(legacyArchive&&liveCases.length===0){
       document.getElementById("atlasHeading").textContent=document.documentElement.lang==="bg"
         ?"ИСТОРИЧЕСКИ СЛУЧАИ · СПРАВОЧЕН АРХИВ":"HISTORICAL CASES · REFERENCE ARCHIVE";
       document.querySelector(".atlas-footer [data-globe-t='footer']").textContent=document.documentElement.lang==="bg"
@@ -284,39 +285,49 @@
     new IntersectionObserver(entries=>{wasVisible=entries[0]?.isIntersecting||false;run()},{threshold:0}).observe(ui.shell);
   }else wasVisible=true;
   let refreshSequence=0;
-  async function refreshCases(){
-    const seq=++refreshSequence;
-    const query=new URLSearchParams({limit:"250"});
-    const country=document.getElementById("globeCountry").value;
-    const year=document.getElementById("globeYear").value;
-    const filter=ui.filter.value;
-    if(legacyArchive){applyFilter();return}
-    if(country)query.set("country",country);
-    if(year)query.set("year",year);
-    if(filter==="resolved")query.set("assessment","resolved");
-    else if(filter!=="all")query.set("type",filter);
-    ui.counter.textContent="…";
+  // The published, sourced archive always renders first and remains present when
+  // private D1 has not been activated. Approved D1 data adds to it, never erases it.
+  function updateFacets(){
+    const countrySelect=document.getElementById("globeCountry"),yearSelect=document.getElementById("globeYear");
+    const activeCountry=countrySelect.value,activeYear=yearSelect.value;
+    countrySelect.length=1;yearSelect.length=1;
+    const countries=new Map(),years=new Map();
+    for(const c of cases){
+      if(/^[A-Z]{2}$/.test(c.country))countries.set(c.country,(countries.get(c.country)||0)+1);
+      const year=String(c.date||"").slice(0,4);
+      if(/^\d{4}$/.test(year))years.set(year,(years.get(year)||0)+1);
+    }
+    facets({countries:[...countries].sort((a,b)=>a[0].localeCompare(b[0])).map(([code,count])=>({code,count})),
+      years:[...years].sort((a,b)=>b[0].localeCompare(a[0])).map(([year,count])=>({year,count}))});
+    countrySelect.value=countries.has(activeCountry)?activeCountry:"";
+    yearSelect.value=years.has(activeYear)?activeYear:"";
+  }
+  function refreshCases(){
+    // Filtering is immediate, client-side. No reloading or spinner on every click.
+    applyFilter();
+  }
+  async function loadApprovedCases(){
     try{
-      const response=await fetch("/api/cases?"+query.toString(),{cache:"no-store"});
-      if(!response.ok)throw Error("D1 cases unavailable: HTTP "+response.status);
-      const dataset=await response.json();
-      if(seq!==refreshSequence)return;
-      cases=(Array.isArray(dataset.cases)?dataset.cases:[]).filter(c=>
+      const statsRes=await fetch("/api/stats",{cache:"no-store"});
+      if(!statsRes.ok)return;
+      const stats=await statsRes.json();
+      if(stats.includes_demo!==false||!Array.isArray(stats.by_country))return;
+      const res=await fetch("/api/cases?limit=250",{cache:"no-store"});
+      if(!res.ok)return;
+      const dataset=await res.json();
+      liveCases=(Array.isArray(dataset.cases)?dataset.cases:[]).filter(c=>
         typeof c.id==="string"&&c.title?.en&&c.summary?.en&&validUrl(c.source?.url)&&
         (c.lat===null&&c.lng===null||
-         Number.isFinite(c.lat)&&Number.isFinite(c.lng)&&Math.abs(c.lat)<=90&&Math.abs(c.lng)<=180));
-      applyFilter();run();
-      if(dataset.has_more){
-        const more=document.createElement("span");
-        more.textContent=" / "+(document.documentElement.lang==="bg"?"Първи 250 — пълният списък е по държави":"First 250 — open a country for all cases");
-        ui.counter.append(more);
-      }
+          Number.isFinite(c.lat)&&Number.isFinite(c.lng)&&Math.abs(c.lat)<=90&&Math.abs(c.lng)<=180)
+      ).map(c=>({...c,recordOrigin:"d1"}));
+      const ids=new Set(liveCases.map(x=>x.id));
+      cases=[...archiveCases.filter(x=>!ids.has(x.id)),...liveCases];
+      updateFacets();applyFilter();run();
+      document.getElementById("atlasHeading").textContent=document.documentElement.lang==="bg"?"СВЕТОВЕН АРХИВ · СЛУЧАИ И ДОКУМЕНТИ":"WORLDWIDE ARCHIVE · CASES & RECORDS";
+      document.querySelector(".atlas-footer [data-globe-t='footer']").textContent=
+        document.documentElement.lang==="bg"?"Исторически случаи и одобрени записи от регистъра.": "Historical cases and published registry records.";
     }catch(error){
-      if(seq!==refreshSequence)return;
-      console.warn("AURORA globe API error",error);
-      cases=[];applyFilter();
-      ui.title.textContent="AURORA / D1 OFFLINE";ui.counter.textContent="—";
-      ui.summary.textContent=document.documentElement.lang==="bg"?"Базата е недостъпна. Няма заместител с демо данни.":"Database unavailable; no demo fallback.";
+      console.warn("AURORA registry not available; source-linked worldwide archive remains visible",error);
     }
   }
   function facets(rows){
@@ -340,48 +351,35 @@
   }
   async function useLegacyArchive(){
     const response=await fetch("/data/cases.json",{cache:"force-cache"});
-    if(!response.ok)throw Error("Sourced archive unavailable");
+    if(!response.ok)throw Error("Worldwide archive not available");
     const dataset=await response.json();
-    legacyArchive=true;
-    cases=(Array.isArray(dataset.cases)?dataset.cases:[]).filter(c=>
+    archiveCases=(Array.isArray(dataset.cases)?dataset.cases:[]).filter(c=>
       typeof c.id==="string"&&Number.isFinite(c.lat)&&Number.isFinite(c.lng)&&
-      Math.abs(c.lat)<=90&&Math.abs(c.lng)<=180&&c.title?.en&&c.summary?.en&&validUrl(c.source?.url));
-    const counts=new Map(),years=new Map();
-    for(const c of cases){
-      counts.set(c.country,(counts.get(c.country)||0)+1);
-      const year=c.date.slice(0,4);years.set(year,(years.get(year)||0)+1);
-    }
-    facets({countries:[...counts].map(([code,count])=>({code,count})).sort((a,b)=>a.code.localeCompare(b.code)),
-      years:[...years].map(([year,count])=>({year,count})).sort((a,b)=>b.year.localeCompare(a.year))});
-    updateLanguage();applyFilter();run();
+      Math.abs(c.lat)<=90&&Math.abs(c.lng)<=180&&c.title?.en&&c.summary?.en&&validUrl(c.source?.url)
+    ).map(c=>({...c,recordOrigin:"archive"}));
+    cases=archiveCases.slice();
+    legacyArchive=true;
+    updateFacets();updateLanguage();applyFilter();run();
   }
   async function load(){
     updateLanguage();
-    const [geoRes,statsRes]=await Promise.all([
-      fetch("/data/earth-land.json",{cache:"force-cache"}),
-      fetch("/api/stats",{cache:"no-store"})
+    // Land and case assets are both self-hosted; no database round-trip is needed
+    // to populate the globe on the first visit.
+    const [landResult,archiveResult]=await Promise.allSettled([
+      fetch("/data/earth-land.json",{cache:"force-cache"}).then(async r=>r.ok?await r.json():null),
+      useLegacyArchive()
     ]);
-    if(geoRes.ok){
-      const geo=await geoRes.json();
-      if(Array.isArray(geo.polygons))land=geo.polygons;
+    if(landResult.status==="fulfilled"&&Array.isArray(landResult.value?.polygons))land=landResult.value.polygons;
+    texture();initialized=true;run();
+    if(archiveResult.status==="rejected"){
+      console.warn("AURORA initial archive fetch failed",archiveResult.reason);
+      ui.title.textContent="ARCHIVE UNAVAILABLE";
     }
-    texture();initialized=true;
-    if(!statsRes.ok){await useLegacyArchive();return}
-    const stats=await statsRes.json();
-    if(stats.includes_demo!==false||!Array.isArray(stats.by_country)||!Array.isArray(stats.by_year))
-      throw Error("Invalid D1 country/year facets");
-    legacyArchive=false;
-    facets({countries:stats.by_country,years:stats.by_year});
-    await refreshCases();
+    // D1 enrichment is optional; it cannot clear, block or replace the atlas.
+    loadApprovedCases();
   }
   load().catch(error=>{
-    console.warn("AURORA case atlas: unable to load sourced dataset",error);
+    console.warn("AURORA global atlas initialization",error);
     texture();run();
-    // Even if API fails, keep the existing sourced V1.3 archive available;
-    // this is NOT a D1 count, user submission, or fictional demonstration case.
-    useLegacyArchive().catch(()=>{
-      ui.summary.textContent=document.documentElement.lang==="bg"?"Няма връзка с архива.":"Archive unavailable.";
-      ui.title.textContent="AURORA / ARCHIVE OFFLINE";ui.counter.textContent="—";
-    });
   });
 })();
