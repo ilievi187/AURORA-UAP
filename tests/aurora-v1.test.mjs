@@ -190,3 +190,15 @@ test("front page report actions point to actual private intake UI",()=>{
  assert.match(read("report.js"),/result\.status!=="pending"/);
  assert.doesNotMatch(read("functions/_lib/intake.js"),/env\.AURORA_REGISTRY_PUBLIC/);
 });
+
+
+test('home opens a populated global case map and linked live headlines, with no manual reload',()=>{
+ const page=read('index.html');
+ for(const id of ['worldAtlas','worldMapCanvas','worldMapPins','worldCaseDetail','worldCountry','homeNewsGrid','homeNewsStatus']){
+  assert.match(page,new RegExp('id="'+id+'"'),'missing '+id);
+ }
+ assert.match(page,/src="\/world-atlas\.js"/);
+ assert.match(page,/src="\/home-news\.js"/);
+ assert.match(read('world-atlas.js'),/fetch\("\/data\/cases\.json"/);
+ assert.match(read('home-news.js'),/fetch\("\/api\/news\?edition=global"/);
+});
