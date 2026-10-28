@@ -202,3 +202,15 @@ test('home opens a populated global case map and linked live headlines, with no 
  assert.match(read('world-atlas.js'),/fetch\("\/data\/cases\.json"/);
  assert.match(read('home-news.js'),/fetch\("\/api\/news\?edition=global"/);
 });
+
+
+test('global editorial UI labels have complete keys in all eighteen advertised languages',()=>{
+ const file=read('ui-locales.js');
+ assert.doesNotThrow(()=>new Script(file), 'UI locale pack syntax');
+ for(const locale of ['bg','en','de','ru','zh-CN','fr','es','it','pt','tr','ro','el','sr','uk','pl','ar','ja','ko']){
+  assert.ok(file.includes('"'+locale+'"')||file.includes(locale+':'),'missing locale '+locale);
+ }
+ assert.match(html,/src="\/ui-locales\.js"/);
+ assert.match(read('dossier.html'),/src="\/ui-locales\.js"/);
+ assert.doesNotMatch(html,/id="statSignals"/,'remove all demo statistic cards from premium homepage');
+});

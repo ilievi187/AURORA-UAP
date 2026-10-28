@@ -57,7 +57,7 @@
   const h=document.createElement("h3");h.textContent=local(c.title);
   const p=document.createElement("p");p.textContent=local(c.summary);
   const a=document.createElement("a");a.href=(c.recordOrigin==="d1"?"/cases/":"/archive/")+encodeURIComponent(c.id);
-  a.textContent=lang()==="bg"?"ПРОЧЕТИ ЦЯЛОТО ДОСИЕ ↗":"READ FULL CASE FILE ↗";
+  a.textContent=window.AURORA_UI?.label("readCase")||(lang()==="bg"?"ПРОЧЕТИ ЦЯЛОТО ДОСИЕ ↗":"READ FULL CASE FILE ↗");
   d.replaceChildren(tag,h,p,a);
   [...pinHost.children].forEach((b,i)=>b.setAttribute("aria-pressed",String(current[i].id===selected)));
  }

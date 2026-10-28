@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#05101c">
-  <meta name="robots" content="noindex,nofollow">
-  <meta name="description" content="AURORA / UAP Bulgaria — независима инициатива за събиране и анализ на сигнали за необяснени въздушни явления. Демонстрационен сайт.">
+  <meta name="robots" content="index,follow">
+  <meta name="description" content="AURORA / UAP Bulgaria — независима инициатива за събиране и анализ на сигнали за необяснени въздушни явления. Световен архив на случаи, новини и видеоматериали.">
   <title>AURORA — UAP Bulgaria | Изследвай неизвестното</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
@@ -22,7 +22,7 @@
   <script defer src="globe.js"></script>
   <script defer src="register.js"></script>
 <link rel="stylesheet" href="/live-tools.css">
-<link rel="stylesheet" href="/world-atlas.css"><script defer src="/world-atlas.js"></script><script defer src="/home-news.js"></script>
+<link rel="stylesheet" href="/world-atlas.css"><script defer src="/ui-locales.js"></script><script defer src="/world-atlas.js"></script><script defer src="/home-news.js"></script>
 </head>
 <body class="gate-open">
 <noscript><style>#languageGate{display:none!important}body.gate-open{overflow:auto}.site-shell{pointer-events:auto!important}</style></noscript>
@@ -86,8 +86,8 @@
     <div class="orbital-stage" aria-hidden="true"><div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="orbit orbit-c"></div><div class="orbit-mark"></div></div>
     <canvas id="heroHudCanvas" class="system-canvas hero-hud-canvas" aria-hidden="true"></canvas>
     <div class="hud-reticle" aria-hidden="true"><div class="reticle-inner"></div><span class="reticle-cross">✧</span></div>
-    <div class="hud-telemetry hud-telemetry-top" aria-hidden="true"><b>SYS // AURORA</b><span>SCAN MODE: ACTIVE</span><span>SIGNAL INTEGRITY : 99.8%</span></div>
-    <div class="hud-telemetry hud-telemetry-bottom" aria-hidden="true"><b>UNIDENTIFIED ≠ EXTRATERRESTRIAL</b><span>DATASET : DEMO / 0008</span><span class="telemetry-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+    <div class="hud-telemetry hud-telemetry-top" aria-hidden="true"><b>SYS // AURORA</b><span>SCAN MODE: ACTIVE</span><span>WORLD ARCHIVE / SOURCE LINKED</span></div>
+    <div class="hud-telemetry hud-telemetry-bottom" aria-hidden="true"><b>UNIDENTIFIED ≠ EXTRATERRESTRIAL</b><span>WORLD ATLAS / CASE FILES</span><span class="telemetry-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
     <div class="hero-image" role="img" aria-label="Художествена илюстрация на неидентифициран летящ обект над планински пейзаж"></div>
     <div class="hero-content">
       <div class="eyebrow" data-i18n="heroKicker">ОТВОРЕНИ ДАННИ. КРИТИЧНО МИСЛЕНЕ. НЕПОЗНАТОТО НИ ОЧАКВА.</div>
@@ -99,6 +99,13 @@
     <div class="hero-side-label" aria-hidden="true">SAME<br>SKIES.<br>DIFFERENT<br>QUESTIONS.</div>
     <div class="hero-meta" aria-hidden="true"><span><i class="live-dot"></i> SCIENCE FIRST / OPEN SKIES</span><span>INDEPENDENT INITIATIVE — BULGARIA</span><strong>SCROLL TO EXPLORE ↓</strong></div>
   </section>
+  <section class="world-atlas" id="worldAtlas" aria-labelledby="worldAtlasHeading">
+ <div class="world-atlas-head"><div><p class="console-kicker">AURORA / GLOBAL CASE INDEX</p><h2 id="worldAtlasHeading">СВЕТОВНА КАРТА НА СЛУЧАИТЕ</h2><p>Всички публикувани архивни истории на една карта. Избери точка и отвори цялото досие със записи и източници.</p></div><strong class="world-atlas-count" id="worldMapCount">—</strong></div>
+ <div class="world-atlas-filters"><label for="worldCountry">ДЪРЖАВА</label><select id="worldCountry" aria-label="Country filter"><option value="">ВСИЧКИ ДЪРЖАВИ</option></select></div>
+ <div class="world-map-layout"><div><div class="world-map-surface"><canvas id="worldMapCanvas" aria-hidden="true"></canvas><div id="worldMapPins" class="world-map-pins" aria-label="Worldwide documented case markers"></div></div><p class="world-map-caption">Маркерите показват описан район, не измерена траектория.</p></div>
+ <aside class="world-case-detail" id="worldCaseDetail" aria-live="polite">Зареждане на световния архив…</aside></div>
+ <p id="worldMapState" class="home-news-state" role="status"></p>
+</section>
   <div class="signal-ribbon" aria-hidden="true"><span>01 / THE INITIATIVE</span><span class="ribbon-line"></span><b>WE DOCUMENT. WE VERIFY. WE QUESTION.</b><span>OPEN SOURCE MINDSET · 2026</span></div>
 
   <section class="global-register" id="globalRegister" aria-label="Global registered UAP sightings" hidden>
@@ -116,12 +123,7 @@
  <p id="homeNewsStatus" class="home-news-state" role="status">Зареждаме световните източници…</p>
  <div id="homeNewsGrid" class="home-news-grid"></div>
 </section>
-<section class="stats" aria-label="Статистика на демонстрацията">
-    <div class="stat"><span class="stat-icon"><svg class="icon"><use href="#i-target"/></svg></span><div><b id="statSignals">08</b><p data-i18n="statSignals">Примерни сигнали</p><small data-i18n="statDemo">Демо данни</small></div></div>
-    <div class="stat"><span class="stat-icon"><svg class="icon"><use href="#i-folder"/></svg></span><div><b>04</b><p data-i18n="statTopics">Изследователски направления</p><small data-i18n="statDemo">Демо данни</small></div></div>
-    <div class="stat"><span class="stat-icon"><svg class="icon"><use href="#i-globe"/></svg></span><div><b>01</b><p data-i18n="statMission">Обща мисия</p><small data-i18n="statMissionNote">Наука и прозрачност</small></div></div>
-    <div class="stat"><span class="stat-icon"><svg class="icon"><use href="#i-shield"/></svg></span><div><b>00</b><p data-i18n="statVerified">Потвърдени случая</p><small data-i18n="statHonest">Без измислени доказателства</small></div></div>
-  </section>
+
 
   <section class="mission-console" id="control" aria-labelledby="controlHeading" data-phase="0">
   <div class="console-heading">
@@ -169,13 +171,7 @@
       <div class="console-progress" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
     </div>
   </div>
-  <section class="world-atlas" id="worldAtlas" aria-labelledby="worldAtlasHeading">
- <div class="world-atlas-head"><div><p class="console-kicker">AURORA / GLOBAL CASE INDEX</p><h2 id="worldAtlasHeading">СВЕТОВНА КАРТА НА СЛУЧАИТЕ</h2><p>Всички публикувани архивни истории на една карта. Избери точка и отвори цялото досие със записи и източници.</p></div><strong class="world-atlas-count" id="worldMapCount">—</strong></div>
- <div class="world-atlas-filters"><label for="worldCountry">ДЪРЖАВА</label><select id="worldCountry" aria-label="Country filter"><option value="">ВСИЧКИ ДЪРЖАВИ</option></select></div>
- <div class="world-map-layout"><div><div class="world-map-surface"><canvas id="worldMapCanvas" aria-hidden="true"></canvas><div id="worldMapPins" class="world-map-pins" aria-label="Worldwide documented case markers"></div></div><p class="world-map-caption">Маркерите показват описан район, не измерена траектория.</p></div>
- <aside class="world-case-detail" id="worldCaseDetail" aria-live="polite">Зареждане на световния архив…</aside></div>
- <p id="worldMapState" class="home-news-state" role="status"></p>
-</section>
+  
   <div class="case-atlas" id="caseAtlas" aria-labelledby="atlasHeading">
     <div class="atlas-header"><div><p class="console-kicker">ARCHIVE / DOCUMENTED REPORTS / SOURCED</p><h3 id="atlasHeading" data-globe-t="heading">ДОКУМЕНТИРАНИ СЛУЧАИ</h3>
       <p class="atlas-disclaimer" data-globe-t="disclaimer">Исторически свидетелства и документирани записи, не доказателства за извънземен произход. Маркерите показват приблизителен район, а не точна траектория.</p></div>

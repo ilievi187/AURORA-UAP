@@ -386,6 +386,21 @@ try{
     assert.deepEqual(errors,[]);
     await ctx.close();
   });
+  await test('premium dossier offers original video only after click; labels are localized',async()=>{
+    const ctx=await browser.newContext({viewport:{width:1200,height:800},reducedMotion:'reduce'});
+    const page=await ctx.newPage(),errors=[];
+    page.on("pageerror",e=>errors.push(e.message));
+    await page.route('https://www.dvidshub.net/**',route=>route.fulfill({status:200,contentType:'text/html',body:'<html><body>Video source</body></html>'}));
+    await page.goto('http://127.0.0.1:'+port+'/archive/al-taqaddum-2017');
+    await page.waitForFunction(()=>document.querySelector('#dossierContent')?.hidden===false);
+    assert.equal(await page.locator('#caseMediaGrid a').count()>=2,true);
+    assert.equal(await page.locator('#caseMediaGrid iframe').count(),0);
+    await page.locator('.case-watch-button').click();
+    assert.equal(await page.locator('#caseMediaGrid iframe').getAttribute('src'),'https://www.dvidshub.net/video/embed/960331');
+    assert.equal(await page.locator('#caseMediaGrid iframe').count(),1);
+    assert.deepEqual(errors,[]);
+    await ctx.close();
+  });
   await test('Live D1 case page displays editorial review, source finding and exact provenance separately',async()=>{
     const ctx=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'reduce'});
     const page=await ctx.newPage(),errors=[];

@@ -107,7 +107,7 @@
   }
   const mediaBox=$("caseMediaSection"),mediaGrid=$("caseMediaGrid");
   mediaGrid.replaceChildren();
-  $("caseMediaTitle").textContent=lang==="bg"?"СНИМКИ, ВИДЕО И ДОКУМЕНТИ":"PHOTOS, VIDEO & SOURCE DOCUMENTS";
+  $("caseMediaTitle").textContent=window.AURORA_UI?.label("mediaTitle")||(lang==="bg"?"СНИМКИ, ВИДЕО И ДОКУМЕНТИ":"PHOTOS, VIDEO & SOURCE DOCUMENTS");
   const approvedTypes=new Set(["video","documents","archive","photo"]);
   for(const m of (Array.isArray(c.media)?c.media:[]).slice(0,12)){
    if(!approvedTypes.has(m.type))continue;
@@ -122,6 +122,27 @@
    const type=document.createElement("small");
    type.textContent=({video:"VIDEO",photo:"PHOTO",documents:"DOCUMENTS",archive:"ARCHIVE"})[m.type];
    anchor.append(icon,text,type);mediaGrid.append(anchor);
+  }
+  // Native viewing for the one verified public-domain DVIDS video. The player
+  // is intentionally created only after an explicit user click (no third-party
+  // cookie or media request on initial page load).
+  if(c.id==="al-taqaddum-2017"&&legacy){
+   const watch=document.createElement("button");
+   watch.type="button";watch.className="case-watch-button";
+   watch.textContent=window.AURORA_UI?.label("watch")||(lang==="bg"?"▶ ГЛЕДАЙ ОРИГИНАЛНИЯ ЗАПИС":"▶ WATCH THE ORIGINAL FOOTAGE");
+   watch.addEventListener("click",()=>{
+    if(mediaGrid.querySelector("iframe"))return;
+    const frame=document.createElement("iframe");
+    frame.src="https://www.dvidshub.net/video/embed/960331";
+    frame.title="DVIDS — Al Taqaddum original AARO video";
+    frame.className="case-video-frame";
+    frame.loading="lazy";frame.allowFullscreen=true;
+    frame.referrerPolicy="strict-origin-when-cross-origin";
+    frame.setAttribute("sandbox","allow-scripts allow-same-origin allow-presentation");
+    mediaGrid.append(frame);
+    watch.disabled=true;
+   });
+   mediaGrid.prepend(watch);
   }
   mediaBox.hidden=mediaGrid.childElementCount===0;
 
