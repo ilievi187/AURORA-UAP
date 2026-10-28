@@ -31,6 +31,8 @@
   }catch{/* private browsing or blocked storage */}
  }
  function clearDraft(){
+  $("receiptPanel").hidden=true;
+  $("receiptValue").textContent="";
   try{localStorage.removeItem(STORAGE)}catch{}
   $("observationForm").reset();
   requestKey=crypto.randomUUID();
@@ -57,6 +59,11 @@
   $("country").addEventListener("input",()=>{$("country").value=$("country").value.toUpperCase()});
   $("saveDraft").addEventListener("click",saveDraft);
   $("clearDraft").addEventListener("click",clearDraft);
+  $("copyReceipt").addEventListener("click",async()=>{
+   const receipt=$("receiptValue").textContent;if(!receipt)return;
+   try{await navigator.clipboard.writeText(receipt);msg("Номерът е копиран. / Reference copied.")}
+   catch{msg("Копирай номера ръчно. / Copy the reference manually.",true)}
+  });
   $("consent").addEventListener("change",refreshSubmitButton);
   $("observationForm").addEventListener("submit",send);
   try{
@@ -107,9 +114,12 @@
     credentials:"same-origin",body:JSON.stringify(payload)
    });
    const result=await response.json();
-   if(response.status!==202||!/^aur-int-[a-f0-9-]{36}$/.test(result.receipt_id||""))
+   if(response.status!==202||result.status!=="pending"||result.published!==false||
+      !/^aur-int-[a-f0-9-]{36}$/.test(result.receipt_id||""))
     throw Error(result.error||"submit_failed");
    clearDraft();
+   $("receiptValue").textContent=result.receipt_id;
+   $("receiptPanel").hidden=false;
    msg("Сигналът е приет за ЧОВЕШКИ ПРЕГЛЕД. Номер: "+result.receipt_id+
     ". Не е публикуван. / Received for private review. Not published.");
   }catch(error){

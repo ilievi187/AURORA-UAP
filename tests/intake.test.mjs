@@ -66,7 +66,9 @@ test("second schema creates quarantine and audit without publishing or storing c
 test("public intake fails closed without every explicit policy, D1, WAF, hostname and Turnstile gate",async()=>{
  const {db,sql}=database();const env=environment(db);
  assert.equal(intakeEnabled(env,"aurorauap.org"),true);
- for(const key of ["DB","AURORA_REGISTRY_PUBLIC","AURORA_INTAKE_ENABLED","AURORA_INTAKE_LEGAL_APPROVED",
+ assert.equal(intakeEnabled({...env,AURORA_REGISTRY_PUBLIC:"disabled"},"aurorauap.org"),true);
+ assert.equal(intakeEnabled({...env,AURORA_REGISTRY_PUBLIC:undefined},"aurorauap.org"),true);
+ for(const key of ["DB","AURORA_INTAKE_ENABLED","AURORA_INTAKE_LEGAL_APPROVED",
   "AURORA_INTAKE_WAF_REVIEWED","AURORA_INTAKE_POLICY_VERSION","AURORA_INTAKE_POLICY_URL",
   "AURORA_INTAKE_HOSTNAME","AURORA_TURNSTILE_SECRET","AURORA_TURNSTILE_SITE_KEY"]){
   const invalid={...env};delete invalid[key];
@@ -187,4 +189,19 @@ test("intake status cannot claim readiness when private D1 migration is missing"
  assert.equal(requestResult.status,503);
  assert.equal((await requestResult.json()).error,"intake_disabled");
  sql.close();
+});
+
+test("private text report works while the separate public registry is disabled",async()=>{
+ const {db,sql}=database(),env={...environment(db),AURORA_REGISTRY_PUBLIC:"disabled"};
+ const status=await getStatus({request:new Request("https://aurorauap.org/api/intake/status"),env});
+ assert.equal((await status.json()).accepting,true);
+ const original=globalThis.fetch;
+ globalThis.fetch=async()=>Response.json({success:true,hostname:"aurorauap.org",action:"aurora_report"});
+ try{
+  const response=await submit({request:request(body()),env});
+  assert.equal(response.status,202);
+  assert.equal((await response.json()).published,false);
+  assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM intake_submissions").get().n,1);
+  assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM cases").get().n,0);
+ }finally{globalThis.fetch=original;sql.close()}
 });

@@ -15,7 +15,7 @@ const normalizeCoordinate=(value,limit)=>{
 };
 export function intakeEnabled(env,hostname){
  return Boolean(env?.DB&&typeof env.DB.prepare==="function"&&typeof env.DB.batch==="function"&&
- env.AURORA_REGISTRY_PUBLIC==="enabled"&&
+ // A private quarantined report is independent of the PUBLIC cases registry.
  env.AURORA_INTAKE_ENABLED==="enabled"&&
  env.AURORA_INTAKE_LEGAL_APPROVED==="yes"&&
  env.AURORA_INTAKE_WAF_REVIEWED==="yes"&&

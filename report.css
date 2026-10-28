@@ -31,3 +31,12 @@ textarea{resize:vertical;min-height:150px;line-height:1.6}
 .report-section>p{font-size:13px;line-height:1.8;color:#b3d5d4}
 footer{padding:30px 0 50px;border-top:1px solid #45798255;font:10px Consolas,monospace;letter-spacing:.16em;color:#85afb4}
 @media(max-width:650px){.report-grid{grid-template-columns:1fr}.report-brand{font-size:15px}.report-nav{height:72px}.report-back{font-size:9px}.report-actions{display:grid}.report-actions button{width:100%}}
+
+.report-english{font-size:.42em;letter-spacing:.02em;color:#80c6cb;vertical-align:middle}
+.receipt-panel{padding:22px;margin:18px 0 26px;border:1px solid #7ad4b9;border-radius:10px;background:linear-gradient(125deg,#0b342e,#091f2b);overflow-wrap:anywhere}
+.receipt-panel strong{color:#a6ffe9;font:700 12px/1.7 Consolas,monospace;letter-spacing:.07em}
+.receipt-panel p{color:#bed7d9;font-size:14px;line-height:1.6}
+.receipt-panel code{display:block;font:600 clamp(13px,2vw,19px)/1.7 Consolas,monospace;color:#eafffa;user-select:all;overflow-wrap:anywhere}
+.receipt-panel button{margin-top:14px;padding:11px 15px;cursor:pointer;background:#174950;color:#ecffff;border:1px solid #82ddc8}
+.receipt-panel button:focus-visible{outline:2px solid white;outline-offset:3px}
+@media(max-width:650px){.report-english{display:block;margin-top:12px}}

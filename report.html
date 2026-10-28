@@ -15,7 +15,7 @@
 <main id="reportMain">
 <section class="report-hero">
 <p class="eyebrow">◉ / OBSERVATION INTAKE / V1.5</p>
-<h1>REPORT AN OBSERVATION</h1>
+<h1>ПОДАЙ СИГНАЛ <span class="report-english">/ REPORT AN OBSERVATION</span></h1>
 <p>Документирай какво си видял. Разграничаваме свидетелските сведения от доказаните факти. Всички сигнали минават през човешка проверка.</p>
 <div class="report-status" id="reportStatus" role="status" aria-live="polite">Проверка на системата за приемане…</div>
 </section>
@@ -44,6 +44,12 @@
 <button type="submit" id="sendReport" disabled>ПОДАЙ НАБЛЮДЕНИЕ</button>
 </div>
 <p id="formFeedback" role="status" aria-live="polite"></p>
+<div id="receiptPanel" class="receipt-panel" hidden aria-live="polite">
+<strong>ПРИЕТО ЗА ЧОВЕШКИ ПРЕГЛЕД / RECEIVED FOR REVIEW</strong>
+<p>Запази този номер. Сигналът не е публикуван. / Save this reference; the report is not public.</p>
+<code id="receiptValue"></code>
+<button type="button" id="copyReceipt">КОПИРАЙ НОМЕРА / COPY RECEIPT</button>
+</div>
 </form>
 </section>
 <section class="report-section">

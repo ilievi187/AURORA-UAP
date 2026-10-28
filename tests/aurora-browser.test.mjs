@@ -406,6 +406,22 @@ try{
     assert.equal(await page.locator('#globeCaseDossier').getAttribute('href'),'/archive/westall-1966');
     await ctx.close();
   });
+  await test('main report CTA reaches the real intake page',async()=>{
+    const context=await browser.newContext({viewport:{width:1365,height:900},reducedMotion:'reduce'});
+    const page=await context.newPage(),errors=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    await page.goto('http://127.0.0.1:'+port+'/');
+    await page.locator('button[data-language="bg"]').click();
+    await page.locator('#gateContinue').click();
+    await page.locator('#languageGate').waitFor({state:'hidden',timeout:2500});
+    assert.equal(await page.locator('.button-join[href="/report.html"]').count(),1);
+    await page.locator('.hero-buttons a[href="/report.html"]').click();
+    await page.waitForURL('**/report.html');
+    assert.equal(await page.locator('#observationForm').isVisible(),true);
+    assert.equal(await page.locator('#sendReport').isDisabled(),true);
+    assert.deepEqual(errors,[]);
+    await context.close();
+  });
   await test('V1.5 mobile intake remains local-only when policy and D1 are not activated',async()=>{
     const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});
     const page=await context.newPage(),errors=[],posts=[];
@@ -457,6 +473,8 @@ try{
     await page.waitForFunction(()=>!document.querySelector('#sendReport').disabled);
     await page.locator('#sendReport').click();
     await page.waitForFunction(()=>document.querySelector('#formFeedback')?.textContent.includes('aur-int-123e4567-e89b-42d3-a456-426614174000'));
+    assert.equal(await page.locator('#receiptPanel').isVisible(),true);
+    assert.equal(await page.locator('#receiptValue').textContent(),'aur-int-123e4567-e89b-42d3-a456-426614174000');
     assert.equal(sent.length,1);
     assert.equal(sent[0].country_code,'BG');
     assert.equal(sent[0].consent,true);
