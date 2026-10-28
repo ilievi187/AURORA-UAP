@@ -67,3 +67,16 @@ footer{font:10px/1.5 Consolas,monospace;letter-spacing:.16em;color:#6a9ca5;paddi
 
 .case-dossier-link{display:inline-block;margin:4px 0 12px;padding:10px 12px;border:1px solid #7fcbd0;background:#12343e;color:#c7ffff;font:11px/1.6 Consolas,monospace;letter-spacing:.06em}
 .case-dossier-link:hover{background:#1a4d56}
+
+.country-history{margin-top:33px;border:1px solid #49818b;background:linear-gradient(155deg,#0a303b,#071823);padding:clamp(18px,3vw,32px)}
+.country-history h2{font-size:clamp(22px,3vw,34px);font-weight:560;margin:9px 0 12px}
+.country-history>p:not(.eyebrow){font-size:13px;color:#a9ccd0}
+.country-history-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr));gap:14px;margin-top:20px}
+.country-history-card{display:flex;flex-direction:column;border:1px solid #346d7a;background:#0b2732;min-width:0;text-decoration:none;color:#e5f9fa}
+.country-history-card:hover,.country-history-card:focus-visible{border-color:#a4fff4;background:#123846}
+.country-history-card>img{width:100%;aspect-ratio:16/8;object-fit:cover}
+.country-history-card>div{display:flex;flex-direction:column;gap:9px;padding:16px;flex:1}
+.country-history-card small{font:10px/1.6 Consolas,monospace;color:#a4c5c7}
+.country-history-card strong{font-size:17px;line-height:1.4}
+.country-history-card p{font-size:12px;line-height:1.7;color:#afd5d8;flex:1}
+.country-history-card span{font:11px/1.5 Consolas,monospace;color:#a0fff0}
