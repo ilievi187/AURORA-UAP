@@ -3,7 +3,8 @@
 - PR #10 — Secure Intake Foundation — merged (repository history).
 - PR #11 — Country Directory UX — merged (repository history).
 - PR #12 — Real Report Submission Flow — merged (repository history).
-- PR #13 — Concurrent intake review audit fix — merged; current main contains `da3e42d`.
+- PR #13 — Concurrent intake review audit fix — merged; current main contains it in history.
+- PR #15 — Persistent agent project brief/state, roadmap, architecture, blockers, test/deployment status and resume instructions — merged as `3d7ff4b3f6724454dd87f44b6fabd87293522795`; Cloudflare Pages preview deployment succeeded.
 - 2026-10-28: live intake status verified fail-closed (`accepting:false`, `local_draft_only`).
 - 2026-10-28: live staged registry release verification passed; no fabricated public D1 activation.
 - 2026-10-28: local main Node test set passed 60/60.
