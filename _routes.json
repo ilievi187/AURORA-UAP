@@ -4,7 +4,9 @@
     "/api/*",
     "/countries/*",
     "/archive/*",
-    "/cases/*"
+    "/cases/*",
+    "/api/news",
+    "/api/air-traffic"
   ],
   "exclude": []
 }
