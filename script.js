@@ -51,7 +51,7 @@ const cases = [
   {id:'m8',city:{bg:'Австралия',en:'Australia'},title:{bg:'Тъмен силует по здрач',en:'Dark silhouette at twilight'},description:{bg:'Демонстрация на необходимостта от мащаб, ориентир, автентичен файл и независими свидетели.',en:'Demonstrates the need for scale, references, original files, and independent witnesses.'},date:'2026-10-07',type:'object',video:false,px:82,py:77,img:'assets/report-ocean.webp'}
 ];
 
-let lang = (()=>{try{const s=localStorage.getItem('aurora-lang');return ['bg','en','de','ru','zh-CN'].includes(s)?s:'bg';}catch(_){return 'bg';}})();
+let lang = (()=>{try{const s=localStorage.getItem('aurora-lang');return ['bg','en','de','ru','zh-CN','fr','es','it','pt','tr','ro','el','sr','uk','pl','ar','ja','ko'].includes(s)?s:'bg';}catch(_){return 'bg';}})();
 let selectedId = null;
 let showAll = false;
 const $ = selector => document.querySelector(selector);
