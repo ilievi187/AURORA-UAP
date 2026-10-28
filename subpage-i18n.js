@@ -7,7 +7,8 @@
  function pack(){return packs[document.documentElement.lang]||packs.en}
  function text(key){return pack()[key]||packs.en[key]||key}
  function apply(){
-  const path=location.pathname,news=path.endsWith("/news.html"),sky=path.endsWith("/sky.html");
+  const page=location.pathname.replace(/\/+$/,"").split("/").pop().replace(/\.html$/,"");
+  const news=page==="news",sky=page==="sky";
   if(!news&&!sky)return;
   const nav=[...document.querySelectorAll(".live-links a")];
   for(const anchor of nav){const href=anchor.getAttribute("href");

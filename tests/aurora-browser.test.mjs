@@ -56,7 +56,9 @@ const server=createServer(async(req,res)=>{
     else response=new Response('Not found',{status:404});
     res.writeHead(response.status,Object.fromEntries(response.headers));res.end(await response.text());return;
   }
-  const resolved=/^\/countries\/[A-Za-z]{2}$/.test(decoded)?'/country.html':
+  const resolved=/^\/news\/?$/.test(decoded)?'/news.html':
+    /^\/sky\/?$/.test(decoded)?'/sky.html':
+    /^\/countries\/[A-Za-z]{2}$/.test(decoded)?'/country.html':
     /^\/(?:cases|archive)\/[a-z0-9-]{3,90}$/.test(decoded)?'/dossier.html':decoded;
   const filename=resolve(join(root,resolved==='/'?'index.html':resolved.replace(/^\/+/,'')));
   if(filename!==root&&!filename.startsWith(root+sep)){res.writeHead(403).end();return}
@@ -132,11 +134,12 @@ try{
     const ctx=await browser.newContext({viewport:{width:1280,height:850},reducedMotion:'reduce'});
     const page=await ctx.newPage(),errors=[];
     page.on("pageerror",e=>errors.push(e.message));
-    await page.goto('http://127.0.0.1:'+port+'/news.html');
+    await page.goto('http://127.0.0.1:'+port+'/news');
     await page.locator('#pageLanguage').selectOption('es');
     assert.equal(await page.locator('html').getAttribute('lang'),'es');
     assert.equal(await page.locator('.live-hero h1').textContent(),'NOTICIAS UAP DEL MUNDO');
-    await page.goto('http://127.0.0.1:'+port+'/sky.html');
+    assert.equal(await page.title(),'NOTICIAS UAP DEL MUNDO | AURORA UAP');
+    await page.goto('http://127.0.0.1:'+port+'/sky/');
     assert.equal(await page.locator('#pageLanguage').inputValue(),'es');
     assert.equal(await page.locator('.live-hero h1').textContent(),'RADAR DE AVIONES');
     await page.goto('http://127.0.0.1:'+port+'/');
