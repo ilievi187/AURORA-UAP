@@ -16,7 +16,7 @@ Statuses reflect verification on 2026-10-29 (local atlas branch checks only); pr
 | P2 | TODO | Security headers/CSP/CORS/rate-limit and dependency audit; regressions covered. | Non-destructive tests only. |
 | P2 | TODO | SEO/public content/broken links and truthful status review; protect admin/private routes from indexing. | No private data indexed. |
 | P2 | TODO | Registry provenance and responsive map audit; confirm no fake counts/precise personal coordinates. | Current registry remains safely gated. |
-| P3 | IN PROGRESS (local) | Searchable global case-atlas UX: localized search/filters, accessible clusters/map controls, bounded results and D1 completeness reporting. | `feat/luna-radar-search-m34`; local suites pass; independent review passed; commit/PR/CI/preview pending. No new source data or coordinates added; broader coverage remains outstanding. |
+| P3 | IN PROGRESS (draft PR) | Searchable global case-atlas UX: localized search/filters, accessible clusters/map controls, bounded results and D1 completeness reporting. | PR #35; all 10 checks pass and branch preview verified. No new source data or coordinates; broader coverage remains outstanding. Keep draft; no production deployment. |
 | P3 | TODO | Evaluate private media uploads only after cost approval, privacy and file-safety controls. | No upload endpoint until controls and cost approved. |
 | P3 | TODO | Evaluate AI moderation assistance only after privacy/vendor assessment; human decision required. | No personal data to external AI without approval. |
 | P3 | TODO | Evaluate additional full locales after Bulgarian and English completeness. | Legal text requires specialist review. |

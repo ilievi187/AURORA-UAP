@@ -35,4 +35,5 @@ Tests are environment-specific. Re-run relevant suites on the latest commit befo
 - SQLite database/API: 20/20; private intake: 12/12; D1 operations: 3/3; deployment readiness: 7/7; live feeds: 9/9.
 - Dense clustering fixture: 12,000 collocated markers completed within the 1.5-second test bound; implementation uses linear grid-cell aggregation.
 - `git diff --cached --check` passed. Local Playwright used `/usr/bin/chromium`; no browser binary/dependency is committed.
-- Final independent staged-diff review passed with no actionable findings. GitHub Actions, preview, and production behavior have not been verified for this candidate.
+- PR #35 draft head `7eb34b50376b3c58d4eda55e6247755dea7ef12c`: all ten GitHub checks passed (runs `40930193231`, `40930193315`). Cloudflare Pages branch preview was checked in a real browser; English entry, atlas search (`Australia` → `westall-1966`), 15-case archive-only fallback, and visible/accessibility location caveat were verified.
+- Preview `/api/stats` returned HTTP 503 `database_unavailable` because `DB` is not configured on the preview. UI explicitly marked D1 completeness unknown. No production behavior, D1 write, merge, or production deployment was verified.

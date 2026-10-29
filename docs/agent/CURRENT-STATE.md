@@ -18,8 +18,10 @@ Verified: 2026-10-28 21:33 UTC (production checks through 21:33:21Z).
 
 ## 2026-10-29 branch-local atlas UX candidate
 
-- Branch: `feat/luna-radar-search-m34`; implementation is staged and final independent review passed; commit/push/PR remain pending.
+- Branch: `feat/luna-radar-search-m34`; draft PR #35 open at head `7eb34b50376b3c58d4eda55e6247755dea7ef12c`; all 10 GitHub checks passed (runs `40930193231`, `40930193315`).
+- Branch preview `https://feat-luna-radar-search-m34.aurora-uap.pages.dev/` was checked in a real browser: English entry succeeded, atlas showed the 15-case sourced archive, searching `Australia` returned `westall-1966`, and the location caveat remained visible/accessible.
+- Preview `/api/stats` returns HTTP 503 `database_unavailable` because D1 binding `DB` is not configured there; the UI displays an incomplete-registry warning and retains the sourced archive. Production remains unverified; no merge, production write, or production deploy occurred.
 - Adds 18-locale search/filter/map controls, marker clustering and zoom/pan with the reported-area uncertainty caveat retained in both visible and accessible descriptions, fixed 60-row result windows, bounded D1 page loading with malformed/demo-stat recovery, and visible status when registry completeness is unknown. Locale-aware Turkish casing and separate region-field search have regression tests.
 - No new case records, source claims, or coordinates were added. The existing sourced archive is still the coverage limit; this change must not be described as new worldwide source coverage.
-- Local verification passed: static/model 26/26, existing browser 26/26, atlas browser 8/8, database 20/20, intake 12/12, D1 operations 3/3, deployment 7/7, live feeds 9/9. `git diff --cached --check` passed. GitHub Actions, preview behavior, and production deployment are not yet verified for this branch.
-- Next: finish independent review, commit/push and open a scoped PR referencing issue #32 without closing it, then inspect live CI and verify preview if permitted. No production write/deploy occurred.
+- Local verification passed: static/model 26/26, existing browser 26/26, atlas browser 8/8, database 20/20, intake 12/12, D1 operations 3/3, deployment 7/7, live feeds 9/9. `git diff --cached --check` passed. All 10 GitHub checks and the branch preview passed; production deployment remains unverified.
+- Next: continue outstanding issue #32 work after re-checking PR/workflow state; keep PR #35 draft until broader source/country acceptance is complete. No production write/deploy occurred.
