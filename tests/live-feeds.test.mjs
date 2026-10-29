@@ -290,15 +290,18 @@ test("global RSS batches share one total fetch deadline",async()=>{
  assert.equal(signals.size,1,"all feed requests must share one total deadline");
 });
 test("shared feed deadline aborts stalled sources and classifies every timeout",async()=>{
- const started=Date.now();
- const stalled=async(_url,{signal})=>{
-  if(signal.aborted)throw signal.reason;
-  await new Promise((_,reject)=>signal.addEventListener("abort",()=>reject(signal.reason),{once:true}));
- };
- const result=await fetchHeadlinesWithDiagnostics("global",stalled,undefined,25);
- assert.ok(Date.now()-started<500,"all source work must stop at the shared deadline");
- assert.equal(result.diagnostics.timeouts,10);
- assert.equal(result.diagnostics.network_errors,0);
+ const keepAlive=setTimeout(()=>{},1000);
+ try{
+  const started=Date.now();
+  const stalled=async(_url,{signal})=>{
+   if(signal.aborted)throw signal.reason;
+   await new Promise((_,reject)=>signal.addEventListener("abort",()=>reject(signal.reason),{once:true}));
+  };
+  const result=await fetchHeadlinesWithDiagnostics("global",stalled,undefined,25);
+  assert.ok(Date.now()-started<500,"all source work must stop at the shared deadline");
+  assert.equal(result.diagnostics.timeouts,10);
+  assert.equal(result.diagnostics.network_errors,0);
+ }finally{clearTimeout(keepAlive)}
 });
 
 import {NEWS_LANGUAGES,PAGE_SIZE,translateNewsPage} from "../functions/_lib/news-translation.js";
