@@ -7,8 +7,8 @@ Updated: 2026-10-29
 - Branch: `feat/luna-inline-video-player-m34`
 - Worktree: `/home/nightknight/.hermes/cache/scratch/aurora-luna-inline-video-20261029`
 - Base: `origin/main` at `5aa42c0` when this worktree was created.
-- PR: commit and push pending; independent read-only review passed after the future-dated rights-check fix.
-- PR #33 remains open and untouched; no merge or production deployment was made.
+- Draft PR #34: https://github.com/ilievi187/AURORA-UAP/pull/34, initial implementation commit `fbaa445`.
+- PR #33 remains open and untouched. PR #34 is not merged; no production deployment was made.
 
 ## Ownership and conflict boundaries
 
@@ -31,12 +31,12 @@ Updated: 2026-10-29
 - Independent read-only review passed after adding a future-date rejection for direct-video rights checks; the reviewer found no remaining actionable concerns. Reviewer could not rerun Playwright in its isolated environment, but the parent run after the fix passed the player suite 4/4 and existing site browser suite 26/26.
 - Existing Playwright site suite: 26/26 passed.
 - Existing static, database, intake, D1, deployment-gate and news-feed suites passed locally (22/22, 20/20, 12/12, 3/3, 7/7 and 9/9 respectively).
+- GitHub Actions on initial code head `fbaa445`: AURORA V1 run `40881772868` and media-player workflow run `40881772927` completed successfully; the Cloudflare deployment check is not evidence of functional preview playback.
 - A one-time live YouTube sample attempt loaded the official embed page and several player assets with HTTP 200, but the sample exposed no Play control; actual live playback is not verified. Do not describe this as a successful playback test.
 - Gemini through the browser showed a guest/sign-in screen; no credentials were entered. The existing catalog has 8 video records but none use YouTube/Vimeo or include a rights-cleared direct-playback record, so no current production card can yet exercise the new player. A sourced UAP video and live playback verification remain blocked on owner sign-in to Gemini or explicit authorization for another primary-source research route.
 - DVIDS returned HTTP 403 and the existing Defense.gov source page timed out in the browser; no access-control bypass was attempted.
 
 ## Next steps
 
-1. Commit and push the reviewed branch; open a focused draft PR and verify its GitHub checks. Keep it unmerged until the source/real-playback acceptance gap is resolved and required review passes.
-2. Ask the owner to sign in to Gemini in the existing browser or explicitly authorize another primary-source route; select an authentic embeddable UAP source without adding it until verified.
-3. After the player increment is accepted, continue to the next non-conflicting priority. The local archive worktree is already active; do not overwrite or duplicate its uncommitted work.
+1. Keep PR #34 in draft; owner sign-in/authorization is needed to source an authentic embeddable UAP video and verify live playback. Do not merge or claim production playback until this acceptance gap is resolved and required review passes.
+2. After the player increment is accepted, continue to the next non-conflicting priority. The local archive worktree is already active; do not overwrite or duplicate its uncommitted work.
