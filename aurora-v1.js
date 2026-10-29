@@ -8,26 +8,26 @@
   const select=document.getElementById("langToggle");
   if(!gate||!options||!trigger||!select)return;
 
-  // Five complete locales from the original site, additional preview locales with English fallback.
+  // All 18 supported locales provide full homepage and subpage interface coverage.
   const languages=[
     ["bg","Български","Bulgarian","BG",true],
     ["en","English","English","EN",true],
     ["de","Deutsch","German","DE",true],
     ["ru","Русский","Russian","RU",true],
     ["zh-CN","简体中文","Chinese","ZH",true],
-    ["fr","Français","French","FR",false],
-    ["es","Español","Spanish","ES",false],
-    ["it","Italiano","Italian","IT",false],
-    ["pt","Português","Portuguese","PT",false],
-    ["tr","Türkçe","Turkish","TR",false],
-    ["ro","Română","Romanian","RO",false],
-    ["el","Ελληνικά","Greek","EL",false],
-    ["sr","Српски","Serbian","SR",false],
-    ["uk","Українська","Ukrainian","UK",false],
-    ["pl","Polski","Polish","PL",false],
-    ["ar","العربية","Arabic","AR",false],
-    ["ja","日本語","Japanese","JA",false],
-    ["ko","한국어","Korean","KO",false]
+    ["fr","Français","French","FR",true],
+    ["es","Español","Spanish","ES",true],
+    ["it","Italiano","Italian","IT",true],
+    ["pt","Português","Portuguese","PT",true],
+    ["tr","Türkçe","Turkish","TR",true],
+    ["ro","Română","Romanian","RO",true],
+    ["el","Ελληνικά","Greek","EL",true],
+    ["sr","Српски","Serbian","SR",true],
+    ["uk","Українська","Ukrainian","UK",true],
+    ["pl","Polski","Polish","PL",true],
+    ["ar","العربية","Arabic","AR",true],
+    ["ja","日本語","Japanese","JA",true],
+    ["ko","한국어","Korean","KO",true]
   ];
   const extra={
     fr:{navHome:"Accueil",navMission:"Mission",navResearch:"Recherche",navMap:"Carte",navReports:"Signalements",navJoin:"Participer",navDonate:"FAIRE UN DON",heroKicker:"DONNÉES OUVERTES. ESPRIT CRITIQUE. REGARDONS PLUS HAUT.",heroTitle1:"EXPLORER",heroTitle2:"L'INEXPLIQUÉ",heroBody:"AURORA est une initiative indépendante en Bulgarie dédiée à la documentation et à l'analyse rigoureuse des phénomènes aériens non identifiés.",reportButton:"Signaler une observation",exploreButton:"Explorer la recherche",joinButton:"Rejoindre"},
@@ -45,7 +45,7 @@
     ko:{navHome:"홈",navMission:"사명",navResearch:"연구",navMap:"지도",navReports:"제보",navJoin:"참여",navDonate:"후원",heroKicker:"열린 데이터. 비판적 사고. 열린 하늘.",heroTitle1:"미지의 현상을",heroTitle2:"탐구하다",heroBody:"AURORA는 미확인 항공 현상을 신중하게 기록하고 분석하는 불가리아의 독립 연구 이니셔티브입니다.",reportButton:"목격 제보",exploreButton:"연구 살펴보기",joinButton:"참여하기"}
   };
   for(const [code,dict] of Object.entries(extra)){
-    translations[code]={...translations.en,...dict};
+    translations[code]={...translations.en,...(translations[code]||{}),...dict};
   }
   for(const [code,native,english,short,complete] of languages){
     if(!select.querySelector('option[value="'+code+'"]')){
@@ -59,11 +59,30 @@
     btn.append(flag,title,badge);options.append(btn);
   }
   const t={
-    bg:["Избери език","Избери езика, на който искаш да изследваш AURORA.","Езиците с PREVIEW имат частичен превод и английски текст в останалите секции."],
-    en:["Choose your language","Select your interface language to enter AURORA.","PREVIEW languages are partially translated and use English elsewhere."],
-    de:["Sprache wählen","Wähle deine Sprache für AURORA.","PREVIEW-Sprachen sind teilweise übersetzt, sonst auf Englisch."],
-    ru:["Выберите язык","Выберите язык интерфейса AURORA.","Языки PREVIEW переведены частично, остальной текст на английском."],
-    "zh-CN":["选择语言","选择进入 AURORA 的界面语言。","预览版语言只翻译部分内容，其余为英语。"]
+    bg:["Избери език","Избери езика, на който искаш да изследваш AURORA.","Езиковата настройка се запазва във всички страници на платформата."],
+    en:["Choose your language","Select your interface language to enter AURORA.","Your selected language persists across all pages on the platform."],
+    de:["Sprache wählen","Wähle deine Sprache für AURORA.","Deine Sprachauswahl bleibt auf allen Seiten der Plattform erhalten."],
+    ru:["Выберите язык","Выберите язык интерфейса AURORA.","Выбранный язык сохраняется на всех страницах платформы."],
+    "zh-CN":["选择语言","选择进入 AURORA 的界面语言。","所选语言将在平台的所有页面中保持生效。"],
+    fr:["Choisir la langue","Sélectionnez votre langue d'interface pour entrer dans AURORA.","Votre langue est mémorisée sur toutes les pages de la plateforme."],
+    es:["Elige tu idioma","Selecciona el idioma de la interfaz para entrar en AURORA.","Tu idioma seleccionado se mantiene en todas las páginas de la plataforma."],
+    it:["Scegli la lingua","Seleziona la lingua dell'interfaccia per entrare in AURORA.","La lingua scelta rimane attiva in tutte le pagine della piattaforma."],
+    pt:["Escolha o idioma","Selecione o idioma da interface para entrar na AURORA.","O idioma escolhido é mantido em todas as páginas da plataforma."],
+    tr:["Dilinizi seçin","AURORA’ya girmek için arayüz dilinizi seçin.","Seçtiğiniz dil platformun tüm sayfalarında korunur."],
+    ro:["Alege limba","Selectează limba interfeței pentru a intra în AURORA.","Limba selectată se păstrează în toate paginile platformei."],
+    el:["Επιλέξτε γλώσσα","Επιλέξτε τη γλώσσα διεπαφής για είσοδο στο AURORA.","Η επιλεγμένη γλώσσα διατηρείται σε όλες τις σελίδες της πλατφόρμας."],
+    sr:["Изабери језик","Изабери језик интерфејса за улазак у AURORA.","Изабрани језик се памти на свим страницама платформе."],
+    uk:["Оберіть мову","Оберіть мову інтерфейсу для входу в AURORA.","Обрана мова зберігається на всіх сторінках платформи."],
+    pl:["Wybierz język","Wybierz język interfejsu, aby wejść do AURORA.","Wybrany język jest zapamiętywany na wszystkich stronach platformy."],
+    ar:["اختر لغتك","حدد لغة الواجهة للدخول إلى AURORA.","تُحفظ اللغة المختارة في جميع صفحات المنصة."],
+    ja:["言語を選択","AURORA に入るための表示言語を選択してください。","選択した言語はプラットフォームの全ページで保持されます。"],
+    ko:["언어 선택","AURORA에 입장할 인터페이스 언어를 선택하세요.","선택한 언어는 플랫폼의 모든 페이지에서 유지됩니다."]
+  };
+  const selectedStatusLabel={
+    bg:"избран език",en:"language selected",de:"Sprache ausgewählt",ru:"выбран язык","zh-CN":"已选择语言",
+    fr:"langue sélectionnée",es:"idioma seleccionado",it:"lingua selezionata",pt:"idioma selecionado",tr:"dil seçildi",
+    ro:"limbă selectată",el:"επιλεγμένη γλώσσα",sr:"изабран језик",uk:"мову обрано",pl:"wybrano język",
+    ar:"تم اختيار اللغة",ja:"言語を選択済み",ko:"언어 선택됨"
   };
   // First visit: choose language and Continue. Returning visitors enter immediately.
   // The LANGUAGE button always offers an optional, accessible re-selection.
@@ -75,7 +94,13 @@
   const continueLabel=document.getElementById("gateContinueLabel");
   const cancelButton=document.getElementById("gateCancel");
   const selectionStatus=document.getElementById("gateSelection");
-  const getStored=()=>{try{return localStorage.getItem("aurora-lang")}catch(_){return null}};
+  const getStored=()=>{
+    try{
+      const q=new URLSearchParams(location.search).get("lang");
+      if(languages.some(item=>item[0]===q)){try{localStorage.setItem("aurora-lang",q)}catch(_){}return q;}
+      return localStorage.getItem("aurora-lang");
+    }catch(_){return null}
+  };
   const continueTranslations={
     bg:"ПРОДЪЛЖИ",en:"CONTINUE",de:"WEITER",ru:"ПРОДОЛЖИТЬ","zh-CN":"继续",
     fr:"CONTINUER",es:"CONTINUAR",it:"CONTINUA",pt:"CONTINUAR",tr:"DEVAM ET",
@@ -96,7 +121,7 @@
     continueButton.disabled=!selectedLanguage;
     const chosen=languages.find(item=>item[0]===selectedLanguage);
     selectionStatus.textContent=chosen
-      ? "✓ "+chosen[1]+" / "+chosen[2]+" — "+(code==="bg"?"избран език":"language selected")
+      ? "✓ "+chosen[1]+" / "+chosen[2]+" — "+(selectedStatusLabel[code]||selectedStatusLabel.en)
       : "AWAITING LANGUAGE SELECTION";
   }
   function openGate(mandatory=false){
