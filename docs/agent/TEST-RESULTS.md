@@ -9,7 +9,7 @@
 
 - Static/model 26/26; existing browser 26/26; atlas browser 8/8; DB/API 20/20; intake 12/12; D1 ops 3/3; deployment gate 7/7; feeds 9/9.
 - All 10 PR checks passed. Squash merge `8af79e4b14cf9a14bbe0b637911162c71296963a`; main V1 quality run `40935359711` and world-atlas run `40935359714` passed; Cloudflare Pages production deployment succeeded.
-- Production browser verified 15 sourced archive cases, `Australia` → `westall-1966` search, and location caveat. `/api/stats` returned 503 `database_unavailable`; UI showed incomplete registry and retained archive. No production writes/new data.
+- Production browser verified 15 sourced archive cases, `Australia` → `westall-1966` search, and location caveat. `/api/stats` returned 503 `database_unavailable`; UI showed incomplete registry and retained archive. No production writes/new data. Issue #32 was still open at that checkpoint; the owner closed it at 21:27:11 UTC and successor #52 is now the coordination board.
 
 ## PR #33 — NEWS reliability candidate (not deployed)
 
@@ -37,9 +37,9 @@
 - Branch synced main through PR #54 merge `760db33`; `functions/api/news.js` now combines Google News with the catalog's 12 preview plus specialist window (21 global sources currently), official-institution feeds, and the checked BG feed.
 - Local combined suite passed 78/78: `tests/aurora-v1.test.mjs`, `tests/live-feeds.test.mjs`, `tests/source-catalog.test.mjs`, `tests/source-health.test.mjs`, and `tests/gemini-i18n-quality.test.mjs` under Node 22.
 - `npx --yes wrangler@4 pages functions build` compiled successfully. Focused local Semgrep rules found no dynamic-code or unsafe-HTML sinks in the three feed-path modules; this is a narrow scan only.
-- GitHub reported 14/14 checks passed on code checkpoint `59280cba105b5bf56047e1991a0a0e25c764fa7e`. The PR remains open and unmerged pending owner-approved functional preview verification; no production endpoint was queried after the earlier HTTP 403.
+- GitHub reported 14/14 checks on code checkpoint `59280cba105b5bf56047e1991a0a0e25c764fa7e`; the first docs-only checkpoint `c04c93d` also passed 14/14. Subsequent docs-only coordination updates need fresh CI. PR remains open and unmerged pending owner-approved functional preview verification. An owner-recorded read-only bridge GET returned production HTTP 503 at 21:43 UTC; LUNA did not repeat the earlier HTTP 403 request.
 
 ## PR #14 review and PR #34 playback checkpoint
 
 - PR #14 read-only security review at `b089eb2` found no introduced JWT/access-authorization/CSRF/XSS/audit-log/fail-closed bypass. Residual release gates: no pagination beyond the latest 100 queue entries, missing tests for certificate-fetch failure/unknown key ID, and production Access/privacy/retention approval.
-- Browser inspection of PR #34 preview `/media` at head `448ee00` showed 20 linked media records but no play button, iframe, or `<video>` element. Actual in-site playback remains unverified; PR #34 remains draft.
+- A browser inspection of PR #34 preview `/media` at head `448ee00` showed 20 linked media records but no play button, iframe, or `<video>` element. The owner’s desktop-safety notice was read afterward; no further shared-browser/GUI actions will occur. Actual in-site playback remains unverified; PR #34 remains draft.
