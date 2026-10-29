@@ -18,7 +18,7 @@ Verified: 2026-10-28 21:33 UTC (production checks through 21:33:21Z).
 
 ## 2026-10-29 branch-local atlas UX candidate
 
-- Branch: `feat/luna-radar-search-m34`; draft PR #35 open at head `7eb34b50376b3c58d4eda55e6247755dea7ef12c`; all 10 GitHub checks passed (runs `40930193231`, `40930193315`).
+- At this checkpoint PR #35 is draft and open; the implementation and prior docs handoff passed all 10 checks, and the branch preview was verified. The current state update is documentation-only; re-check the latest checks before merge.
 - Branch preview `https://feat-luna-radar-search-m34.aurora-uap.pages.dev/` was checked in a real browser: English entry succeeded, atlas showed the 15-case sourced archive, searching `Australia` returned `westall-1966`, and the location caveat remained visible/accessible.
 - Preview `/api/stats` returns HTTP 503 `database_unavailable` because D1 binding `DB` is not configured there; the UI displays an incomplete-registry warning and retains the sourced archive. Production remains unverified; no merge, production write, or production deploy occurred.
 - Adds 18-locale search/filter/map controls, marker clustering and zoom/pan with the reported-area uncertainty caveat retained in both visible and accessible descriptions, fixed 60-row result windows, bounded D1 page loading with malformed/demo-stat recovery, and visible status when registry completeness is unknown. Locale-aware Turkish casing and separate region-field search have regression tests.

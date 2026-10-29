@@ -12,7 +12,7 @@
 ## 2026-10-29 final QA and PR handoff
 
 - Independent staged-diff review passed with no actionable findings; the later localized-region test passed 4/4.
-- Commit `7eb34b50376b3c58d4eda55e6247755dea7ef12c` is on draft PR #35. All 10 checks passed (workflow runs `40930193231` and `40930193315`).
+- At final QA checkpoint, code commit `7eb34b5` and prior docs handoff head `6d7971a` both passed all 10 checks. This follow-up is documentation-only; rerun/read CI after the new handoff commit before merge.
 - Verified branch preview in a real browser: English entry, global atlas, `Australia` search returning `westall-1966`, 15-case archive-only fallback, and visible/accessibility uncertainty caveat.
 - Preview `/api/stats` returned 503 `database_unavailable` because preview D1 binding `DB` is unconfigured; UI reported registry completeness unknown. No production writes/deployment or merge occurred. Issue #32 remains open.
 

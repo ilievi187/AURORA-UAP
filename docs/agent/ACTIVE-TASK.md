@@ -24,7 +24,7 @@ Do not merge or enable production moderation/intake based solely on these tests.
 
 ## P3 — searchable global case-atlas UX
 
-Status: draft PR #35 open on `feat/luna-radar-search-m34` (head `7eb34b50376b3c58d4eda55e6247755dea7ef12c`); all 10 PR checks passed and the branch preview was verified. Not merged or production-deployed.
+Status: draft PR #35 open on `feat/luna-radar-search-m34`; all 10 GitHub checks passed and the branch preview was verified. This PR is not merged or production-deployed.
 
 Scope: localized search and country/year/category filters, clustered markers with accessible zoom/pan and a retained location-uncertainty caveat, bounded 60-row result pagination, D1 pagination beyond 250 records with incomplete-registry status, and honest handling of records without coordinates. No new cases or coordinates were added; the sourced archive baseline remains unchanged. This is an atlas UX slice, not completion of worldwide source expansion.
 

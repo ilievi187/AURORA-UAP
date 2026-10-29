@@ -1,6 +1,6 @@
 # Next Actions — read first when resuming
 
-Updated 2026-10-29 18:28 UTC.
+Updated 2026-10-29 18:36 UTC.
 
 Atlas UX status: draft PR #35 is open; all 10 GitHub checks passed and the branch preview was checked. Preview D1 stats return HTTP 503 because binding `DB` is not configured; the UI preserves the 15-case sourced archive and shows registry completeness unknown. No cases or coordinates were added. Keep PR #35 and issue #32 open while broader source expansion remains incomplete.
 
