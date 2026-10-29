@@ -15,27 +15,27 @@
 <main id="reportMain">
 <section class="report-hero">
 <p class="eyebrow">◉ / OBSERVATION INTAKE / V1.5</p>
-<h1>ПОДАЙ СИГНАЛ <span class="report-english">/ REPORT AN OBSERVATION</span></h1>
-<p>Документирай какво си видял. Разграничаваме свидетелските сведения от доказаните факти. Всички сигнали минават през човешка проверка.</p>
+<h1 id="reportHeading">ПОДАЙ СИГНАЛ <span class="report-english">/ REPORT AN OBSERVATION</span></h1>
+<p id="reportHeroLead">Документирай какво си видял. Разграничаваме свидетелските сведения от доказаните факти. Всички сигнали минават през човешка проверка.</p>
 <div class="report-status" id="reportStatus" role="status" aria-live="polite">Проверка на системата за приемане…</div>
 </section>
 <section class="report-section">
-<div class="report-form-head"><span>01 / FIELD REPORT</span><h2>Подготви своя сигнал</h2></div>
+<div class="report-form-head"><span>01 / FIELD REPORT</span><h2 id="reportFormTitle">Подготви своя сигнал</h2></div>
 <form id="observationForm" novalidate>
 <div class="report-grid">
-<label>Държава / Country <input id="country" maxlength="2" minlength="2" pattern="[A-Za-z]{2}" placeholder="BG" required autocomplete="off"></label>
-<label>Регион / Region <input id="region" maxlength="80" minlength="2" placeholder="напр. Шуменска област" required autocomplete="off"></label>
-<label>Приблизителен район / Approximate location <input id="location" maxlength="120" minlength="2" placeholder="град / населено място, без личен адрес" required autocomplete="off"></label>
-<label>Дата и местен час / Local date and time <input id="occurred" type="datetime-local" required></label>
-<label>Часова зона / Time zone <input id="timezone" maxlength="80" placeholder="Europe/Sofia" required></label>
-<label>Тип / Category <select id="category"><option value="lights">Светлини / Lights</option><option value="object">Обект / Object</option><option value="instrument">Инструментален запис / Instrument recording</option><option value="other">Друго / Other</option></select></label>
+<label><span data-report-label="country">Държава / Country</span> <input id="country" maxlength="2" minlength="2" pattern="[A-Za-z]{2}" placeholder="BG" required autocomplete="off"></label>
+<label><span data-report-label="region">Регион / Region</span> <input id="region" maxlength="80" minlength="2" placeholder="напр. Шуменска област" required autocomplete="off"></label>
+<label><span data-report-label="location">Приблизителен район / Approximate location</span> <input id="location" maxlength="120" minlength="2" placeholder="град / населено място, без личен адрес" required autocomplete="off"></label>
+<label><span data-report-label="occurred">Дата и местен час / Local date and time</span> <input id="occurred" type="datetime-local" required></label>
+<label><span data-report-label="timezone">Часова зона / Time zone</span> <input id="timezone" maxlength="80" placeholder="Europe/Sofia" required></label>
+<label><span data-report-label="category">Тип / Category</span> <select id="category"><option value="lights">Светлини / Lights</option><option value="object">Обект / Object</option><option value="instrument">Инструментален запис / Instrument recording</option><option value="other">Друго / Other</option></select></label>
 </div>
-<label class="report-description">Описание / Your account
+<label class="report-description"><span data-report-label="description">Описание / Your account</span>
 <textarea id="description" rows="8" minlength="50" maxlength="5000" required placeholder="Какво видя, в каква посока, колко време продължи и какви бяха условията? Не споделяй имена, адреси или други лични данни."></textarea></label>
 <input id="website" type="text" tabindex="-1" autocomplete="off" class="trap" aria-hidden="true">
-<p class="form-advisory">Без имена, имейли, лични адреси, точни GPS координати или файлове. При активиране ще се записват само описанието, дата/час, часова зона и приблизителен район.</p>
+<p class="form-advisory" id="reportAdvisory">Без имена, имейли, лични адреси, точни GPS координати или файлове. При активиране ще се записват само описанието, дата/час, часова зона и приблизителен район.</p>
 <div id="activationControls" hidden>
-<label class="consent"><input type="checkbox" id="consent"> Потвърждавам, че съм прочел/а <a id="privacyLink" href="/privacy" target="_blank" rel="noopener noreferrer">информацията за личните данни и условията</a> и разрешавам обработката на този сигнал за модерация.</label>
+<label class="consent"><input type="checkbox" id="consent"> <span id="consentPrefix">Потвърждавам, че съм прочел/а</span> <a id="privacyLink" href="/privacy" target="_blank" rel="noopener noreferrer">информацията за личните данни и условията</a> <span id="consentSuffix">и разрешавам обработката на този сигнал за модерация.</span></label>
 <div id="turnstileMount"></div>
 </div>
 <div class="report-actions">
@@ -46,18 +46,18 @@
 </div>
 <p id="formFeedback" role="status" aria-live="polite"></p>
 <div id="receiptPanel" class="receipt-panel" hidden aria-live="polite">
-<strong>ПРИЕТО ЗА ЧОВЕШКИ ПРЕГЛЕД / RECEIVED FOR REVIEW</strong>
-<p>Запази този номер. Сигналът не е публикуван. / Save this reference; the report is not public.</p>
+<strong id="receiptHeading">ПРИЕТО ЗА ЧОВЕШКИ ПРЕГЛЕД / RECEIVED FOR REVIEW</strong>
+<p id="receiptNote">Запази този номер. Сигналът не е публикуван. / Save this reference; the report is not public.</p>
 <code id="receiptValue"></code>
 <button type="button" id="copyReceipt">КОПИРАЙ НОМЕРА / COPY RECEIPT</button>
 </div>
 </form>
 </section>
 <section class="report-section">
-<div class="report-form-head"><span>02 / RESEARCH ETHICS</span><h2>Какво следва?</h2></div>
-<p>Всеки действително приет сигнал получава уникален номер и влиза в частна опашка за човешка проверка. Първоначалната цел е преглед до 72 часа, но това не е гарантиран срок. Нищо не се публикува автоматично. Черновите остават само в текущия браузър.</p>
-<p>Ако приемането е изключено, бутонът „Изтегли чернова“ запазва JSON файл само на твоето устройство. Това НЕ изпраща сигнала към AURORA. Не разпространявай файла, ако в описанието има лични данни.</p>
-<p>Няма публична система за снимки, видео или контактни данни на този етап. Автоматично публикуване от AI е изключено.</p>
+<div class="report-form-head"><span>02 / RESEARCH ETHICS</span><h2 id="reportEthicsTitle">Какво следва?</h2></div>
+<p id="reportEthics1">Всеки действително приет сигнал получава уникален номер и влиза в частна опашка за човешка проверка. Първоначалната цел е преглед до 72 часа, но това не е гарантиран срок. Нищо не се публикува автоматично. Черновите остават само в текущия браузър.</p>
+<p id="reportEthics2">Ако приемането е изключено, бутонът „Изтегли чернова“ запазва JSON файл само на твоето устройство. Това НЕ изпраща сигнала към AURORA. Не разпространявай файла, ако в описанието има лични данни.</p>
+<p id="reportEthics3">Няма публична система за снимки, видео или контактни данни на този етап. Автоматично публикуване от AI е изключено.</p>
 </section>
 </main><footer>THE SKY BELONGS TO EVERYONE · FREE PUBLIC ACCESS · AURORA UAP</footer>
 </div></body></html>

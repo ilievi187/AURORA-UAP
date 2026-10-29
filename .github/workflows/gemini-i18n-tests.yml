@@ -4,6 +4,7 @@ on:
     paths:
       - 'functions/_lib/news-translation.js'
       - 'subpage-i18n.js'
+      - 'donate*'
       - 'news.js'
       - 'news-translation.css'
       - 'home-news.js'
@@ -18,6 +19,7 @@ on:
     paths:
       - 'functions/_lib/news-translation.js'
       - 'subpage-i18n.js'
+      - 'donate*'
       - 'news.js'
       - 'news-translation.css'
       - 'home-news.js'
@@ -38,11 +40,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Test 18-locale packs, news translation, and template wiring
-        run: node --test tests/gemini-i18n.test.mjs tests/gemini-news-translation.test.mjs
+      - name: Test 18-locale packs, news translation, quality gate, and template wiring
+        run: node --test tests/gemini-i18n.test.mjs tests/gemini-news-translation.test.mjs tests/gemini-i18n-quality.test.mjs
       - name: Install browser test tooling
         run: |
           npm install --no-save --no-package-lock playwright@1.56.1
           npx playwright install --only-shell chromium
-      - name: Verify cross-route locale persistence and mobile responsiveness
+      - name: Verify cross-route locale persistence, SEO metadata, and mobile responsiveness
         run: node --experimental-sqlite --test tests/gemini-i18n-browser.test.mjs
