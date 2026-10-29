@@ -111,9 +111,10 @@ export async function readAllowlistedFeed(source, fetcher, timeoutMs) {
 
 const RETRYABLE = new Set(["timeout", "network", "server"]);
 
-export async function readFeedWithRetry(source, fetcher, timeoutMs) {
+export async function readFeedWithRetry(source, fetcher, timeoutMs, maxAttempts = 2) {
+  const attempts = Number.isInteger(maxAttempts) && maxAttempts > 0 ? Math.min(2, maxAttempts) : 2;
   const first = await readAllowlistedFeed(source, fetcher, timeoutMs);
-  if (first.ok || !RETRYABLE.has(first.error)) return {...first, attempts: 1};
+  if (first.ok || attempts === 1 || !RETRYABLE.has(first.error)) return {...first, attempts: 1};
   const second = await readAllowlistedFeed(source, fetcher, timeoutMs);
   return {...second, attempts: 2, elapsedMs: first.elapsedMs + second.elapsedMs};
 }
@@ -123,15 +124,32 @@ export async function discoverMatches({
   fetcher = fetch,
   now = Date.now(),
   region = "all",
-  timeoutMs = 8000
+  timeoutMs = 8000,
+  feedLimit = DISCOVERY_FEED_LIMIT,
+  maxConcurrency = DISCOVERY_FEED_LIMIT,
+  maxAttempts = 2
 } = {}) {
   if (!REGIONS.includes(region)) throw new Error("invalid_region");
-  const selected = selectFeeds(catalog, region);
-  const settled = await Promise.allSettled(selected.map(async (entry) => {
-    const fetched = await readFeedWithRetry(entry, fetcher, timeoutMs);
-    if (!fetched.ok) throw new Error("fetch_failed");
-    return parseFeedXml(fetched.xml, entry, now).filter((item) => titleMatchesTopic(item.title));
-  }));
+  const safeLimit = Number.isInteger(feedLimit) ? Math.max(0, Math.min(DISCOVERY_FEED_LIMIT, feedLimit)) : DISCOVERY_FEED_LIMIT;
+  const safeConcurrency = Number.isInteger(maxConcurrency) ? Math.max(1, Math.min(DISCOVERY_FEED_LIMIT, maxConcurrency)) : DISCOVERY_FEED_LIMIT;
+  const safeAttempts = Number.isInteger(maxAttempts) && maxAttempts > 0 ? Math.min(2, maxAttempts) : 2;
+  const selected = selectFeeds(catalog, region, safeLimit);
+  const settled = new Array(selected.length);
+  let next = 0;
+  const worker = async () => {
+    while (true) {
+      const index = next++;
+      if (index >= selected.length) return;
+      try {
+        const fetched = await readFeedWithRetry(selected[index], fetcher, timeoutMs, safeAttempts);
+        if (!fetched.ok) throw new Error("fetch_failed");
+        settled[index] = {status: "fulfilled", value: parseFeedXml(fetched.xml, selected[index], now).filter((item) => titleMatchesTopic(item.title))};
+      } catch (reason) {
+        settled[index] = {status: "rejected", reason};
+      }
+    }
+  };
+  await Promise.all(Array.from({length: Math.min(selected.length, safeConcurrency)}, () => worker()));
   const failed = [];
   const matched = [];
   settled.forEach((result, index) => {

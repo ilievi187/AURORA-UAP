@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {parseNewsRss,fetchHeadlines,fetchHeadlinesWithDiagnostics,onRequestGet as newsRoute} from "../functions/api/news.js";
 import {normalizeTraffic,fetchTraffic,onRequestGet as trafficRoute} from "../functions/api/air-traffic.js";
+import {SOURCE_CATALOG} from "../functions/_lib/source-catalog.js";
 const xml='<rss><channel><item><title>UAP briefing &amp; research</title><link>https://news.google.com/rss/articles/test</link><pubDate>'+new Date().toUTCString()+'</pubDate><source>Example Press</source></item></channel></rss>';
 const textResponse=text=>new Response(text,{headers:{"Content-Type":"application/rss+xml; charset=utf-8"}});
 test("news RSS preserves attribution, validates URLs and date",()=>{
@@ -67,7 +68,7 @@ test("unavailable news API reports sanitized per-source diagnostics",async()=>{
  let globalCalls=0;
  globalThis.fetch=async()=>{globalCalls++;throw new Error("unexpected_global_fetch")};
  try{
-  const response=await newsRoute({request:new Request("https://aurorauap.org/api/news?edition=global&lang=en&offset=0"),fetcher});
+  const response=await newsRoute({request:new Request("https://aurorauap.org/api/news?edition=global&lang=en&offset=0"),fetcher,catalogFetcher:async()=>{throw new TypeError("private-catalog-failure")}});
   assert.equal(response.status,503);
   const body=await response.json();
   assert.equal(body.status,"unavailable");
@@ -76,8 +77,10 @@ test("unavailable news API reports sanitized per-source diagnostics",async()=>{
   assert.equal(body.diagnostics.invalid_sources,8);
   assert.equal(body.diagnostics.network_errors,1);
   assert.deepEqual(body.diagnostics.http_errors,{"429":1});
+  assert.equal(body.diagnostics.publisher_status,"unavailable");
+  assert.equal(body.diagnostics.publisher_sources_failed,12);
   assert.equal(globalCalls,0,"the injected source adapter should be used by the route");
-  assert.doesNotMatch(JSON.stringify(body),/private-upstream-exception|unexpected_global_fetch/);
+  assert.doesNotMatch(JSON.stringify(body),/private-upstream-exception|private-catalog-failure|unexpected_global_fetch/);
  }finally{globalThis.fetch=originalFetch}
 });
 test("one healthy source still serves live headlines with degraded-source counts",async()=>{
@@ -87,7 +90,7 @@ test("one healthy source still serves live headlines with degraded-source counts
  const originalFetch=globalThis.fetch;
  globalThis.fetch=async()=>{throw new Error("unexpected_global_fetch")};
  try{
-  const response=await newsRoute({request:new Request("https://aurorauap.org/api/news?edition=global&lang=en&offset=0"),fetcher});
+  const response=await newsRoute({request:new Request("https://aurorauap.org/api/news?edition=global&lang=en&offset=0"),fetcher,catalogFetcher:async()=>{throw new TypeError("private-catalog-failure")}});
   assert.equal(response.status,200);
   const body=await response.json();
   assert.equal(body.status,"live");
@@ -96,6 +99,107 @@ test("one healthy source still serves live headlines with degraded-source counts
   assert.equal(body.diagnostics.parsed_sources,1);
   assert.deepEqual(body.diagnostics.http_errors,{"503":9});
  }finally{globalThis.fetch=originalFetch}
+});
+test("global news merges checked publisher matches and prefers direct links to Google wrappers",async()=>{
+ const debrief=SOURCE_CATALOG.find(source=>source.id==="the-debrief");
+ const directUrl=`https://${debrief.link_hosts[0]}/newsroom-test`;
+ const publisherXml='<rss><channel><item><title>UAP briefing &amp; research</title><link>'+directUrl+'</link><pubDate>'+new Date().toUTCString()+'</pubDate></item></channel></rss>';
+ let publisherCalls=0,active=0,maximum=0;
+ const catalogFetcher=async url=>{
+  publisherCalls++;active++;maximum=Math.max(maximum,active);
+  await new Promise(resolve=>setTimeout(resolve,5));
+  active--;
+  return textResponse(url===debrief.feed_url?publisherXml:'<rss><channel></channel></rss>');
+ };
+ const originalFetch=globalThis.fetch;
+ globalThis.fetch=async()=>{throw new Error("unexpected_global_fetch")};
+ try{
+  const response=await newsRoute({
+   request:new Request("https://aurorauap.org/api/news?edition=global&lang=en&offset=0"),
+   fetcher:async()=>{
+    active++;maximum=Math.max(maximum,active);
+    await new Promise(resolve=>setTimeout(resolve,5));
+    active--;
+    return textResponse(xml);
+   },catalogFetcher
+  });
+  assert.equal(response.status,200);
+  const body=await response.json();
+  assert.equal(body.status,"live");
+  assert.equal(body.count,1);
+  assert.equal(body.items[0].url,directUrl);
+  assert.equal(body.items[0].source,debrief.publisher);
+  assert.equal(body.items[0].source_id,debrief.id);
+  assert.equal(body.items[0].language,debrief.language);
+  assert.equal(body.diagnostics.publisher_sources_checked,12);
+  assert.equal(body.diagnostics.publisher_matches,1);
+  assert.equal(publisherCalls,12);
+  assert.ok(maximum<=5,`combined newsroom fetch concurrency must remain within five; observed ${maximum}`);
+ }finally{globalThis.fetch=originalFetch}
+});
+test("checked publisher headlines keep the news endpoint live during a Google News outage",async()=>{
+ const debrief=SOURCE_CATALOG.find(source=>source.id==="the-debrief");
+ const directUrl=`https://${debrief.link_hosts[0]}/newsroom-fallback-test`;
+ const publisherXml='<rss><channel><item><title>UAP briefing &amp; research</title><link>'+directUrl+'</link><pubDate>'+new Date().toUTCString()+'</pubDate></item></channel></rss>';
+ const response=await newsRoute({
+  request:new Request("https://aurorauap.org/api/news?edition=global&lang=en&offset=0"),
+  fetcher:async()=>{throw new TypeError("private-upstream-exception")},
+  catalogFetcher:async url=>textResponse(url===debrief.feed_url?publisherXml:'<rss><channel></channel></rss>')
+ });
+ assert.equal(response.status,200);
+ const body=await response.json();
+ assert.equal(body.status,"live");
+ assert.equal(body.items[0].url,directUrl);
+ assert.equal(body.diagnostics.network_errors,10);
+ assert.equal(body.diagnostics.publisher_status,"live");
+ assert.doesNotMatch(JSON.stringify(body),/private-upstream-exception/);
+});
+test("official and Bulgarian editions query only their matching checked publishers",async()=>{
+ const official=SOURCE_CATALOG.filter(source=>source.role==="official-institution");
+ const bulgarian=SOURCE_CATALOG.filter(source=>source.country==="BG");
+ const calls=[];
+ const catalogFetcher=async url=>{calls.push(url);return textResponse('<rss><channel></channel></rss>')};
+ const fetcher=async()=>textResponse(xml);
+ const officialResponse=await newsRoute({
+  request:new Request("https://aurorauap.org/api/news?edition=official&lang=en&offset=0"),fetcher,catalogFetcher
+ });
+ assert.equal(officialResponse.status,200);
+ assert.equal(calls.length,official.length);
+ assert.ok(calls.every(url=>official.some(source=>source.feed_url===url)));
+ assert.equal((await officialResponse.json()).diagnostics.publisher_sources_checked,official.length);
+ calls.length=0;
+ const bulgariaResponse=await newsRoute({
+  request:new Request("https://aurorauap.org/api/news?edition=bulgaria&lang=bg&offset=0"),fetcher,catalogFetcher
+ });
+ assert.equal(bulgariaResponse.status,200);
+ assert.equal(calls.length,bulgarian.length);
+ assert.ok(calls.every(url=>bulgarian.some(source=>source.feed_url===url)));
+ assert.equal((await bulgariaResponse.json()).diagnostics.publisher_sources_checked,bulgarian.length);
+});
+test("publisher integration bypasses the pre-integration fresh cache key",async()=>{
+ const staleKey="https://aurora-cache.invalid/news/fresh/global";
+ const stale={status:"live",edition:"global",updated_at:new Date().toISOString(),count:1,items:[{title:"Old Google-only cache",url:"https://news.google.com/rss/articles/stale",source:"Google News",published:new Date().toISOString()}]};
+ const entries=new Map([[staleKey,Response.json(stale)]]);
+ const originalCaches=globalThis.caches;
+ let googleCalls=0,publisherCalls=0;
+ globalThis.caches={default:{
+  async match(request){return entries.get(typeof request==="string"?request:request.url)?.clone()||null},
+  async put(request,response){entries.set(typeof request==="string"?request:request.url,response.clone())}
+ }};
+ try{
+  const response=await newsRoute({
+   request:new Request("https://aurorauap.org/api/news?edition=global&lang=en&offset=0"),
+   fetcher:async()=>{googleCalls++;return textResponse(xml)},
+   catalogFetcher:async()=>{publisherCalls++;return textResponse('<rss><channel></channel></rss>')}
+  });
+  assert.equal(response.status,200);
+  const body=await response.json();
+  assert.ok(googleCalls>0);
+  assert.equal(publisherCalls,12);
+  assert.notEqual(body.items[0].title,"Old Google-only cache");
+ }finally{
+  if(originalCaches===undefined)delete globalThis.caches;else globalThis.caches=originalCaches;
+ }
 });
 test("non-OK upstream responses have their bodies canceled",async()=>{
  let canceled=0;
@@ -211,7 +315,7 @@ test("last-good news is marked cached and includes the failed refresh diagnostic
  }};
  globalThis.fetch=async()=>{throw new TypeError("private-network-failure")};
  try{
-  const response=await newsRoute({request:new Request("https://aurorauap.org/api/news?edition=global&lang=en&offset=0"),fetcher:async()=>{throw new TypeError("private-network-failure")} });
+  const response=await newsRoute({request:new Request("https://aurorauap.org/api/news?edition=global&lang=en&offset=0"),fetcher:async()=>{throw new TypeError("private-network-failure")},catalogFetcher:async()=>{throw new TypeError("private-catalog-failure")} });
   assert.equal(response.status,200);
   assert.equal(response.headers.get("cache-control"),"no-store");
   const fallback=await response.json();
@@ -239,13 +343,13 @@ test("translated cached fallback reports diagnostics from the latest failed refr
  const fetcher=async()=>failure==="network"?Promise.reject(new TypeError("private-network-failure")):{ok:false,status:429};
  const request=new Request("https://aurorauap.org/api/news?edition=global&lang=en&offset=0");
  try{
-  const first=await newsRoute({request,ctx,fetcher});
+  const first=await newsRoute({request,ctx,fetcher,catalogFetcher:async()=>{throw new TypeError("private-catalog-failure")}});
   assert.equal(first.headers.get("cache-control"),"no-store");
   const firstBody=await first.json();
   assert.equal(firstBody.last_attempt.diagnostics.network_errors,10);
   await Promise.all(pending.splice(0));
   failure="http";
-  const second=await newsRoute({request,ctx,fetcher});
+  const second=await newsRoute({request,ctx,fetcher,catalogFetcher:async()=>{throw new TypeError("private-catalog-failure")}});
   assert.equal(second.headers.get("cache-control"),"no-store");
   const secondBody=await second.json();
   assert.deepEqual(secondBody.last_attempt.diagnostics.http_errors,{"429":10});

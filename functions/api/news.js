@@ -1,5 +1,8 @@
 import {NEWS_LANGUAGES,PAGE_SIZE,translateNewsPage} from "../_lib/news-translation.js";
-// Public headlines only: linked Google News RSS search results, NOT verified UAP cases.
+import {discoverMatches} from "../_lib/discovery.js";
+import {dedupeHeadlines} from "../_lib/headline-dedup.js";
+import {SOURCE_CATALOG} from "../_lib/source-catalog.js";
+// Public headlines from Google News and checked publisher feeds, NOT verified UAP cases.
 // Fixed upstream feeds, no arbitrary network URLs, no private user data.
 // Independent source regions improve global coverage without invented articles.
 const EDITIONS={
@@ -256,22 +259,50 @@ export async function fetchHeadlines(edition,fetcher=fetch){
 }
 const FRESH_AGE=900;
 const FALLBACK_AGE=43200;
+const NEWS_CACHE_REVISION="publisher-catalog-v1";
+const PUBLISHER_FEED_LIMIT=12;
+const PUBLISHER_FEED_CONCURRENCY=5;
+const PUBLISHER_FEED_TIMEOUT_MS=1500;
 const response=(data,age)=>Response.json(data,{headers:{
  "Cache-Control":"public, max-age=60, s-maxage="+age,
  "X-Content-Type-Options":"nosniff"
 }});
-async function getRawNews({request,ctx,fetcher=fetch}){
+async function fetchPublisherHeadlines(edition,fetcher=fetch){
+ let catalog;
+ if(edition==="global")catalog=SOURCE_CATALOG;
+ else if(edition==="official")catalog=SOURCE_CATALOG.filter(source=>source.role==="official-institution");
+ else if(edition==="bulgaria")catalog=SOURCE_CATALOG.filter(source=>source.country==="BG");
+ else return {status:"not_applicable",checked:[],failed:[],count:0,items:[]};
+ try{
+  return await discoverMatches({
+   catalog,fetcher,region:"all",timeoutMs:PUBLISHER_FEED_TIMEOUT_MS,
+   feedLimit:PUBLISHER_FEED_LIMIT,maxConcurrency:PUBLISHER_FEED_CONCURRENCY,maxAttempts:1
+  });
+ }catch{
+  return {status:"unavailable",checked:[],failed:[],count:0,items:[]};
+ }
+}
+async function getRawNews({request,ctx,fetcher=fetch,catalogFetcher=fetch}){
  const edition=new URL(request.url).searchParams.get("edition")||"global";
  if(!Object.hasOwn(EDITIONS,edition))return Response.json({error:"invalid_edition"},{status:400});
- const key=new Request("https://aurora-cache.invalid/news/fresh/"+edition);
+ const key=new Request("https://aurora-cache.invalid/news/fresh/"+NEWS_CACHE_REVISION+"/"+edition);
  const backup=new Request("https://aurora-cache.invalid/news/last-good/"+edition);
  let cache;try{
   if(typeof caches!=="undefined")cache=caches.default;
   const saved=cache&&await cache.match(key);if(saved)return saved;
  }catch{}
  const result=await fetchHeadlinesWithDiagnostics(edition,fetcher);
- const items=result?.items??[];
- const diagnostics=result?.diagnostics;
+ // Run the five-worker publisher lane afterward, preserving the combined fetch cap.
+ const publisher=await fetchPublisherHeadlines(edition,catalogFetcher);
+ const items=dedupeHeadlines([...(result?.items??[]),...(publisher.items??[])]).slice(0,200);
+ const diagnostics={
+  ...(result?.diagnostics||{}),
+  publisher_status:publisher.status,
+  publisher_sources_checked:publisher.checked?.length||0,
+  publisher_sources_failed:publisher.failed?.length||0,
+  publisher_matches:publisher.count||0,
+  items_returned:items.length
+ };
  if(items.length){
   const payload={status:"live",edition,updated_at:new Date().toISOString(),count:items.length,items,diagnostics};
   const out=response(payload,FRESH_AGE);
@@ -299,14 +330,14 @@ async function getRawNews({request,ctx,fetcher=fetch}){
 }
 
 // Optional server translation is restricted to fixed, fetched news headlines.
-export async function onRequestGet({request,env,ctx,fetcher=fetch}){
+export async function onRequestGet({request,env,ctx,fetcher=fetch,catalogFetcher=fetch}){
  const u=new URL(request.url),lang=u.searchParams.get("lang");
  if(lang!==null&&!NEWS_LANGUAGES.has(lang))
   return Response.json({error:"unsupported_language"},{status:400});
  const offsetValue=u.searchParams.get("offset")||"0";
  if(!/^(0|[1-9]\d{0,2})$/.test(offsetValue)||Number(offsetValue)>192||Number(offsetValue)%PAGE_SIZE!==0)
   return Response.json({error:"invalid_translation_offset"},{status:400});
- const original=await getRawNews({request,ctx,fetcher});
+ const original=await getRawNews({request,ctx,fetcher,catalogFetcher});
  if(lang===null||original.status!==200)return original;
  const data=await original.clone().json(),offset=Number(offsetValue);
  if(!Array.isArray(data.items))return original;

@@ -210,6 +210,36 @@ test("one failed feed does not drop matches from a feed that responds", async ()
   assert.equal(result.failed[0].id, "nasa-releases");
 });
 
+test("discovery accepts a bounded newsroom feed window, concurrency, and attempt budget", async () => {
+  let active = 0;
+  let maximum = 0;
+  let calls = 0;
+  const selected = selectFeeds(SOURCE_CATALOG, "all").slice(0, 6);
+  const failedUrl = selected[0].feed_url;
+  const result = await discoverMatches({
+    catalog: SOURCE_CATALOG,
+    fetcher: async (url) => {
+      calls += 1;
+      active += 1;
+      maximum = Math.max(maximum, active);
+      await new Promise((resolve) => setTimeout(resolve, 5));
+      active -= 1;
+      if (url === failedUrl) throw new TypeError("temporary network failure");
+      return responseFor("<?xml version=\"1.0\"?><rss><channel></channel></rss>");
+    },
+    now,
+    region: "all",
+    feedLimit: 6,
+    maxConcurrency: 2,
+    maxAttempts: 1,
+    timeoutMs: 100
+  });
+  assert.equal(result.checked.length, 6);
+  assert.equal(calls, 6, "newsroom mode must not retry a failed publisher feed");
+  assert.ok(maximum <= 2, `expected at most two concurrent feeds; observed ${maximum}`);
+  assert.equal(result.failed.length, 1);
+});
+
 test("an allowed same-host redirect is fetched once more", async () => {
   const calls = [];
   const source = SOURCE_CATALOG.find((entry) => entry.id === "nasa-releases");
@@ -248,6 +278,9 @@ test("source and discovery endpoints reject caller-supplied URLs", async () => {
   assert.ok(body.sources.some((entry) => entry.id === "premium-times" && entry.country === "NG"));
   assert.ok(body.sources.some((entry) => entry.id === "sabc-news"));
   assert.ok(body.sources.some((entry) => entry.id === "un-news" && entry.region === "global"));
+  assert.match(body.notice, /Global news combines Google News with a bounded 12-feed publisher window/);
+  assert.match(body.notice, /official-institution feeds/);
+  assert.match(body.notice, /Bulgaria news adds Bulgarian publisher feeds/);
 });
 
 test("page and worker agree on region ids", async () => {
