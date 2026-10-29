@@ -1,10 +1,11 @@
 # Deployment Status
 
-Verified 2026-10-29 10:48 UTC.
+Verified 2026-10-29 11:06 UTC.
 
 - Production custom domain is reachable: `https://aurorauap.org/` responds 200 (canonical redirects may occur).
 - Production clean routes `/news` and `/sky` now render the selected English locale and retain it across navigation/reload after PR #30. Production browser verification passed on 2026-10-28.
 - Production `/api/news?edition=global&lang=en&offset=0` returned HTTP 503 `news_source_unavailable`, zero items, no diagnostics and `cf-cache-status: DYNAMIC` at 2026-10-29 08:05:59Z. The newsroom reliability candidate remains code-only; do not claim production is fixed or live.
+- PR #33 latest head `817fefaffbe7466b6bd144db882d58ab9a45e14e` passed all nine GitHub checks, including a successful Cloudflare Pages deployment check. The preview API probe returned HTTP 403 Error 1010 `browser_signature_banned` / `owner_action_required` at 11:05:03Z, so the preview's user-facing news behavior is not verified. No production deployment was made.
 - PR #29 merged to main at 20:59:01Z; its main-push quality gate passed. PR #30 merged at 21:29:04Z; its nine PR checks and main-push quality gate passed. The English clean-route behavior was independently verified on production.
 - Production report route responds 200.
 - Production intake is disabled: `/api/intake/status` reports `accepting:false`, `local_draft_only`.

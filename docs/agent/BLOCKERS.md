@@ -7,3 +7,4 @@
 5. PR #14 is draft. Production admin enablement and public intake are blocked pending PR review plus real infrastructure, privacy, security and operational verification.
 
 6. Independent work can continue on local tests, code audit, docs, accessibility/security improvements and non-destructive public UX verification. Local Playwright E2E is currently runnable with the system Chromium and CI remains the deployment gate.
+7. PR #33 (`817fefaffbe7466b6bd144db882d58ab9a45e14e`) is open and all nine checks passed in run `40862406395`. Cloudflare Pages reports preview deployment success, but the direct preview API probe at 2026-10-29 11:05:03Z returned HTTP 403 Error 1010 `browser_signature_banned` / `owner_action_required`; functional preview verification is blocked. Do not retry or bypass the site-owner restriction. No merge or production deployment until an authorized preview check is possible.
