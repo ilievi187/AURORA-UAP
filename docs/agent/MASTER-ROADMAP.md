@@ -1,19 +1,19 @@
 # Master Roadmap
 
-Statuses reflect evidence checked 2026-10-29 20:30 UTC; re-check remote and production state before action.
+Statuses reflect evidence checked 2026-10-29 20:43 UTC; re-check remote and production state before action.
 
 | Priority | Status | Task / Acceptance criteria | Dependencies / evidence |
 |---|---|---|---|
 | P0 | COMPLETE (staged safeguards) | Production site and intake remain fail-closed; no accidental public intake. | Intake is disabled/local-only; staged registry verifier passes. |
 | P1 | IN PROGRESS | Complete locale persistence, translation and accessibility across all supported pages/routes. | PRs #30 and #38 merged; PR #44 adds script-aware headline/summary translation. Do not claim every route fully verified; audit and production verification remain. |
-| P1 | IN PROGRESS / PREVIEW BLOCKED | Restore dependable sourced news, partial-source success, diagnostics and last-good behavior. | PR #33 remote head `7c9b4e8` had 13 passing checks; local merge head `1d9186a` integrates main through `91676b2` and relevant local tests pass. Fresh CI pending. Production `/news` displayed unavailable; one API probe returned 403, cause unknown; preview API Error 1010 requires owner-approved access. Do not bypass or merge before functional verification. |
+| P1 | IN PROGRESS / PREVIEW BLOCKED | Restore dependable sourced news, partial-source success, diagnostics and last-good behavior. | PR #33 remote head `03b2959` had 11 passing checks; local head `2ab1e24` includes main through `199b437` and source/news/browser suites pass. Fresh CI pending push. Production `/news` displayed unavailable; one API probe returned 403, cause unknown; preview Error 1010 requires owner-approved access. Do not bypass or merge before functional verification. |
 | P1 | IN PROGRESS (draft PR) | Gated moderation queue with Cloudflare Access verification and audited private review; approval never publishes. | PR #14 draft; independent read-only security review pending. Production enablement blocked until real Access configuration, privacy review and synthetic-only verification. |
 | P1 | BLOCKED | Provision/verify production D1, safely apply migrations, bind `DB`, verify backups and a read/write smoke test. | Production `/api/stats` last returned 503 `database_unavailable`; binding is unconfigured. Wrangler v4.156.0 is not authenticated and example ID is a placeholder. Requires authorized account access; preserve data. |
 | P1 | BLOCKED | Production Turnstile hostname/widget, Siteverify, WAF limits and abuse monitoring. | Cloudflare account and owner-approved configuration required; no secrets in Git. |
 | P1 | BLOCKED | Final privacy notice, lawful basis, controller/contact, retention and rights handling. | Owner/legal review and verified privacy-contact test required; intake stays disabled. |
 | P1 | TODO | Secure deletion/access-request and retention workflow with no public data leak. | Depends on approved privacy policy and authenticated moderation workflow. |
-| P2 | IN PROGRESS | Responsive mobile/desktop audit, keyboard access and no-overflow across every route. | PRs #37, #40–#42 merged with browser tests. Broader route/browser audit remains; PR #43 archive/source work is owned by another agent. |
-| P2 | IN PROGRESS | Build an attributable international source-discovery pipeline without automatic publication. | PR #39 source catalog merged; it does not automatically publish cases. PR #43 handles archive expansion; coordinate and do not duplicate. |
+| P2 | IN PROGRESS | Responsive mobile/desktop audit, keyboard access and no-overflow across every route. | PRs #37, #40–#42 and #47 merged with browser tests. Broader route/browser audit remains; PR #43 archive/source work is owned by another agent. |
+| P2 | IN PROGRESS | Build an attributable international source-discovery pipeline without automatic publication. | PR #39 added the source catalog; PR #45 added checked feeds/source health; PR #46 added Africa/Americas desks; all are merged. PR #43 archive expansion remains assigned to another agent. No source finding auto-publishes a case. |
 | P2 | TODO | Security headers/CSP/CORS/rate limits and dependency audit. | Non-destructive tests only. |
 | P2 | TODO | SEO, broken-link and truthful-content review; protect private/admin routes from indexing. | Never index private data. |
 | P2 | TODO | Registry provenance and responsive map audit; no fake counts or precise personal coordinates. | Sourced 15-case archive remains fallback; production D1 is unavailable. |

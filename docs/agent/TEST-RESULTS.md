@@ -15,12 +15,18 @@
 
 - Baseline fan-out regression observed 10 simultaneous feed requests; failed before implementation and passed after a five-worker cap.
 - Candidate local suites: feeds 25/25; static 22/22; DB/API 20/20; D1 ops 3/3; deployment gate 7/7; intake 12/12; browser E2E 27/27. Bounded local smoke parsed 692 items from 10 feeds and returned 200 deduplicated headlines with zero local-source errors; this does not prove Cloudflare egress.
-- Pushed head `7c9b4e8` had 13 checks pass at latest remote read (including Cloudflare Pages, browser, localization, mobile, and function-build checks). Local branch is now at `1d9186a` after integrating main through `91676b2`; fresh CI on this new head is pending.
+- Historical checkpoint: pushed head `7c9b4e8` had 13 checks pass after the earlier main sync. It was superseded by the current integration head `2ab1e24`; the current remote head is `03b2959` and fresh CI on `2ab1e24` is pending push.
 - Full integration after main through `eea13fe`: static 22/22; feeds 25/25; DB/API 20/20; intake 12/12; deployment 7/7; D1 ops 3/3; source catalog 10/10; i18n unit 2/2; browser E2E 27/27; atlas model/browser 12/12; source-discovery browser 2/2; i18n browser 2/2; gate-focus browser 2/2; donation browser 10/10; Wrangler Pages Functions build compiled successfully.
-- After integrating main `91676b2` (PR #44), targeted suites passed: static 22/22; feeds 25/25; headline translation 2/2; browser E2E 27/27; i18n browser 2/2; mobile-menu browser 2/2; Wrangler Pages Functions build compiled; JS syntax and `git diff --check` passed.
+- Historical targeted suites after integrating main `91676b2` (PR #44), before the source-health/Africa-Americas sync: static 22/22; feeds 25/25; headline translation 2/2; browser E2E 27/27; i18n browser 2/2; mobile-menu browser 2/2; Wrangler Pages Functions build compiled; JS syntax and `git diff --check` passed.
 - Production branch preview API previously returned HTTP 403 Error 1010 `browser_signature_banned` / `owner_action_required`. No retry/bypass. Production `/news` showed an unavailable state and a later single API request returned HTTP 403 of uncharacterized cause. Functional preview and production recovery are not verified.
+
+## PR #33 integration after PR #45/#46 (local head `2ab1e24`)
+
+- Current base includes main `199b437` (checked-feed/source-health plus Africa/Americas source desks). No PR #43 archive changes were copied or edited.
+- Post-merge local tests passed: static 22/22; live feeds 25/25; source catalog + health 13/13; source-directory browser 2/2; news/outage browser E2E 27/27. Wrangler Pages Functions build compiled; relevant JS syntax checks and `git diff --check` passed.
+- Pushed PR #33 head `03b2959` had 11 passing checks. The local integration merge is not pushed; fresh CI is pending.
 
 ## Main post-merge checks
 
-- PR #44 merged to `main` at `91676b2`; main quality (`40949433969`), localization (`40949434020`), gate-focus (`40949433981`), mobile-menu (`40949433879`) and donation (`40949433999`) workflows passed.
-- PR #44's Cloudflare Pages preview check passed; production deployment/user-journey after that merge is not verified.
+- Main workflows on `199b437` passed: V1 quality `40950940522`, source catalog `40950940849`, language gate `40950940575`, mobile navigation `40950940669`, donation browser `40950940665`.
+- Production deployment/user-journey after PR #45/#46 has not been verified; the production news route was unavailable and one API probe returned an uncharacterized HTTP 403.
