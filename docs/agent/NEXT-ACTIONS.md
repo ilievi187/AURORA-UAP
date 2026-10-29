@@ -2,7 +2,7 @@
 
 Updated 2026-10-29 20:52 UTC.
 
-1. PR #33 pushed code head `2b6ec18` has 13 passing checks; local suites after source-health/Africa-Americas sync pass. Current main is `c4d4614`; `git merge-tree` reports no conflicts. Commit/push the state-doc checkpoint, then verify fresh CI on its new head before considering any merge.
+1. Previously verified: PR #33 code integration `2b6ec18` and docs checkpoint `59cfee2` each passed 13/13 checks. Re-fetch the exact PR head, mergeability and fresh checks before any merge; any subsequent docs-only commit must also pass CI.
 2. Keep PR #33 unmerged until a site-owner-approved preview user journey can be verified. The preview API previously returned HTTP 403 Error 1010 `browser_signature_banned` / `owner_action_required`; do not retry through another host, IP, proxy, identity or browser signature.
 3. Production `/news` showed the unavailable-source state; a single direct API request returned HTTP 403 with unknown cause. Do not query that endpoint again without an approved test path. After access is approved, verify diagnostics and the real browser journey; treat the five-worker change as mitigation until evidence confirms recovery.
 4. Production `/api/stats` last returned 503 because D1 `DB` is unconfigured. `npx wrangler@4.156.0 whoami` reported not authenticated. Ask the owner to authorize Cloudflare access; do not guess IDs, create/overwrite data, or enable intake.

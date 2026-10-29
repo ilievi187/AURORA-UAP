@@ -12,7 +12,7 @@ Verified: 2026-10-29 20:52 UTC. Re-fetch remote state before action.
 
 ## Open work
 
-- PR #33 pushed code-integration head `2b6ec18` passed 13 checks. It includes main through `199b437`; current main is `c4d4614`, and `git merge-tree` is clean. Local static/feed/source-catalog/source-health/source-directory/browser suites and Pages Functions build passed. A docs-only state checkpoint follows; re-fetch head and fresh checks before merge. The branch-preview API's previous HTTP 403 Error 1010 `browser_signature_banned` / `owner_action_required` is a hard verification blocker; do not bypass.
+- PR #33 code integration `2b6ec18` and docs checkpoint `59cfee2` each passed 13 checks. A docs-only correction to the stale handoff instructions is recorded in this branch; verify its checks on the resulting head before merge. Current main is `c4d4614`; local merge-tree is clean. The preview API's earlier HTTP 403 Error 1010 `browser_signature_banned` / `owner_action_required` remains a hard verification blocker; no bypass.
 - PR #34 media player remains draft. Actual live playback is unverified; Gemini showed guest/sign-in and no research prompt was sent.
 - PR #14 moderation remains draft; independent read-only security review is pending. Production Access, privacy, retention and moderation gates are not verified. Keep intake disabled.
 - Cloudflare D1 binding/database/migrations/backups, Turnstile, WAF and Access settings are unverified. `npx wrangler@4.156.0 whoami` reports unauthenticated; example config has a placeholder database ID. No Cloudflare changes made.
