@@ -13,7 +13,7 @@ Updated: 2026-10-29
 ## Ownership and conflict boundaries
 
 - Heretic's news code and PR #33 files were not edited.
-- A separate `feat/global-video-archive` worktree contains uncommitted rights-gated archive work; it was left untouched. It currently edits `media.html` and the archive frontend. This branch adds only the player CSS/module include to `media.html`, plus new player, tests, workflow and checkpoint files; coordinate the small `media.html` integration hunk before merging branches.
+- A separate `feat/global-video-archive` worktree contains uncommitted rights-gated archive work; it was left untouched. A clean `feat/luna-radar-search-m34` worktree also exists at the same base, so this branch did not touch its map files. This branch adds only the player CSS/module include to `media.html`, plus new player, tests, workflow and checkpoint files; coordinate the small `media.html` integration hunk before merging branches.
 - No media catalog records, news functions, archive APIs, Cloudflare bindings or production settings were changed.
 
 ## Implemented
@@ -33,10 +33,11 @@ Updated: 2026-10-29
 - Existing static, database, intake, D1, deployment-gate and news-feed suites passed locally (22/22, 20/20, 12/12, 3/3, 7/7 and 9/9 respectively).
 - GitHub Actions on initial code head `fbaa445`: AURORA V1 run `40881772868` and media-player workflow run `40881772927` completed successfully; the Cloudflare deployment check is not evidence of functional preview playback.
 - A one-time live YouTube sample attempt loaded the official embed page and several player assets with HTTP 200, but the sample exposed no Play control; actual live playback is not verified. Do not describe this as a successful playback test.
-- Gemini through the browser showed a guest/sign-in screen; no credentials were entered. The existing catalog has 8 video records but none use YouTube/Vimeo or include a rights-cleared direct-playback record, so no current production card can yet exercise the new player. A sourced UAP video and live playback verification remain blocked on owner sign-in to Gemini or explicit authorization for another primary-source research route.
+- Gemini through the browser showed a guest/sign-in screen; no credentials were entered. The owner then authorized alternate primary-source research through the browser, but Google Search returned a CAPTCHA and the official AARO imagery page returned Access Denied. No retry or bypass was attempted. The existing catalog has 8 video records but none use YouTube/Vimeo or include a rights-cleared direct-playback record, so no current production card can yet exercise the new player.
 - DVIDS returned HTTP 403 and the existing Defense.gov source page timed out in the browser; no access-control bypass was attempted.
 
 ## Next steps
 
-1. Keep PR #34 in draft; owner sign-in/authorization is needed to source an authentic embeddable UAP video and verify live playback. Do not merge or claim production playback until this acceptance gap is resolved and required review passes.
-2. After the player increment is accepted, continue to the next non-conflicting priority. The local archive worktree is already active; do not overwrite or duplicate its uncommitted work.
+1. Keep PR #34 in draft. A sourced UAP video plus live playback verification still require an owner-provided approved source or an approved non-blocked primary-source route. Do not retry or bypass the CAPTCHA/access-denied hosts.
+2. The separate archive worktree has uncommitted P2 changes and `feat/luna-radar-search-m34` is a clean, separate P3 worktree; leave both untouched until ownership/coordination is clear.
+3. Mission #34 remains active and is not complete; do not begin Project Freedom until AURORA work is actually finished.
