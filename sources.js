@@ -163,17 +163,19 @@ function renderMatches(payload) {
     setStatus(matchStatus, "ready", "Няма източници за този регион. Няма добавени заглавия.");
     return;
   }
+  const failedNames = (payload.failed || []).map((row) => names.get(row.id) || row.id).filter(Boolean);
+  const failedNote = failedNames.length ? ` Не отговориха: ${failedNames.join(", ")}.` : "";
   if (!payload.items?.length) {
-    setStatus(matchStatus, "ready", `Няма съвпадения по UAP, UFO, OVNI, AARO или НЛО. Проверени: ${checked}`);
+    setStatus(matchStatus, "ready", `Няма съвпадения по UAP, UFO, OVNI, AARO или НЛО. Проверени: ${checked}${failedNote}`);
     return;
   }
-  setStatus(matchStatus, "ready", `${payload.items.length} съвпадения. Това са заглавия от издателите, не потвърдени случаи. Проверени: ${checked}`);
+  setStatus(matchStatus, "ready", `${payload.items.length} съвпадения. Това са заглавия от издателите, не потвърдени случаи. Проверени: ${checked}${failedNote}`);
   for (const item of payload.items) {
     const href = safeHttps(item.url);
     if (!href) continue;
     const card = el("article", "live-card");
     const when = Number.isFinite(Date.parse(item.published)) ? new Date(item.published).toLocaleString("bg") : "";
-    card.append(el("p", "live-meta", [item.source, when].filter(Boolean).join(" · ")));
+    card.append(el("p", "live-meta", [item.source, item.feed_host, when].filter(Boolean).join(" · ")));
     const heading = el("h3");
     const link = el("a", "", item.title);
     link.href = href;

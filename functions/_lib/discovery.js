@@ -1,10 +1,11 @@
-import {decodeXmlBytes, parseFeedXml} from "./feed-parse.js";
+import {decodeXmlBytes, MAX_XML_CHARS, parseFeedXml, shrinkFeedXml} from "./feed-parse.js";
 import {dedupeHeadlines} from "./headline-dedup.js";
 import {REGIONS, SOURCE_CATALOG} from "./source-catalog.js";
 
 export const DISCOVERY_FEED_LIMIT = 12;
 export const MATCH_LIMIT = 40;
-export const MAX_FEED_BYTES = 500_000;
+export const MAX_DOWNLOAD_BYTES = 2_000_000;
+export const FEED_USER_AGENT = "AURORA-UAP-source-check/1.0 (+https://aurorauap.org/sources)";
 
 const LATIN = /(?<![\p{L}\p{N}])(?:uap|ufo|ovni|aaro)(?![\p{L}\p{N}])/iu;
 const PHRASES = [
@@ -75,7 +76,10 @@ export async function readAllowlistedFeed(source, fetcher, timeoutMs) {
     try {
       response = await fetcher(url, {
         redirect: "manual",
-        headers: {Accept: "application/rss+xml, application/atom+xml, application/xml, text/xml"},
+        headers: {
+          Accept: "application/rss+xml, application/atom+xml, application/xml, text/xml",
+          "User-Agent": FEED_USER_AGENT
+        },
         signal: AbortSignal.timeout(timeoutMs)
       });
     } catch (error) {
@@ -95,18 +99,23 @@ export async function readAllowlistedFeed(source, fetcher, timeoutMs) {
     const buffer = typeof response.arrayBuffer === "function"
       ? await response.arrayBuffer()
       : new TextEncoder().encode(await response.text()).buffer;
-    if (buffer.byteLength > MAX_FEED_BYTES) {
+    if (buffer.byteLength > MAX_DOWNLOAD_BYTES) {
       return {ok: false, status, error: "size", elapsedMs: Date.now() - started, xml: ""};
     }
-    return {
-      ok: true,
-      status,
-      error: "",
-      elapsedMs: Date.now() - started,
-      xml: decodeXmlBytes(buffer, response.headers?.get?.("content-type") || "")
-    };
+    let xml = shrinkFeedXml(decodeXmlBytes(buffer, response.headers?.get?.("content-type") || ""));
+    if (xml.length > MAX_XML_CHARS) xml = xml.slice(0, MAX_XML_CHARS);
+    return {ok: true, status, error: "", elapsedMs: Date.now() - started, xml};
   }
   return {ok: false, status, error: "redirect", elapsedMs: Date.now() - started, xml: ""};
+}
+
+const RETRYABLE = new Set(["timeout", "network", "server"]);
+
+export async function readFeedWithRetry(source, fetcher, timeoutMs) {
+  const first = await readAllowlistedFeed(source, fetcher, timeoutMs);
+  if (first.ok || !RETRYABLE.has(first.error)) return {...first, attempts: 1};
+  const second = await readAllowlistedFeed(source, fetcher, timeoutMs);
+  return {...second, attempts: 2, elapsedMs: first.elapsedMs + second.elapsedMs};
 }
 
 export async function discoverMatches({
@@ -119,7 +128,7 @@ export async function discoverMatches({
   if (!REGIONS.includes(region)) throw new Error("invalid_region");
   const selected = selectFeeds(catalog, region);
   const settled = await Promise.allSettled(selected.map(async (entry) => {
-    const fetched = await readAllowlistedFeed(entry, fetcher, timeoutMs);
+    const fetched = await readFeedWithRetry(entry, fetcher, timeoutMs);
     if (!fetched.ok) throw new Error("fetch_failed");
     return parseFeedXml(fetched.xml, entry, now).filter((item) => titleMatchesTopic(item.title));
   }));

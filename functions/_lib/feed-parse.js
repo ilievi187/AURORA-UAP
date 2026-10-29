@@ -2,6 +2,7 @@
 // Emits https links on the source's own hosts only.
 
 export const MAX_XML_CHARS = 500_000;
+export const MAX_ACCEPTED_ITEMS = 50;
 export const MAX_ITEM_AGE_MS = 120 * 24 * 60 * 60 * 1000;
 export const MAX_FUTURE_MS = 2 * 24 * 60 * 60 * 1000;
 
@@ -49,9 +50,34 @@ function hostAllowed(hostname, hosts) {
   return hosts.some((allowed) => host === allowed || host.endsWith(`.${allowed}`));
 }
 
+function compactDateMs(value) {
+  const match = String(value || "").match(/^(\d{2})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/);
+  if (!match) return NaN;
+  const year = 2000 + Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const hour = Number(match[4]);
+  const minute = Number(match[5]);
+  if (month < 1 || month > 12 || day < 1 || day > 31 || hour > 23 || minute > 59) return NaN;
+  return Date.UTC(year, month - 1, day, hour, minute);
+}
+
 function publishedMs(raw) {
-  const stamps = ["pubDate", "published", "updated", "dc:date"].map((name) => Date.parse(decodeXmlText(elementText(raw, name))));
-  return stamps.find((stamp) => Number.isFinite(stamp));
+  for (const name of ["pubDate", "published", "updated", "dc:date"]) {
+    const text = decodeXmlText(elementText(raw, name));
+    if (!text) continue;
+    const parsed = Date.parse(text);
+    if (Number.isFinite(parsed)) return parsed;
+    const compact = compactDateMs(text);
+    if (Number.isFinite(compact)) return compact;
+  }
+  return NaN;
+}
+
+export function shrinkFeedXml(xml) {
+  return String(xml || "")
+    .replace(/<content:encoded\b[^>]*>[\s\S]*?<\/content:encoded>/gi, "")
+    .replace(/<description\b[^>]*>[\s\S]*?<\/description>/gi, "");
 }
 
 export function parseFeedXml(xml, source, now = Date.now()) {
@@ -60,7 +86,7 @@ export function parseFeedXml(xml, source, now = Date.now()) {
   const hosts = Array.isArray(source?.link_hosts) ? source.link_hosts : [];
   const items = [];
   for (const match of xml.matchAll(/<(item|entry)\b([^>]*)>([\s\S]*?)<\/\1>/gi)) {
-    if (items.length >= 40) break;
+    if (items.length >= MAX_ACCEPTED_ITEMS) break;
     const raw = match[3];
     const title = decodeXmlText(elementText(raw, "title")).slice(0, 240);
     let link = decodeXmlText(elementText(raw, "link"));
@@ -83,6 +109,7 @@ export function parseFeedXml(xml, source, now = Date.now()) {
       url: url.toString(),
       source: source.publisher,
       source_id: source.id,
+      feed_host: source.feed_host || "",
       published: new Date(ms).toISOString(),
       language: source.language
     });

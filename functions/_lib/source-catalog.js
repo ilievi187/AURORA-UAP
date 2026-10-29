@@ -677,22 +677,6 @@ export const SOURCE_CATALOG = [
     link_hosts: ["news.sky.com"]
   }),
   source({
-    id: "corriere-scienze",
-    publisher: "Corriere della Sera",
-    homepage: "https://www.corriere.it/",
-    feed_url: "https://xml2.corriereobjects.it/rss/scienze.xml",
-    feed_host: "xml2.corriereobjects.it",
-    format: "rss",
-    language: "it",
-    country: "IT",
-    country_name: "Italy",
-    region: "europe",
-    role: "specialist-press",
-    covers: "Corriere della Sera science and technology desk.",
-    priority: 48,
-    link_hosts: ["corriere.it"]
-  }),
-  source({
     id: "spiegel-wissenschaft",
     publisher: "Der Spiegel",
     homepage: "https://www.spiegel.de/wissenschaft/",
