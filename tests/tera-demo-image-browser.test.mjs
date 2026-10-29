@@ -24,6 +24,7 @@ try{
     try{
       await page.addInitScript(()=>{window.__demoImageErrors=[];document.addEventListener('error',e=>{if(e.target?.id==='caseImage')window.__demoImageErrors.push(e.target.getAttribute('src'));},true)});
       await page.goto(`http://127.0.0.1:${server.address().port}/`);
+      assert.notEqual(await page.locator('#caseImage').getAttribute('src'),'', 'demo image must not have an empty src');
       assert.deepEqual(await page.evaluate(()=>window.__demoImageErrors),[],'no failed demo image load at startup');
       await page.locator('#gateLanguageGrid button[data-language="en"]').click();
       await page.locator('#gateContinue').click();
