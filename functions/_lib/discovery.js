@@ -7,6 +7,7 @@ export const DISCOVERY_SPECIALIST_EXTRA = 12;
 export const DISCOVERY_TOTAL_LIMIT = DISCOVERY_FEED_LIMIT + DISCOVERY_SPECIALIST_EXTRA;
 export const MATCH_LIMIT = 40;
 export const MAX_DOWNLOAD_BYTES = 2_000_000;
+const MAX_DOWNLOAD_CHUNKS = 4_096;
 export const FEED_USER_AGENT = "AURORA-UAP-source-check/1.0 (+https://aurorauap.org/sources)";
 
 const LATIN = /(?<![\p{L}\p{N}])(?:uap|ufo|ovni|aaro)(?![\p{L}\p{N}])/iu;
@@ -84,8 +85,35 @@ function failureKind(error) {
   return "network";
 }
 
+async function readBoundedFeedBody(response) {
+  const reader = response?.body?.getReader?.();
+  if (!reader) return {ok: false, error: "body"};
+  const bytes = new Uint8Array(MAX_DOWNLOAD_BYTES);
+  let length = 0;
+  let chunks = 0;
+  try {
+    while (true) {
+      const {done, value} = await reader.read();
+      if (done) return {ok: true, bytes: bytes.subarray(0, length)};
+      chunks += 1;
+      if (chunks > MAX_DOWNLOAD_CHUNKS || !(value instanceof Uint8Array) || length + value.byteLength > MAX_DOWNLOAD_BYTES) {
+        reader.cancel("feed_body_limit").catch(() => {});
+        return {ok: false, error: "size"};
+      }
+      bytes.set(value, length);
+      length += value.byteLength;
+    }
+  } catch (error) {
+    reader.cancel(error).catch(() => {});
+    throw error;
+  } finally {
+    try { reader.releaseLock(); } catch {}
+  }
+}
+
 export async function readAllowlistedFeed(source, fetcher, timeoutMs) {
   const started = Date.now();
+  const deadline = AbortSignal.timeout(timeoutMs);
   let url = source.feed_url;
   let status = 0;
   for (let hop = 0; hop < 2; hop += 1) {
@@ -97,7 +125,7 @@ export async function readAllowlistedFeed(source, fetcher, timeoutMs) {
           Accept: "application/rss+xml, application/atom+xml, application/xml, text/xml",
           "User-Agent": FEED_USER_AGENT
         },
-        signal: AbortSignal.timeout(timeoutMs)
+        signal: deadline
       });
     } catch (error) {
       return {ok: false, status: 0, error: failureKind(error), elapsedMs: Date.now() - started, xml: ""};
@@ -113,15 +141,15 @@ export async function readAllowlistedFeed(source, fetcher, timeoutMs) {
       const error = status >= 500 ? "server" : "status";
       return {ok: false, status, error, elapsedMs: Date.now() - started, xml: ""};
     }
-    const buffer = typeof response.arrayBuffer === "function"
-      ? await response.arrayBuffer()
-      : new TextEncoder().encode(await response.text()).buffer;
-    if (buffer.byteLength > MAX_DOWNLOAD_BYTES) {
-      return {ok: false, status, error: "size", elapsedMs: Date.now() - started, xml: ""};
+    try {
+      const body = await readBoundedFeedBody(response);
+      if (!body.ok) return {ok: false, status, error: body.error, elapsedMs: Date.now() - started, xml: ""};
+      let xml = shrinkFeedXml(decodeXmlBytes(body.bytes, response.headers?.get?.("content-type") || ""));
+      if (xml.length > MAX_XML_CHARS) xml = xml.slice(0, MAX_XML_CHARS);
+      return {ok: true, status, error: "", elapsedMs: Date.now() - started, xml};
+    } catch (error) {
+      return {ok: false, status, error: failureKind(error), elapsedMs: Date.now() - started, xml: ""};
     }
-    let xml = shrinkFeedXml(decodeXmlBytes(buffer, response.headers?.get?.("content-type") || ""));
-    if (xml.length > MAX_XML_CHARS) xml = xml.slice(0, MAX_XML_CHARS);
-    return {ok: true, status, error: "", elapsedMs: Date.now() - started, xml};
   }
   return {ok: false, status, error: "redirect", elapsedMs: Date.now() - started, xml: ""};
 }

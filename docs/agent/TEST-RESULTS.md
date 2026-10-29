@@ -35,9 +35,15 @@
 ## PR #33 source-catalog newsroom integration (code checkpoint `59280cb`)
 
 - Branch synced main through PR #54 merge `760db33`; `functions/api/news.js` now combines Google News with the catalog's 12 preview plus specialist window (21 global sources currently), official-institution feeds, and the checked BG feed.
-- Local combined suite passed 78/78: `tests/aurora-v1.test.mjs`, `tests/live-feeds.test.mjs`, `tests/source-catalog.test.mjs`, `tests/source-health.test.mjs`, and `tests/gemini-i18n-quality.test.mjs` under Node 22.
+- Local combined suite passed 80/80: `tests/aurora-v1.test.mjs`, `tests/live-feeds.test.mjs`, `tests/source-catalog.test.mjs`, `tests/source-health.test.mjs`, and `tests/gemini-i18n-quality.test.mjs` under Node 22.
 - `npx --yes wrangler@4 pages functions build` compiled successfully. Focused local Semgrep rules found no dynamic-code or unsafe-HTML sinks in the three feed-path modules; this is a narrow scan only.
-- GitHub reported 14/14 checks on code checkpoint `59280cba105b5bf56047e1991a0a0e25c764fa7e`; the first docs-only checkpoint `c04c93d` also passed 14/14. Subsequent docs-only coordination updates need fresh CI. PR remains open and unmerged pending owner-approved functional preview verification. An owner-recorded read-only bridge GET returned production HTTP 503 at 21:43 UTC; LUNA did not repeat the earlier HTTP 403 request.
+- GitHub reported 14/14 checks on code checkpoint `59280cba105b5bf56047e1991a0a0e25c764fa7e`; later PR heads also passed. The feed-reader follow-up below needs fresh CI on its final head. PR remains open and unmerged pending owner-approved functional preview verification. An owner-recorded read-only bridge GET returned production HTTP 503 at 21:43 UTC; LUNA did not repeat the earlier HTTP 403 request.
+
+## PR #33 review follow-up — reader deadline and streaming bounds
+
+- Independent review found that each allowed redirect started a fresh 1.5-second timeout and that the 2 MB check happened only after `arrayBuffer()` had buffered the whole feed.
+- The reader now creates one per-attempt abort signal shared across allowlisted redirects and body consumption, maps body timeouts to sanitized timeout failures, streams into a fixed 2 MB buffer, caps a response at 4,096 chunks, cancels when either limit is exceeded, and has no unbounded text fallback.
+- Added a red/green redirect-plus-body deadline regression and early-cancel tests for oversized and many-tiny-chunk streams; source-health fixtures now use real `Response` streams. The targeted Node 22 suite passed 80/80, `node --check` and `git diff --check` passed, and Wrangler Pages Functions compiled. At 2026-10-29 22:44 UTC, GitHub CI had not yet run on the follow-up head; no production endpoint or browser was queried.
 
 ## PR #14 review and PR #34 playback checkpoint
 

@@ -5,7 +5,7 @@ import {dirname, join} from "node:path";
 import {fileURLToPath} from "node:url";
 import {dedupeHeadlines} from "../functions/_lib/headline-dedup.js";
 import {decodeXmlBytes, parseFeedXml} from "../functions/_lib/feed-parse.js";
-import {discoverMatches, selectDiscoveryFeeds, selectFeeds, titleMatchesTopic} from "../functions/_lib/discovery.js";
+import {discoverMatches, readAllowlistedFeed, selectDiscoveryFeeds, selectFeeds, titleMatchesTopic} from "../functions/_lib/discovery.js";
 import {REGIONS, SOURCE_CATALOG, validateSourceCatalog} from "../functions/_lib/source-catalog.js";
 import {onRequestGet as sourcesApi} from "../functions/api/sources.js";
 import {onRequestGet as discoveryApi} from "../functions/api/discovery.js";
@@ -20,12 +20,9 @@ function rss(title, link, pubDate = "Wed, 28 Oct 2026 12:00:00 GMT") {
 }
 
 function responseFor(body, status = 200, headers = {}, location = "") {
-  return {
-    ok: status >= 200 && status < 300,
-    status,
-    headers: {get: (name) => (name.toLowerCase() === "location" ? location : headers[name.toLowerCase()] || null)},
-    arrayBuffer: async () => new TextEncoder().encode(body).buffer
-  };
+  const responseHeaders = new Headers(headers);
+  if (location) responseHeaders.set("location", location);
+  return new Response(body, {status, headers: responseHeaders});
 }
 
 test("catalog is unique, https-only, and limited to checked publisher feeds", () => {
@@ -158,7 +155,7 @@ test("discovery follows only catalog redirects and dedupes keyword matches", asy
   assert.equal(result.items[0].url, "https://www.bbc.com/news/uap");
 });
 
-test("oversized article bodies do not hide a fresh headline", async () => {
+test("oversized article markup is ignored and oversized feed bodies are cancelled early", async () => {
   const source = SOURCE_CATALOG.find((entry) => entry.id === "bbc-world");
   const bulky = `<content:encoded><![CDATA[${"x".repeat(600_000)}]]></content:encoded>`;
   const xml = `<?xml version="1.0"?><rss><channel><item><title>Unidentified aerial object over Dover</title><link>https://www.bbc.com/news/aerial</link><pubDate>Wed, 28 Oct 2026 12:00:00 GMT</pubDate>${bulky}</item></channel></rss>`;
@@ -176,19 +173,52 @@ test("oversized article bodies do not hide a fresh headline", async () => {
   assert.equal(result.status, "live");
   assert.equal(result.items[0].title, "Unidentified aerial object over Dover");
   assert.equal(result.items[0].feed_host, "feeds.bbci.co.uk");
+  let oversizedChunksRead = 0;
+  let oversizedCancelled = false;
+  const oversizedBody = new ReadableStream({
+    pull(controller) {
+      oversizedChunksRead += 1;
+      controller.enqueue(new Uint8Array(1_000_000));
+      if (oversizedChunksRead === 4) controller.close();
+    },
+    cancel() { oversizedCancelled = true; }
+  }, {highWaterMark: 0});
   const huge = await discoverMatches({
     catalog: [source],
-    fetcher: async () => ({
-      ok: true,
-      status: 200,
-      headers: {get: () => null},
-      arrayBuffer: async () => new Uint8Array(2_000_001).buffer
-    }),
+    fetcher: async () => new Response(oversizedBody),
     now,
     region: "all"
   });
   assert.equal(huge.status, "unavailable");
   assert.equal(huge.items.length, 0);
+  assert.equal(oversizedCancelled, true, "oversized response streams must be cancelled before fully buffering");
+  assert.ok(oversizedChunksRead < 4, "the reader must stop before consuming the complete oversized body");
+});
+
+test("feed reader caps pathological numbers of tiny chunks", async () => {
+  const source = SOURCE_CATALOG.find((entry) => entry.id === "bbc-world");
+  let chunksRead = 0;
+  let cancelled = false;
+  const body = new ReadableStream({
+    pull(controller) {
+      chunksRead += 1;
+      if (chunksRead > 5_000) {
+        controller.close();
+        return;
+      }
+      controller.enqueue(new Uint8Array([0x3c]));
+    },
+    cancel() { cancelled = true; }
+  }, {highWaterMark: 0});
+  const result = await discoverMatches({
+    catalog: [source],
+    fetcher: async () => new Response(body),
+    now,
+    region: "all"
+  });
+  assert.equal(result.status, "unavailable");
+  assert.equal(cancelled, true);
+  assert.ok(chunksRead < 5_001, "the reader must stop before the complete tiny-chunk stream");
 });
 
 test("a compact IAEA publication date is kept and an ambiguous one is not", () => {
@@ -297,6 +327,41 @@ test("an allowed same-host redirect is fetched once more", async () => {
     "https://www.nasa.gov/news-release/feed/index.xml"
   ]);
   assert.equal(result.items[0].title, "NASA UAP study update");
+});
+
+test("redirect and response-body reads share one total feed timeout", async () => {
+  const calls = [];
+  const signals = [];
+  const source = SOURCE_CATALOG.find((entry) => entry.id === "nasa-releases");
+  const target = "https://www.nasa.gov/news-release/feed/index.xml";
+  const fetcher = async (url, {signal}) => {
+    calls.push(url);
+    signals.push(signal);
+    if (calls.length === 1) return responseFor("", 301, {}, target);
+    return new Response(new ReadableStream({
+      start(controller) {
+        const abort = () => controller.error(signal.reason);
+        if (signal.aborted) abort();
+        else signal.addEventListener("abort", abort, {once: true});
+      }
+    }));
+  };
+  const keepAlive = setTimeout(() => {}, 500);
+  let result;
+  let thrown;
+  try {
+    result = await readAllowlistedFeed(source, fetcher, 30);
+  } catch (error) {
+    thrown = error;
+  } finally {
+    clearTimeout(keepAlive);
+  }
+  assert.deepEqual(calls, [source.feed_url, target]);
+  assert.equal(signals.length, 2);
+  assert.strictEqual(signals[0], signals[1], "redirect hops must share the same total deadline");
+  assert.equal(thrown, undefined, "body timeout should return a structured feed failure");
+  assert.equal(result.ok, false);
+  assert.equal(result.error, "timeout");
 });
 
 test("source and discovery endpoints reject caller-supplied URLs", async () => {

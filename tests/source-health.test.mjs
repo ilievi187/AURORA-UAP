@@ -9,12 +9,7 @@ const now = Date.parse("2026-10-29T12:00:00.000Z");
 const source = SOURCE_CATALOG.find((entry) => entry.id === "bbc-world");
 
 function responseFor(body, status = 200, headers = {}) {
-  return {
-    ok: status >= 200 && status < 300,
-    status,
-    headers: {get: (name) => headers[name.toLowerCase()] || null},
-    arrayBuffer: async () => new TextEncoder().encode(body).buffer
-  };
+  return new Response(body, {status, headers});
 }
 
 function rss(items) {
