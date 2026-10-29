@@ -51,7 +51,41 @@ const cases = [
   {id:'m8',city:{bg:'Австралия',en:'Australia'},title:{bg:'Тъмен силует по здрач',en:'Dark silhouette at twilight'},description:{bg:'Демонстрация на необходимостта от мащаб, ориентир, автентичен файл и независими свидетели.',en:'Demonstrates the need for scale, references, original files, and independent witnesses.'},date:'2026-10-07',type:'object',video:false,px:82,py:77,img:'assets/report-ocean.webp'}
 ];
 
-let lang = (()=>{try{const s=localStorage.getItem('aurora-lang');return ['bg','en','de','ru','zh-CN','fr','es','it','pt','tr','ro','el','sr','uk','pl','ar','ja','ko'].includes(s)?s:'bg';}catch(_){return 'bg';}})();
+const SUPPORTED_LOCALES = ['bg','en','de','ru','zh-CN','fr','es','it','pt','tr','ro','el','sr','uk','pl','ar','ja','ko'];
+const HOME_TITLES = {
+  bg: 'AURORA — UAP Bulgaria | Изследвай неизвестното',
+  en: 'AURORA — UAP Bulgaria | Uncovering the unexplained',
+  de: 'AURORA — UAP Bulgaria | Dem Unerklärlichen auf der Spur',
+  ru: 'AURORA — UAP Bulgaria | Исследуем необъяснимое',
+  'zh-CN': 'AURORA — UAP Bulgaria | 探索未解之谜',
+  fr: "AURORA — UAP Bulgaria | Explorer l'inexpliqué",
+  es: 'AURORA — UAP Bulgaria | Explorar lo inexplicable',
+  it: "AURORA — UAP Bulgaria | Esplorare l'inspiegabile",
+  pt: 'AURORA — UAP Bulgaria | Explorar o inexplicável',
+  tr: 'AURORA — UAP Bulgaria | Açıklanamayanı araştır',
+  ro: 'AURORA — UAP Bulgaria | Explorăm neexplicatul',
+  el: 'AURORA — UAP Bulgaria | Εξερευνούμε το ανεξήγητο',
+  sr: 'AURORA — UAP Bulgaria | Истражујемо необјашњено',
+  uk: 'AURORA — UAP Bulgaria | Досліджуємо непояснене',
+  pl: 'AURORA — UAP Bulgaria | Odkrywamy niewyjaśnione',
+  ar: 'AURORA — UAP Bulgaria | نستكشف ما لا تفسير له',
+  ja: 'AURORA — UAP Bulgaria | 未解明を探究する',
+  ko: 'AURORA — UAP Bulgaria | 미지의 현상을 탐구하다'
+};
+let lang = (()=>{
+  try{
+    const u=new URL(location.href);
+    const q=u.searchParams.get('lang');
+    if(SUPPORTED_LOCALES.includes(q)){
+      try{localStorage.setItem('aurora-lang',q);}catch(_){}
+      u.searchParams.delete('lang');
+      history.replaceState(null,'',u.pathname+(u.search||'')+u.hash);
+      return q;
+    }
+    const s=localStorage.getItem('aurora-lang');
+    return SUPPORTED_LOCALES.includes(s)?s:'bg';
+  }catch(_){return 'bg';}
+})();
 let selectedId = null;
 let editorialCases=[];
 let editorialLoaded=false;
@@ -62,12 +96,25 @@ const txt = key => translations[lang]?.[key] || translations.en[key] || key;
 const reportDialog = $('#reportDialog');
 const caseDialog = $('#caseDialog');
 
+function syncHomeSeo() {
+  let canonical = document.querySelector('link[rel="canonical"]');
+  if (!canonical) {
+    canonical = document.createElement('link');
+    canonical.setAttribute('rel', 'canonical');
+    document.head.append(canonical);
+  }
+  canonical.setAttribute('href', 'https://aurorauap.org/');
+  const desc = document.querySelector('meta[name="description"]');
+  if (desc && txt('heroBody')) desc.setAttribute('content', txt('heroBody'));
+}
+
 function translate() {
   document.documentElement.lang = lang;
-  document.title = lang === 'bg' ? 'AURORA — UAP Bulgaria | Изследвай неизвестното' : 'AURORA — UAP Bulgaria | Uncovering the unexplained';
+  document.title = HOME_TITLES[lang] || HOME_TITLES.en;
   document.querySelectorAll('[data-i18n]').forEach(el => {const key=el.dataset.i18n;if (txt(key) !== key) el.textContent=txt(key);});
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {el.placeholder=txt(el.dataset.i18nPlaceholder);});
   $('#langToggle').value = lang;
+  syncHomeSeo();
   renderMap();renderReports();
 }
 function filterCases() {
@@ -101,7 +148,23 @@ function openCase(c){
 // eight fictional cards used in the optional historical UI prototype.
 const editorialText={
  bg:{loading:"Зареждаме архивните истории…",error:"Архивът временно не е достъпен. Използвай световната карта.",empty:"Няма случаи за това търсене.",more:"Покажи още случаи",count:"досиета с източници",media:"ВИДЕО",archive:"АРХИВ",art:"Илюстрация към случая — не оригинален кадър",heading:"СЛУЧАИ ОТ СВЕТА",kicker:"СВЕТОВЕН АРХИВ"},
- en:{loading:"Loading case files…",error:"The case archive is temporarily unavailable. Explore the world map.",empty:"No matching cases.",more:"Load more cases",count:"source-linked case files",media:"VIDEO",archive:"ARCHIVE",art:"Illustration only — not original footage",heading:"CASES FROM AROUND THE WORLD",kicker:"WORLD ARCHIVE"}
+ en:{loading:"Loading case files…",error:"The case archive is temporarily unavailable. Explore the world map.",empty:"No matching cases.",more:"Load more cases",count:"source-linked case files",media:"VIDEO",archive:"ARCHIVE",art:"Illustration only — not original footage",heading:"CASES FROM AROUND THE WORLD",kicker:"WORLD ARCHIVE"},
+ de:{loading:"Fallakten werden geladen…",error:"Das Fallarchiv ist vorübergehend nicht verfügbar. Nutze die Weltkarte.",empty:"Keine passenden Fälle gefunden.",more:"Weitere Fälle laden",count:"quellengebundene Fallakten",media:"VIDEO",archive:"ARCHIV",art:"Nur Illustration — keine Originalaufnahme",heading:"FÄLLE AUS ALLER WELT",kicker:"WELTARCHIV"},
+ ru:{loading:"Загрузка архивных досье…",error:"Архив временно недоступен. Используйте карту мира.",empty:"Подходящих случаев не найдено.",more:"Показать ещё случаи",count:"досье с источниками",media:"ВИДЕО",archive:"АРХИВ",art:"Иллюстрация к случаю — не оригинальный кадр",heading:"СЛУЧАИ СО ВСЕГО МИРА",kicker:"МИРОВОЙ АРХИВ"},
+ "zh-CN":{loading:"正在加载案例档案…",error:"案例档案暂时不可用，请浏览世界地图。",empty:"没有匹配的案例。",more:"加载更多案例",count:"份带来源的案例档案",media:"视频",archive:"档案",art:"仅作示意插图 — 非原始影像",heading:"全球案例精选",kicker:"世界档案"},
+ fr:{loading:"Chargement des dossiers…",error:"Les archives sont temporairement indisponibles. Utilisez la carte mondiale.",empty:"Aucun cas correspondant.",more:"Charger plus de cas",count:"dossiers liés aux sources",media:"VIDÉO",archive:"ARCHIVE",art:"Illustration uniquement — pas une image originale",heading:"CAS DANS LE MONDE",kicker:"ARCHIVES MONDIALES"},
+ es:{loading:"Cargando expedientes…",error:"El archivo no está disponible temporalmente. Explora el mapa mundial.",empty:"No hay casos que coincidan.",more:"Cargar más casos",count:"expedientes con fuente",media:"VÍDEO",archive:"ARCHIVO",art:"Solo ilustración — no es metraje original",heading:"CASOS DEL MUNDO",kicker:"ARCHIVO MUNDIAL"},
+ it:{loading:"Caricamento dei fascicoli…",error:"L'archivio è temporaneamente non disponibile. Esplora la mappa mondiale.",empty:"Nessun caso corrispondente.",more:"Carica altri casi",count:"fascicoli con fonte",media:"VIDEO",archive:"ARCHIVIO",art:"Solo illustrazione — non filmato originale",heading:"CASI DAL MONDO",kicker:"ARCHIVIO MONDIALE"},
+ pt:{loading:"A carregar processos…",error:"O arquivo está temporariamente indisponível. Explore o mapa mundial.",empty:"Nenhum caso correspondente.",more:"Carregar mais casos",count:"processos com fonte",media:"VÍDEO",archive:"ARQUIVO",art:"Apenas ilustração — não é imagem original",heading:"CASOS PELO MUNDO",kicker:"ARQUIVO MUNDIAL"},
+ tr:{loading:"Vaka dosyaları yükleniyor…",error:"Vaka arşivi geçici olarak kullanılamıyor. Dünya haritasını inceleyin.",empty:"Eşleşen vaka bulunamadı.",more:"Daha fazla vaka yükle",count:"kaynak bağlantılı vaka dosyası",media:"VİDEO",archive:"ARŞİV",art:"Yalnızca illüstrasyon — orijinal görüntü değildir",heading:"DÜNYADAN VAKALAR",kicker:"DÜNYA ARŞİVİ"},
+ ro:{loading:"Se încarcă dosarele…",error:"Arhiva este temporar indisponibilă. Explorează harta lumii.",empty:"Niciun caz potrivit.",more:"Încarcă mai multe cazuri",count:"dosare cu sursă",media:"VIDEO",archive:"ARHIVĂ",art:"Doar ilustrație — nu este cadru original",heading:"CAZURI DIN LUME",kicker:"ARHIVA MONDIALĂ"},
+ el:{loading:"Φόρτωση φακέλων υποθέσεων…",error:"Το αρχείο είναι προσωρινά μη διαθέσιμο. Χρησιμοποιήστε τον παγκόσμιο χάρτη.",empty:"Δεν βρέθηκαν αντίστοιχες υποθέσεις.",more:"Φόρτωση περισσότερων υποθέσεων",count:"φάκελοι με πηγή",media:"ΒΙΝΤΕΟ",archive:"ΑΡΧΕΙΟ",art:"Εικονογράφηση μόνο — όχι πρωτότυπο υλικό",heading:"ΥΠΟΘΕΣΕΙΣ ΑΠΟ ΤΟΝ ΚΟΣΜΟ",kicker:"ΠΑΓΚΟΣΜΙΟ ΑΡΧΕΙΟ"},
+ sr:{loading:"Учитавање архивских досијеа…",error:"Архив је привремено недоступан. Истражите мапу света.",empty:"Нема одговарајућих случајева.",more:"Учитај још случајева",count:"досијеа са изворима",media:"ВИДЕО",archive:"АРХИВ",art:"Само илустрација — није оригинални снимак",heading:"СЛУЧАЈЕВИ ИЗ СВЕТА",kicker:"СВЕТСКИ АРХИВ"},
+ uk:{loading:"Завантаження архівних досьє…",error:"Архів тимчасово недоступний. Скористайтеся картою світу.",empty:"Відповідних випадків не знайдено.",more:"Показати ще випадки",count:"досьє з джерелами",media:"ВІДЕО",archive:"АРХІВ",art:"Лише ілюстрація — не оригінальний кадр",heading:"ВИПАДКИ З УСЬОГО СВІТУ",kicker:"СВІТОВИЙ АРХІВ"},
+ pl:{loading:"Wczytywanie akt spraw…",error:"Archiwum jest tymczasowo niedostępne. Skorzystaj z mapy świata.",empty:"Brak pasujących przypadków.",more:"Wczytaj więcej przypadków",count:"akt ze źródłami",media:"WIDEO",archive:"ARCHIWUM",art:"Wyłącznie ilustracja — nie oryginalne nagranie",heading:"PRZYPADKI ZE ŚWIATA",kicker:"ŚWIATOWE ARCHIWUM"},
+ ar:{loading:"جاري تحميل ملفات الحالات…",error:"الأرشيف غير متاح مؤقتاً. استكشف خريطة العالم.",empty:"لا توجد حالات مطابقة.",more:"تحميل المزيد من الحالات",count:"ملفات موثقة بالمصادر",media:"فيديو",archive:"أرشيف",art:"رسم توضيحي فقط — ليس تسجيلاً أصلياً",heading:"حالات من حول العالم",kicker:"الأرشيف العالمي"},
+ ja:{loading:"事例ファイルを読み込み中…",error:"アーカイブは一時的に利用できません。世界地図をご利用ください。",empty:"一致する事例がありません。",more:"さらに事例を読み込む",count:"件の出典付き事例ファイル",media:"映像",archive:"アーカイブ",art:"イメージ図 — 実際の映像ではありません",heading:"世界の事例",kicker:"ワールドアーカイブ"},
+ ko:{loading:"사례 기록을 불러오는 중…",error:"사례 아카이브를 일시적으로 사용할 수 없습니다. 세계 지도를 이용해 주세요.",empty:"일치하는 사례가 없습니다.",more:"사례 더 보기",count:"개의 출처 연결 사례 파일",media:"영상",archive:"아카이브",art:"이해를 돕기 위한 일러스트 — 원본 영상 아님",heading:"세계의 주요 사례",kicker:"월드 아카이브"}
 };
 const editorialLang=()=>editorialText[lang]||editorialText.en;
 function renderReports(){
