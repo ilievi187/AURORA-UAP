@@ -157,8 +157,9 @@
       return;
     }
     if(event.key!=="Tab")return;
-    const focusables=[...options.querySelectorAll("button"),continueButton];
-    if(!cancelButton.hidden)focusables.push(cancelButton);
+    const focusables=[...options.querySelectorAll("button:not(:disabled)")];
+    if(!continueButton.disabled)focusables.push(continueButton);
+    if(!cancelButton.hidden&&!cancelButton.disabled)focusables.push(cancelButton);
     const first=focusables[0],last=focusables[focusables.length-1];
     if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}
     else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
