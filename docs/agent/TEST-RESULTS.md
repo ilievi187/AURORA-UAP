@@ -37,4 +37,5 @@ Tests are environment-specific. Re-run relevant suites on the latest commit befo
 - Bounded local live RSS smoke parsed all ten configured sources and 692 feed items; 200 deduplicated items were returned with zero source errors. This is not Cloudflare runtime evidence.
 - Exact production cause remains unconfirmed because Cloudflare runtime logs/bindings are unavailable. No production deployment, global-cache guarantee, or live-feed recovery is claimed.
 - PR #33 first CI run `40862023074` failed only because Node 22 ended the test process before the unreferenced `AbortSignal.timeout()` timer fired in the timeout regression. The test now holds a temporary referenced keepalive timer; at latest head `817fefaffbe7466b6bd144db882d58ab9a45e14e`, all nine checks in run `40862406395` passed.
+- Subsequent state-doc refresh passed all nine checks in CI run `40863006822`.
 - Cloudflare Pages preview deployment succeeded, but a direct API probe returned HTTP 403 Error 1010 `browser_signature_banned` (`owner_action_required`) at 11:05:03Z. No retry or bypass attempted; functional preview verification is blocked.

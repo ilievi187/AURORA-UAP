@@ -2,7 +2,7 @@
 
 ## P1 — Issue #32 NEWS reliability slice
 
-Status: scoped NEWS PR #33 is open from `fix/news-recovery-diagnostics-issue32`, based on `5aa42c0425083e415de1756ba61c616f125280d8`; latest head is `817fefaffbe7466b6bd144db882d58ab9a45e14e`. Independent review passed and all nine GitHub checks passed in run `40862406395`. It is not merged or deployed and is not proven to fix the production outage.
+Status: scoped NEWS PR #33 is open from `fix/news-recovery-diagnostics-issue32`, based on `5aa42c0425083e415de1756ba61c616f125280d8`. Independent review passed; all nine checks passed on the code head in run `40862406395` and after the state-doc refresh in run `40863006822`. It is not merged or deployed and is not proven to fix the production outage.
 
 Production evidence at 2026-10-29 08:05:59Z: `/api/news?edition=global&lang=en&offset=0` returned HTTP 503 `news_source_unavailable`, 69-byte body with no diagnostics and `cf-cache-status: DYNAMIC`. A live `/news` browser check later showed the translated explicit offline state with zero cards. Cloudflare runtime logs and account bindings are unavailable; the exact edge root cause remains unconfirmed.
 
