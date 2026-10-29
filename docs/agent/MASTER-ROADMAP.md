@@ -1,12 +1,12 @@
 # Master Roadmap
 
-Statuses reflect verification on 2026-10-28; re-check before acting.
+Statuses reflect verification on 2026-10-29; re-check before acting.
 
 | Priority | Status | Task / Acceptance criteria | Dependencies / evidence |
 |---|---|---|---|
 | P0 | COMPLETE (current checks) | Production site and intake are reachable and fail closed; no accidental public intake. | Live `/api/intake/status` false; staged registry verifier passes. |
 | P1 | COMPLETE | Localize newsroom/radar on clean Cloudflare Pages routes and preserve the selected language. | PR #30 merged; production `/news` and `/sky` verified with saved English locale. |
-| P1 | BLOCKED | Restore a dependable sourced global newsroom feed and last-good behavior. | Production `/api/news` returned 503 at 2026-10-28 21:33:21Z; needs Cloudflare Worker runtime/cache diagnostics. Never seed fictional articles. |
+| P1 | IN PROGRESS | Restore a dependable sourced global newsroom feed and last-good behavior. | Production `/api/news` returned 503 at 2026-10-29 08:05:59Z. Isolated candidate bounds feed fan-out and adds safe diagnostics; exact Cloudflare root cause and global last-good remain unverified. |
 | P1 | IN PROGRESS | Secure moderation queue. Access JWT signature, issuer, audience, expiry and owner identity checked at origin; review audited; no publication. | PR #14 draft, CI green. Require full review and real Cloudflare Access setup before enablement. |
 | P1 | BLOCKED | Provision/verify production D1, apply both migrations safely, bind `DB`, backup/restore and read/write smoke test. | Requires authorized Cloudflare access; preserve existing DB/data. |
 | P1 | BLOCKED | Production Turnstile hostname/widget and Siteverify test; WAF POST limits and abuse monitoring verified. | Requires Cloudflare account and owner-approved setup; never put secret in Git. |

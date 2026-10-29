@@ -27,3 +27,12 @@ Tests are environment-specific. Re-run relevant suites on the latest commit befo
 - Main commit `9c9d2275e2df6a83d8b755d8f7ad84cd7866441d`; main-push run `40772316033` completed successfully.
 - Production browser check: after selecting English, `/news` and `/sky` showed English document language, selector, headings, titles and navigation; English persisted across navigation and a newsroom reload.
 - Production API check at 21:33:21Z: `/api/news?edition=global&lang=en&offset=0` returned HTTP 503 `news_source_unavailable`, zero items and no last-good response. This independent issue remains blocked; see `BLOCKERS.md`.
+
+## 2026-10-29 Issue #32 news reliability candidate
+
+- Production API at 08:05:59Z returned HTTP 503 `news_source_unavailable`, 69-byte JSON response without diagnostics, `cf-cache-status: DYNAMIC`. Production `/news` browser later showed a localized visible offline message and zero cards.
+- On latest `origin/main` `5aa42c0`, a new concurrency regression failed with observed maximum 10 feed requests. After implementing a five-worker queue, the same test passed with the expected one deduplicated item.
+- New tests were observed red before implementation for missing per-source diagnostics, partial-source serving, parser classification, malformed XML/control markers, duplicate and namespace-expanded attributes, item-like comment/CDATA/PI markup, XML declaration/outside-root whitespace, RSS root/channel identity, bounded timeout classification, node/depth/attribute/namespace limits, oversized response-stream cancellation, tiny-chunk limits/no-text-fallback, non-OK body cancellation, stale translated fallback and intermediary cache headers. Candidate tests now pass: `npm run test:feeds` 25/25.
+- Candidate static tests: `node --test tests/aurora-v1.test.mjs` 22/22; SQLite DB/API 20/20; D1 ops 3/3; deployment gate 7/7; intake 12/12. Playwright browser E2E 27/27, including the new mobile 503/offline-state test. `node --check functions/api/news.js` and `git diff --check` pass.
+- Bounded local live RSS smoke parsed all ten configured sources and 692 feed items; 200 deduplicated items were returned with zero source errors. This is not Cloudflare runtime evidence.
+- Exact production cause remains unconfirmed because Cloudflare runtime logs/bindings are unavailable. No production deployment, global-cache guarantee, or live-feed recovery is claimed.
