@@ -24,7 +24,7 @@
    link.textContent=item.translated_title||item.title;h.append(link);card.append(meta,h);
    if(item.translated_title&&item.translated_title!==item.title){
     const details=document.createElement("details"),summary=document.createElement("summary"),p=document.createElement("p");
-    summary.textContent="ORIGINAL HEADLINE";p.textContent=item.title;details.className="news-original";
+    summary.textContent=window.AURORA_SUBPAGES?.text("origHeadline")||"ORIGINAL HEADLINE";p.textContent=item.title;details.className="news-original";
     details.append(summary,p);card.append(details);
    }
    root.append(card);
@@ -77,7 +77,7 @@
    const old=JSON.parse(localStorage.getItem(key(edition,lang))||"null");
    if(!old||Date.now()-old.saved_at>12*3600000||!Array.isArray(old.items)||!old.items.length)return false;
    items=old.items;updatedAt=old.updated_at||"";render(true);
-   $("newsStatus").dataset.state="cached";$("newsStatus").textContent="CACHED · "+items.length;
+   $("newsStatus").dataset.state="cached";$("newsStatus").textContent=(window.AURORA_SUBPAGES?.text("cached")||"CACHED")+" · "+items.length;
    return true;
   }catch{return false}
  }
@@ -97,11 +97,12 @@
       !["live","cached"].includes(data.status)||!Array.isArray(data.items))return;
    items=data.items;updatedAt=data.updated_at||"";loadedPages.add(0);render(true);
    void translateVisible();
+   const tr=k=>window.AURORA_SUBPAGES?.text(k);
    $("newsStatus").dataset.state=data.translation?.status==="unavailable"?"original":data.status;
-   $("newsStatus").textContent=items.length+" headlines · "+
-    (data.translation?.translated?data.translation.translated+" translated · ":"")+
-    (data.translation?.status==="unavailable"?"Original titles — translation unavailable · ":"")+
-    (data.status==="cached"?"CACHED · ":"")+new Date(data.updated_at).toLocaleString(lang);
+   $("newsStatus").textContent=items.length+" "+(tr("headlines")||"headlines")+" · "+
+    (data.translation?.translated?data.translation.translated+" "+(tr("translated")||"translated")+" · ":"")+
+    (data.translation?.status==="unavailable"?(tr("origUntranslated")||"Original titles — translation unavailable")+" · ":"")+
+    (data.status==="cached"?(tr("cached")||"CACHED")+" · ":"")+new Date(data.updated_at).toLocaleString(lang);
    if(data.status==="live")try{
     localStorage.setItem(key(edition,lang),JSON.stringify({saved_at:Date.now(),updated_at:data.updated_at,items}));
    }catch{}
