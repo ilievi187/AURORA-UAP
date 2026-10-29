@@ -9,13 +9,16 @@
 
 ## 2026-10-29 — NEWS reliability candidate (PR #33)
 
-- Production `/api/news?edition=global&lang=en&offset=0` returned HTTP 503 `news_source_unavailable`, no diagnostics and `cf-cache-status: DYNAMIC` at 08:05:59Z. Cloudflare runtime logs and account bindings are unavailable, so the production root cause remains unknown.
+- Production `/api/news?edition=global&lang=en&offset=0` returned HTTP 503 `news_source_unavailable`, no diagnostics and `cf-cache-status: DYNAMIC` at 08:05:59Z. In a later browser audit, production `/news` displayed “Източникът временно не отговаря.” One direct API request returned HTTP 403; the cause and body were not characterized, so no further requests were made to that endpoint. Production root cause remains unknown.
 - Candidate hardens RSS fan-out to five workers, adds sanitized source diagnostics and bounded XML parsing/streaming, preserves partial successes, and reports a local last-good fallback as `cached` with current failed-refresh diagnostics. It does not claim a global Cloudflare cache or proven production fix.
-- TDD and local evidence: the regression test observed 10 simultaneous feed requests before the cap and passed afterward. Feeds 25/25, static 22/22, DB/API 20/20, D1 ops 3/3, deployment 7/7, intake 12/12, browser E2E 27/27. Bounded local smoke parsed 692 items from 10 feeds and returned 200 deduplicated items with zero source errors; this is not Cloudflare runtime evidence.
-- PR #33 checks passed on its code and state-document heads. The preview API probe returned HTTP 403 Error 1010 `browser_signature_banned` / `owner_action_required`; no retry or bypass was attempted. Functional preview verification is blocked.
-- PR #33 was `DIRTY` after PR #35 merged. Merge commit `34d30c7d88abd3bfbfcf06030fd0b0898d11e33e` now integrates current `main` (`35a61ff`); four docs conflicts were reconciled, while the browser test auto-merged. Local tests pass after the merge; the updated head is not yet pushed, so fresh PR CI remains pending.
+- Regression test observed 10 simultaneous feed requests before the cap and passed afterward. Bounded local smoke parsed 692 items from 10 feeds and returned 200 deduplicated items with zero source errors; this is not Cloudflare runtime evidence.
+- PR #33 pushed head `7c9b4e8` had 13 passing checks at the latest remote check. A subsequent local merge integrates current `origin/main` through `91676b2` in commit `1d9186a`; relevant post-merge suites and Pages Functions build passed locally. The new integration commit is not pushed; fresh CI is pending.
+- The direct branch-preview API previously returned HTTP 403 Error 1010 `browser_signature_banned` / `owner_action_required`. No retry or bypass. PR #33 is not merged or deployed; functional preview and production recovery are unverified.
 
-## 2026-10-29 — Team coordination
+## 2026-10-29 — Main integrations and operational gates
 
-- Confirmed the remote branch `tera/mobile-a11y-regression` (commit `972661a`) changes donation mobile styling and its own browser test. That branch is left untouched; coordinate rather than duplicating TERA's work.
-- The canonical ILIEVI operating-system manual path was not present. This project-local worklog is the durable fallback; no authorized Obsidian worklog path was provided.
+- PRs #38 (18-locale subpage translation), #39 (verified source catalog), #40–#42 (keyboard/mobile accessibility), and #44 (script-aware headline/summary translation) merged. Main workflows for `91676b2` passed. PR #44's Cloudflare Pages check is not evidence of production user-journey verification.
+- `npx wrangler@4.156.0 whoami` reports unauthenticated. The example Wrangler config contains only a placeholder D1 ID; no Cloudflare settings or data were changed.
+- One Gemini browser visit showed a guest/sign-in state and cookie-consent panel. No prompt was submitted, no credentials entered, and no external research was completed.
+- PR #14 security review is pending. PR #34 remains blocked on an authorized, embeddable source with real playback. PR #43 archive/source expansion is owned by another agent; do not duplicate its work.
+- Production intake remains disabled. No cases, media, or coordinates were invented or added.

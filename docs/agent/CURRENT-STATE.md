@@ -1,23 +1,24 @@
 # Current State
 
-Verified: 2026-10-29 19:50 UTC. Re-fetch remote state before action.
+Verified: 2026-10-29 20:30 UTC. Re-fetch remote state before action.
 
 ## Main and production
 
-- `origin/main` is `8af79e4b14cf9a14bbe0b637911162c71296963a`, squash merge of PR #35 at 18:55:35Z.
-- Main quality run `40935359711`, world-atlas run `40935359714`, and Cloudflare Pages production deployment `c50339a9` passed.
-- Canonical production browser check: sourced 15-case archive rendered, search `Australia` returned `westall-1966`, and the map-location caveat was visible/accessibly described.
-- Production `/api/stats` returns HTTP 503 `database_unavailable` because D1 binding `DB` is not configured. The UI reports registry completeness unknown and retains the static archive. No production D1 writes were made.
-- Production `/api/news?edition=global&lang=en&offset=0` last returned HTTP 503 `news_source_unavailable` at 2026-10-29 08:05:59Z; exact Cloudflare root cause remains unknown. Intake is disabled/local-draft-only.
+- Latest observed `origin/main`: `91676b2a8701bfd34cb1c18715b2afd1b9cde436`, including merged PRs #38–#44. Main quality/localization/accessibility workflows for that commit succeeded.
+- PR #35 production deployment and browser check remain verified: sourced 15-case archive, `Australia` search → `westall-1966`, accessible map caveat. No new cases or coordinates.
+- Production `/api/stats` last returned HTTP 503 `database_unavailable` because D1 binding `DB` was not configured; UI marked registry completeness unknown and retained the archive. No production D1 writes.
+- Production `/news` displayed the Bulgarian unavailable-source message in the latest in-session browser audit. One direct API request returned HTTP 403 without a characterized error body; no retry. The earlier API response was HTTP 503 `news_source_unavailable` at 08:05:59Z. Cause remains unknown.
+- Main Pages Functions and relevant CI for `91676b2` passed. PR #44's Pages check is a preview check; production deployment/user-journey after that merge is not verified.
 
 ## Open work
 
-- PR #33 NEWS reliability is open; conflict-resolution merge commit `34d30c7d88abd3bfbfcf06030fd0b0898d11e33e` integrates current main `35a61ff` and reconciles four docs conflicts. Local suites pass; a docs-only checkpoint is being added before pushing. Remote PR head is still `5c3459819277cb5b6d5d37a2144d16a4aac88792`; fresh CI is pending. Preview API Error 1010 `browser_signature_banned` / `owner_action_required` remains a hard functional-verification block; no bypass.
-- PR #34 media player is draft. Checks are green but live supported playback was not verified. Do not merge or bypass publisher restrictions.
-- PR #14 moderation is draft; production Access, privacy and security gates remain unverified. Keep intake disabled.
-- Production D1 binding/database/migrations/backups, Turnstile, WAF and Access settings are unverified. `wrangler` is not installed and no Cloudflare env-variable names are present; do not guess IDs or make destructive changes.
-- Issue #32 remains OPEN for news, video, international sources and broader authentic archive coverage.
+- PR #33 remote head is `7c9b4e8bdcfa3106cd689d98ec72bae1046e3605`; its latest observed 13 checks passed. Local branch head `1d9186a` integrates `origin/main` through `91676b2`; all applicable local test groups and Wrangler build passed. This new integration commit is not pushed, so fresh PR CI is pending. The preview API's prior HTTP 403 Error 1010 `browser_signature_banned` / `owner_action_required` remains a hard verification blocker; no bypass.
+- PR #34 media player remains draft. Actual live playback is unverified; Gemini showed guest/sign-in and no research prompt was sent.
+- PR #14 moderation remains draft; independent read-only security review is pending. Production Access, privacy, retention and moderation gates are not verified. Keep intake disabled.
+- Cloudflare D1 binding/database/migrations/backups, Turnstile, WAF and Access settings are unverified. `npx wrangler@4.156.0 whoami` reports unauthenticated; example config has a placeholder database ID. No Cloudflare changes made.
+- PR #43 for archive/source expansion is open and assigned to another agent. Avoid overlapping source/archive work.
+- Issue #32 remains OPEN for news recovery, video, authentic source expansion and broader archive coverage.
 
 ## Coordination
 
-- TERA's remote branch `tera/mobile-a11y-regression` at `972661a` modifies `donate.css` and its own browser test; leave it untouched. No local process was found using the PR33 worktree before starting its merge.
+- PRs #38–#44 (except the open #43) have been merged by their owners. The active PR #42 work is complete; do not modify any separate active agent worktree.

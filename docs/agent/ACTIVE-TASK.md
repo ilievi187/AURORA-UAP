@@ -2,20 +2,20 @@
 
 ## P1 — Issue #32 NEWS reliability slice
 
-Status: PR #33 is open from `fix/news-recovery-diagnostics-issue32`. Its nine checks passed on earlier heads, but `mergeStateStatus` became `DIRTY` after PR #35 merged. Conflicts are resolved locally by merge commit `34d30c7d88abd3bfbfcf06030fd0b0898d11e33e` integrating current `main` (`35a61ff`); the update has not yet been pushed, so fresh PR CI is pending.
+Status: PR #33 is open at remote head `7c9b4e8`; its latest observed 13 CI/deployment checks passed. The local branch now includes current `origin/main` through `91676b2` in integration commit `1d9186a`; local targeted and full integration tests passed, but this new head is not pushed and fresh CI is pending. Keep the PR unmerged until an owner-approved functional preview path is available.
 
-Production `/api/news?edition=global&lang=en&offset=0` last returned HTTP 503 `news_source_unavailable` at 2026-10-29 08:05:59Z. Cloudflare runtime logs/account bindings are unavailable, so root cause is unconfirmed. PR #33's preview API returned HTTP 403 Error 1010 `browser_signature_banned` with `owner_action_required`; do not retry or bypass. Keep PR open until a permitted user-path preview check can be done.
+Production `/news` displayed “Източникът временно не отговаря.” in the latest browser audit. A single direct `/api/news?edition=global&lang=en&offset=0` request returned HTTP 403 with no characterized error body; stop further requests to that endpoint. The earlier production probe returned HTTP 503 `news_source_unavailable` at 2026-10-29 08:05:59Z. Cloudflare runtime logs/account access are unavailable, so the cause is unconfirmed. The branch preview API returned 403 Error 1010 `browser_signature_banned` / `owner_action_required`; do not retry or bypass.
 
-Candidate scope: five-worker RSS fan-out, sanitized aggregate diagnostics, bounded XML parsing/stream reading, partial-source serving and explicitly cached last-good fallback. This is a mitigation/diagnostics slice, not proof production is fixed or globally cached.
+Candidate scope: five-worker RSS fan-out, sanitized diagnostics, bounded XML parsing/streaming, partial-source serving and explicitly cached last-good fallback. It is a mitigation/diagnostics slice, not proof production is fixed or globally cached.
 
 ## PR #34 — in-site video player
 
-Status: draft, all current checks passed, but actual supported playback has not been verified. Do not merge until a legitimate source plays inside the AURORA UI. No paywall, CAPTCHA, WAF or publisher restrictions may be bypassed.
+Status: draft; checks pass, but actual supported playback has not been verified. Gemini browser was opened once and showed guest/sign-in; no prompt or credentials were submitted. Wait for the user to sign in or provide an owner-approved public embeddable source. Do not merge until a legitimate source plays inside AURORA. Never bypass paywalls, CAPTCHA, WAF or publisher restrictions.
 
 ## PR #14 — gated moderation queue
 
-Status: draft. Production moderation/intake remain blocked pending security review, real Cloudflare Access configuration, privacy/retention approval and synthetic-only authenticated verification. Never enable production intake as part of D1 registry work.
+Status: draft. Read-only security review is pending. Production moderation/intake remain blocked pending independent security review, real Cloudflare Access configuration, privacy/retention approval and synthetic-only authenticated verification. Never enable intake as part of D1 registry work.
 
 ## PR #35 — searchable global atlas UX (complete)
 
-Squash-merged 2026-10-29 as `8af79e4b14cf9a14bbe0b637911162c71296963a`. Main quality/world-atlas workflows and Cloudflare production deployment passed; production browser verified 15 archived cases and search. Production `/api/stats` still returns 503 because `DB` is unconfigured; the UI reports incomplete registry and preserves the static archive. No new cases or coordinates; issue #32 remains open.
+Squash-merged 2026-10-29 as `8af79e4b14cf9a14bbe0b637911162c71296963a`. Main workflows and production deployment passed; production browser verified 15 archived cases and search. Production `/api/stats` still last returned 503 because `DB` is unconfigured; the UI reports incomplete registry and preserves the static archive. No new cases or coordinates; issue #32 remains open.
