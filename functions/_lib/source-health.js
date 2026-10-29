@@ -5,16 +5,9 @@
 import {titleKey} from "./headline-dedup.js";
 import {inspectFeed} from "./feed-parse.js";
 import {CATALOG_CHECKED_ON, REGIONS, SOURCE_CATALOG} from "./source-catalog.js";
-import {readAllowlistedFeed, selectFeeds} from "./discovery.js";
+import {readFeedWithRetry, selectFeeds} from "./discovery.js";
 
-const RETRYABLE = new Set(["timeout", "network", "server"]);
-
-export async function readFeedWithRetry(source, fetcher, timeoutMs) {
-  const first = await readAllowlistedFeed(source, fetcher, timeoutMs);
-  if (first.ok || !RETRYABLE.has(first.error)) return {...first, attempts: 1};
-  const second = await readAllowlistedFeed(source, fetcher, timeoutMs);
-  return {...second, attempts: 2, elapsedMs: first.elapsedMs + second.elapsedMs};
-}
+export {readFeedWithRetry};
 
 function emptyRow(entry, checkedAt) {
   return {

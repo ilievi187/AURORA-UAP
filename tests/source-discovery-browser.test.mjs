@@ -52,7 +52,7 @@ function discovery(region) {
   return {
     status: "live",
     checked: ["bbc-world"],
-    failed: [],
+    failed: [{id: "bad-source", error: "fetch_failed"}],
     count: 1,
     items: [{
       title: "Senate schedules UAP hearing",
@@ -141,6 +141,7 @@ try {
     assert.equal(await page.locator("#matchList a").textContent(), "Senate schedules UAP hearing");
     assert.equal(await page.locator("#matchList a").getAttribute("href"), "https://www.bbc.com/news/uap-hearing");
     assert.match(await page.locator("#matchStatus").textContent(), /не потвърдени случаи/);
+    assert.match(await page.locator("#matchStatus").textContent(), /Не отговориха: Should Not Link/);
     await page.locator("#sourceRegion").selectOption("americas");
     await page.waitForFunction(() => document.querySelector("#matchStatus")?.textContent?.includes("Няма съвпадения"));
     assert.equal(await page.locator("#matchList a").count(), 0);
