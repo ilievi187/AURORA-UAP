@@ -1,0 +1,46 @@
+name: AURORA world atlas quality gate
+on:
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'world-atlas*'
+      - 'ui-locales.js'
+      - 'data/cases.json'
+      - 'data/earth-land.json'
+      - 'functions/_lib/public.js'
+      - 'functions/api/cases.js'
+      - 'functions/api/stats.js'
+      - 'tests/world-atlas-*'
+      - '.github/workflows/world-atlas-tests.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'world-atlas*'
+      - 'ui-locales.js'
+      - 'data/cases.json'
+      - 'data/earth-land.json'
+      - 'functions/_lib/public.js'
+      - 'functions/api/cases.js'
+      - 'functions/api/stats.js'
+      - 'tests/world-atlas-*'
+      - '.github/workflows/world-atlas-tests.yml'
+permissions:
+  contents: read
+jobs:
+  world-atlas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test search, filters, clustering, and localization model
+        run: node --test tests/world-atlas-model.test.mjs
+      - name: Install browser test tooling
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install --only-shell chromium
+      - name: Verify atlas interactions and mobile layout
+        run: node --test tests/world-atlas-browser.test.mjs

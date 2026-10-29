@@ -2,7 +2,7 @@
 @import url("styles.css");
 .donation-page{max-width:1100px;margin:auto;padding:26px 18px 80px}
 .donate-hero{border-radius:14px;padding:65px clamp(22px,5vw,75px);border:1px solid #513c57;background:linear-gradient(110deg,#061625ea,#1b0c1ef2),url('assets/hero-ufo.webp') right center/cover no-repeat;box-shadow:0 20px 65px #0008}
-.donate-hero h1{font-size:clamp(38px,6vw,70px);letter-spacing:-.035em;line-height:1.05;margin:14px 0}
+.donate-hero h1{font-size:clamp(38px,6vw,70px);letter-spacing:-.035em;line-height:1.05;margin:14px 0;overflow-wrap:anywhere}
 .donate-hero h1 span{color:#ff6b7c}.donate-hero p{max-width:700px;color:#d5ddea;line-height:1.7;font-size:16px}
 .donate-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:28px}
 .donate-primary{font-size:25px;padding:22px 42px;height:auto;min-height:74px;border-radius:12px;cursor:pointer}

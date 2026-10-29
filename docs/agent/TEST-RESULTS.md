@@ -27,3 +27,13 @@ Tests are environment-specific. Re-run relevant suites on the latest commit befo
 - Main commit `9c9d2275e2df6a83d8b755d8f7ad84cd7866441d`; main-push run `40772316033` completed successfully.
 - Production browser check: after selecting English, `/news` and `/sky` showed English document language, selector, headings, titles and navigation; English persisted across navigation and a newsroom reload.
 - Production API check at 21:33:21Z: `/api/news?edition=global&lang=en&offset=0` returned HTTP 503 `news_source_unavailable`, zero items and no last-good response. This independent issue remains blocked; see `BLOCKERS.md`.
+
+## 2026-10-29 searchable global atlas UX candidate (local)
+
+- Static/model tests: 26/26 passed; JavaScript syntax checks passed, including Turkish dotless-i casing and region-field search distinct from city search.
+- Existing Chromium browser suite: 26/26 passed; dedicated atlas browser suite: 8/8 passed, including page-two D1 sentinel, HTTP failure/null payload recovery, demo-contaminated stats status, map caveat, late-enrichment focus restoration/fallback, 60-row pagination, marker/cluster keyboard focus, and localized labels.
+- SQLite database/API: 20/20; private intake: 12/12; D1 operations: 3/3; deployment readiness: 7/7; live feeds: 9/9.
+- Dense clustering fixture: 12,000 collocated markers completed within the 1.5-second test bound; implementation uses linear grid-cell aggregation.
+- `git diff --cached --check` passed. Local Playwright used `/usr/bin/chromium`; no browser binary/dependency is committed.
+- PR #35 code head `7eb34b50376b3c58d4eda55e6247755dea7ef12c` passed all ten checks (runs `40930193231`, `40930193315`). Documentation handoff head `6d7971a712441057bd3dbf5441a5281b5b930bb9` also passed all ten checks (runs `40931782983`, `40931782988`).
+- Preview `/api/stats` returned HTTP 503 `database_unavailable` because `DB` is not configured on the preview. UI explicitly marked D1 completeness unknown. No production behavior, D1 write, merge, or production deployment was verified.
