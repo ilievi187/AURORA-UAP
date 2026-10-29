@@ -6,12 +6,15 @@ on:
       - 'functions/_lib/headline-dedup.js'
       - 'functions/_lib/feed-parse.js'
       - 'functions/_lib/discovery.js'
+      - 'functions/_lib/source-health.js'
       - 'functions/api/sources.js'
       - 'functions/api/discovery.js'
+      - 'functions/api/source-health.js'
       - 'sources.html'
       - 'sources.js'
       - 'sources.css'
       - 'tests/source-catalog.test.mjs'
+      - 'tests/source-health.test.mjs'
       - 'tests/source-discovery-browser.test.mjs'
       - 'tests/fixtures/source-discovery/**'
       - '.github/workflows/source-catalog-tests.yml'
@@ -22,12 +25,15 @@ on:
       - 'functions/_lib/headline-dedup.js'
       - 'functions/_lib/feed-parse.js'
       - 'functions/_lib/discovery.js'
+      - 'functions/_lib/source-health.js'
       - 'functions/api/sources.js'
       - 'functions/api/discovery.js'
+      - 'functions/api/source-health.js'
       - 'sources.html'
       - 'sources.js'
       - 'sources.css'
       - 'tests/source-catalog.test.mjs'
+      - 'tests/source-health.test.mjs'
       - 'tests/source-discovery-browser.test.mjs'
       - 'tests/fixtures/source-discovery/**'
       - '.github/workflows/source-catalog-tests.yml'
@@ -43,7 +49,7 @@ jobs:
         with:
           node-version: '22'
       - name: Test catalog, parser, and dedup
-        run: node --test tests/source-catalog.test.mjs
+        run: node --test tests/source-catalog.test.mjs tests/source-health.test.mjs
       - name: Install browser test tooling
         run: |
           npm install --no-save --no-package-lock playwright@1.56.1

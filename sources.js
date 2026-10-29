@@ -12,9 +12,23 @@ const sourceList = document.querySelector("#sourceList");
 const matchStatus = document.querySelector("#matchStatus");
 const matchList = document.querySelector("#matchList");
 const reloadButton = document.querySelector("#reloadMatches");
+const healthButton = document.querySelector("#checkHealth");
+const healthStatus = document.querySelector("#healthStatus");
+const healthList = document.querySelector("#healthList");
 
 let catalog = [];
 let requestId = 0;
+let healthRequestId = 0;
+
+const HEALTH_ERRORS = {
+  timeout: "изтекло време",
+  network: "няма връзка",
+  server: "грешка на издателя",
+  status: "отказан отговор",
+  redirect: "недопустимо пренасочване",
+  size: "твърде голям отговор",
+  format: "не е RSS, Atom или RDF"
+};
 
 function safeHttps(value) {
   try {
@@ -76,6 +90,64 @@ function renderCatalog() {
     }
     card.append(actions);
     sourceList.append(card);
+  }
+}
+
+function resetHealth() {
+  healthRequestId += 1;
+  healthList.replaceChildren();
+  setStatus(healthStatus, "ready", "Още не е правена проверка на състоянието.");
+}
+
+function renderHealth(payload) {
+  healthList.replaceChildren();
+  if (payload.status === "empty_region") {
+    setStatus(healthStatus, "ready", "Няма източници за този регион.");
+    return;
+  }
+  if (payload.status === "unavailable") {
+    setStatus(healthStatus, "error", "Избраните източници не върнаха валиден фийд.");
+  } else {
+    const live = (payload.sources || []).filter((row) => row.availability === "live").length;
+    setStatus(healthStatus, "ready", `${live} от ${(payload.sources || []).length} отговориха с RSS, Atom или RDF. Това не е брой наблюдения.`);
+  }
+  for (const row of payload.sources || []) {
+    const card = el("article", "live-card");
+    card.append(el("h3", "", row.publisher || row.id || "Източник"));
+    const bits = [
+      `HTTP ${Number(row.http_status) || 0}`,
+      `${Number(row.elapsed_ms) || 0} ms`,
+      row.format ? String(row.format).toUpperCase() : "",
+      row.availability === "live" ? `${Number(row.accepted) || 0} заглавия` : (HEALTH_ERRORS[row.error] || "недостъпен"),
+      Number(row.duplicate_titles) > 0 ? `${row.duplicate_titles} повторения` : ""
+    ].filter(Boolean);
+    card.append(el("p", "live-meta", bits.join(" · ")));
+    if (row.feed_host) card.append(el("p", "source-note", `Издателски адрес: ${row.feed_host}`));
+    healthList.append(card);
+  }
+}
+
+async function loadHealth() {
+  const token = ++healthRequestId;
+  const region = REGIONS.includes(regionSelect.value) ? regionSelect.value : "all";
+  setStatus(healthStatus, "loading", "Проверка на достъпността…");
+  healthList.replaceChildren();
+  healthButton.disabled = true;
+  healthButton.setAttribute("aria-busy", "true");
+  try {
+    const response = await fetch(`/api/source-health?region=${encodeURIComponent(region)}`, {cache: "no-store"});
+    const payload = await response.json();
+    if (token !== healthRequestId) return;
+    if (!response.ok && payload.status !== "unavailable") throw new Error("health");
+    renderHealth(payload);
+  } catch {
+    if (token !== healthRequestId) return;
+    setStatus(healthStatus, "error", "Проверката на състоянието не успя. Няма добавени заглавия.");
+  } finally {
+    if (token === healthRequestId) {
+      healthButton.disabled = false;
+      healthButton.removeAttribute("aria-busy");
+    }
   }
 }
 
@@ -155,7 +227,9 @@ async function loadCatalog() {
 
 regionSelect.addEventListener("change", () => {
   renderCatalog();
+  resetHealth();
   loadMatches();
 });
 reloadButton.addEventListener("click", loadMatches);
+healthButton.addEventListener("click", loadHealth);
 loadCatalog();
