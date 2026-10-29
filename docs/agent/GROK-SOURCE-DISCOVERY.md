@@ -1,6 +1,6 @@
 # GROK source discovery
 
-Status: reliability pass on `agent/grok-source-reliability`. The catalog has 75 feeds after one stale feed was removed. `functions/api/news.js` is unchanged.
+Status: discovery on `agent/grok-discovery-specialists` also reads specialist-press feeds outside the 12-feed preview. The catalog remains 75 feeds. `functions/api/news.js` is unchanged. Health checks stay capped at 12.
 
 ## Catalog
 
@@ -44,7 +44,7 @@ Checked and left out, rather than invented:
 
 `GET /api/source-health?region=` checks at most 12 catalog feeds for that region. It records HTTP status, elapsed time, RSS/Atom/RDF format, accepted items, duplicate titles, newest date, and undated, stale, or future counts. One retry is used only for a timeout, a network failure, or HTTP 5xx. A 404 is not retried. The response has no feed body and no article text. Any query other than `region`, including `url` or `feed`, is HTTP 400 and does not fetch.
 
-`/sources.html` runs this check only after "Провери състоянието". Changing region clears the previous result. Keyword discovery is still separate.
+`/sources.html` runs this check only after "Провери състоянието". Changing region clears the previous result. Keyword discovery is separate. It keeps the same 12-feed preview, then adds specialist-press feeds in that region which the preview did not already include, up to 12 more. For region `all` that is 21 reads: the preview 12 plus Guardian science, Spiegel Wissenschaft, Libération sciences, Nature, Space.com, Science News, Phys.org space, Scientific American, and Live Science. General desks such as Dnevnik and tagesschau stay outside that request. A failed extra feed does not drop matches from feeds that respond.
 
 This module is the integration surface for a later newsroom hook. It must not be imported into `functions/api/news.js` until LUNA coordinates that change. `dedupeHeadlines()` is still not wired into `fetchHeadlines`.
 
@@ -54,9 +54,10 @@ Titles match UAP, UFO, OVNI, AARO, НЛО, OZN, and ΑΤΙΑ as whole tokens, pl
 
 ## Verification
 
-In `/home/nightknight/Work/aurora-grok-reliability` on 2026-10-29:
+PR #51 (`d5339ab1ad228724a757ffffc7f5d32e37385524`) is on production. At 2026-10-29T21:21:07Z, `/api/sources` returned count 75 without Corriere, and `/api/discovery?region=all` returned one Debrief headline from the 12 preview feeds, with `cbc-world` failed. Caller `url` queries returned HTTP 400. Scientific American's headline from the catalog audit was not in that response.
 
-- `node --test tests/source-catalog.test.mjs tests/source-health.test.mjs` — 16 passed. Coverage includes a bulk `content:encoded` feed, the IAEA compact date, a surname containing "ufo", one timed-out feed beside a live match, and the 2 MB download ceiling.
-- `AURORA_CHROMIUM=/usr/bin/chromium node --test tests/source-discovery-browser.test.mjs` — 2 passed. A failed fixture source is named, and the matching headline stays on the page. Caller URLs are still absent.
+In `/home/nightknight/Work/aurora-grok-discovery` on 2026-10-29, after the specialist selection change:
 
-No production deploy of this branch yet. No change to intake, payments, moderation, or the news worker. `/api/source-health?url=` remains HTTP 400.
+- `node --test tests/source-catalog.test.mjs tests/source-health.test.mjs` — 18 passed. The new tests require Scientific American in the discovery set and reject Dnevnik and tagesschau there. Health remains 12 feeds and still rejects a caller URL.
+
+This branch is not on production yet. No change to intake, payments, moderation, or the news worker. `/api/source-health?url=` remains HTTP 400.
