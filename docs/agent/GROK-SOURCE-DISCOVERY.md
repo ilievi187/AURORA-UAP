@@ -1,6 +1,6 @@
 # GROK source discovery
 
-Status: reliability pass on `agent/grok-source-reliability`; 75 checked feeds remain after one stale feed was removed. The PR #33 candidate now wires the catalog into the live `/api/news` response.
+Status: the catalog has 75 checked feeds. PR #54 widens keyword discovery from the 12-feed preview to add specialist-press feeds (21 selected for `all`); health checks remain capped at 12. The PR #33 candidate wires the same selector into `/api/news` by edition; production behavior is unverified.
 
 ## Catalog
 
@@ -44,17 +44,17 @@ Checked and left out, rather than invented:
 
 `GET /api/source-health?region=` checks at most 12 catalog feeds for that region. It records HTTP status, elapsed time, RSS/Atom/RDF format, accepted items, duplicate titles, newest date, and undated, stale, or future counts. One retry is used only for a timeout, a network failure, or HTTP 5xx. A 404 is not retried. The response has no feed body and no article text. Any query other than `region`, including `url` or `feed`, is HTTP 400 and does not fetch.
 
-`/sources.html` runs health checks only after "Провери състоянието". Changing region clears the previous result. Manual keyword discovery remains available there; the news endpoint also uses the same title matcher automatically.
+`/sources.html` runs health checks only after "Провери състоянието". Changing region clears the previous result. Manual keyword discovery keeps the 12-feed preview and adds up to 12 specialist-press feeds in the selected region; health remains 12. The news endpoint also uses the same title matcher automatically.
 
 ## Newsroom integration (PR #33 candidate)
 
 `functions/api/news.js` now combines its existing multi-region Google News results with keyword-matched items from the checked publisher catalog:
 
-- Global edition: the 12 prioritized preview feeds.
+- Global edition: the 12 prioritized preview feeds plus up to 12 specialist-press feeds outside the preview (currently 21 total).
 - Official edition: catalog entries with role `official-institution` (currently seven).
 - Bulgaria edition: catalog entries with country `BG` (currently Dnevnik).
 
-The publisher lane uses the allowlisted feed reader, at most five concurrent requests, one attempt per feed, and a 1.5-second per-feed timeout. It runs after the Google News lane so combined upstream concurrency stays within five. `dedupeHeadlines()` prefers a direct publisher URL when a title also appears through Google News. Publisher status, checked/failed counts, and match count are added to sanitized diagnostics. Existing language metadata flows into the existing translation path; keyword matches remain headlines, not verified cases.
+The publisher lane uses the allowlisted feed reader, at most five concurrent requests, one attempt per feed, and a 1.5-second timeout per fetch. It runs after the Google News lane so combined upstream concurrency stays within five. Global may select 21 catalog feeds, so a fully stalled refresh can add several seconds; redirects are still restricted to catalog-listed hosts. `dedupeHeadlines()` prefers a direct publisher URL when a title also appears through Google News. Publisher status, checked/failed counts, and match count are added to sanitized diagnostics. Existing language metadata flows into the existing translation path; keyword matches remain headlines, not verified cases.
 
 The worker's internal fresh-cache key is versioned so it does not reuse its pre-integration Google-only snapshot. A previously cached external `/api/news` response may remain visible until its current 15-minute shared-cache TTL expires. The last-good cache remains available as a clearly labeled fallback. `/api/discovery` and `/api/source-health` remain separate endpoints for manual source inspection.
 
@@ -69,4 +69,4 @@ In `/home/nightknight/Work/aurora-grok-reliability` on 2026-10-29:
 - `node --test tests/source-catalog.test.mjs tests/source-health.test.mjs` — 16 passed. Coverage includes a bulk `content:encoded` feed, the IAEA compact date, a surname containing "ufo", one timed-out feed beside a live match, and the 2 MB download ceiling.
 - `AURORA_CHROMIUM=/usr/bin/chromium node --test tests/source-discovery-browser.test.mjs` — 2 passed. A failed fixture source is named, and the matching headline stays on the page. Caller URLs are still absent.
 
-The integration is still a PR #33 candidate; no production deploy or production recovery is verified. No changes to intake, payments, or moderation. `/api/source-health?url=` remains HTTP 400.
+PR #54's specialist discovery change is merged to `main`; whether its main deployment completed has not been verified. PR #33's `/api/news` integration remains a candidate and has no verified production recovery. No changes to intake, payments, or moderation. `/api/source-health?url=` remains HTTP 400.

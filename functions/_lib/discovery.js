@@ -3,6 +3,8 @@ import {dedupeHeadlines} from "./headline-dedup.js";
 import {REGIONS, SOURCE_CATALOG} from "./source-catalog.js";
 
 export const DISCOVERY_FEED_LIMIT = 12;
+export const DISCOVERY_SPECIALIST_EXTRA = 12;
+export const DISCOVERY_TOTAL_LIMIT = DISCOVERY_FEED_LIMIT + DISCOVERY_SPECIALIST_EXTRA;
 export const MATCH_LIMIT = 40;
 export const MAX_DOWNLOAD_BYTES = 2_000_000;
 export const FEED_USER_AGENT = "AURORA-UAP-source-check/1.0 (+https://aurorauap.org/sources)";
@@ -50,6 +52,21 @@ export function selectFeeds(catalog, region, limit = DISCOVERY_FEED_LIMIT) {
     .slice()
     .sort((a, b) => Number(b.preview) - Number(a.preview) || a.priority - b.priority || a.id.localeCompare(b.id))
     .slice(0, limit);
+}
+
+export function selectDiscoveryFeeds(
+  catalog,
+  region,
+  primaryLimit = DISCOVERY_FEED_LIMIT,
+  specialistLimit = DISCOVERY_SPECIALIST_EXTRA
+) {
+  const primary = selectFeeds(catalog, region, primaryLimit);
+  const seen = new Set(primary.map((entry) => entry.id));
+  const extra = (catalog || [])
+    .filter((entry) => (region === "all" || entry.region === region) && entry.role === "specialist-press" && !seen.has(entry.id))
+    .sort((a, b) => a.priority - b.priority || a.id.localeCompare(b.id))
+    .slice(0, specialistLimit);
+  return primary.concat(extra);
 }
 
 function allowedRedirect(source, location, base) {
@@ -125,15 +142,20 @@ export async function discoverMatches({
   now = Date.now(),
   region = "all",
   timeoutMs = 8000,
-  feedLimit = DISCOVERY_FEED_LIMIT,
-  maxConcurrency = DISCOVERY_FEED_LIMIT,
+  feedLimit = DISCOVERY_TOTAL_LIMIT,
+  maxConcurrency = DISCOVERY_TOTAL_LIMIT,
   maxAttempts = 2
 } = {}) {
   if (!REGIONS.includes(region)) throw new Error("invalid_region");
-  const safeLimit = Number.isInteger(feedLimit) ? Math.max(0, Math.min(DISCOVERY_FEED_LIMIT, feedLimit)) : DISCOVERY_FEED_LIMIT;
-  const safeConcurrency = Number.isInteger(maxConcurrency) ? Math.max(1, Math.min(DISCOVERY_FEED_LIMIT, maxConcurrency)) : DISCOVERY_FEED_LIMIT;
+  const safeLimit = Number.isInteger(feedLimit) ? Math.max(0, Math.min(DISCOVERY_TOTAL_LIMIT, feedLimit)) : DISCOVERY_TOTAL_LIMIT;
+  const safeConcurrency = Number.isInteger(maxConcurrency) ? Math.max(1, Math.min(DISCOVERY_TOTAL_LIMIT, maxConcurrency)) : DISCOVERY_TOTAL_LIMIT;
   const safeAttempts = Number.isInteger(maxAttempts) && maxAttempts > 0 ? Math.min(2, maxAttempts) : 2;
-  const selected = selectFeeds(catalog, region, safeLimit);
+  const selected = selectDiscoveryFeeds(
+    catalog,
+    region,
+    Math.min(safeLimit, DISCOVERY_FEED_LIMIT),
+    Math.max(0, safeLimit - DISCOVERY_FEED_LIMIT)
+  );
   const settled = new Array(selected.length);
   let next = 0;
   const worker = async () => {

@@ -5,7 +5,7 @@ import {dirname, join} from "node:path";
 import {fileURLToPath} from "node:url";
 import {dedupeHeadlines} from "../functions/_lib/headline-dedup.js";
 import {decodeXmlBytes, parseFeedXml} from "../functions/_lib/feed-parse.js";
-import {discoverMatches, selectFeeds, titleMatchesTopic} from "../functions/_lib/discovery.js";
+import {discoverMatches, selectDiscoveryFeeds, selectFeeds, titleMatchesTopic} from "../functions/_lib/discovery.js";
 import {REGIONS, SOURCE_CATALOG, validateSourceCatalog} from "../functions/_lib/source-catalog.js";
 import {onRequestGet as sourcesApi} from "../functions/api/sources.js";
 import {onRequestGet as discoveryApi} from "../functions/api/discovery.js";
@@ -46,6 +46,23 @@ test("default discovery preview is the twelve priority feeds", () => {
   assert.ok(europe.includes("bbc-world") && europe.includes("dnevnik"));
   assert.equal(europe.includes("nasa-releases"), false);
   assert.ok(europe.length <= 12);
+});
+
+test("keyword discovery also reads specialist desks outside that preview", () => {
+  const preview = selectFeeds(SOURCE_CATALOG, "all").map((entry) => entry.id);
+  const selected = selectDiscoveryFeeds(SOURCE_CATALOG, "all").map((entry) => entry.id);
+  const specialists = SOURCE_CATALOG
+    .filter((entry) => entry.role === "specialist-press" && !preview.includes(entry.id))
+    .sort((a, b) => a.priority - b.priority || a.id.localeCompare(b.id))
+    .slice(0, 12)
+    .map((entry) => entry.id);
+  assert.deepEqual(selected.slice(0, preview.length), preview);
+  assert.deepEqual(selected.slice(preview.length), specialists);
+  assert.ok(selected.includes("scientific-american"));
+  assert.equal(selected.includes("dnevnik"), false);
+  assert.equal(selected.includes("tagesschau"), false);
+  assert.ok(selectDiscoveryFeeds(SOURCE_CATALOG, "americas").some((entry) => entry.id === "scientific-american"));
+  assert.equal(selectFeeds(SOURCE_CATALOG, "all").length, 12);
 });
 
 test("keyword filter keeps UAP terms and rejects ordinary science headlines", () => {
@@ -183,6 +200,32 @@ test("a compact IAEA publication date is kept and an ambiguous one is not", () =
   assert.equal(parsed[0].published.startsWith("2026-10-28"), true);
   const ambiguous = dated.replace("26-10-28 14:21", "26-10-28");
   assert.equal(parseFeedXml(ambiguous, source, now).length, 0);
+});
+
+test("a specialist headline outside the preview window is kept", async () => {
+  const sciam = SOURCE_CATALOG.find((entry) => entry.id === "scientific-american");
+  const calls = [];
+  const result = await discoverMatches({
+    catalog: SOURCE_CATALOG,
+    fetcher: async (url) => {
+      calls.push(url);
+      if (url === sciam.feed_url) {
+        return responseFor(rss(
+          "Strange triangular craft reported in new U.S. government UFO release",
+          "https://www.scientificamerican.com/article/ufo-release"
+        ));
+      }
+      return responseFor(rss("NASA launches Europa probe", "https://www.bbc.com/news/europa"));
+    },
+    now,
+    region: "all"
+  });
+  assert.ok(calls.includes(sciam.feed_url));
+  assert.equal(result.status, "live");
+  assert.deepEqual(result.items.map((item) => item.title), [
+    "Strange triangular craft reported in new U.S. government UFO release"
+  ]);
+  assert.equal(result.items[0].feed_host, "www.scientificamerican.com");
 });
 
 test("one failed feed does not drop matches from a feed that responds", async () => {

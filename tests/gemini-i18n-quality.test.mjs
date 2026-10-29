@@ -7,6 +7,94 @@ import { labels as atlasLabels } from '../world-atlas-labels.js';
 const read = path => readFileSync(new URL('../' + path, import.meta.url), 'utf8');
 const EXPECTED_LOCALES = ['bg', 'en', 'de', 'ru', 'zh-CN', 'fr', 'es', 'it', 'pt', 'tr', 'ro', 'el', 'sr', 'uk', 'pl', 'ar', 'ja', 'ko'];
 
+test('homepage translations (script.js + i18n-extra.js), editorialText, HOME_TITLES, and aurora-v1.js language gate cover all 18 locales', () => {
+  const scriptJs = read('script.js');
+  const transMatch = scriptJs.match(/const translations = (\{[\s\S]*?\n\});/);
+  const donMatch = scriptJs.match(/const donationNav = (\{[\s\S]*?\n\});/);
+  const editMatch = scriptJs.match(/const editorialText=(\{[\s\S]*?\n\});/);
+  const titlesMatch = scriptJs.match(/const HOME_TITLES = (\{[\s\S]*?\n\});/);
+  assert.ok(transMatch && donMatch && editMatch && titlesMatch, 'script.js must define translations, donationNav, editorialText, and HOME_TITLES');
+
+  const ctx = { window: {} };
+  vm.runInNewContext(read('i18n-extra.js'), ctx);
+  const translations = vm.runInNewContext('(' + transMatch[1] + ')');
+  const donationNav = vm.runInNewContext('(' + donMatch[1] + ')');
+  const editorialText = vm.runInNewContext('(' + editMatch[1] + ')');
+  const homeTitles = vm.runInNewContext('(' + titlesMatch[1] + ')');
+
+  Object.assign(translations, ctx.window.AURORA_LOCALES);
+  for (const [code, keys] of Object.entries(donationNav)) {
+    Object.assign(translations[code], keys);
+  }
+
+  const enKeys = Object.keys(translations.en).sort();
+  const enEditKeys = Object.keys(editorialText.en).sort();
+
+  for (const locale of EXPECTED_LOCALES) {
+    assert.ok(translations[locale], `Missing homepage locale in translations/i18n-extra.js: ${locale}`);
+    assert.deepEqual(Object.keys(translations[locale]).sort(), enKeys, `Homepage locale ${locale} key mismatch`);
+    for (const key of enKeys) {
+      const val = translations[locale][key];
+      assert.equal(typeof val, 'string', `Homepage ${locale}.${key} must be string`);
+      assert.ok(val.trim().length > 0, `Homepage ${locale}.${key} must not be empty`);
+      assert.ok(!val.includes('\uFFFD'), `Homepage ${locale}.${key} contains replacement character`);
+    }
+
+    assert.ok(editorialText[locale], `script.js editorialText missing locale ${locale}`);
+    assert.deepEqual(Object.keys(editorialText[locale]).sort(), enEditKeys, `script.js editorialText ${locale} key mismatch`);
+    for (const key of enEditKeys) {
+      const val = editorialText[locale][key];
+      assert.ok(typeof val === 'string' && val.trim().length > 0, `editorialText ${locale}.${key} must be non-empty string`);
+      assert.ok(!val.includes('\uFFFD'), `editorialText ${locale}.${key} contains replacement character`);
+    }
+
+    assert.ok(typeof homeTitles[locale] === 'string' && homeTitles[locale].includes('AURORA'), `HOME_TITLES missing ${locale}`);
+    assert.ok(!homeTitles[locale].includes('\uFFFD'), `HOME_TITLES.${locale} contains replacement character`);
+  }
+
+  const indexHtml = read('index.html');
+  const htmlKeys = [...indexHtml.matchAll(/data-i18n(?:-placeholder)?="([^"]+)"/g)].map(m => m[1]);
+  assert.ok(htmlKeys.length >= 60, 'index.html must contain data-i18n attributes');
+  for (const key of htmlKeys) {
+    assert.ok(enKeys.includes(key), `index.html data-i18n="${key}" is missing from homepage locale packs`);
+  }
+
+  const auroraV1 = read('aurora-v1.js');
+  const gateTMatch = auroraV1.match(/const t=(\{[\s\S]*?\n  \});/);
+  const statusMatch = auroraV1.match(/const selectedStatusLabel=(\{[\s\S]*?\n  \});/);
+  const contMatch = auroraV1.match(/const continueTranslations=(\{[\s\S]*?\n  \});/);
+  assert.ok(gateTMatch && statusMatch && contMatch, 'aurora-v1.js must define t, selectedStatusLabel, and continueTranslations');
+  const gateT = vm.runInNewContext('(' + gateTMatch[1] + ')');
+  const statusLabels = vm.runInNewContext('(' + statusMatch[1] + ')');
+  const contLabels = vm.runInNewContext('(' + contMatch[1] + ')');
+  for (const locale of EXPECTED_LOCALES) {
+    assert.ok(Array.isArray(gateT[locale]) && gateT[locale].length === 3, `aurora-v1.js gate t missing ${locale}`);
+    assert.ok(typeof statusLabels[locale] === 'string' && statusLabels[locale].length > 0, `aurora-v1.js selectedStatusLabel missing ${locale}`);
+    assert.ok(typeof contLabels[locale] === 'string' && contLabels[locale].length > 0, `aurora-v1.js continueTranslations missing ${locale}`);
+  }
+});
+
+test('mission-control.js defines complete 4-stage interactive workflow translations for all 18 locales', () => {
+  const mcJs = read('mission-control.js');
+  const match = mcJs.match(/const changes=(\{[\s\S]*?\n  \});/);
+  assert.ok(match, 'mission-control.js must define changes dictionary');
+  const changes = vm.runInNewContext('(' + match[1] + ')');
+  const enKeys = Object.keys(changes.en).sort();
+
+  for (const locale of EXPECTED_LOCALES) {
+    assert.ok(changes[locale], `mission-control.js missing locale ${locale}`);
+    assert.deepEqual(Object.keys(changes[locale]).sort(), enKeys, `mission-control.js ${locale} key mismatch`);
+    assert.equal(Array.isArray(changes[locale].items), true, `mission-control.js ${locale}.items must be array`);
+    assert.equal(changes[locale].items.length, 4, `mission-control.js ${locale}.items must have 4 stages`);
+    for (const stage of changes[locale].items) {
+      assert.equal(typeof stage[0], 'string');
+      assert.equal(typeof stage[1], 'string');
+      assert.equal(Array.isArray(stage[2]) && stage[2].length === 3, true);
+    }
+    assert.ok(!JSON.stringify(changes[locale]).includes('\uFFFD'), `mission-control.js ${locale} contains replacement character`);
+  }
+});
+
 test('donate-i18n.js provides complete, non-empty translations for all 18 locales without replacement characters', () => {
   const ctx = { window: {} };
   vm.runInNewContext(read('donate-i18n.js'), ctx);

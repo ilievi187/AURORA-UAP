@@ -78,6 +78,61 @@ let browser;
 try{
   browser=await chromium.launch({headless:true});
 
+  await test('homepage and Mission Control support all 18 languages, ?lang= entry, reload, back/forward history, and mobile viewport fit',async()=>{
+    const ctx=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});
+    const page=await ctx.newPage(),errors=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/api/news?*',route=>route.fulfill({
+      status:200,contentType:'application/json',
+      body:JSON.stringify({status:'live',edition:'global',updated_at:'2026-10-29T12:00:00Z',items:[],translation:{target:'fr',status:'original',translated:0}})
+    }));
+
+    // Direct URL entry with ?lang=fr bypasses mandatory language gate and sets French homepage + SEO metadata
+    await page.goto('http://127.0.0.1:'+port+'/?lang=fr');
+    assert.equal(await page.locator('#languageGate').isVisible(),false,'?lang=fr should enter homepage directly');
+    assert.equal(await page.locator('html').getAttribute('lang'),'fr');
+    assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://aurorauap.org/');
+    assert.match(await page.title(),/Explorer l'inexpliqué/);
+    assert.equal(await page.locator('#controlHeading').textContent(),'CENTRE DE CONTRÔLE');
+    assert.equal(await page.locator('#controlStageTitle').textContent(),"Documenter l'observation");
+
+    // Verify all 18 locales on the homepage render translated sections, Mission Control stages, and World Archive headings without mobile overflow
+    for(const locale of ALL_LOCALES){
+      await page.locator('#langToggle').selectOption(locale);
+      assert.equal(await page.locator('html').getAttribute('lang'),locale);
+      const researchTitle=await page.locator('[data-i18n="researchTitle"]').textContent();
+      const controlHeading=await page.locator('#controlHeading').textContent();
+      const reportsHeading=await page.locator('#reports .section-heading h2').textContent();
+      assert.ok(researchTitle.trim().length>0,`researchTitle empty for ${locale}`);
+      assert.ok(controlHeading.trim().length>0,`controlHeading empty for ${locale}`);
+      assert.ok(reportsHeading.trim().length>0,`reportsHeading empty for ${locale}`);
+      if(locale!=='en'){
+        assert.notEqual(researchTitle,'OBSERVE. QUESTION. INVESTIGATE.',`researchTitle must be localized for ${locale}`);
+        assert.notEqual(controlHeading,'MISSION CONTROL',`controlHeading must be localized for ${locale}`);
+        assert.notEqual(reportsHeading,'CASES FROM AROUND THE WORLD',`reportsHeading must be localized for ${locale}`);
+      }
+      const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+      assert.ok(overflow<=1,`homepage mobile overflow for ${locale}: ${overflow}`);
+    }
+
+    // Verify reload and browser goBack / goForward preserve selected language
+    await page.locator('#langToggle').selectOption('pl');
+    await page.reload();
+    assert.equal(await page.locator('html').getAttribute('lang'),'pl');
+    assert.equal(await page.locator('#controlHeading').textContent(),'CENTRUM KONTROLI');
+    await page.goto('http://127.0.0.1:'+port+'/news.html');
+    assert.equal(await page.locator('html').getAttribute('lang'),'pl');
+    await page.goBack();
+    assert.equal(await page.locator('html').getAttribute('lang'),'pl');
+    assert.equal(await page.locator('#controlHeading').textContent(),'CENTRUM KONTROLI');
+    await page.goForward();
+    assert.equal(await page.locator('html').getAttribute('lang'),'pl');
+    assert.equal(await page.locator('#pageLanguage').inputValue(),'pl');
+
+    assert.deepEqual(errors,[]);
+    await ctx.close();
+  });
+
   await test('persistent locale selector switches and retains language across /news, /countries, /countries/:code, /archive/:id, /cases/:id and /report',async()=>{
     const ctx=await browser.newContext({viewport:{width:1280,height:850},reducedMotion:'reduce'});
     const page=await ctx.newPage(),errors=[];
@@ -110,6 +165,7 @@ try{
     assert.equal(await page.locator('.news-summary').textContent(),'Mehrere Zeugen beobachteten lautlose Lichter über dem Tal.');
     assert.equal(await page.locator('.news-lang-badge').textContent(),'EN → DE');
     assert.equal(await page.locator('.news-original > summary').textContent(),'ORIGINALSCHLAGZEILE');
+    assert.equal(await page.locator('.news-original p').first().textContent(),'Unexplained aerial lights reported');
     assert.equal(await page.locator('.news-original-summary').textContent(),'Multiple witnesses observed silent lights moving across the valley.');
     assert.match(await page.locator('#newsStatus').textContent(),/Schlagzeilen/);
 
@@ -140,11 +196,15 @@ try{
     assert.equal(await page.locator('#factCategory').textContent(),'Luces');
     assert.equal(await page.locator('#relatedHeading').textContent(),'CASOS RELACIONADOS EN EL ARCHIVO');
     assert.ok((await page.locator('#relatedCasesGrid .related-case-card').count())>=1,'related cases must render on dossier');
+    // Verify factual source coordinates and external source URL remain unaltered across languages
+    assert.ok((await page.locator('#dossierSourceUrl').getAttribute('href')).startsWith('https://nuforc.org/'));
+    const coordsEs=await page.locator('#dossierCoordinate').textContent();
     await page.locator('#pageLanguage').selectOption('ja');
     assert.equal(await page.locator('#dossierBack').textContent(),'← ホーム');
     assert.equal(await page.locator('#summaryHeading').textContent(),'目撃報告と記録された事実');
     assert.equal(await page.locator('#factCategory').textContent(),'光');
     assert.equal(await page.locator('#relatedHeading').textContent(),'関連するアーカイブ事例');
+    assert.equal(await page.locator('#dossierCoordinate').textContent(),coordsEs,'coordinates must remain identical across locales');
 
     await page.goto('http://127.0.0.1:'+port+'/cases/aaro-pr-2013');
     await page.waitForFunction(()=>document.querySelector('#dossierContent')?.hidden===false);
