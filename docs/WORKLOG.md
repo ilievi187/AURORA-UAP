@@ -1,19 +1,21 @@
-# AURORA worklog
+# AURORA Project Worklog
 
-## 2026-10-29 08:15 UTC — Issue #32, NEWS reliability slice
+## 2026-10-29 — Atlas UX delivery (PR #35)
 
-- Started an isolated branch from latest fetched `origin/main` (`5aa42c0425083e415de1756ba61c616f125280d8`); left the existing dirty `fix/news-worker-connection-limit` worktree unchanged.
-- Read the full issue and repository state. Only pre-existing open PR is the unrelated draft #14; no issue-32/news/video duplicate PR was found.
-- Production `/api/news?edition=global&lang=en&offset=0` returned HTTP 503 `news_source_unavailable`, zero items, no diagnostics, `cf-cache-status: DYNAMIC` at 2026-10-29 08:05:59Z. Live `/news` browser check settled to a localized visible error after about 9 seconds; it did not silently remain empty.
-- Production runtime logs and Cloudflare account bindings are not available. Exact edge root cause is therefore unconfirmed. Baseline code launched all 10 Google News RSS requests simultaneously; a regression test went red at observed concurrency 10 against a five-request ceiling.
-- Implemented a five-worker feed pool, safe aggregate per-source outcomes (HTTP, timeout, network, invalid/unverified/parsed/parser error), retained partial headlines when any source succeeds, included diagnostics on live/503 responses, and attached current failed-refresh diagnostics when serving a marked local `cached` last-good response. No URLs, exception text, fabricated headlines, or cross-PoP cache claims are exposed.
-- TDD evidence: fan-out regression failed on baseline (10 active) then passed after the cap. Route diagnostics, partial-source response, parser classification, cached-last-good metadata, marker spoofing, malformed/duplicate XML attributes, translated-fallback freshness, intermediary caching, invalid XML whitespace, literal comments/markup in CDATA and PIs, RSS root/channel identity, outside-root whitespace, abort behavior, node/depth/namespace-scope limits, oversized attributes, over-limit bytes, thousands of tiny chunks and non-OK body cancellation were tested red before fixes. The tokenizer bounds the XML tree (10,000 nodes/64 depth), attributes (64/element, 4,096/document) and namespace declarations (256), with transient parent-linked scopes and direct channel item extraction; response reading uses a fixed buffer, caps at 4,096 chunks/800 KB, rejects bodyless adapters without calling `text()`, and cancels rejected HTTP bodies. Zero-item bodies stay `unverified`, cached fallback responses use `no-store`, and the shared deadline aborts stalled sources.
-- Bounded live RSS smoke from this host parsed all 10 configured Google News sources, 692 feed items, and returned 200 deduplicated items with zero HTTP, parser, network or timeout errors. This does not establish Cloudflare egress behavior.
-- Local verification: feeds 25/25, static 22/22, SQLite DB/API 20/20, D1 ops 3/3, deployment gate 7/7, intake 12/12, browser E2E 27/27 (Playwright 1.64.1 with cached Chromium). The mobile browser regression confirms a 503 becomes an explicit offline state. `node --check functions/api/news.js` and `git diff --check` pass. Temporary Playwright module symlink was removed; no dependency was added.
-- PR delivery: commit `2884b7a` opened PR #33; a Node 22 CI test-harness issue was fixed in `817fefa`. That code head passed all nine checks in run `40862406395`; subsequent state-doc commit `37c0202` also passed all nine in run `40863006822`.
-- Cloudflare Pages marked the preview deployment successful for `817fefa`, but a direct preview API check at 2026-10-29 11:05:03Z returned HTTP 403 Error 1010 `browser_signature_banned` with `owner_action_required`. No retry or bypass was attempted. Functional preview verification and any merge/deployment remain blocked until site-owner access allows a permitted check.
-- Independent review passed. Production root cause remains unconfirmed; no production deployment or binding change was made.
+- The searchable atlas UX was completed on `feat/luna-radar-search-m34`; no case data, source claims, media, or coordinates were added.
+- Local suites passed: model/static 26/26, existing browser 26/26, atlas browser 8/8, DB/API 20/20, intake 12/12, D1 ops 3/3, deployment gate 7/7, feeds 9/9. PR #35 passed all 10 checks.
+- PR #35 was squash-merged at 18:55:35Z as `8af79e4b14cf9a14bbe0b637911162c71296963a`. Main V1 quality and world-atlas workflows passed; Cloudflare Pages production deployment succeeded.
+- Production browser check: 15 sourced archive cases rendered; `Australia` search returned `westall-1966`; the location caveat was visible and accessible. Production `/api/stats` returned HTTP 503 `database_unavailable` because D1 binding `DB` is not configured; the UI marked registry completeness unknown and retained the static archive. No production D1 write occurred. Issue #32 remains open.
 
-## Limits
+## 2026-10-29 — NEWS reliability candidate (PR #33)
 
-`caches.default` is data-center-local. This change improves the existing last-good path where a prior feed is cached, but cannot guarantee a last-good feed at every Cloudflare location or explain the observed production outage before this diagnostic version is deployed. Keep production claims and issue status explicit until a green preview/deployment and live response are verified.
+- Production `/api/news?edition=global&lang=en&offset=0` returned HTTP 503 `news_source_unavailable`, no diagnostics and `cf-cache-status: DYNAMIC` at 08:05:59Z. Cloudflare runtime logs and account bindings are unavailable, so the production root cause remains unknown.
+- Candidate hardens RSS fan-out to five workers, adds sanitized source diagnostics and bounded XML parsing/streaming, preserves partial successes, and reports a local last-good fallback as `cached` with current failed-refresh diagnostics. It does not claim a global Cloudflare cache or proven production fix.
+- TDD and local evidence: the regression test observed 10 simultaneous feed requests before the cap and passed afterward. Feeds 25/25, static 22/22, DB/API 20/20, D1 ops 3/3, deployment 7/7, intake 12/12, browser E2E 27/27. Bounded local smoke parsed 692 items from 10 feeds and returned 200 deduplicated items with zero source errors; this is not Cloudflare runtime evidence.
+- PR #33 checks passed on its code and state-document heads. The preview API probe returned HTTP 403 Error 1010 `browser_signature_banned` / `owner_action_required`; no retry or bypass was attempted. Functional preview verification is blocked.
+- PR #33 was `DIRTY` after PR #35 merged. A clean, unmodified local PR worktree was confirmed before merging latest `origin/main`; conflicts were limited to four project-state documents. The update is being resolved locally and must be re-tested before the PR is considered merge-ready.
+
+## 2026-10-29 — Team coordination
+
+- Confirmed the remote branch `tera/mobile-a11y-regression` (commit `972661a`) changes donation mobile styling and its own browser test. That branch is left untouched; coordinate rather than duplicating TERA's work.
+- The canonical ILIEVI operating-system manual path was not present. This project-local worklog is the durable fallback; no authorized Obsidian worklog path was provided.

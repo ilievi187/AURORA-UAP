@@ -1,41 +1,25 @@
 # Test Results
 
-## 2026-10-28 initial session baseline
+## PR #30 — 2026-10-28 locale routes
 
-- Main local Node tests: 60 passed, 0 failed (`--experimental-sqlite`; static, DB, deployment, D1 and intake suites).
-- PR #14 targeted tests: 15 passed, 0 failed (`intake.test.mjs`, `moderation.test.mjs`).
-- PR #14 additional static/DB/deployment tests: 48 passed, 0 failed.
-- PR #14 GitHub Actions: all six checks passed (Cloudflare Pages, browser-e2e, d1-operations, database-api, deployment-readiness, private-intake).
-- Production live intake status: `accepting:false`, `mode:local_draft_only`.
-- Production `scripts/check-registry.mjs --mode staged`: PASS; API endpoints gated and eight sourced reference cases separate from D1.
-- Production homepage and report page: HTTP 200 after canonical 308 redirect.
-- PR #14 preview unauthenticated moderation API: HTTP 403 `unavailable`.
-- Local browser: unavailable; Chrome failed before DevToolsActivePort. No local screenshot/visual inspection claimed.
+- Local browser E2E 26/26; static 22/22; feeds 9/9; DB/API 20/20; intake+deployment 19/19; D1 ops 3/3.
+- PR #30 and main-push quality gate passed. Production `/news` and `/sky` retained selected English across navigation/reload.
 
-Tests are environment-specific. Re-run relevant suites on the latest commit before merge/release; CI/deployment/live verification are separate proofs.
+## PR #35 — 2026-10-29 atlas UX (merged)
 
-## 2026-10-28 follow-up (PR #30 candidate)
+- Static/model 26/26; existing browser 26/26; atlas browser 8/8; DB/API 20/20; intake 12/12; D1 ops 3/3; deployment gate 7/7; live feeds 9/9.
+- All 10 PR checks passed. Squash merge `8af79e4b14cf9a14bbe0b637911162c71296963a`; main V1 quality run `40935359711` and world-atlas run `40935359714` passed; Cloudflare Pages production deployment succeeded.
+- Production browser verified 15 sourced archive cases, `Australia` → `westall-1966` search, and the location caveat. Production `/api/stats` returned 503 `database_unavailable` because binding `DB` is not configured; UI displayed incomplete registry and retained the archive. No production writes/new data.
 
-- Regression: browser test reproduced Bulgarian newsroom copy on clean `/news` while Spanish was selected; passed after path normalization. It also checks `/sky/`, cross-page persistence and localized title.
-- Local browser E2E: 26 passed, 0 failed (Playwright 1.56.1 with system Chromium).
-- Local static: 22/22; live-feed tests: 9/9; SQLite DB/API: 20/20; intake + deployment readiness: 19/19; D1 operations: 3/3.
-- `node --check subpage-i18n.js` and `git diff --check`: pass.
-- PR #30 code-only run `40770993688` passed all nine checks, including browser E2E and Cloudflare Pages deployment; the final state-doc commit also passed checks in run `40772160758`.
+## PR #33 — 2026-10-29 NEWS reliability candidate (not deployed)
 
-## 2026-10-28 post-merge production verification
+- Baseline concurrency regression observed 10 simultaneous feed requests; failed before implementation and passed after a five-worker cap.
+- Local candidate suites: feeds 25/25; static 22/22; DB/API 20/20; D1 ops 3/3; deployment gate 7/7; intake 12/12; browser E2E 27/27. Bounded local smoke parsed 692 items from 10 feeds and returned 200 deduplicated headlines with zero local-source errors; this does not prove Cloudflare egress.
+- Nine PR checks passed on earlier code head `40862406395` and state-doc head `40863006822`; main advanced to `8af79e4`, so PR #33 became `DIRTY`. Fresh checks are required after conflict resolution.
+- Cloudflare Pages preview deployment check passed, but direct preview API returned HTTP 403 Error 1010 `browser_signature_banned` / `owner_action_required`. No bypass; functional preview and production recovery are not verified.
 
-- Main commit `9c9d2275e2df6a83d8b755d8f7ad84cd7866441d`; main-push run `40772316033` completed successfully.
-- Production browser check: after selecting English, `/news` and `/sky` showed English document language, selector, headings, titles and navigation; English persisted across navigation and a newsroom reload.
-- Production API check at 21:33:21Z: `/api/news?edition=global&lang=en&offset=0` returned HTTP 503 `news_source_unavailable`, zero items and no last-good response. This independent issue remains blocked; see `BLOCKERS.md`.
+## PR #33 conflict resolution in progress
 
-## 2026-10-29 Issue #32 news reliability candidate
-
-- Production API at 08:05:59Z returned HTTP 503 `news_source_unavailable`, 69-byte JSON response without diagnostics, `cf-cache-status: DYNAMIC`. Production `/news` browser later showed a localized visible offline message and zero cards.
-- On latest `origin/main` `5aa42c0`, a new concurrency regression failed with observed maximum 10 feed requests. After implementing a five-worker queue, the same test passed with the expected one deduplicated item.
-- New tests were observed red before implementation for missing per-source diagnostics, partial-source serving, parser classification, malformed XML/control markers, duplicate and namespace-expanded attributes, item-like comment/CDATA/PI markup, XML declaration/outside-root whitespace, RSS root/channel identity, bounded timeout classification, node/depth/attribute/namespace limits, oversized response-stream cancellation, tiny-chunk limits/no-text-fallback, non-OK body cancellation, stale translated fallback and intermediary cache headers. Candidate tests now pass: `npm run test:feeds` 25/25.
-- Candidate static tests: `node --test tests/aurora-v1.test.mjs` 22/22; SQLite DB/API 20/20; D1 ops 3/3; deployment gate 7/7; intake 12/12. Playwright browser E2E 27/27, including the new mobile 503/offline-state test. `node --check functions/api/news.js` and `git diff --check` pass.
-- Bounded local live RSS smoke parsed all ten configured sources and 692 feed items; 200 deduplicated items were returned with zero source errors. This is not Cloudflare runtime evidence.
-- Exact production cause remains unconfirmed because Cloudflare runtime logs/bindings are unavailable. No production deployment, global-cache guarantee, or live-feed recovery is claimed.
-- PR #33 first CI run `40862023074` failed only because Node 22 ended the test process before the unreferenced `AbortSignal.timeout()` timer fired in the timeout regression. The test now holds a temporary referenced keepalive timer; at latest head `817fefaffbe7466b6bd144db882d58ab9a45e14e`, all nine checks in run `40862406395` passed.
-- Subsequent state-doc refresh passed all nine checks in CI run `40863006822`.
-- Cloudflare Pages preview deployment succeeded, but a direct API probe returned HTTP 403 Error 1010 `browser_signature_banned` (`owner_action_required`) at 11:05:03Z. No retry or bypass attempted; functional preview verification is blocked.
+- Worktree clean before merge; PR head was `5c3459819277cb5b6d5d37a2144d16a4aac88792`; main is `8af79e4b14cf9a14bbe0b637911162c71296963a`.
+- Conflicts: `docs/WORKLOG.md`, `docs/agent/MASTER-ROADMAP.md`, `docs/agent/NEXT-ACTIONS.md`, `docs/agent/TEST-RESULTS.md`. `tests/aurora-browser.test.mjs` auto-merged.
+- No tests have yet run on the merge result. Do not report new PR CI until it passes.

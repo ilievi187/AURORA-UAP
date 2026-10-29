@@ -12,7 +12,7 @@
   const set=(sel,key)=>{const el=document.querySelector(sel);if(el)el.textContent=label(key)};
   set("#worldAtlasHeading","mapTitle");
   set(".world-atlas-head > div > p:not(.console-kicker)","mapIntro");
-  set('.world-atlas-filters label',"country");
+  set("#worldCountryLabel","country");
   set('#worldCountry option[value=""]',"allCountries");
   set(".world-map-caption","mapCaveat");
   set("#homeNewsTitle","newsTitle");

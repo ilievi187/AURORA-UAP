@@ -1,15 +1,10 @@
 # Deployment Status
 
-Verified 2026-10-29 11:09 UTC.
+Verified 2026-10-29 19:50 UTC. Re-check live state before claiming a new release.
 
-- Production custom domain is reachable: `https://aurorauap.org/` responds 200 (canonical redirects may occur).
-- Production clean routes `/news` and `/sky` now render the selected English locale and retain it across navigation/reload after PR #30. Production browser verification passed on 2026-10-28.
-- Production `/api/news?edition=global&lang=en&offset=0` returned HTTP 503 `news_source_unavailable`, zero items, no diagnostics and `cf-cache-status: DYNAMIC` at 2026-10-29 08:05:59Z. The newsroom reliability candidate remains code-only; do not claim production is fixed or live.
-- PR #33 passed all nine GitHub checks in run `40863006822`, including a successful Cloudflare Pages deployment check. The preview API probe at 11:05:03Z returned HTTP 403 Error 1010 `browser_signature_banned` / `owner_action_required`, so the preview's user-facing news behavior is not verified. No production deployment was made.
-- PR #29 merged to main at 20:59:01Z; its main-push quality gate passed. PR #30 merged at 21:29:04Z; its nine PR checks and main-push quality gate passed. The English clean-route behavior was independently verified on production.
-- Production report route responds 200.
-- Production intake is disabled: `/api/intake/status` reports `accepting:false`, `local_draft_only`.
-- Public registry is in staged mode; remote read-only verifier passes and public D1 endpoints are gated.
-- PR #14 preview deployment reports successful in the PR check; its unauthenticated moderation API returns 403. This does not establish a production moderation deployment.
-- No Cloudflare account admin credentials/tools were found in this session. Production D1, bindings, migrations, backup, Turnstile, WAF, Access application and environment variables are unverified.
-- Do not change gates or claim production intake/admin readiness. Follow `docs/V1.7-LIVE-SUBMISSION-ACTIVATION.md` and `docs/V1.8-MODERATION-SETUP.md` after PR #14 is reviewed/merged and an authorized operator can inspect the account.
+- Production custom domain `https://aurorauap.org/` is reachable.
+- PR #35 merged to `main` at 18:55:35Z as `8af79e4b14cf9a14bbe0b637911162c71296963a`; main V1 run `40935359711`, world-atlas run `40935359714`, and Cloudflare Pages deployment `c50339a9` passed.
+- Production browser verified the 15-case archive, `Australia` search (`westall-1966`) and accessible location caveat.
+- Production `/api/stats` returns HTTP 503 `database_unavailable` because `DB` is not configured; the UI reports incomplete registry and retains the archive. No production D1 writes.
+- Production `/api/news` last returned HTTP 503 `news_source_unavailable` at 2026-10-29 08:05:59Z. PR #33 is not deployed; its preview API was blocked by Error 1010, so news recovery is unverified.
+- Production report route is reachable; intake remains disabled/local-draft-only. Access, Turnstile, WAF and moderation are unverified.

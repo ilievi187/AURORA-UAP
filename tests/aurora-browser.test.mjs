@@ -436,12 +436,14 @@ try{
     await page.goto('http://127.0.0.1:'+port+'/');
     await page.locator('button[data-language="bg"]').click();
     await page.locator('#gateContinue').click();
-    await page.waitForFunction(()=>document.querySelector('#worldMapPins')?.children.length>=15);
+    await page.waitForFunction(()=>document.querySelector('#worldMapCount')?.textContent==='15' && document.querySelectorAll('#worldMapPins button').length>0);
     assert.equal(await page.locator('#worldMapCount').textContent(),'15');
-    assert.equal(await page.locator('#worldMapPins button').count(),15);
+    const represented=await page.locator('#worldMapPins [data-cluster-count]').evaluateAll(items=>items.reduce((sum,item)=>sum+Number(item.dataset.clusterCount),0));
+    assert.equal(represented,15,'cluster counts must represent every sourced mapped case');
+    assert.ok(await page.locator('#worldMapPins button.is-cluster').count()>0,'nearby locations should be grouped');
     await page.locator('#worldCountry').selectOption('BR');
     assert.equal(await page.locator('#worldMapPins button').count(),1);
-    assert.equal(await page.locator('#worldCaseDetail a').getAttribute('href'),'/archive/colares-1977');
+    assert.equal(await page.locator('#worldCaseDetail a').first().getAttribute('href'),'/archive/colares-1977');
     assert.deepEqual(errors,[]);
     await ctx.close();
   });
