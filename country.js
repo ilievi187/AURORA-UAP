@@ -480,11 +480,6 @@
   }
   message.textContent=historyCases.length?label("histCount")+historyCases.length:label("histEmpty");
  }
- }
- async function loadCountryHistory(){
-  try{
-   const res=await fetch("/data/cases.json",{cache:"force-cache"});if(!res.ok)throw Error("Source archive unavailable");
-   const data=await res.json();if(!Array.isArray(data.cases))throw Error("Invalid source data");
  async function loadCountryHistory(){
   try{
    const res=await fetch("/data/cases.json",{cache:"force-cache"});if(!res.ok)throw Error("Source archive unavailable");
@@ -494,7 +489,6 @@
    historyError=false;
    renderCountryHistory();
   }catch{historyError=true;renderCountryHistory()}
- }
  }
  window.addEventListener("aurora:language-changed",e=>{
   const next=e?.detail?.language||document.documentElement.lang||"bg";
