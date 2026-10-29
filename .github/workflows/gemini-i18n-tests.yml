@@ -1,0 +1,44 @@
+name: AURORA localization & UX quality gate
+on:
+  pull_request:
+    paths:
+      - 'subpage-i18n.js'
+      - 'news.js'
+      - 'home-news.js'
+      - 'countries.*'
+      - 'country.*'
+      - 'dossier.*'
+      - 'report.*'
+      - 'tests/gemini-i18n*'
+      - '.github/workflows/gemini-i18n-tests.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'subpage-i18n.js'
+      - 'news.js'
+      - 'home-news.js'
+      - 'countries.*'
+      - 'country.*'
+      - 'dossier.*'
+      - 'report.*'
+      - 'tests/gemini-i18n*'
+      - '.github/workflows/gemini-i18n-tests.yml'
+permissions:
+  contents: read
+jobs:
+  localization-ux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test 18-locale packs and template wiring
+        run: node --test tests/gemini-i18n.test.mjs
+      - name: Install browser test tooling
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install --only-shell chromium
+      - name: Verify cross-route locale persistence and mobile responsiveness
+        run: node --experimental-sqlite --test tests/gemini-i18n-browser.test.mjs

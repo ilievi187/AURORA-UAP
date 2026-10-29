@@ -11,6 +11,7 @@ a:hover{text-decoration:underline;text-underline-offset:5px}
 .skip{position:absolute;top:-100px;left:8px;background:#13404a;padding:12px;z-index:99}.skip:focus{top:8px}
 .dossier-shell{max-width:1390px;margin:0 auto;padding:0 clamp(18px,4.5vw,76px)}
 .dossier-nav{height:86px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #477e8766}
+.dossier-nav .page-language{color:#eafffb;background:#081e25;border:1px solid #438993;border-radius:4px;padding:9px 10px;min-height:38px;max-width:160px;font:11px/1.4 Consolas,monospace}
 .dossier-brand{font-size:clamp(15px,2vw,23px);letter-spacing:.24em;color:#d6fdfb;font-weight:700;line-height:1.1}
 .dossier-brand small{display:block;font:9px/1.5 Consolas,monospace;letter-spacing:.16em;color:#80c2c9;margin-top:8px}
 .dossier-back{font:11px Consolas,monospace;padding:12px 15px;border:1px solid #438993;color:#b4f1ee;white-space:nowrap}
@@ -44,7 +45,7 @@ a:hover{text-decoration:underline;text-underline-offset:5px}
 .dossier-footer{border-top:1px solid #44747c78;padding:24px 0 46px;font:10px/1.6 Consolas,monospace;color:#74a5ad;letter-spacing:.14em}
 @keyframes dossier-ring{to{transform:rotate(360deg)}}
 @media(max-width:850px){.dossier-content{grid-template-columns:1fr}.dossier-facts{position:static}.dossier-facts dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 17px}}
-@media(max-width:570px){.dossier-nav{height:72px}.dossier-back{padding:10px;font-size:10px}.dossier-top:after{display:none}.dossier-facts dl{grid-template-columns:1fr}.dossier-actions{flex-direction:column}.dossier-actions a{text-align:center}}
+@media(max-width:570px){.dossier-nav{height:auto;min-height:72px;padding:12px 0;flex-wrap:wrap;gap:8px}.dossier-nav .page-language{max-width:110px;padding:7px 6px;font-size:10px;min-height:34px}.dossier-brand small{display:none}.dossier-back{padding:9px 10px;font-size:10px}.dossier-top:after{display:none}.dossier-facts dl{grid-template-columns:1fr}.dossier-actions{flex-direction:column}.dossier-actions a{text-align:center}}
 @media(prefers-reduced-motion:reduce){.dossier-top:after{animation:none!important}}
 
 /* Editorial dossiers: atmospheric but readable; credited source media link-outs. */
