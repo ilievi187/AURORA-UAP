@@ -59,6 +59,7 @@ const server=createServer(async(req,res)=>{
     /^\/sky\/?$/.test(decoded)?'/sky.html':
     /^\/countries\/?$/.test(decoded)?'/countries.html':
     /^\/report\/?$/.test(decoded)?'/report.html':
+    /^\/donate\/?$/.test(decoded)?'/donate.html':
     /^\/countries\/[A-Za-z]{2}$/.test(decoded)?'/country.html':
     /^\/(?:cases|archive)\/[a-z0-9-]{3,90}$/.test(decoded)?'/dossier.html':decoded;
   const filename=resolve(join(root,resolved==='/'?'index.html':resolved.replace(/^\/+/,'')));
@@ -70,6 +71,8 @@ const server=createServer(async(req,res)=>{
 });
 await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
 const port=server.address().port;
+
+const ALL_LOCALES=['bg','en','de','ru','zh-CN','fr','es','it','pt','tr','ro','el','sr','uk','pl','ar','ja','ko'];
 
 let browser;
 try{
@@ -146,7 +149,54 @@ try{
     await page.goto('http://127.0.0.1:'+port+'/report.html');
     assert.equal(await page.locator('#pageLanguage').inputValue(),'ja');
     assert.equal(await page.locator('.report-back').textContent(),'← ホーム');
+    assert.equal(await page.locator('#reportHeading').textContent(),'目撃情報を報告する');
+    assert.equal(await page.locator('#saveDraft').textContent(),'下書きを保存');
     assert.equal(await page.title(),'報告 | AURORA UAP');
+    assert.deepEqual(errors,[]);
+    await ctx.close();
+  });
+
+  await test('donate page supports all 18 languages without overflow on mobile and desktop',async()=>{
+    const ctx=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});
+    const page=await ctx.newPage(),errors=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    await page.goto('http://127.0.0.1:'+port+'/donate.html?lang=ko');
+    assert.equal(await page.locator('html').getAttribute('lang'),'ko');
+    assert.equal(await page.locator('#langSelect').inputValue(),'ko');
+    for(const locale of ALL_LOCALES){
+      await page.locator('#langSelect').selectOption(locale);
+      assert.equal(await page.locator('html').getAttribute('lang'),locale);
+      const h1Text=await page.locator('h1').textContent();
+      assert.ok(h1Text.trim().length>0,`donate h1 not empty for ${locale}`);
+      const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+      assert.ok(overflow<=1,`donate mobile overflow for ${locale}: ${overflow}`);
+    }
+    assert.deepEqual(errors,[]);
+    await ctx.close();
+  });
+
+  await test('report page localizes form labels, buttons and ethics across all 18 languages and supports ?lang= shareable links with canonical SEO',async()=>{
+    const ctx=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});
+    const page=await ctx.newPage(),errors=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    await page.goto('http://127.0.0.1:'+port+'/news.html?lang=tr');
+    assert.equal(await page.locator('html').getAttribute('lang'),'tr');
+    assert.equal(await page.locator('#pageLanguage').inputValue(),'tr');
+    assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://aurorauap.org/news');
+    const metaDesc=await page.locator('meta[name="description"]').getAttribute('content');
+    assert.ok(metaDesc&&metaDesc.includes('Dünya medyasından'),`expected Turkish meta description, got: ${metaDesc}`);
+
+    await page.goto('http://127.0.0.1:'+port+'/report.html');
+    assert.equal(await page.locator('html').getAttribute('lang'),'tr');
+    assert.equal(await page.locator('#reportHeading').textContent(),'GÖZLEM BİLDİR');
+    for(const locale of ALL_LOCALES){
+      await page.locator('#pageLanguage').selectOption(locale);
+      assert.equal(await page.locator('html').getAttribute('lang'),locale);
+      assert.ok((await page.locator('#reportHeading').textContent()).trim().length>0);
+      assert.ok((await page.locator('#saveDraft').textContent()).trim().length>0);
+      const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+      assert.ok(overflow<=1,`report mobile overflow for ${locale}: ${overflow}`);
+    }
     assert.deepEqual(errors,[]);
     await ctx.close();
   });
