@@ -3,8 +3,10 @@ import assert from "node:assert/strict";
 import {parseNewsRss,fetchHeadlines,fetchHeadlinesWithDiagnostics,onRequestGet as newsRoute} from "../functions/api/news.js";
 import {normalizeTraffic,fetchTraffic,onRequestGet as trafficRoute} from "../functions/api/air-traffic.js";
 import {SOURCE_CATALOG} from "../functions/_lib/source-catalog.js";
+import {selectDiscoveryFeeds} from "../functions/_lib/discovery.js";
 const xml='<rss><channel><item><title>UAP briefing &amp; research</title><link>https://news.google.com/rss/articles/test</link><pubDate>'+new Date().toUTCString()+'</pubDate><source>Example Press</source></item></channel></rss>';
 const textResponse=text=>new Response(text,{headers:{"Content-Type":"application/rss+xml; charset=utf-8"}});
+const globalPublisherSources=selectDiscoveryFeeds(SOURCE_CATALOG,"all");
 test("news RSS preserves attribution, validates URLs and date",()=>{
  const result=parseNewsRss(xml);assert.equal(result.length,1);assert.equal(result[0].title,"UAP briefing & research");
  assert.equal(result[0].source,"Example Press");
@@ -78,7 +80,7 @@ test("unavailable news API reports sanitized per-source diagnostics",async()=>{
   assert.equal(body.diagnostics.network_errors,1);
   assert.deepEqual(body.diagnostics.http_errors,{"429":1});
   assert.equal(body.diagnostics.publisher_status,"unavailable");
-  assert.equal(body.diagnostics.publisher_sources_failed,12);
+  assert.equal(body.diagnostics.publisher_sources_failed,globalPublisherSources.length);
   assert.equal(globalCalls,0,"the injected source adapter should be used by the route");
   assert.doesNotMatch(JSON.stringify(body),/private-upstream-exception|private-catalog-failure|unexpected_global_fetch/);
  }finally{globalThis.fetch=originalFetch}
@@ -105,8 +107,9 @@ test("global news merges checked publisher matches and prefers direct links to G
  const directUrl=`https://${debrief.link_hosts[0]}/newsroom-test`;
  const publisherXml='<rss><channel><item><title>UAP briefing &amp; research</title><link>'+directUrl+'</link><pubDate>'+new Date().toUTCString()+'</pubDate></item></channel></rss>';
  let publisherCalls=0,active=0,maximum=0;
+ const publisherUrls=[];
  const catalogFetcher=async url=>{
-  publisherCalls++;active++;maximum=Math.max(maximum,active);
+  publisherCalls++;publisherUrls.push(url);active++;maximum=Math.max(maximum,active);
   await new Promise(resolve=>setTimeout(resolve,5));
   active--;
   return textResponse(url===debrief.feed_url?publisherXml:'<rss><channel></channel></rss>');
@@ -131,9 +134,10 @@ test("global news merges checked publisher matches and prefers direct links to G
   assert.equal(body.items[0].source,debrief.publisher);
   assert.equal(body.items[0].source_id,debrief.id);
   assert.equal(body.items[0].language,debrief.language);
-  assert.equal(body.diagnostics.publisher_sources_checked,12);
+  assert.equal(body.diagnostics.publisher_sources_checked,globalPublisherSources.length);
   assert.equal(body.diagnostics.publisher_matches,1);
-  assert.equal(publisherCalls,12);
+  assert.equal(publisherCalls,globalPublisherSources.length);
+  assert.ok(publisherUrls.includes(SOURCE_CATALOG.find(source=>source.id==="scientific-american").feed_url),"specialist feeds outside the 12-item preview must be part of global newsroom requests");
   assert.ok(maximum<=5,`combined newsroom fetch concurrency must remain within five; observed ${maximum}`);
  }finally{globalThis.fetch=originalFetch}
 });
@@ -195,7 +199,7 @@ test("publisher integration bypasses the pre-integration fresh cache key",async(
   assert.equal(response.status,200);
   const body=await response.json();
   assert.ok(googleCalls>0);
-  assert.equal(publisherCalls,12);
+  assert.equal(publisherCalls,globalPublisherSources.length);
   assert.notEqual(body.items[0].title,"Old Google-only cache");
  }finally{
   if(originalCaches===undefined)delete globalThis.caches;else globalThis.caches=originalCaches;

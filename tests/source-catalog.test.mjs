@@ -321,7 +321,7 @@ test("source and discovery endpoints reject caller-supplied URLs", async () => {
   assert.ok(body.sources.some((entry) => entry.id === "premium-times" && entry.country === "NG"));
   assert.ok(body.sources.some((entry) => entry.id === "sabc-news"));
   assert.ok(body.sources.some((entry) => entry.id === "un-news" && entry.region === "global"));
-  assert.match(body.notice, /Global news combines Google News with a bounded 12-feed publisher window/);
+  assert.match(body.notice, /Global news combines Google News with a bounded publisher set: 12 preview feeds plus up to 12 specialist feeds \(currently 21\)/);
   assert.match(body.notice, /official-institution feeds/);
   assert.match(body.notice, /Bulgaria news adds Bulgarian publisher feeds/);
 });

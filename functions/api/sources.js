@@ -15,7 +15,7 @@ export function onRequestGet({request}) {
     status: "catalog",
     checked_on: CATALOG_CHECKED_ON,
     count: SOURCE_CATALOG.length,
-    notice: "Official RSS and Atom endpoints checked on 2026-10-29. Global news combines Google News with a bounded 12-feed publisher window; official news adds official-institution feeds; Bulgaria news adds Bulgarian publisher feeds. Results are keyword matches, not verified sightings.",
+    notice: "Official RSS and Atom endpoints checked on 2026-10-29. Global news combines Google News with a bounded publisher set: 12 preview feeds plus up to 12 specialist feeds (currently 21). Official news adds official-institution feeds; Bulgaria news adds Bulgarian publisher feeds. Results are keyword matches, not verified sightings.",
     sources: SOURCE_CATALOG
   }, {headers: HEADERS});
 }

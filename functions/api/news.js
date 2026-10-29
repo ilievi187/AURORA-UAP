@@ -1,5 +1,5 @@
 import {NEWS_LANGUAGES,PAGE_SIZE,translateNewsPage} from "../_lib/news-translation.js";
-import {discoverMatches} from "../_lib/discovery.js";
+import {DISCOVERY_TOTAL_LIMIT,discoverMatches} from "../_lib/discovery.js";
 import {dedupeHeadlines} from "../_lib/headline-dedup.js";
 import {SOURCE_CATALOG} from "../_lib/source-catalog.js";
 // Public headlines from Google News and checked publisher feeds, NOT verified UAP cases.
@@ -260,7 +260,7 @@ export async function fetchHeadlines(edition,fetcher=fetch){
 const FRESH_AGE=900;
 const FALLBACK_AGE=43200;
 const NEWS_CACHE_REVISION="publisher-catalog-v1";
-const PUBLISHER_FEED_LIMIT=12;
+const PUBLISHER_FEED_LIMIT=DISCOVERY_TOTAL_LIMIT;
 const PUBLISHER_FEED_CONCURRENCY=5;
 const PUBLISHER_FEED_TIMEOUT_MS=1500;
 const response=(data,age)=>Response.json(data,{headers:{
