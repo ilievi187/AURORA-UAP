@@ -20,6 +20,6 @@
 
 ## PR #33 conflict resolution in progress
 
-- Worktree clean before merge; PR head was `5c3459819277cb5b6d5d37a2144d16a4aac88792`; main is `8af79e4b14cf9a14bbe0b637911162c71296963a`.
-- Conflicts: `docs/WORKLOG.md`, `docs/agent/MASTER-ROADMAP.md`, `docs/agent/NEXT-ACTIONS.md`, `docs/agent/TEST-RESULTS.md`. `tests/aurora-browser.test.mjs` auto-merged.
-- No tests have yet run on the merge result. Do not report new PR CI until it passes.
+- The conflict-resolution merge commit `34d30c7d88abd3bfbfcf06030fd0b0898d11e33e` includes current `main` `35a61ff`; four docs conflicts were reconciled and the browser test auto-merged.
+- Post-merge local tests passed: static 22/22; feeds 25/25; DB/API 20/20; intake 12/12; deployment 7/7; D1 ops 3/3; browser E2E 27/27; atlas model/browser 12/12; donation browser 6/6. `node --check functions/api/news.js` and `git diff --check` passed.
+- The updated head has not been pushed; fresh GitHub CI is pending. The previous preview API probe remains blocked by Cloudflare Error 1010, so functional preview verification and merge are still blocked.

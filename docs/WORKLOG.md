@@ -13,7 +13,7 @@
 - Candidate hardens RSS fan-out to five workers, adds sanitized source diagnostics and bounded XML parsing/streaming, preserves partial successes, and reports a local last-good fallback as `cached` with current failed-refresh diagnostics. It does not claim a global Cloudflare cache or proven production fix.
 - TDD and local evidence: the regression test observed 10 simultaneous feed requests before the cap and passed afterward. Feeds 25/25, static 22/22, DB/API 20/20, D1 ops 3/3, deployment 7/7, intake 12/12, browser E2E 27/27. Bounded local smoke parsed 692 items from 10 feeds and returned 200 deduplicated items with zero source errors; this is not Cloudflare runtime evidence.
 - PR #33 checks passed on its code and state-document heads. The preview API probe returned HTTP 403 Error 1010 `browser_signature_banned` / `owner_action_required`; no retry or bypass was attempted. Functional preview verification is blocked.
-- PR #33 was `DIRTY` after PR #35 merged. A clean, unmodified local PR worktree was confirmed before merging latest `origin/main`; conflicts were limited to four project-state documents. The update is being resolved locally and must be re-tested before the PR is considered merge-ready.
+- PR #33 was `DIRTY` after PR #35 merged. Merge commit `34d30c7d88abd3bfbfcf06030fd0b0898d11e33e` now integrates current `main` (`35a61ff`); four docs conflicts were reconciled, while the browser test auto-merged. Local tests pass after the merge; the updated head is not yet pushed, so fresh PR CI remains pending.
 
 ## 2026-10-29 — Team coordination
 

@@ -12,7 +12,7 @@ Verified: 2026-10-29 19:50 UTC. Re-fetch remote state before action.
 
 ## Open work
 
-- PR #33 NEWS reliability is open at `5c3459819277cb5b6d5d37a2144d16a4aac88792`; its nine previous checks passed, but it became `DIRTY` after PR #35. A clean local PR33 worktree was confirmed before merging `origin/main`. `git merge-tree` reports conflicts only in four docs files; browser tests auto-merged. Resolve, retest, commit, push, and recheck CI. Preview API Error 1010 `browser_signature_banned` / `owner_action_required` remains a hard functional-verification block; no bypass.
+- PR #33 NEWS reliability is open; conflict-resolution merge commit `34d30c7d88abd3bfbfcf06030fd0b0898d11e33e` integrates current main `35a61ff` and reconciles four docs conflicts. Local suites pass; a docs-only checkpoint is being added before pushing. Remote PR head is still `5c3459819277cb5b6d5d37a2144d16a4aac88792`; fresh CI is pending. Preview API Error 1010 `browser_signature_banned` / `owner_action_required` remains a hard functional-verification block; no bypass.
 - PR #34 media player is draft. Checks are green but live supported playback was not verified. Do not merge or bypass publisher restrictions.
 - PR #14 moderation is draft; production Access, privacy and security gates remain unverified. Keep intake disabled.
 - Production D1 binding/database/migrations/backups, Turnstile, WAF and Access settings are unverified. `wrangler` is not installed and no Cloudflare env-variable names are present; do not guess IDs or make destructive changes.
