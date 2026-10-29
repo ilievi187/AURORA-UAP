@@ -24,7 +24,7 @@
 
 - Current base at this local checkpoint included main `199b437` (checked-feed/source-health plus Africa/Americas source desks). No PR #43 archive changes were copied or edited.
 - Post-merge local tests passed: static 22/22; live feeds 25/25; source catalog + health 13/13; source-directory browser 2/2; news/outage browser E2E 27/27. Wrangler Pages Functions build compiled; relevant JS syntax checks and `git diff --check` passed.
-- Pushed PR #33 code head `2b6ec18` now has 13 passing checks. Current main `c4d4614` adds PR #48–#50; local merge-tree is clean, but the branch has not been rebased/synced to those later commits.
+- Pushed PR #33 code head `2b6ec18` passed 13 checks; the docs-only handoff correction `c5f2fc9` also passed 13/13. Current main `c4d4614` merges cleanly with the branch. A later docs-only commit should also have fresh checks before merge.
 
 ## Main post-merge checks
 
