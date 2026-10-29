@@ -41,6 +41,20 @@ try{
       assert.equal(await toggle.getAttribute('aria-expanded'),'false');
     }finally{await page.close();}
   });
+  await test('mobile menu has a stable accurate accessible name in both states',async()=>{
+    const page=await browser.newPage({viewport:{width:390,height:800},isMobile:true,reducedMotion:'reduce'});
+    try{
+      await page.goto(`http://127.0.0.1:${server.address().port}/`);
+      await page.locator('#gateLanguageGrid button[data-language="en"]').click();
+      await page.locator('#gateContinue').click();
+      const toggle=page.getByRole('button',{name:'Меню / Menu',exact:true});
+      assert.equal(await toggle.getAttribute('aria-expanded',{timeout:2000}),'false');
+      await toggle.click();
+      assert.equal(await toggle.getAttribute('aria-expanded'),'true');
+      await toggle.click();
+      assert.equal(await toggle.getAttribute('aria-expanded'),'false');
+    }finally{await page.close();}
+  });
   await test('mobile link selection and toggle continue to close navigation',async()=>{
     const page=await browser.newPage({viewport:{width:390,height:800},isMobile:true,reducedMotion:'reduce'});
     try{

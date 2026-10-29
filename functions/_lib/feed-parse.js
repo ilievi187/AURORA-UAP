@@ -89,3 +89,29 @@ export function parseFeedXml(xml, source, now = Date.now()) {
   }
   return items;
 }
+
+export function inspectFeed(xml, source, now = Date.now()) {
+  const text = typeof xml === "string" ? xml : "";
+  const sample = text.slice(0, 8000);
+  const format = /<rdf:RDF\b/i.test(sample) ? "rdf" : /<feed\b/i.test(sample) ? "atom" : /<rss\b/i.test(sample) ? "rss" : "unknown";
+  const accepted = format === "unknown" ? [] : parseFeedXml(text, source, now);
+  let undated = 0;
+  let stale = 0;
+  let future = 0;
+  let seen = 0;
+  if (format !== "unknown") {
+    for (const match of text.matchAll(/<(?:item|entry)\b[\s\S]*?<\/(?:item|entry)>/gi)) {
+      if (seen >= 80) break;
+      seen += 1;
+      const ms = publishedMs(match[0]);
+      if (!Number.isFinite(ms)) {
+        undated += 1;
+        continue;
+      }
+      const age = now - ms;
+      if (age > MAX_ITEM_AGE_MS) stale += 1;
+      else if (age < -MAX_FUTURE_MS) future += 1;
+    }
+  }
+  return {format, accepted, undated, stale, future};
+}

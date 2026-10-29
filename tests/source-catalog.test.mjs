@@ -30,7 +30,7 @@ function responseFor(body, status = 200, headers = {}, location = "") {
 
 test("catalog is unique, https-only, and limited to checked publisher feeds", () => {
   assert.deepEqual(validateSourceCatalog(), []);
-  assert.equal(SOURCE_CATALOG.length, 28);
+  assert.equal(SOURCE_CATALOG.length, 76);
   assert.equal(SOURCE_CATALOG.filter((entry) => entry.preview).length, 12);
   for (const entry of SOURCE_CATALOG) {
     assert.equal(new URL(entry.feed_url).hostname, entry.feed_host);
@@ -58,6 +58,20 @@ test("keyword filter keeps UAP terms and rejects ordinary science headlines", ()
   assert.equal(titleMatchesTopic("A new ufology podcast trailer"), false);
   assert.equal(titleMatchesTopic("Aaron Sorkin writes a play"), false);
   assert.equal(titleMatchesTopic("Нова теория за черните дупки"), false);
+  assert.equal(titleMatchesTopic("Un objet volant non identifié au-dessus de Lyon"), true);
+  assert.equal(titleMatchesTopic("Un objeto volador no identificado"), true);
+  assert.equal(titleMatchesTopic("OZN deasupra Clujului"), true);
+  assert.equal(titleMatchesTopic("The ozone layer is not a sighting"), false);
+  assert.equal(titleMatchesTopic("不明飞行物出现在夜空"), true);
+  assert.equal(titleMatchesTopic("不明飛行物が撮影された"), true);
+  assert.equal(titleMatchesTopic("미확인비행물체 포착"), true);
+  assert.equal(titleMatchesTopic("ΑΤΙΑ πάνω από την Αθήνα"), true);
+  assert.equal(titleMatchesTopic("Η ατμόσφαιρα της Γης"), false);
+  assert.equal(titleMatchesTopic("niezidentyfikowany obiekt nad Warszawą"), true);
+  assert.equal(titleMatchesTopic("ongeïdentificeerd vliegend voorwerp"), true);
+  assert.equal(titleMatchesTopic("okänt flygande föremål"), true);
+  assert.equal(titleMatchesTopic("tanımlanamayan uçan cisim"), true);
+  assert.equal(titleMatchesTopic("جسم طائر مجهول فوق الساحل"), true);
 });
 
 test("dedup fixtures", () => {
@@ -157,8 +171,12 @@ test("source and discovery endpoints reject caller-supplied URLs", async () => {
   const ok = await sourcesApi({request: new Request("https://aurorauap.org/api/sources")});
   const body = await ok.json();
   assert.equal(ok.headers.get("X-Content-Type-Options"), "nosniff");
-  assert.equal(body.count, 28);
-  assert.equal(body.sources.length, 28);
+  assert.equal(body.count, 76);
+  assert.equal(body.sources.length, 76);
+  assert.ok(body.sources.some((entry) => entry.id === "rfi-afrique"));
+  assert.ok(body.sources.some((entry) => entry.id === "premium-times" && entry.country === "NG"));
+  assert.ok(body.sources.some((entry) => entry.id === "sabc-news"));
+  assert.ok(body.sources.some((entry) => entry.id === "un-news" && entry.region === "global"));
 });
 
 test("page and worker agree on region ids", async () => {
