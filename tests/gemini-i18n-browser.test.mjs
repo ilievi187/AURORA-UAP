@@ -83,7 +83,17 @@ try{
       const u=new URL(route.request().url()),lang=u.searchParams.get('lang');
       route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({
         status:'live',edition:'global',updated_at:'2026-10-29T12:00:00Z',
-        items:[{title:'Unexplained aerial lights reported',translated_title:lang==='de'?'Unerklärliche Lichter am Himmel gemeldet':'Luces aéreas inexplicables reportadas',url:'https://publisher.example.test/1',source:'Example Press',published:'2026-10-29T11:00:00Z',language:'en'}],
+        items:[{
+          title:'Unexplained aerial lights reported',
+          summary:'Multiple witnesses observed silent lights moving across the valley.',
+          translated_title:lang==='de'?'Unerklärliche Lichter am Himmel gemeldet':'Luces aéreas inexplicables reportadas',
+          translated_summary:lang==='de'?'Mehrere Zeugen beobachteten lautlose Lichter über dem Tal.':'Varios testigos observaron luces silenciosas.',
+          url:'https://publisher.example.test/1',
+          source:'Example Press',
+          published:'2026-10-29T11:00:00Z',
+          language:'en',
+          source_language:'en'
+        }],
         translation:{target:lang,status:'translated',translated:1}
       })});
     });
@@ -94,7 +104,10 @@ try{
     assert.equal(await page.locator('html').getAttribute('lang'),'de');
     assert.equal(await page.locator('.live-hero h1').textContent(),'UAP-NACHRICHTEN WELTWEIT');
     assert.equal(await page.locator('#edition option[value="global"]').textContent(),'🌍 Weltweiter Feed');
+    assert.equal(await page.locator('.news-summary').textContent(),'Mehrere Zeugen beobachteten lautlose Lichter über dem Tal.');
+    assert.equal(await page.locator('.news-lang-badge').textContent(),'EN → DE');
     assert.equal(await page.locator('.news-original > summary').textContent(),'ORIGINALSCHLAGZEILE');
+    assert.equal(await page.locator('.news-original-summary').textContent(),'Multiple witnesses observed silent lights moving across the valley.');
     assert.match(await page.locator('#newsStatus').textContent(),/Schlagzeilen/);
 
     await page.goto('http://127.0.0.1:'+port+'/countries.html');

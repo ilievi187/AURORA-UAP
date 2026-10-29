@@ -185,6 +185,15 @@ function setup(){
   $('#langToggle').addEventListener('change', e=>{lang=e.target.value;try{localStorage.setItem('aurora-lang',lang);}catch(_){}translate();});
   $('#menuToggle').addEventListener('click',()=>{const nav=$('#mobileNav');nav.hidden=!nav.hidden;$('#menuToggle').setAttribute('aria-expanded',String(!nav.hidden));});
   $('#mobileNav').querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{$('#mobileNav').hidden=true;$('#menuToggle').setAttribute('aria-expanded','false');}));
+  const dismissMobileNav=e=>{
+    if(e.key!=='Escape'||$('#mobileNav').hidden)return;
+    e.preventDefault();
+    $('#mobileNav').hidden=true;
+    $('#menuToggle').setAttribute('aria-expanded','false');
+    $('#menuToggle').focus();
+  };
+  $('#mobileNav').addEventListener('keydown',dismissMobileNav);
+  $('#menuToggle').addEventListener('keydown',dismissMobileNav);
   document.querySelectorAll('[data-open-report]').forEach(btn=>btn.addEventListener('click',openReport));
   $('#closeDialog').addEventListener('click',()=>reportDialog.close());$('#caseClose').addEventListener('click',()=>caseDialog.close());
   reportDialog.addEventListener('click',e=>{if(e.target===reportDialog)reportDialog.close();});
