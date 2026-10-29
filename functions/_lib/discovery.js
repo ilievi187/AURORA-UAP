@@ -3,6 +3,7 @@ import {dedupeHeadlines} from "./headline-dedup.js";
 import {REGIONS, SOURCE_CATALOG} from "./source-catalog.js";
 
 export const DISCOVERY_FEED_LIMIT = 12;
+export const DISCOVERY_SPECIALIST_EXTRA = 12;
 export const MATCH_LIMIT = 40;
 export const MAX_DOWNLOAD_BYTES = 2_000_000;
 export const FEED_USER_AGENT = "AURORA-UAP-source-check/1.0 (+https://aurorauap.org/sources)";
@@ -50,6 +51,16 @@ export function selectFeeds(catalog, region, limit = DISCOVERY_FEED_LIMIT) {
     .slice()
     .sort((a, b) => Number(b.preview) - Number(a.preview) || a.priority - b.priority || a.id.localeCompare(b.id))
     .slice(0, limit);
+}
+
+export function selectDiscoveryFeeds(catalog, region) {
+  const primary = selectFeeds(catalog, region, DISCOVERY_FEED_LIMIT);
+  const seen = new Set(primary.map((entry) => entry.id));
+  const extra = (catalog || [])
+    .filter((entry) => (region === "all" || entry.region === region) && entry.role === "specialist-press" && !seen.has(entry.id))
+    .sort((a, b) => a.priority - b.priority || a.id.localeCompare(b.id))
+    .slice(0, DISCOVERY_SPECIALIST_EXTRA);
+  return primary.concat(extra);
 }
 
 function allowedRedirect(source, location, base) {
@@ -126,7 +137,7 @@ export async function discoverMatches({
   timeoutMs = 8000
 } = {}) {
   if (!REGIONS.includes(region)) throw new Error("invalid_region");
-  const selected = selectFeeds(catalog, region);
+  const selected = selectDiscoveryFeeds(catalog, region);
   const settled = await Promise.allSettled(selected.map(async (entry) => {
     const fetched = await readFeedWithRetry(entry, fetcher, timeoutMs);
     if (!fetched.ok) throw new Error("fetch_failed");
