@@ -85,6 +85,28 @@ function failureKind(error) {
   return "network";
 }
 
+async function cancelResponseBody(response, signal) {
+  const body = response?.body;
+  if (!body?.cancel) return;
+  let cancellation;
+  try { cancellation = body.cancel(); } catch { return; }
+  if (!signal) {
+    try { await cancellation; } catch {}
+    return;
+  }
+  if (signal.aborted) {
+    Promise.resolve(cancellation).catch(() => {});
+    return;
+  }
+  let onAbort;
+  const deadline = new Promise((resolve) => {
+    onAbort = resolve;
+    signal.addEventListener("abort", onAbort, {once: true});
+  });
+  try { await Promise.race([cancellation, deadline]); } catch {}
+  finally { signal.removeEventListener("abort", onAbort); }
+}
+
 async function readBoundedFeedBody(response) {
   const reader = response?.body?.getReader?.();
   if (!reader) return {ok: false, error: "body"};
@@ -132,12 +154,16 @@ export async function readAllowlistedFeed(source, fetcher, timeoutMs) {
     }
     status = Number(response.status);
     if ([301, 302, 303, 307, 308].includes(status)) {
+      await cancelResponseBody(response, deadline);
+      if (deadline.aborted) return {ok: false, status, error: "timeout", elapsedMs: Date.now() - started, xml: ""};
       const next = allowedRedirect(source, response.headers?.get?.("location"), url);
       if (!next || next === url) return {ok: false, status, error: "redirect", elapsedMs: Date.now() - started, xml: ""};
       url = next;
       continue;
     }
     if (!response.ok) {
+      await cancelResponseBody(response, deadline);
+      if (deadline.aborted) return {ok: false, status, error: "timeout", elapsedMs: Date.now() - started, xml: ""};
       const error = status >= 500 ? "server" : "status";
       return {ok: false, status, error, elapsedMs: Date.now() - started, xml: ""};
     }

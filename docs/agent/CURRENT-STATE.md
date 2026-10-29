@@ -1,6 +1,6 @@
 # Current State
 
-Verified: 2026-10-29 22:44 UTC. Re-fetch remote state before action.
+Verified: 2026-10-29 23:04 UTC. Re-fetch remote state before action.
 
 ## Main and production
 
@@ -12,7 +12,7 @@ Verified: 2026-10-29 22:44 UTC. Re-fetch remote state before action.
 
 ## Open work
 
-- PR #33 app-code checkpoint `59280cb` includes source-catalog integration and main through `760db33`; a follow-up now enforces one total deadline across redirect and body reads and streams feeds with byte/chunk caps. Local targeted suites pass 80/80 and Wrangler Pages Functions compiled. Require fresh CI for the exact current branch head before any merge; the preview Error 1010 remains a hard blocker.
+- PR #33 app-code checkpoint `59280cb` includes source-catalog integration and main through `760db33`; follow-up hardening shares one deadline across redirect/body reads, streams within 2 MB/4,096-chunk caps, and cancels non-OK/redirect bodies before worker reuse. News disclosure names both sources across all 18 locales. Local tests pass 83/83 and Wrangler Pages Functions compiled. Require fresh CI on the exact current branch head before any merge; preview Error 1010 remains a hard blocker.
 - PR #34 remains draft. Its deployed preview showed 20 media links but no play button, iframe or video element; actual playback is unverified. After one preview inspection before reading the owner’s desktop-safety notice, no further shared-browser/GUI use will occur. No source or media was added.
 - PR #14 moderation remains draft. Independent read-only review found no auth/JWT/CSRF/XSS/audit/fail-closed bypass; the 100-submission cap and missing certificate-fetch/unknown-key tests remain. Production Access, privacy, retention and moderation gates are not verified. Keep intake disabled.
 - Cloudflare D1 binding/database/migrations/backups, Turnstile, WAF and Access settings are unverified; the production 503 could be the DB binding or public-registry flag. `npx wrangler@4.156.0 whoami` reports unauthenticated; example config has a placeholder database ID. No Cloudflare changes made.

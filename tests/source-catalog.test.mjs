@@ -329,6 +329,60 @@ test("an allowed same-host redirect is fetched once more", async () => {
   assert.equal(result.items[0].title, "NASA UAP study update");
 });
 
+test("redirect response bodies are cancelled before following the location", async () => {
+  const source = SOURCE_CATALOG.find((entry) => entry.id === "nasa-releases");
+  const target = "https://www.nasa.gov/news-release/feed/index.xml";
+  let redirectCancelled = false;
+  const result = await discoverMatches({
+    catalog: [source],
+    fetcher: async (url) => {
+      if (url === source.feed_url) {
+        const body = new ReadableStream({cancel() { redirectCancelled = true; }}, {highWaterMark: 0});
+        return new Response(body, {status: 301, headers: {location: target}});
+      }
+      assert.equal(redirectCancelled, true, "the redirect body must be cancelled before the next request");
+      return responseFor(rss("NASA UAP study update", "https://www.nasa.gov/uap-study"));
+    },
+    now,
+    region: "all"
+  });
+  assert.equal(redirectCancelled, true);
+  assert.equal(result.status, "live");
+  assert.equal(result.items[0].title, "NASA UAP study update");
+});
+
+test("failed publisher bodies are cancelled before feed workers are released", async () => {
+  let activeBodies = 0;
+  let maximumActiveBodies = 0;
+  let cancelledBodies = 0;
+  const catalog = selectFeeds(SOURCE_CATALOG, "all").slice(0, 6);
+  const result = await discoverMatches({
+    catalog: SOURCE_CATALOG,
+    fetcher: async () => {
+      activeBodies += 1;
+      maximumActiveBodies = Math.max(maximumActiveBodies, activeBodies);
+      const body = new ReadableStream({
+        cancel() {
+          activeBodies -= 1;
+          cancelledBodies += 1;
+        }
+      }, {highWaterMark: 0});
+      return new Response(body, {status: 503});
+    },
+    now,
+    region: "all",
+    feedLimit: catalog.length,
+    maxConcurrency: 2,
+    maxAttempts: 1,
+    timeoutMs: 100
+  });
+  assert.equal(result.status, "unavailable");
+  assert.equal(result.failed.length, catalog.length);
+  assert.equal(cancelledBodies, catalog.length);
+  assert.equal(activeBodies, 0);
+  assert.ok(maximumActiveBodies <= 2, `expected at most two unclosed response bodies, observed ${maximumActiveBodies}`);
+});
+
 test("redirect and response-body reads share one total feed timeout", async () => {
   const calls = [];
   const signals = [];

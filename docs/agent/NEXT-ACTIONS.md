@@ -1,8 +1,8 @@
 # Next Actions — read first when resuming
 
-Updated 2026-10-29 22:44 UTC.
+Updated 2026-10-29 23:04 UTC.
 
-1. PR #33 app-code checkpoint `59280cb` is based on main `760db33`, includes source-catalog integration, and now has a follow-up one-deadline/stream-bounded feed reader. The targeted local suite passed 80/80 and Pages Functions compiled. Require fresh CI on the exact current branch head and refetch mergeability before any merge; keep it unmerged until owner-approved functional preview verification.
+1. PR #33 app-code checkpoint `59280cb` is based on main `760db33`, includes source-catalog integration and a bounded reader (one total deadline, 2 MB/4,096 chunks, early cancellation of error/redirect bodies). News disclosure names Google News plus checked publisher feeds in all 18 locales. Local suite passed 83/83 and Wrangler build compiled. Require fresh CI on exact current head and refetch mergeability before merge; keep unmerged until owner-approved functional preview verification.
 2. Keep PR #33 unmerged until a site-owner-approved preview user journey can be verified. The preview API previously returned HTTP 403 Error 1010 `browser_signature_banned` / `owner_action_required`; do not retry through another host, IP, proxy, identity or browser signature.
 3. Production `/news` showed the unavailable-source state. One direct API request returned HTTP 403 with unknown cause; the owner-recorded read-only bridge GET at 21:43 UTC returned HTTP 503. Do not query again without an approved path. The cause remains unknown.
 4. Production `/api/stats` last returned 503; code emits this if `env.DB` is absent OR `AURORA_REGISTRY_PUBLIC` is not `enabled`, and production configuration has not been confirmed. `npx wrangler@4.156.0 whoami` reported not authenticated. Ask the owner to authorize Cloudflare access; do not guess IDs, create/overwrite data, or enable intake.

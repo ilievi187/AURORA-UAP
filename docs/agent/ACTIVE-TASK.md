@@ -2,7 +2,7 @@
 
 ## P1 — NEWS reliability (successor issue #52; originating from #32)
 
-Status: PR #33 app-code checkpoint `59280cb` is based on main `760db33` and includes checked-publisher integration. Follow-up hardening now uses one 1.5-second deadline across the full feed request, allowlisted redirect, and body read, with streamed byte/chunk caps. Local targeted suite passed 80/80 and Pages Functions build compiled. Require fresh CI on the exact current branch head before any merge; keep unmerged until an owner-approved functional preview/API path is available.
+Status: PR #33 app-code checkpoint `59280cb` is based on main `760db33` and includes checked-publisher integration. Follow-up hardening now uses one 1.5-second deadline across each feed, redirects, and body read; streams within 2 MB/4,096-chunk limits; and cancels error/redirect bodies before releasing worker slots. News-source disclosure now names Google News and checked publisher feeds in all 18 locales. Local targeted suite passed 83/83 and Pages Functions build compiled. Require fresh CI on the exact current branch head; keep unmerged until owner-approved functional preview/API verification.
 
 Production `/news` displayed “Източникът временно не отговаря.” in the latest browser audit. A direct `/api/news?edition=global&lang=en&offset=0` request returned HTTP 403 with no characterized error body; LUNA made no retry. The earlier probe was HTTP 503 `news_source_unavailable` at 2026-10-29 08:05:59Z; the owner-recorded read-only bridge GET at 21:43 UTC returned HTTP 503. Cloudflare runtime logs/account access are unavailable, so cause is unconfirmed. The branch preview API returned Error 1010 `browser_signature_banned` / `owner_action_required`; do not retry or bypass.
 

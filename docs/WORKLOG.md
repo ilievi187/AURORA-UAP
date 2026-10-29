@@ -36,3 +36,9 @@
 - Independent review found the per-redirect timeout was being restarted and the nominal 2 MB feed-size check occurred after whole-body buffering. Updated the reader to reuse one 1.5-second deadline across the feed attempt, allowlisted redirect, and response-body consumption; it now streams into a fixed 2 MB buffer, caps at 4,096 chunks, and cancels at either bound without a text fallback.
 - Added red/green tests for total timeout across redirect/body, oversized-stream early cancellation, and pathological tiny-chunk cancellation. Updated source-health fixtures to use real `Response` streams. Full targeted Node 22 suite passed 80/80; syntax/diff checks and Wrangler Pages Functions build passed.
 - No production API, D1, Cloudflare, or shared-browser calls were made for this fix. The PR remains open pending fresh CI for the follow-up head and owner-approved functional preview verification.
+
+## 2026-10-29 23:04 UTC — PR #33 response disposal and source disclosure
+
+- A subsequent read-only review found non-OK and redirect publisher response bodies were not cancelled before the feed worker was released, and the localized newsroom warning still attributed results only to Google News.
+- `readAllowlistedFeed` now cancels error/redirect bodies before returning or following the redirect, bounded by the attempt deadline. The localized `newsWarning` now names public Google News RSS plus checked publisher RSS/Atom feeds and says keyword matches are not verified cases across all 18 locales.
+- Added red/green cancellation tests (including maximum open bodies under a worker limit) and an 18-locale disclosure assertion. The full targeted Node 22 suite passed 83/83; syntax/diff checks and Wrangler Pages Functions build passed. No production endpoint or browser was used; fresh PR CI is still required on the pushed update.

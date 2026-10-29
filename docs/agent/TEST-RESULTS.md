@@ -44,6 +44,8 @@
 - Independent review found that each allowed redirect started a fresh 1.5-second timeout and that the 2 MB check happened only after `arrayBuffer()` had buffered the whole feed.
 - The reader now creates one per-attempt abort signal shared across allowlisted redirects and body consumption, maps body timeouts to sanitized timeout failures, streams into a fixed 2 MB buffer, caps a response at 4,096 chunks, cancels when either limit is exceeded, and has no unbounded text fallback.
 - Added a red/green redirect-plus-body deadline regression and early-cancel tests for oversized and many-tiny-chunk streams; source-health fixtures now use real `Response` streams. The targeted Node 22 suite passed 80/80, `node --check` and `git diff --check` passed, and Wrangler Pages Functions compiled. At 2026-10-29 22:44 UTC, GitHub CI had not yet run on the follow-up head; no production endpoint or browser was queried.
+- A subsequent review found uncancelled non-OK/redirect bodies and a stale Google-News-only source disclosure. The reader now cancels those bodies before returning/reusing the feed worker; `newsWarning` identifies Google News plus checked publisher feeds and states keyword matches are not verified UAP cases in all 18 locales. Added cancellation and locale-disclosure assertions.
+- Final local verification after these follow-ups: 83/83 targeted Node 22 tests; `node --check` for `discovery.js` and `subpage-i18n.js`; `git diff --check`; Wrangler Pages Functions compiled. No production endpoint or shared browser was used. Fresh GitHub CI is required for the final pushed head.
 
 ## PR #14 review and PR #34 playback checkpoint
 
