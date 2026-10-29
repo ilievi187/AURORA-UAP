@@ -137,14 +137,21 @@ try{
     assert.equal(await page.locator('html').getAttribute('lang'),'es');
     assert.equal(await page.locator('#dossierBack').textContent(),'← INICIO');
     assert.equal(await page.locator('#summaryHeading').textContent(),'TESTIMONIOS Y HECHOS DOCUMENTADOS');
+    assert.equal(await page.locator('#factCategory').textContent(),'Luces');
+    assert.equal(await page.locator('#relatedHeading').textContent(),'CASOS RELACIONADOS EN EL ARCHIVO');
+    assert.ok((await page.locator('#relatedCasesGrid .related-case-card').count())>=1,'related cases must render on dossier');
     await page.locator('#pageLanguage').selectOption('ja');
     assert.equal(await page.locator('#dossierBack').textContent(),'← ホーム');
     assert.equal(await page.locator('#summaryHeading').textContent(),'目撃報告と記録された事実');
+    assert.equal(await page.locator('#factCategory').textContent(),'光');
+    assert.equal(await page.locator('#relatedHeading').textContent(),'関連するアーカイブ事例');
 
     await page.goto('http://127.0.0.1:'+port+'/cases/aaro-pr-2013');
     await page.waitForFunction(()=>document.querySelector('#dossierContent')?.hidden===false);
     assert.equal(await page.locator('#pageLanguage').inputValue(),'ja');
     assert.equal(await page.locator('#dossierBack').textContent(),'← ホーム');
+    assert.equal(await page.locator('#factCategory').textContent(),'機器による記録');
+    assert.match(await page.locator('#factAssessment').textContent(),/出典により解明済み/);
 
     await page.goto('http://127.0.0.1:'+port+'/report.html');
     assert.equal(await page.locator('#pageLanguage').inputValue(),'ja');
