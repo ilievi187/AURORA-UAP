@@ -20,14 +20,26 @@
 - Historical targeted suites after integrating main `91676b2` (PR #44), before the source-health/Africa-Americas sync: static 22/22; feeds 25/25; headline translation 2/2; browser E2E 27/27; i18n browser 2/2; mobile-menu browser 2/2; Wrangler Pages Functions build compiled; JS syntax and `git diff --check` passed.
 - Production branch preview API previously returned HTTP 403 Error 1010 `browser_signature_banned` / `owner_action_required`. No retry/bypass. Production `/news` showed an unavailable state and a later single API request returned HTTP 403 of uncharacterized cause. Functional preview and production recovery are not verified.
 
-## PR #33 integration after PR #45/#46 (local head `2ab1e24`)
+## Historical PR #33 integration after PR #45/#46 (local head `2ab1e24`)
 
 - Current base at this local checkpoint included main `199b437` (checked-feed/source-health plus Africa/Americas source desks). No PR #43 archive changes were copied or edited.
 - Post-merge local tests passed: static 22/22; live feeds 25/25; source catalog + health 13/13; source-directory browser 2/2; news/outage browser E2E 27/27. Wrangler Pages Functions build compiled; relevant JS syntax checks and `git diff --check` passed.
-- Pushed PR #33 code head `2b6ec18` passed 13 checks; the docs-only handoff correction `c5f2fc9` also passed 13/13. Current main `c4d4614` merges cleanly with the branch. A later docs-only commit should also have fresh checks before merge.
+- At that checkpoint, pushed PR #33 code head `2b6ec18` and docs correction `c5f2fc9` each passed 13 checks. Main was then `c4d4614` and the merge tree was clean.
 
-## Main post-merge checks
+## Historical main post-merge checks through PR #50
 
 - Main workflows on `199b437` passed: V1 quality `40950940522`, source catalog `40950940849`, language gate `40950940575`, mobile navigation `40950940669`, donation browser `40950940665`.
 - PR #50 merged to `main` as `c4d4614`; its 14 PR checks passed. Main post-merge workflows on `c4d4614` passed: V1 `40952647800`, localization `40952647812`, demo image `40952647819`, language gate `40952647870`, mobile navigation `40952647877`, donation `40952648079`.
 - Production deployment/user-journey after PRs #45–#50 has not been verified; the production news route was unavailable and one API probe returned an uncharacterized HTTP 403.
+
+## PR #33 source-catalog newsroom integration (code checkpoint `59280cb`)
+
+- Branch synced main through PR #54 merge `760db33`; `functions/api/news.js` now combines Google News with the catalog's 12 preview plus specialist window (21 global sources currently), official-institution feeds, and the checked BG feed.
+- Local combined suite passed 78/78: `tests/aurora-v1.test.mjs`, `tests/live-feeds.test.mjs`, `tests/source-catalog.test.mjs`, `tests/source-health.test.mjs`, and `tests/gemini-i18n-quality.test.mjs` under Node 22.
+- `npx --yes wrangler@4 pages functions build` compiled successfully. Focused local Semgrep rules found no dynamic-code or unsafe-HTML sinks in the three feed-path modules; this is a narrow scan only.
+- GitHub reported 14/14 checks passed on code checkpoint `59280cba105b5bf56047e1991a0a0e25c764fa7e`. The PR remains open and unmerged pending owner-approved functional preview verification; no production endpoint was queried after the earlier HTTP 403.
+
+## PR #14 review and PR #34 playback checkpoint
+
+- PR #14 read-only security review at `b089eb2` found no introduced JWT/access-authorization/CSRF/XSS/audit-log/fail-closed bypass. Residual release gates: no pagination beyond the latest 100 queue entries, missing tests for certificate-fetch failure/unknown key ID, and production Access/privacy/retention approval.
+- Browser inspection of PR #34 preview `/media` at head `448ee00` showed 20 linked media records but no play button, iframe, or `<video>` element. Actual in-site playback remains unverified; PR #34 remains draft.

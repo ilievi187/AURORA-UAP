@@ -5,6 +5,6 @@
 3. Production `/api/stats` last returned HTTP 503 `database_unavailable`; binding `DB` was not configured. `npx wrangler@4.156.0 whoami` says not authenticated; example config has a placeholder database ID. Do not guess IDs, overwrite/create database destructively, or enable intake.
 4. Production Turnstile, WAF, Access, D1 migrations and backups are not verified. Public intake remains disabled; production moderation remains gated.
 5. Privacy worksheet is draft; legal approval, privacy-contact delivery and retention are unverified.
-6. PR #14 is draft; read-only security review is pending, and production moderation is blocked pending real Access verification and independent approval.
-7. PR #34 is draft; actual supported playback inside AURORA is unverified. Gemini is guest/signed out; no prompt was submitted. Do not enter credentials or bypass publisher restrictions, CAPTCHA, WAF or account walls.
+6. PR #14 is draft. Independent read-only review found no introduced Access JWT/authentication, CSRF, XSS, audit-log, or fail-closed bypass. Remaining release blockers include the unpaginated newest-100 queue (older submissions can become invisible), no tests for certificate-fetch failure/unknown key ID, and unverified production Access/privacy/retention controls.
+7. PR #34 is draft; actual supported playback inside AURORA is unverified. The deployed PR preview showed 20 media links but no play control, iframe, or video element. No verified source/rights record is available. Do not enter credentials or bypass publisher restrictions, CAPTCHA, WAF or account walls.
 8. PR #43 archive/source expansion is active under another agent. Do not duplicate its files or claims. Issue #32 remains open; do not invent cases, media, source claims or coordinates.
