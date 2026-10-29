@@ -74,6 +74,29 @@ const server = createServer(async (req, res) => {
     res.writeHead(200, {"Content-Type": "application/json; charset=utf-8"}).end(JSON.stringify(discovery(region)));
     return;
   }
+  if (path === "/api/source-health") {
+    const query = new URL(req.url, "http://127.0.0.1").searchParams;
+    if (query.has("url") || query.has("feed")) {
+      res.writeHead(400).end();
+      return;
+    }
+    res.writeHead(200, {"Content-Type": "application/json; charset=utf-8"}).end(JSON.stringify({
+      status: "live",
+      sources: [{
+        id: "bbc-world",
+        publisher: "BBC News",
+        feed_host: "feeds.bbci.co.uk",
+        availability: "live",
+        http_status: 200,
+        elapsed_ms: 120,
+        format: "rss",
+        accepted: 4,
+        duplicate_titles: 1,
+        error: ""
+      }]
+    }));
+    return;
+  }
   const filename = resolve(join(root, path === "/" ? "index.html" : path.replace(/^\/+/, "")));
   if (filename !== root && !filename.startsWith(root + sep)) {
     res.writeHead(403).end();
@@ -99,10 +122,12 @@ try {
     const page = await browser.newPage({viewport: {width: 1200, height: 900}, reducedMotion: "reduce"});
     const errors = [];
     const discoveryRegions = [];
+    const healthQueries = [];
     page.on("pageerror", (error) => errors.push(error.message));
     page.on("request", (request) => {
       const url = new URL(request.url());
       if (url.pathname === "/api/discovery") discoveryRegions.push(url.searchParams.get("region"));
+      if (url.pathname === "/api/source-health") healthQueries.push(url.search);
     });
     await page.goto(`http://127.0.0.1:${port}/sources.html`);
     await page.waitForSelector("article h3");
@@ -122,6 +147,14 @@ try {
     assert.equal(await page.locator("#sourceList h3").textContent(), "Should Not Link");
     assert.deepEqual(errors, []);
     assert.ok(discoveryRegions.includes("all") && discoveryRegions.includes("americas"));
+    assert.equal(healthQueries.length, 0);
+    await page.locator("#checkHealth").click();
+    await page.waitForSelector("#healthList article");
+    assert.match(await page.locator("#healthStatus").textContent(), /1 от 1/);
+    assert.match(await page.locator("#healthList").textContent(), /HTTP 200/);
+    assert.equal(healthQueries.length, 1);
+    assert.equal(healthQueries[0].includes("url="), false);
+    assert.equal(healthQueries[0].includes("feed="), false);
     await page.close();
   });
 

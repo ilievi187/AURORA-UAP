@@ -14,19 +14,32 @@ const PHRASES = [
   "fenómeno anómalo",
   "fenómeno aéreo no identificado",
   "phénomène aérien non identifié",
+  "objet volant non identifié",
+  "objeto volador no identificado",
   "unbekanntes flugobjekt",
   "unidentifiziertes flugobjekt",
   "objeto voador não identificado",
   "oggetto volante non identificato",
+  "niezidentyfikowany obiekt",
+  "ongeïdentificeerd vliegend",
+  "okänt flygande",
+  "tanımlanamayan uçan",
+  "ιπτάμενο αντικείμενο",
+  "جسم طائر مجهول",
   "неидентифициран",
   "неопознан",
-  "未確認飛行"
+  "未確認飛行",
+  "不明飞行物",
+  "不明飛行物",
+  "미확인비행"
 ];
 const CYRILLIC_UFO = /(?<![\p{L}\p{N}])нло(?![\p{L}\p{N}])/iu;
+const RO_UFO = /(?<![\p{L}\p{N}])ozn(?![\p{L}\p{N}])/iu;
+const EL_UFO = /(?<![\p{L}\p{N}])ατια(?![\p{L}\p{N}])/iu;
 
 export function titleMatchesTopic(title) {
   const text = String(title ?? "").normalize("NFKC").toLocaleLowerCase("en");
-  if (LATIN.test(text) || CYRILLIC_UFO.test(text)) return true;
+  if (LATIN.test(text) || CYRILLIC_UFO.test(text) || RO_UFO.test(text) || EL_UFO.test(text)) return true;
   return PHRASES.some((phrase) => text.includes(phrase));
 }
 
@@ -47,29 +60,53 @@ function allowedRedirect(source, location, base) {
   return next.toString();
 }
 
-async function feedText(source, fetcher, timeoutMs) {
+function failureKind(error) {
+  const name = String(error?.name || "");
+  if (name === "TimeoutError" || name === "AbortError") return "timeout";
+  return "network";
+}
+
+export async function readAllowlistedFeed(source, fetcher, timeoutMs) {
+  const started = Date.now();
   let url = source.feed_url;
+  let status = 0;
   for (let hop = 0; hop < 2; hop += 1) {
-    const response = await fetcher(url, {
-      redirect: "manual",
-      headers: {Accept: "application/rss+xml, application/atom+xml, application/xml, text/xml"},
-      signal: AbortSignal.timeout(timeoutMs)
-    });
-    const status = Number(response.status);
+    let response;
+    try {
+      response = await fetcher(url, {
+        redirect: "manual",
+        headers: {Accept: "application/rss+xml, application/atom+xml, application/xml, text/xml"},
+        signal: AbortSignal.timeout(timeoutMs)
+      });
+    } catch (error) {
+      return {ok: false, status: 0, error: failureKind(error), elapsedMs: Date.now() - started, xml: ""};
+    }
+    status = Number(response.status);
     if ([301, 302, 303, 307, 308].includes(status)) {
       const next = allowedRedirect(source, response.headers?.get?.("location"), url);
-      if (!next || next === url) throw new Error("redirect");
+      if (!next || next === url) return {ok: false, status, error: "redirect", elapsedMs: Date.now() - started, xml: ""};
       url = next;
       continue;
     }
-    if (!response.ok) throw new Error("status");
+    if (!response.ok) {
+      const error = status >= 500 ? "server" : "status";
+      return {ok: false, status, error, elapsedMs: Date.now() - started, xml: ""};
+    }
     const buffer = typeof response.arrayBuffer === "function"
       ? await response.arrayBuffer()
       : new TextEncoder().encode(await response.text()).buffer;
-    if (buffer.byteLength > MAX_FEED_BYTES) throw new Error("size");
-    return decodeXmlBytes(buffer, response.headers?.get?.("content-type") || "");
+    if (buffer.byteLength > MAX_FEED_BYTES) {
+      return {ok: false, status, error: "size", elapsedMs: Date.now() - started, xml: ""};
+    }
+    return {
+      ok: true,
+      status,
+      error: "",
+      elapsedMs: Date.now() - started,
+      xml: decodeXmlBytes(buffer, response.headers?.get?.("content-type") || "")
+    };
   }
-  throw new Error("redirect");
+  return {ok: false, status, error: "redirect", elapsedMs: Date.now() - started, xml: ""};
 }
 
 export async function discoverMatches({
@@ -82,8 +119,9 @@ export async function discoverMatches({
   if (!REGIONS.includes(region)) throw new Error("invalid_region");
   const selected = selectFeeds(catalog, region);
   const settled = await Promise.allSettled(selected.map(async (entry) => {
-    const xml = await feedText(entry, fetcher, timeoutMs);
-    return parseFeedXml(xml, entry, now).filter((item) => titleMatchesTopic(item.title));
+    const fetched = await readAllowlistedFeed(entry, fetcher, timeoutMs);
+    if (!fetched.ok) throw new Error("fetch_failed");
+    return parseFeedXml(fetched.xml, entry, now).filter((item) => titleMatchesTopic(item.title));
   }));
   const failed = [];
   const matched = [];
