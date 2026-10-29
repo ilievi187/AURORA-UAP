@@ -2,7 +2,7 @@
 
 Updated 2026-10-29 22:25 UTC.
 
-1. PR #33 app-code checkpoint `59280cb` is based on main `760db33`, includes source-catalog integration, passed 78/78 targeted local tests, and compiled Pages Functions. First docs-only checkpoint `c04c93d` passed 14/14; current status updates are docs-only and need fresh CI. Re-fetch exact head/mergeability before any merge; keep it unmerged until an owner-approved functional preview path exists.
+1. PR #33 app-code checkpoint `59280cb` is based on main `760db33`, includes source-catalog integration, passed 78/78 targeted local tests, and compiled Pages Functions. Require fresh CI for the exact current branch head and refetch mergeability before any merge; keep it unmerged until an owner-approved functional preview path exists.
 2. Keep PR #33 unmerged until a site-owner-approved preview user journey can be verified. The preview API previously returned HTTP 403 Error 1010 `browser_signature_banned` / `owner_action_required`; do not retry through another host, IP, proxy, identity or browser signature.
 3. Production `/news` showed the unavailable-source state. One direct API request returned HTTP 403 with unknown cause; the owner-recorded read-only bridge GET at 21:43 UTC returned HTTP 503. Do not query again without an approved path. The cause remains unknown.
 4. Production `/api/stats` last returned 503; code emits this if `env.DB` is absent OR `AURORA_REGISTRY_PUBLIC` is not `enabled`, and production configuration has not been confirmed. `npx wrangler@4.156.0 whoami` reported not authenticated. Ask the owner to authorize Cloudflare access; do not guess IDs, create/overwrite data, or enable intake.
