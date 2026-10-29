@@ -30,7 +30,8 @@ function responseFor(body, status = 200, headers = {}, location = "") {
 
 test("catalog is unique, https-only, and limited to checked publisher feeds", () => {
   assert.deepEqual(validateSourceCatalog(), []);
-  assert.equal(SOURCE_CATALOG.length, 76);
+  assert.equal(SOURCE_CATALOG.length, 75);
+  assert.equal(SOURCE_CATALOG.some((entry) => entry.id === "corriere-scienze"), false);
   assert.equal(SOURCE_CATALOG.filter((entry) => entry.preview).length, 12);
   for (const entry of SOURCE_CATALOG) {
     assert.equal(new URL(entry.feed_url).hostname, entry.feed_host);
@@ -62,6 +63,7 @@ test("keyword filter keeps UAP terms and rejects ordinary science headlines", ()
   assert.equal(titleMatchesTopic("Un objeto volador no identificado"), true);
   assert.equal(titleMatchesTopic("OZN deasupra Clujului"), true);
   assert.equal(titleMatchesTopic("The ozone layer is not a sighting"), false);
+  assert.equal(titleMatchesTopic("Jennifer Shuford resigns after four months"), false);
   assert.equal(titleMatchesTopic("不明飞行物出现在夜空"), true);
   assert.equal(titleMatchesTopic("不明飛行物が撮影された"), true);
   assert.equal(titleMatchesTopic("미확인비행물체 포착"), true);
@@ -139,6 +141,75 @@ test("discovery follows only catalog redirects and dedupes keyword matches", asy
   assert.equal(result.items[0].url, "https://www.bbc.com/news/uap");
 });
 
+test("oversized article bodies do not hide a fresh headline", async () => {
+  const source = SOURCE_CATALOG.find((entry) => entry.id === "bbc-world");
+  const bulky = `<content:encoded><![CDATA[${"x".repeat(600_000)}]]></content:encoded>`;
+  const xml = `<?xml version="1.0"?><rss><channel><item><title>Unidentified aerial object over Dover</title><link>https://www.bbc.com/news/aerial</link><pubDate>Wed, 28 Oct 2026 12:00:00 GMT</pubDate>${bulky}</item></channel></rss>`;
+  const calls = [];
+  const result = await discoverMatches({
+    catalog: [source],
+    fetcher: async (url, options) => {
+      calls.push(options.headers["User-Agent"]);
+      return responseFor(xml);
+    },
+    now,
+    region: "all"
+  });
+  assert.match(calls[0], /AURORA-UAP-source-check/);
+  assert.equal(result.status, "live");
+  assert.equal(result.items[0].title, "Unidentified aerial object over Dover");
+  assert.equal(result.items[0].feed_host, "feeds.bbci.co.uk");
+  const huge = await discoverMatches({
+    catalog: [source],
+    fetcher: async () => ({
+      ok: true,
+      status: 200,
+      headers: {get: () => null},
+      arrayBuffer: async () => new Uint8Array(2_000_001).buffer
+    }),
+    now,
+    region: "all"
+  });
+  assert.equal(huge.status, "unavailable");
+  assert.equal(huge.items.length, 0);
+});
+
+test("a compact IAEA publication date is kept and an ambiguous one is not", () => {
+  const source = {...SOURCE_CATALOG.find((entry) => entry.id === "iaea-topnews")};
+  const dated = `<?xml version="1.0"?><rss><channel><item><title>IAEA confirms coastal monitoring</title><link>http://www.iaea.org/newscenter/pressreleases/coastal-monitoring</link><pubDate>26-10-28 14:21</pubDate></item></channel></rss>`;
+  const parsed = parseFeedXml(dated, source, now);
+  assert.equal(parsed.length, 1);
+  assert.equal(parsed[0].url.startsWith("https://www.iaea.org/"), true);
+  assert.equal(parsed[0].published.startsWith("2026-10-28"), true);
+  const ambiguous = dated.replace("26-10-28 14:21", "26-10-28");
+  assert.equal(parseFeedXml(ambiguous, source, now).length, 0);
+});
+
+test("one failed feed does not drop matches from a feed that responds", async () => {
+  const live = SOURCE_CATALOG.find((entry) => entry.id === "bbc-world");
+  const quiet = SOURCE_CATALOG.find((entry) => entry.id === "nasa-releases");
+  const calls = [];
+  const result = await discoverMatches({
+    catalog: [live, quiet],
+    fetcher: async (url) => {
+      calls.push(url);
+      if (url === live.feed_url) return responseFor(rss("Senate schedules UAP hearing", "https://www.bbc.com/news/uap"));
+      if (calls.filter((value) => value === quiet.feed_url).length === 1) {
+        const error = new Error("timed out");
+        error.name = "TimeoutError";
+        throw error;
+      }
+      return responseFor("missing", 404);
+    },
+    now,
+    region: "all"
+  });
+  assert.equal(calls.filter((url) => url === quiet.feed_url).length, 2);
+  assert.equal(result.status, "live");
+  assert.equal(result.items.length, 1);
+  assert.equal(result.failed[0].id, "nasa-releases");
+});
+
 test("an allowed same-host redirect is fetched once more", async () => {
   const calls = [];
   const source = SOURCE_CATALOG.find((entry) => entry.id === "nasa-releases");
@@ -171,8 +242,8 @@ test("source and discovery endpoints reject caller-supplied URLs", async () => {
   const ok = await sourcesApi({request: new Request("https://aurorauap.org/api/sources")});
   const body = await ok.json();
   assert.equal(ok.headers.get("X-Content-Type-Options"), "nosniff");
-  assert.equal(body.count, 76);
-  assert.equal(body.sources.length, 76);
+  assert.equal(body.count, 75);
+  assert.equal(body.sources.length, 75);
   assert.ok(body.sources.some((entry) => entry.id === "rfi-afrique"));
   assert.ok(body.sources.some((entry) => entry.id === "premium-times" && entry.country === "NG"));
   assert.ok(body.sources.some((entry) => entry.id === "sabc-news"));
