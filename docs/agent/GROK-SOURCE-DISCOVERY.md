@@ -1,17 +1,17 @@
 # GROK source discovery
 
-Status: mission 2 is implemented on `agent/grok-source-health`. `functions/api/news.js` is unchanged.
+Status: 76 checked feeds on `agent/grok-source-round3`. `functions/api/news.js` is unchanged.
 
 ## Catalog
 
-`GET /api/sources` returns 70 publisher feeds. Every `feed_url` was fetched on 2026-10-29 and returned HTTP 200 with an RSS, Atom, or RDF document. The 12 preview feeds are unchanged, so the default discovery window stays the same.
+`GET /api/sources` returns 76 publisher feeds. Every `feed_url` was fetched on 2026-10-29 and returned HTTP 200 with an RSS, Atom, or RDF document. The 12 preview feeds are unchanged, so the default discovery window stays the same.
 
 Added after that live check, all `preview: false`:
 
 - Europe: tagesschau, NRK, NOS, ORF, ERR, TVN24 world, RTP, Yle, The Irish Times, Guardian science, France 24 French, Sky News world, Corriere scienze, Spiegel Wissenschaft, Libération sciences, BBC science, Nature, Phys.org space.
-- Americas: Space.com, Science News, Scientific American, Live Science, New York Times science, The Globe and Mail world, Clarín Lo último, Folha ciência, NPR world, ABC News top stories.
+- Americas: Space.com, Science News, Scientific American, Live Science, New York Times science, The Globe and Mail world, Clarín Lo último, Folha ciência, NPR world, ABC News top stories, BBC Latin America, CBC technology.
 - Asia-Pacific: RNZ world, SBS News, Sydney Morning Herald world, Straits Times world, CNA, SCMP world, Asahi headlines.
-- Middle East and Africa: BBC Africa, SABC News, AllAfrica, The Jerusalem Post.
+- Middle East and Africa: BBC Africa, SABC News, AllAfrica, The Jerusalem Post, Guardian Africa, DW English for Africa, RFI Afrique, Premium Times Nigeria.
 - International organizations: UN News, IAEA top news, U.S. GAO reports.
 
 Clarín is a general latest-news feed. AllAfrica aggregates African newsrooms and is based in the United States. UN News, IAEA, and GAO are official publication feeds, not UAP offices. Asahi and IAEA item links were `http` on their own hosts, so those two entries use `upgrade-http`.
@@ -42,7 +42,11 @@ Titles match UAP, UFO, OVNI, AARO, НЛО, OZN, and ΑΤΙΑ as whole tokens, pl
 
 ## Verification
 
-Commands run in `/home/nightknight/Work/aurora-grok-health` on 2026-10-29:
+Commands run on 2026-10-29:
+
+- In `/home/nightknight/Work/aurora-grok-round3`, `node --test tests/source-catalog.test.mjs tests/source-health.test.mjs` — 13 passed after the six later feeds. The browser fixture was unchanged, so it was not rerun for that addition.
+
+Earlier, in `/home/nightknight/Work/aurora-grok-health`:
 
 - `node --test tests/source-catalog.test.mjs tests/source-health.test.mjs` — 13 passed.
 - `AURORA_CHROMIUM=/usr/bin/chromium node --test tests/source-discovery-browser.test.mjs` — 2 passed. The directory still refused a `javascript:` homepage and an `http:` feed link. The health request started only after the button click and did not carry a caller URL.
