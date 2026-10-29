@@ -60,6 +60,29 @@ test('report.js defines complete 18-language intake UI packs while preserving sa
   }
 });
 
+test('dossier.js defines 18-language case metadata, categoryName, statusName, confidence, and related-cases labels', () => {
+  const dossierJs = read('dossier.js');
+  const baseMatch = dossierJs.match(/const base=(\{[\s\S]*?\n \});/);
+  const overMatch = dossierJs.match(/const overrides=(\{[\s\S]*?\n \});/);
+  assert.ok(baseMatch && overMatch, 'dossier.js must define base and overrides');
+  const base = vm.runInNewContext('(' + baseMatch[1] + ')');
+  const overrides = vm.runInNewContext('(' + overMatch[1] + ')');
+  const enCatKeys = Object.keys(base.en.categoryName).sort();
+  const enStatusKeys = Object.keys(base.en.statusName).sort();
+  const enConfKeys = Object.keys(base.en.confidence).sort();
+
+  for (const locale of EXPECTED_LOCALES) {
+    const pack = locale === 'bg' ? base.bg : locale === 'en' ? base.en : overrides[locale];
+    assert.ok(pack, `dossier.js missing pack for ${locale}`);
+    assert.ok(typeof pack.related === 'string' && pack.related.length > 0, `dossier.js ${locale} missing related heading`);
+    assert.ok(typeof pack.openCase === 'string' && pack.openCase.length > 0, `dossier.js ${locale} missing openCase label`);
+    assert.deepEqual(Object.keys(pack.categoryName || {}).sort(), enCatKeys, `dossier.js ${locale} categoryName keys mismatch`);
+    assert.deepEqual(Object.keys(pack.statusName || {}).sort(), enStatusKeys, `dossier.js ${locale} statusName keys mismatch`);
+    assert.deepEqual(Object.keys(pack.confidence || {}).sort(), enConfKeys, `dossier.js ${locale} confidence keys mismatch`);
+    assert.ok(!JSON.stringify(pack).includes('\uFFFD'), `dossier.js ${locale} contains replacement character`);
+  }
+});
+
 test('subpage-i18n.js defines all 18 locales with complete keys, ?lang= query support, and canonical SEO helpers', () => {
   const code = read('subpage-i18n.js');
   const match = code.match(/const packs=(\{[\s\S]*?\n \}),choices=/);
