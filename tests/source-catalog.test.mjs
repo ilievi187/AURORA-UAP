@@ -30,7 +30,7 @@ function responseFor(body, status = 200, headers = {}, location = "") {
 
 test("catalog is unique, https-only, and limited to checked publisher feeds", () => {
   assert.deepEqual(validateSourceCatalog(), []);
-  assert.equal(SOURCE_CATALOG.length, 70);
+  assert.equal(SOURCE_CATALOG.length, 76);
   assert.equal(SOURCE_CATALOG.filter((entry) => entry.preview).length, 12);
   for (const entry of SOURCE_CATALOG) {
     assert.equal(new URL(entry.feed_url).hostname, entry.feed_host);
@@ -171,8 +171,10 @@ test("source and discovery endpoints reject caller-supplied URLs", async () => {
   const ok = await sourcesApi({request: new Request("https://aurorauap.org/api/sources")});
   const body = await ok.json();
   assert.equal(ok.headers.get("X-Content-Type-Options"), "nosniff");
-  assert.equal(body.count, 70);
-  assert.equal(body.sources.length, 70);
+  assert.equal(body.count, 76);
+  assert.equal(body.sources.length, 76);
+  assert.ok(body.sources.some((entry) => entry.id === "rfi-afrique"));
+  assert.ok(body.sources.some((entry) => entry.id === "premium-times" && entry.country === "NG"));
   assert.ok(body.sources.some((entry) => entry.id === "sabc-news"));
   assert.ok(body.sources.some((entry) => entry.id === "un-news" && entry.region === "global"));
 });
