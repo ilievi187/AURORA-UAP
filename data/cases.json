@@ -851,6 +851,124 @@
           "url": "https://www.aaro.mil/Next-AARO-Home-redesign/Next-Parent/AARO-UAP-Case-DT/"
         }
       ]
+    },
+    {
+      "id": "aaro-western-us-2021",
+      "date": "2021",
+      "date_precision": "year",
+      "lat": null,
+      "lng": null,
+      "location_precision": "Regional location only; no position marker until documented coordinates exist",
+      "category": "lights",
+      "status": "explained",
+      "country": "US",
+      "city": {
+        "bg": "Западни САЩ",
+        "en": "Western United States"
+      },
+      "title": {
+        "bg": "Светлини над западните САЩ",
+        "en": "Western United States lights"
+      },
+      "summary": {
+        "bg": "Военни наблюдатели съобщават за пет приблизително равноотдалечени светлини над западните САЩ през 2021 г. Анализът на AARO ги свързва с граждански самолети; конкретни координати на наблюдението не са публикувани.",
+        "en": "Military personnel reported five apparently equally spaced lights in western U.S. airspace in 2021. AARO's analysis associated the lights with commercial aircraft; precise observation coordinates have not been published in the cited report."
+      },
+      "source": {
+        "name": "AARO Case Resolution Reports",
+        "url": "https://www.aaro.mil/Next-AARO-Home-redesign/Next-Parent/AARO-UAP-Case-DT/"
+      },
+      "story": {
+        "bg": [
+          "Военни наблюдатели съобщават за пет приблизително равноотдалечени светлини над западните САЩ през 2021 г. AARO анализира случая и го свързва с граждански самолети."
+        ],
+        "en": [
+          "Military personnel reported five apparently equally spaced lights in western U.S. airspace in 2021. AARO's analysis associated the lights with commercial aircraft."
+        ]
+      },
+      "visual": {
+        "src": "/assets/feature-map.webp",
+        "kind": "illustration",
+        "caption": {
+          "bg": "Тематична илюстрация, не оригинална снимка от случая.",
+          "en": "Thematic illustration, not original incident photography."
+        }
+      },
+      "media": [
+        {
+          "type": "documents",
+          "title": {
+            "bg": "Официален архив AARO",
+            "en": "Official AARO case archive"
+          },
+          "url": "https://www.aaro.mil/Next-AARO-Home-redesign/Next-Parent/AARO-UAP-Case-DT/"
+        }
+      ],
+      "provenance": {
+        "source_record_id": "western-united-states-2021",
+        "source_name": "AARO Case Resolution Reports",
+        "verified": true
+      },
+      "dedup_key": "pr:western-united-states-2021"
+    },
+    {
+      "id": "aaro-gulf-2021",
+      "date": "2021",
+      "date_precision": "year",
+      "lat": null,
+      "lng": null,
+      "location_precision": "Gulf of Mexico; exact position not published",
+      "category": "lights",
+      "status": "explained",
+      "country": "US",
+      "city": {
+        "bg": "Мексикански залив",
+        "en": "Gulf of Mexico"
+      },
+      "title": {
+        "bg": "Светлини в Мексиканския залив",
+        "en": "Gulf of Mexico lights"
+      },
+      "summary": {
+        "bg": "Военни наблюдатели съобщават за светлини в Мексиканския залив през 2021 г. AARO определя, че са съвместими с платформи за нефт и газ или свързана дейност, без необичайни характеристики.",
+        "en": "Military personnel reported lights in the Gulf of Mexico in 2021. AARO assessed the lights as consistent with oil and gas platforms or related activity, with no anomalous performance observed."
+      },
+      "source": {
+        "name": "AARO Case Resolution Reports",
+        "url": "https://www.aaro.mil/Next-AARO-Home-redesign/Next-Parent/AARO-UAP-Case-DT/"
+      },
+      "story": {
+        "bg": [
+          "Военни наблюдатели съобщават за светлини в Мексиканския залив през 2021 г. AARO заключава, че наблюдението е съвместимо с позната човешка активност."
+        ],
+        "en": [
+          "Military personnel reported lights in the Gulf of Mexico in 2021. AARO concluded the observations were consistent with known human activity."
+        ]
+      },
+      "visual": {
+        "src": "/assets/feature-map.webp",
+        "kind": "illustration",
+        "caption": {
+          "bg": "Тематична илюстрация, не оригинална снимка от случая.",
+          "en": "Thematic illustration, not original incident photography."
+        }
+      },
+      "media": [
+        {
+          "type": "documents",
+          "title": {
+            "bg": "Официален архив AARO",
+            "en": "Official AARO case archive"
+          },
+          "url": "https://www.aaro.mil/Next-AARO-Home-redesign/Next-Parent/AARO-UAP-Case-DT/"
+        }
+      ],
+      "provenance": {
+        "source_record_id": "gulf-of-mexico-2021",
+        "source_name": "AARO Case Resolution Reports",
+        "verified": true
+      },
+      "dedup_key": "pr:gulf-of-mexico-2021"
     }
   ]
 }

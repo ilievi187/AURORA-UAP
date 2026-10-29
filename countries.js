@@ -89,12 +89,20 @@
   $("sourcedCountryStatus").textContent=(bg?"Държави с исторически досиета: ":"Countries with historical case files: ")+visible.length;
  }
  search.addEventListener("input",renderSourceCountries);
+ function dedupCases(list){
+   const seen=new Set(),out=[];
+   for(const c of Array.isArray(list)?list:[]){
+    const key=c.dedup_key||(c.provenance?.source_record_id?`pr:${c.provenance.source_record_id}`:(c.source?.url&&c.date?`src:${c.source.url}|${c.date}|${c.id}`:c.id));
+    if(seen.has(key))continue;seen.add(key);out.push(c);
+   }
+   return out;
+ }
  async function loadSourceCountries(){
   try{
    const res=await fetch("/data/cases.json",{cache:"force-cache"});if(!res.ok)throw Error("Archive offline");
-   const json=await res.json(),counts=new Map();
+   const json=await res.json(),cases=dedupCases(Array.isArray(json.cases)?json.cases:[]),counts=new Map();
    if(!Array.isArray(json.cases))throw Error("Bad archive");
-   for(const c of json.cases)if(/^[A-Z]{2}$/.test(c.country||"")&&c.title?.en&&c.source?.url?.startsWith("https://"))
+   for(const c of cases)if(/^[A-Z]{2}$/.test(c.country||"")&&c.title?.en&&c.source?.url?.startsWith("https://"))
     counts.set(c.country,(counts.get(c.country)||0)+1);
    sourceCountries=[...counts].map(([code,count])=>({code,count,name:nameOf(code)})).sort((a,b)=>a.name.localeCompare(b.name,locale));
    renderSourceCountries();

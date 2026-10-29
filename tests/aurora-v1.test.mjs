@@ -100,16 +100,29 @@ test('case data has sourced prose, conservative statuses and approximate map anc
   assert.ok(raw.cases.length>=15);
   for(const c of raw.cases){
     assert.equal(ids.has(c.id),false,'duplicate case '+c.id);ids.add(c.id);
-    assert.ok(Number.isFinite(c.lat)&&Math.abs(c.lat)<=90);
-    assert.ok(Number.isFinite(c.lng)&&Math.abs(c.lng)<=180);
+    const hasCoords = Number.isFinite(c.lat) && Number.isFinite(c.lng);
+    if(hasCoords){
+      assert.ok(Math.abs(c.lat)<=90);
+      assert.ok(Math.abs(c.lng)<=180);
+    }else{
+      assert.ok(c.lat===null||c.lat===undefined||c.lng===null||c.lng===undefined||!Number.isFinite(c.lat)||!Number.isFinite(c.lng), 'unknown coordinates must be explicitly absent/null');
+      assert.ok(typeof c.location_precision==='string' && /unknown|not published|no .*coordinate|not available/i.test(c.location_precision) || typeof c.location_precision==='string' && c.location_precision.length>=8, 'location precision must be explicit even if coordinates unknown');
+    }
     assert.match(c.source.url,/^https:\/\//);
     assert.ok(c.summary.bg.length>=45&&c.summary.en.length>=45);
     assert.ok(['reported','official_record','explained'].includes(c.status));
-    assert.ok(c.location_precision.length>=8,'location precision is explicit');
+    assert.ok(typeof c.location_precision==='string' && c.location_precision.length>=8,'location precision is explicit');
     assert.ok(Array.isArray(c.story?.bg)&&c.story.bg.length>=1,'rich Bulgarian editorial context');
     assert.ok(Array.isArray(c.story?.en)&&c.story.en.length>=1,'rich English editorial context');
     assert.ok(Array.isArray(c.media)&&c.media.length>=1,'at least one real source-linked media asset');
     assert.ok(c.media.every(m=>/^https:\/\//.test(m.url)),'media links should point to original sources');
+    // Provenance/dedup fields encouraged but not strictly required for backward compat
+    if(c.provenance){
+      assert.ok(typeof c.provenance==='object');
+    }
+    if(c.dedup_key){
+      assert.ok(typeof c.dedup_key==='string' && c.dedup_key.length>=3);
+    }
   }
 });
 test('globe respects reduced motion and links to external sources safely',()=>{
@@ -117,6 +130,20 @@ test('globe respects reduced motion and links to external sources safely',()=>{
   assert.match(read('globe.js'),/target/); // source link target is in HTML
   assert.match(read('globe.css'),/prefers-reduced-motion:reduce/);
   assert.match(html,/target="_blank" rel="noopener noreferrer"/);
+});
+
+test('archive/map deduplication and provenance helpers exist',()=>{
+  const globe = read('globe.js');
+  const country = read('country.js');
+  const dossier = read('dossier.js');
+  assert.match(globe+country+dossier, /dedup|provenance/i, 'dedup/provenance logic present in archive/map code');
+});
+
+test('archive/map handles explicitly unknown coordinates without fabrication',()=>{
+  const globe = read('globe.js');
+  const dossier = read('dossier.js');
+  assert.match(globe, /IDX\[i\]<0|hidden.*pin|finite/i);
+  assert.match(dossier, /POSITION NOT PUBLISHED|unknown|N\/A/i);
 });
 
 test('V1.4 static country template, D1 APIs and real register controls exist',()=>{

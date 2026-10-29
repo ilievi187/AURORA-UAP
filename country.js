@@ -80,7 +80,17 @@
   pinHolder.style.height=canvas.clientHeight+"px";
   pinHolder.style.right="auto";pinHolder.style.bottom="auto";
   const clusters=new Map();
-  for(const item of entries){
+  function dedupList(list){
+    const seen=new Set(),out=[];
+    for(const item of Array.isArray(list)?list:[]){
+      const key=item.dedup_key||(item.provenance?.source_record_id?`pr:${item.provenance.source_record_id}`:(item.source_url&&item.date?`src:${item.source_url}|${item.date}|${item.id}`:item.id));
+      if(seen.has(key))continue;seen.add(key);out.push(item);
+    }
+    return out;
+  }
+  const deduped = dedupList(entries);
+  for(const item of deduped){ entries = deduped; break; }
+  for(const item of deduped){
    if(!Number.isFinite(item.latitude)||!Number.isFinite(item.longitude))continue;
    const cell=Math.round(item.latitude/5)+":"+Math.round(item.longitude/5);
    const cluster=clusters.get(cell)||{lat:0,lng:0,items:[]};cluster.lat+=item.latitude;cluster.lng+=item.longitude;cluster.items.push(item);
@@ -92,7 +102,7 @@
    pin.style.left=((lng+180)/360*100)+"%";pin.style.top=((90-lat)/180*100)+"%";
    pin.textContent=cluster.items.length>1?String(cluster.items.length):"";
    pin.title=cluster.items.map(x=>x.title[language]||x.title.en).slice(0,3).join(", ");
-   pin.setAttribute("aria-label",pin.title);
+   pin.setAttribute("aria-label",pin.title + (cluster.items.some(x=>!Number.isFinite(x.latitude)||!Number.isFinite(x.longitude))?" (coordinates not published)":""));
    pin.addEventListener("click",()=>document.getElementById("case-"+cluster.items[0].id)?.focus());
    pinHolder.append(pin);
   }
@@ -201,13 +211,21 @@
  window.addEventListener("resize",renderPins,{passive:true});
  // Historical dossiers do not depend on D1 activation or moderation and keep
  // their own provenance, separate from the protected registry statistics.
+ function dedupCases(list){
+   const seen=new Set(),out=[];
+   for(const c of Array.isArray(list)?list:[]){
+    const key=c.dedup_key||(c.provenance?.source_record_id?`pr:${c.provenance.source_record_id}`:(c.source?.url&&c.date?`src:${c.source.url}|${c.date}|${c.id}`:c.id));
+    if(seen.has(key))continue;seen.add(key);out.push(c);
+   }
+   return out;
+ }
  async function loadCountryHistory(){
   const host=el("countryHistoryGrid"),message=el("countryHistoryStatus");
   el("countryHistoryTitle").textContent=isBg?"ИСТОРИЧЕСКИ СЛУЧАИ ОТ "+countryName.toUpperCase():"HISTORICAL CASES FROM "+countryName.toUpperCase();
   try{
    const res=await fetch("/data/cases.json",{cache:"force-cache"});if(!res.ok)throw Error("Source archive unavailable");
    const data=await res.json();if(!Array.isArray(data.cases))throw Error("Invalid source data");
-   const cases=data.cases.filter(c=>c.country===code&&/^[a-z0-9-]{3,90}$/.test(c.id)&&c.title?.en&&c.summary?.en&&c.source?.url?.startsWith("https://"))
+   const cases=dedupCases(data.cases).filter(c=>c.country===code&&/^[a-z0-9-]{3,90}$/.test(c.id)&&c.title?.en&&c.summary?.en&&c.source?.url?.startsWith("https://"))
     .sort((a,b)=>String(b.date).localeCompare(String(a.date)));
    host.replaceChildren();
    for(const c of cases){
@@ -216,7 +234,7 @@
     img.src=/^\/assets\/[a-z0-9-]+\.webp$/.test(c.visual?.src||"")?c.visual.src:"/assets/feature-cases.webp";
     img.alt=isBg?"Художествена илюстрация, не оригинална снимка":"Thematic illustration, not original incident photography";
     const body=document.createElement("div");
-    const meta=document.createElement("small");meta.textContent=c.date+" · "+c.source.name;
+    const meta=document.createElement("small");meta.textContent=c.date+" · "+(c.source?.name||c.provenance?.source_name||"");
     const title=document.createElement("strong");title.textContent=c.title[language]||c.title.en;
     const p=document.createElement("p");p.textContent=c.summary[language]||c.summary.en;
     const more=document.createElement("span");more.textContent=isBg?"ОТВОРИ ДОСИЕТО ↗":"OPEN CASE DOSSIER ↗";

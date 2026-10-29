@@ -79,7 +79,7 @@
   label("dossierKind",legacy?t.kindLegacy:t.kindD1);
   label("dossierSubtitle",t.subtitle);
   label("factIdentifier",c.id);
-  label("factDate",c.date+" · "+c.date_precision);
+  label("factDate",c.date+" · "+(c.date_precision||""));
   label("factLocation",area+(country?" · "+country:""));
   label("factCategory",t.categoryName[c.category]||c.category||"—");
   label("factPublication",legacy?t.reference:t.approved);
@@ -147,12 +147,13 @@
   mediaBox.hidden=mediaGrid.childElementCount===0;
 
   label("dossierCaution",t.caution);
-  const source=sourceUrl(c.source_url||c.source?.url);
-  label("dossierSourceName",c.source_name||c.source?.name||t.sourceMissing);
+  const provenance = c.provenance || {};
+  const source=sourceUrl(c.source_url||c.source?.url||provenance.source_url);
+  label("dossierSourceName",c.source_name||c.source?.name||provenance.source_name||t.sourceMissing);
   const src=$("dossierSourceUrl");
   src.hidden=!source;
   if(source){src.href=source;src.textContent=t.openSource}
-  label("dossierLicense",legacy?t.reference:(c.license||""));
+  label("dossierLicense",legacy?t.reference:(c.license||provenance.license||""));
   const authority=c.assessment_authority?
    c.assessment_authority+" · "+(t.confidence[c.assessment_confidence]||t.confidence.not_stated):"";
   label("dossierAssessmentAuthority",authority);
