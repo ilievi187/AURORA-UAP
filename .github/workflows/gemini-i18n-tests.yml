@@ -2,26 +2,30 @@ name: AURORA localization & UX quality gate
 on:
   pull_request:
     paths:
+      - 'functions/_lib/news-translation.js'
       - 'subpage-i18n.js'
       - 'news.js'
+      - 'news-translation.css'
       - 'home-news.js'
       - 'countries.*'
       - 'country.*'
       - 'dossier.*'
       - 'report.*'
-      - 'tests/gemini-i18n*'
+      - 'tests/gemini-*'
       - '.github/workflows/gemini-i18n-tests.yml'
   push:
     branches: [main]
     paths:
+      - 'functions/_lib/news-translation.js'
       - 'subpage-i18n.js'
       - 'news.js'
+      - 'news-translation.css'
       - 'home-news.js'
       - 'countries.*'
       - 'country.*'
       - 'dossier.*'
       - 'report.*'
-      - 'tests/gemini-i18n*'
+      - 'tests/gemini-*'
       - '.github/workflows/gemini-i18n-tests.yml'
 permissions:
   contents: read
@@ -34,8 +38,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Test 18-locale packs and template wiring
-        run: node --test tests/gemini-i18n.test.mjs
+      - name: Test 18-locale packs, news translation, and template wiring
+        run: node --test tests/gemini-i18n.test.mjs tests/gemini-news-translation.test.mjs
       - name: Install browser test tooling
         run: |
           npm install --no-save --no-package-lock playwright@1.56.1
