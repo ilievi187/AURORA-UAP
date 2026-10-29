@@ -1,0 +1,52 @@
+name: AURORA source catalog
+on:
+  pull_request:
+    paths:
+      - 'functions/_lib/source-catalog.js'
+      - 'functions/_lib/headline-dedup.js'
+      - 'functions/_lib/feed-parse.js'
+      - 'functions/_lib/discovery.js'
+      - 'functions/api/sources.js'
+      - 'functions/api/discovery.js'
+      - 'sources.html'
+      - 'sources.js'
+      - 'sources.css'
+      - 'tests/source-catalog.test.mjs'
+      - 'tests/source-discovery-browser.test.mjs'
+      - 'tests/fixtures/source-discovery/**'
+      - '.github/workflows/source-catalog-tests.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'functions/_lib/source-catalog.js'
+      - 'functions/_lib/headline-dedup.js'
+      - 'functions/_lib/feed-parse.js'
+      - 'functions/_lib/discovery.js'
+      - 'functions/api/sources.js'
+      - 'functions/api/discovery.js'
+      - 'sources.html'
+      - 'sources.js'
+      - 'sources.css'
+      - 'tests/source-catalog.test.mjs'
+      - 'tests/source-discovery-browser.test.mjs'
+      - 'tests/fixtures/source-discovery/**'
+      - '.github/workflows/source-catalog-tests.yml'
+permissions:
+  contents: read
+jobs:
+  source-catalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test catalog, parser, and dedup
+        run: node --test tests/source-catalog.test.mjs
+      - name: Install browser test tooling
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install --only-shell chromium
+      - name: Verify the source directory in a browser
+        run: node --test tests/source-discovery-browser.test.mjs
