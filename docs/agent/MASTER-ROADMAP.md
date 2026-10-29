@@ -1,12 +1,12 @@
 # Master Roadmap
 
-Statuses reflect evidence checked 2026-10-29 20:43 UTC; re-check remote and production state before action.
+Statuses reflect evidence checked 2026-10-29 20:52 UTC; re-check remote and production state before action.
 
 | Priority | Status | Task / Acceptance criteria | Dependencies / evidence |
 |---|---|---|---|
 | P0 | COMPLETE (staged safeguards) | Production site and intake remain fail-closed; no accidental public intake. | Intake is disabled/local-only; staged registry verifier passes. |
-| P1 | IN PROGRESS | Complete locale persistence, translation and accessibility across all supported pages/routes. | PRs #30 and #38 merged; PR #44 adds script-aware headline/summary translation. Do not claim every route fully verified; audit and production verification remain. |
-| P1 | IN PROGRESS / PREVIEW BLOCKED | Restore dependable sourced news, partial-source success, diagnostics and last-good behavior. | PR #33 remote head `03b2959` had 11 passing checks; local head `2ab1e24` includes main through `199b437` and source/news/browser suites pass. Fresh CI pending push. Production `/news` displayed unavailable; one API probe returned 403, cause unknown; preview Error 1010 requires owner-approved access. Do not bypass or merge before functional verification. |
+| P1 | IN PROGRESS | Complete locale persistence, translation and accessibility across all supported pages/routes. | PRs #30, #38, #44, #49 and #50 merged. Remaining route-by-route production verification is blocked; do not claim every page complete from CI alone. |
+| P1 | IN PROGRESS / PREVIEW BLOCKED | Restore dependable sourced news, partial-source success, diagnostics and last-good behavior. | PR #33 head `2b6ec18` has 13 passing checks; branch includes main through `199b437` and merges cleanly with current main `c4d4614`. Local suites pass. Production `/news` unavailable; one API probe returned 403, cause unknown; preview Error 1010 requires owner-approved access. Do not bypass or merge before functional verification. |
 | P1 | IN PROGRESS (draft PR) | Gated moderation queue with Cloudflare Access verification and audited private review; approval never publishes. | PR #14 draft; independent read-only security review pending. Production enablement blocked until real Access configuration, privacy review and synthetic-only verification. |
 | P1 | BLOCKED | Provision/verify production D1, safely apply migrations, bind `DB`, verify backups and a read/write smoke test. | Production `/api/stats` last returned 503 `database_unavailable`; binding is unconfigured. Wrangler v4.156.0 is not authenticated and example ID is a placeholder. Requires authorized account access; preserve data. |
 | P1 | BLOCKED | Production Turnstile hostname/widget, Siteverify, WAF limits and abuse monitoring. | Cloudflare account and owner-approved configuration required; no secrets in Git. |

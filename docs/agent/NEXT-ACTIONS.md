@@ -1,8 +1,8 @@
 # Next Actions — read first when resuming
 
-Updated 2026-10-29 20:43 UTC.
+Updated 2026-10-29 20:52 UTC.
 
-1. PR #33 local sync is complete at `2ab1e24769a18433458a121781aadcb0d9c19eb1` (integrates `origin/main` through `199b437`); current static/feed/source-catalog/source-health/source-directory/browser tests and Pages Functions build pass. Commit/push the updated state docs and integration head, then verify fresh PR checks.
+1. PR #33 pushed code head `2b6ec18` has 13 passing checks; local suites after source-health/Africa-Americas sync pass. Current main is `c4d4614`; `git merge-tree` reports no conflicts. Commit/push the state-doc checkpoint, then verify fresh CI on its new head before considering any merge.
 2. Keep PR #33 unmerged until a site-owner-approved preview user journey can be verified. The preview API previously returned HTTP 403 Error 1010 `browser_signature_banned` / `owner_action_required`; do not retry through another host, IP, proxy, identity or browser signature.
 3. Production `/news` showed the unavailable-source state; a single direct API request returned HTTP 403 with unknown cause. Do not query that endpoint again without an approved test path. After access is approved, verify diagnostics and the real browser journey; treat the five-worker change as mitigation until evidence confirms recovery.
 4. Production `/api/stats` last returned 503 because D1 `DB` is unconfigured. `npx wrangler@4.156.0 whoami` reported not authenticated. Ask the owner to authorize Cloudflare access; do not guess IDs, create/overwrite data, or enable intake.
