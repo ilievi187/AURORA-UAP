@@ -50,6 +50,23 @@
   let cases=[],land=[],filtered=[],selected=null,texturePixels=null,pinNodes=new Map(),legacyArchive=true;
   let archiveCases=[],liveCases=[];
   let lon=-15,paused=false,temporaryPause=0,wasVisible=false,raf=0,last=0,initialized=false;
+  function dedupCases(list){
+    const seen=new Set(),out=[];
+    for(const c of Array.isArray(list)?list:[]){
+      const key=c.dedup_key||(c.provenance?.source_record_id?`pr:${c.provenance.source_record_id}`:(c.source?.url&&c.date?`src:${c.source.url}|${c.date}|${c.id}`:c.id));
+      if(seen.has(key))continue;
+      seen.add(key);
+      out.push(c);
+    }
+    return out;
+  }
+  function hasVerifiedCoords(c){
+    return Number.isFinite(c.lat)&&Number.isFinite(c.lng)&&Math.abs(c.lat)<=90&&Math.abs(c.lng)<=180;
+  }
+  function caseProvenance(c){
+    if(c.provenance)return c.provenance;
+    return {source_url:c.source?.url||c.source_url||null,source_name:c.source?.name||c.source_name||null,verified:!!(c.source?.url||c.source_url)};
+  }
   const prefersReduced=window.matchMedia("(prefers-reduced-motion: reduce)");
   const l=()=>T[document.documentElement.lang]||T.en;
   const localized=o=>o?.[document.documentElement.lang]||o?.en||"";
@@ -125,7 +142,7 @@
     for(const c of filtered){
       const b=pinNodes.get(c.id);
       if(!b)continue;
-      if(!Number.isFinite(c.lat)||!Number.isFinite(c.lng)){b.hidden=true;continue}
+      if(!Number.isFinite(c.lat)||!Number.isFinite(c.lng)){b.hidden=true;if(!b.title.includes('coordinates not published'))b.title=(b.title||'')+' (coordinates not published)';continue}
       const p=point(c.lat,c.lng);
       b.hidden=!p.visible;
       if(p.visible){b.style.left=p.x+"%";b.style.top=p.y+"%"}
@@ -165,7 +182,7 @@
     const c=filtered.find(x=>x.id===id);
     if(!c)return;
     selected=c.id;
-    if(orient&&Number.isFinite(c.lng)){lon=c.lng;temporaryPause=performance.now()+9000;sphere()}
+    if(orient){if(Number.isFinite(c.lng)){lon=c.lng;temporaryPause=performance.now()+9000;sphere();}else if(Number.isFinite(c.lat)){temporaryPause=performance.now()+9000;sphere();}}
     ui.date.textContent=c.date;
     ui.title.textContent=localized(c.title);
     ui.location.textContent=localized(c.city)+" · "+c.country;
@@ -353,10 +370,14 @@
     const response=await fetch("/data/cases.json",{cache:"force-cache"});
     if(!response.ok)throw Error("Worldwide archive not available");
     const dataset=await response.json();
-    archiveCases=(Array.isArray(dataset.cases)?dataset.cases:[]).filter(c=>
-      typeof c.id==="string"&&Number.isFinite(c.lat)&&Number.isFinite(c.lng)&&
-      Math.abs(c.lat)<=90&&Math.abs(c.lng)<=180&&c.title?.en&&c.summary?.en&&validUrl(c.source?.url)
-    ).map(c=>({...c,recordOrigin:"archive"}));
+    archiveCases=dedupCases((Array.isArray(dataset.cases)?dataset.cases:[]).filter(c=>
+      typeof c.id==="string"&&c.title?.en&&c.summary?.en&&validUrl(c.source?.url)
+    ).map(c=>{
+      const hasCoords = Number.isFinite(c.lat)&&Number.isFinite(c.lng)&&Math.abs(c.lat)<=90&&Math.abs(c.lng)<=180;
+      const mapped = {...c,recordOrigin:"archive"};
+      if(!hasCoords){ mapped.lat=undefined; mapped.lng=undefined; }
+      return mapped;
+    }));
     cases=archiveCases.slice();
     legacyArchive=true;
     updateFacets();updateLanguage();applyFilter();run();
