@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#06151d">
+  <meta name="description" content="AURORA UAP — проверени международни RSS и Atom източници. Заглавията са съвпадения по ключови думи, не потвърдени случаи.">
+  <title>Международни източници | AURORA UAP</title>
+  <link rel="canonical" href="https://aurorauap.org/sources.html">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/live-tools.css">
+  <link rel="stylesheet" href="/sources.css">
+  <script defer src="/sources.js"></script>
+</head>
+<body class="live-page">
+<a class="skip-link" href="#main">Към съдържанието</a>
+<main id="main" class="live-shell">
+  <header class="live-header">
+    <a class="live-logo" href="/">✦ AURORA</a>
+    <nav class="live-links" aria-label="Навигация">
+      <a href="/">Начало</a>
+      <a href="/news.html">Новини</a>
+      <a href="/sky.html">Авиационен радар</a>
+      <a href="/report.html">Подготви сигнал</a>
+    </nav>
+  </header>
+  <section class="live-hero">
+    <p class="live-eyebrow">◉ SOURCE DIRECTORY / OFFICIAL FEEDS</p>
+    <h1>МЕЖДУНАРОДНИ ИЗТОЧНИЦИ</h1>
+    <p>Официални RSS и Atom адреси на редакции и институции, проверени на 29 октомври 2026. Всеки адрес върна документ от самия издател. Списъкът разширява търсенето отвъд Google News. Не заменя сегашния новинарски поток и не е архив на потвърдени случаи.</p>
+    <p>Official publisher feeds checked on 29 October 2026. Keyword matches below are headlines from those feeds, not verified UAP cases.</p>
+  </section>
+  <p class="live-warning">Показваме издател, държава, език и връзка към оригинала. Съвпадение по дума като UAP, UFO, OVNI или НЛО не доказва наблюдение и не е извънземно обяснение.</p>
+  <section aria-labelledby="catalogHeading">
+    <div class="live-toolbar">
+      <label>Регион / Region
+        <select id="sourceRegion">
+          <option value="all">Всички региони / All regions</option>
+          <option value="europe">Европа / Europe</option>
+          <option value="americas">Америка / Americas</option>
+          <option value="asia-pacific">Азия и Тихия океан / Asia-Pacific</option>
+          <option value="middle-east-africa">Близък изток и Африка / Middle East and Africa</option>
+          <option value="global">Международни организации / International</option>
+        </select>
+      </label>
+      <button type="button" id="reloadMatches">Провери заглавия</button>
+    </div>
+    <p id="sourceStatus" class="live-status" data-state="loading" role="status" aria-live="polite">Зареждане на източниците…</p>
+    <h2 id="catalogHeading">Каталог</h2>
+    <div id="sourceList" class="live-grid"></div>
+  </section>
+  <section aria-labelledby="matchHeading">
+    <h2 id="matchHeading">Съвпадения по ключови думи</h2>
+    <p id="matchStatus" class="live-status" role="status" aria-live="polite">Още не е правена проверка.</p>
+    <div id="matchList" class="match-list"></div>
+  </section>
+  <noscript><p class="live-warning">Каталогът се зарежда от /api/sources. Без JavaScript отворете тази връзка директно.</p></noscript>
+</main>
+</body>
+</html>
