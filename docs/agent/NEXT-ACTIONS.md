@@ -1,6 +1,8 @@
 # Next Actions — read first when resuming
 
-Updated 2026-10-28 21:33 UTC.
+Updated 2026-10-29 18:20 UTC.
+
+Immediate next (P3 atlas candidate): the final independent review passed. Commit and push `feat/luna-radar-search-m34`, open a scoped PR referencing (not closing) issue #32, then verify live GitHub checks and an allowed preview path. Do not claim deployment or new country/source coverage; no cases or coordinates were added.
 
 1. Fetch `main`, inspect open PRs and latest workflow runs. Application-code baseline at this snapshot is `9c9d2275e2df6a83d8b755d8f7ad84cd7866441d`; subsequent state updates are documentation-only.
 2. Continue diagnosing the production `/api/news` 503 using authorized Cloudflare Worker runtime/cache logs. The Gemini browser is guest; if official Cache API semantics need research, ask the owner to sign in through the existing browser or explicitly authorize another research route. Never use a Gemini API or invent article data.

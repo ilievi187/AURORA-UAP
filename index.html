@@ -22,7 +22,8 @@
   <script defer src="globe.js"></script>
   <script defer src="register.js"></script>
 <link rel="stylesheet" href="/live-tools.css">
-<link rel="stylesheet" href="/world-atlas.css"><script defer src="/ui-locales.js"></script><script defer src="/world-atlas.js"></script><script defer src="/home-news.js"></script>
+<link rel="stylesheet" href="/world-atlas.css">
+<script defer src="/ui-locales.js"></script><script type="module" src="/world-atlas.js"></script><script defer src="/home-news.js"></script>
 </head>
 <body class="gate-open">
 <noscript><style>#languageGate{display:none!important}body.gate-open{overflow:auto}.site-shell{pointer-events:auto!important}</style></noscript>
@@ -100,12 +101,40 @@
     <div class="hero-meta" aria-hidden="true"><span><i class="live-dot"></i> SCIENCE FIRST / OPEN SKIES</span><span>INDEPENDENT INITIATIVE — BULGARIA</span><strong>SCROLL TO EXPLORE ↓</strong></div>
   </section>
   <section class="world-atlas" id="worldAtlas" aria-labelledby="worldAtlasHeading">
- <div class="world-atlas-head"><div><p class="console-kicker">AURORA / GLOBAL CASE INDEX</p><h2 id="worldAtlasHeading">СВЕТОВНА КАРТА НА СЛУЧАИТЕ</h2><p>Всички публикувани архивни истории на една карта. Избери точка и отвори цялото досие със записи и източници.</p></div><strong class="world-atlas-count" id="worldMapCount">—</strong></div>
- <div class="world-atlas-filters"><label for="worldCountry">ДЪРЖАВА</label><select id="worldCountry" aria-label="Country filter"><option value="">ВСИЧКИ ДЪРЖАВИ</option></select></div>
- <div class="world-map-layout"><div><div class="world-map-surface"><canvas id="worldMapCanvas" aria-hidden="true"></canvas><div id="worldMapPins" class="world-map-pins" aria-label="Worldwide documented case markers"></div></div><p class="world-map-caption">Маркерите показват описан район, не измерена траектория.</p></div>
- <aside class="world-case-detail" id="worldCaseDetail" aria-live="polite">Зареждане на световния архив…</aside></div>
- <p id="worldMapState" class="home-news-state" role="status"></p>
-</section>
+    <div class="world-atlas-head">
+      <div><p class="console-kicker">AURORA / GLOBAL CASE INDEX</p><h2 id="worldAtlasHeading">СВЕТОВНА КАРТА НА СЛУЧАИТЕ</h2><p>Всички публикувани архивни истории на една карта. Търси по заглавие, район или източник; избери досие, за да видиш първоизточника.</p></div>
+      <div class="world-atlas-count-block"><strong class="world-atlas-count" id="worldMapCount">—</strong><span id="worldMapCountLabel">досие(та)</span></div>
+    </div>
+    <div class="world-atlas-filters" role="search" aria-label="Търсене и филтриране на досиета">
+      <label class="world-search" for="worldSearch"><span data-world-t="search">ТЪРСИ ДОСИЕ</span><input id="worldSearch" type="search" autocomplete="off" placeholder="Заглавие, район, държава или източник"></label>
+      <label for="worldCountry"><span id="worldCountryLabel">ДЪРЖАВА</span><select id="worldCountry" aria-label="Филтър по държава"><option value="">ВСИЧКИ ДЪРЖАВИ</option></select></label>
+      <label for="worldYear"><span data-world-t="year">ГОДИНА</span><select id="worldYear"><option value="">ВСИЧКИ ГОДИНИ</option></select></label>
+      <label for="worldCategory"><span data-world-t="category">КАТЕГОРИЯ</span><select id="worldCategory"><option value="">ВСИЧКИ КАТЕГОРИИ</option></select></label>
+    </div>
+    <div class="world-map-layout">
+      <div class="world-map-column">
+        <div class="world-map-surface" id="worldMapSurface" role="region" tabindex="0" aria-label="Интерактивна карта на публикувани досиета" aria-describedby="worldMapHelp">
+          <div class="world-map-viewport" id="worldMapViewport">
+            <canvas id="worldMapCanvas" aria-hidden="true"></canvas>
+            <div id="worldMapPins" class="world-map-pins" role="group" aria-label="Маркери и клъстери на досиета"></div>
+          </div>
+          <div class="world-map-controls" role="group" aria-label="Контроли на картата">
+            <button id="worldZoomIn" type="button" aria-label="Увеличи картата">+</button>
+            <button id="worldZoomOut" type="button" aria-label="Намали картата">−</button>
+            <span id="worldZoomLevel" aria-live="polite">100%</span>
+            <button id="worldZoomReset" type="button" aria-label="Покажи целия свят">↺</button>
+          </div>
+        </div>
+        <p class="world-map-caption" id="worldMapHelp">Маркерите показват описан район, не измерена траектория. Плъзни картата; използвай +/− за мащаб.</p>
+      </div>
+      <aside class="world-case-detail" id="worldCaseDetail" aria-live="polite">Зареждане на световния архив…</aside>
+    </div>
+    <section class="world-results" aria-labelledby="worldResultsHeading">
+      <div class="world-results-head"><h3 id="worldResultsHeading">ДОСИЕТА</h3><p id="worldMapSummary">—</p></div>
+      <ul id="worldMapResults" class="world-map-results" tabindex="-1"></ul>
+    </section>
+    <p id="worldMapState" class="home-news-state" role="status" aria-live="polite"></p>
+  </section>
   <div class="signal-ribbon" aria-hidden="true"><span>01 / THE INITIATIVE</span><span class="ribbon-line"></span><b>WE DOCUMENT. WE VERIFY. WE QUESTION.</b><span>OPEN SOURCE MINDSET · 2026</span></div>
 
   <section class="global-register" id="globalRegister" aria-label="Global registered UAP sightings" hidden>

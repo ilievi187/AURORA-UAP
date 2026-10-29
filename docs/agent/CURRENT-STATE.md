@@ -14,4 +14,12 @@ Verified: 2026-10-28 21:33 UTC (production checks through 21:33:21Z).
 - PR #30 local tests passed: browser E2E 26/26, static 22/22, feeds 9/9, DB 20/20, intake/deployment 19/19, D1 ops 3/3. The clean-route regression failed before the fix and passed afterward. PR checks and the main-push quality gate both passed.
 - Browser E2E ran locally using Playwright 1.56.1 with system Chromium; no browser dependency or binary was committed.
 
-Do not record credentials, private submissions, access tokens, or secret values here.
+- Do not record credentials, private submissions, access tokens, or secret values here.
+
+## 2026-10-29 branch-local atlas UX candidate
+
+- Branch: `feat/luna-radar-search-m34`; implementation is staged and final independent review passed; commit/push/PR remain pending.
+- Adds 18-locale search/filter/map controls, marker clustering and zoom/pan with the reported-area uncertainty caveat retained in both visible and accessible descriptions, fixed 60-row result windows, bounded D1 page loading with malformed/demo-stat recovery, and visible status when registry completeness is unknown. Locale-aware Turkish casing and separate region-field search have regression tests.
+- No new case records, source claims, or coordinates were added. The existing sourced archive is still the coverage limit; this change must not be described as new worldwide source coverage.
+- Local verification passed: static/model 26/26, existing browser 26/26, atlas browser 8/8, database 20/20, intake 12/12, D1 operations 3/3, deployment 7/7, live feeds 9/9. `git diff --cached --check` passed. GitHub Actions, preview behavior, and production deployment are not yet verified for this branch.
+- Next: finish independent review, commit/push and open a scoped PR referencing issue #32 without closing it, then inspect live CI and verify preview if permitted. No production write/deploy occurred.

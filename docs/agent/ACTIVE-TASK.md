@@ -21,3 +21,11 @@ Verified: head `b089eb254ecb714df39bcd89653e6db01452aabf`; six PR checks passed;
 Before merge: complete security/code review, confirm the PR author has marked it ready only when intended, check latest commit and checks again. Before any production enablement, verify the actual Access application protects both UI/API, exact moderator policy, production environment configuration, independent review, and synthetic-only authenticated test. The preview hostname guard means normal preview cannot authenticate; keep it that way unless a separately safe staging design is reviewed.
 
 Do not merge or enable production moderation/intake based solely on these tests. Privacy and retention/deletion operational gates remain open.
+
+## P3 — searchable global case-atlas UX
+
+Status: locally implemented and fully tested on `feat/luna-radar-search-m34`; final independent review passed. Not yet committed, pushed, or deployed.
+
+Scope: localized search and country/year/category filters, clustered markers with accessible zoom/pan and a retained location-uncertainty caveat, bounded 60-row result pagination, D1 pagination beyond 250 records with incomplete-registry status, and honest handling of records without coordinates. No new cases or coordinates were added; the sourced archive baseline remains unchanged. This is an atlas UX slice, not completion of worldwide source expansion.
+
+Next: after final review, commit and push a scoped PR referencing (not closing) issue #32; verify GitHub checks and an allowed preview path. Do not claim production deployment or broader country coverage without direct evidence.
