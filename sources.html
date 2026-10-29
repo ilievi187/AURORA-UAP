@@ -44,10 +44,17 @@
         </select>
       </label>
       <button type="button" id="reloadMatches">Провери заглавия</button>
+      <button type="button" id="checkHealth">Провери състоянието</button>
     </div>
     <p id="sourceStatus" class="live-status" data-state="loading" role="status" aria-live="polite">Зареждане на източниците…</p>
     <h2 id="catalogHeading">Каталог</h2>
     <div id="sourceList" class="live-grid"></div>
+  </section>
+  <section aria-labelledby="healthHeading">
+    <h2 id="healthHeading">Състояние на източниците</h2>
+    <p>Проверката тръгва само от този бутон и обхваща до 12 адреса от каталога за избрания регион. Не приема произволен URL. Недостъпен източник се показва като недостъпен, без измислени заглавия.</p>
+    <p id="healthStatus" class="live-status" role="status" aria-live="polite">Още не е правена проверка на състоянието.</p>
+    <div id="healthList" class="match-list"></div>
   </section>
   <section aria-labelledby="matchHeading">
     <h2 id="matchHeading">Съвпадения по ключови думи</h2>
