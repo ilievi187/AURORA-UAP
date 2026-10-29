@@ -6,6 +6,7 @@ a{color:#affdfb}button,input,select,textarea{font:inherit}
 .skip{position:absolute;top:-90px;left:8px;padding:12px;background:#123940;color:#fff}.skip:focus{top:8px}
 .report-shell{max-width:1050px;padding:0 clamp(16px,4vw,58px);margin:auto}
 .report-nav{height:82px;border-bottom:1px solid #4f899055;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.report-nav .page-language{max-width:130px;padding:9px 8px;border:1px solid #44818a;border-radius:5px;background:#0b1e29;color:#d8f5f2;font:11px Consolas,monospace}
 .report-brand{font-size:20px;letter-spacing:.2em;text-decoration:none;font-weight:740;color:#e0fffc}.report-brand small{display:block;font:9px Consolas,monospace;color:#8accd2;margin-top:5px}
 .report-back{font:11px Consolas,monospace;text-decoration:none;border:1px solid #44818a;padding:11px;white-space:nowrap}
 .report-hero{padding:clamp(47px,9vw,94px) 0 25px;border-bottom:1px solid #4c969d77}
@@ -30,7 +31,7 @@ textarea{resize:vertical;min-height:150px;line-height:1.6}
 #formFeedback{min-height:20px;font:12px/1.7 Consolas,monospace;color:#aef0dc;overflow-wrap:anywhere}
 .report-section>p{font-size:13px;line-height:1.8;color:#b3d5d4}
 footer{padding:30px 0 50px;border-top:1px solid #45798255;font:10px Consolas,monospace;letter-spacing:.16em;color:#85afb4}
-@media(max-width:650px){.report-grid{grid-template-columns:1fr}.report-brand{font-size:15px}.report-nav{height:72px}.report-back{font-size:9px}.report-actions{display:grid}.report-actions button{width:100%}}
+@media(max-width:650px){.report-grid{grid-template-columns:1fr}.report-brand{font-size:15px}.report-nav{height:72px}.report-nav .page-language{max-width:88px;padding:8px 4px;font-size:9px}.report-back{font-size:9px}.report-actions{display:grid}.report-actions button{width:100%}}
 
 .report-english{font-size:.42em;letter-spacing:.02em;color:#80c6cb;vertical-align:middle}
 .receipt-panel{padding:22px;margin:18px 0 26px;border:1px solid #7ad4b9;border-radius:10px;background:linear-gradient(125deg,#0b342e,#091f2b);overflow-wrap:anywhere}

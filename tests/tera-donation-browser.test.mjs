@@ -18,9 +18,9 @@ await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
 let browser;
 try {
   browser = await chromium.launch({headless:true, ...(process.env.CHROMIUM_PATH ? {executablePath:process.env.CHROMIUM_PATH} : {})});
-  for (const width of [320, 375, 768, 1280]) {
-    await test(`donation page fits and remains usable at ${width}px`, async () => {
-      const page = await browser.newPage({viewport:{width,height:800}, reducedMotion:'reduce'});
+  for (const [width, isMobile] of [[320,true], [375,true], [390,true], [428,true], [320,false], [375,false], [768,false], [1280,false]]) {
+    await test(`donation page fits and remains usable at ${width}px${isMobile ? ' mobile' : ''}`, async () => {
+      const page = await browser.newPage({viewport:{width,height:800}, isMobile, reducedMotion:'reduce'});
       const errors = [];
       page.on('pageerror', error => errors.push(error.message));
       try {
