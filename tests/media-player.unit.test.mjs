@@ -74,3 +74,20 @@ test('lookalike domains, insecure URLs and non-video items never become embeds',
   for (const url of unsafe) assert.equal(resolveMediaPlayback({ type: 'video', url }), null, url);
   assert.equal(resolveMediaPlayback({ type: 'document', url: 'https://www.youtube.com/watch?v=aqz-KE-bpKQ' }), null);
 });
+
+test('production catalog exposes verified public-domain HTML5 playback for official Navy FLIR1, GIMBAL, and GOFAST releases', async () => {
+  const { readFileSync } = await import('node:fs');
+  const catalog = JSON.parse(readFileSync(new URL('../data/cases.json', import.meta.url), 'utf8'));
+  for (const id of ['nimitz-2004', 'gimbal-2015', 'gofast-2015']) {
+    const entry = catalog.cases.find(c => c.id === id);
+    assert.ok(entry, `missing case ${id}`);
+    const video = entry.media.find(m => m.type === 'video');
+    assert.ok(video, `missing video media on ${id}`);
+    const playback = resolveMediaPlayback(video);
+    assert.ok(playback, `expected verified playback for ${id}`);
+    assert.equal(playback.kind, 'html5');
+    assert.equal(playback.provider, 'direct');
+    assert.equal(playback.mimeType, 'video/webm');
+    assert.match(playback.mediaUrl, /^https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\//);
+  }
+});
