@@ -47,7 +47,7 @@ jobs:
           git diff --check
 
   publish-scheduled-main-archive:
-    if: github.event_name == 'schedule' && github.ref == 'refs/heads/main' && github.repository == 'ilievi187/AURORA-UAP'
+    if: github.event_name == 'schedule' && github.ref == 'refs/heads/main' && github.repository == 'ilievi187/AURORA-UAP' && vars.AURORA_ARCHIVE_PR_AUTOMATION_ENABLED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 12
     permissions:
