@@ -356,7 +356,20 @@
   dossierLink.textContent=label("openDossier");
   details.append(dossierLink);
   if(x.assessment_authority){const finding=document.createElement("p");finding.textContent=(bg?"Оценка: ":"Assessment: ")+x.assessment_authority+" · "+x.assessment_status+" ("+x.assessment_confidence+")";details.append(finding)}
-  if(x.media?.length){const media=document.createElement("p");media.textContent=bg?"Медийни материали с потвърдени права:":"Rights-verified media:";details.append(media)}
+  if(Array.isArray(x.media)&&x.media.length){
+   const heading=document.createElement("p");heading.textContent=bg?"Медийни материали с източници:":"Source-linked media:";details.append(heading);
+   for(const m of x.media.slice(0,12)){
+    if(m?.type!=="video")continue;
+    let safe;
+    try{safe=new URL(m.url);if(safe.protocol!=="https:"||safe.username||safe.password)continue;}catch{continue}
+    const watch=document.createElement("button");watch.type="button";watch.className="country-video-play";
+    watch.textContent=(bg?"▶ ГЛЕДАЙ В AURORA: ":"▶ WATCH IN AURORA: ")+(m.title?.[language]||m.title?.en||"Video");
+    watch.addEventListener("click",()=>window.dispatchEvent(new CustomEvent("aurora:play-media",{detail:{
+      media:m,title:m.title?.[language]||m.title?.en||"Video",caseTitle:x.title?.[language]||x.title?.en||"",sourceName:x.source_name||"",trigger:watch
+    }})));
+    details.append(watch);
+   }
+  }
   try{
    const u=new URL(x.source_url);
    if(u.protocol==="https:"){
