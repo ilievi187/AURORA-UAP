@@ -128,20 +128,197 @@ const COPY = {
     videoReady: 'Видеото е готово. Използвай контролите; възпроизвеждането не започва автоматично.',
     videoError: 'Видеото не можа да се зареди тук. Провери наличността в оригиналния източник.',
     fallbackTitle: 'Видео'
+  },
+  de: {
+    play: 'In AURORA ansehen', close: 'Player schließen', kicker: 'AURORA-Player',
+    source: 'Quelle', original: 'Originalquelle öffnen',
+    iframeLoading: 'Offizieller Player wird geladen. Falls die Wiedergabe blockiert ist, öffnen Sie die Originalquelle.',
+    iframeReady: 'Player geladen. Nutzen Sie die Steuerelemente oder öffnen Sie die Originalquelle.',
+    iframeError: 'Der eingebettete Player konnte nicht geladen werden. Öffnen Sie die Originalquelle.',
+    videoLoading: 'Rechtegeprüftes Video wird geladen. Keine automatische Wiedergabe.',
+    videoReady: 'Video bereit. Nutzen Sie die Wiedergabesteuerung; es startet nicht automatisch.',
+    videoError: 'Dieses Video konnte hier nicht geladen werden. Prüfen Sie die Originalquelle.',
+    fallbackTitle: 'Video'
+  },
+  fr: {
+    play: 'Regarder dans AURORA', close: 'Fermer le lecteur', kicker: 'Lecteur AURORA',
+    source: 'Source', original: 'Ouvrir la source originale',
+    iframeLoading: 'Chargement du lecteur officiel. Si la lecture est bloquée, ouvrez la source originale.',
+    iframeReady: 'Lecteur chargé. Utilisez ses commandes ou ouvrez la source originale.',
+    iframeError: 'Le lecteur intégré n’a pas pu être chargé. Ouvrez la source originale.',
+    videoLoading: 'Chargement de la vidéo aux droits vérifiés. Pas de lecture automatique.',
+    videoReady: 'Vidéo prête. Utilisez les commandes de lecture ; elle ne démarre pas automatiquement.',
+    videoError: 'Cette vidéo n’a pas pu être chargée ici. Ouvrez la source originale.',
+    fallbackTitle: 'Vidéo'
+  },
+  es: {
+    play: 'Ver en AURORA', close: 'Cerrar reproductor', kicker: 'Reproductor AURORA',
+    source: 'Fuente', original: 'Abrir fuente original',
+    iframeLoading: 'Cargando el reproductor oficial. Si la reproducción está bloqueada, abra la fuente original.',
+    iframeReady: 'Reproductor cargado. Use sus controles o abra la fuente original.',
+    iframeError: 'El reproductor integrado no pudo cargarse. Abra la fuente original.',
+    videoLoading: 'Cargando vídeo con derechos verificados. No se reproduce automáticamente.',
+    videoReady: 'Vídeo listo. Use los controles de reproducción; no comienza automáticamente.',
+    videoError: 'Este vídeo no pudo cargarse aquí. Abra la fuente original.',
+    fallbackTitle: 'Vídeo'
+  },
+  it: {
+    play: 'Guarda in AURORA', close: 'Chiudi lettore', kicker: 'Lettore AURORA',
+    source: 'Fonte', original: 'Apri fonte originale',
+    iframeLoading: 'Caricamento del lettore ufficiale. Se la riproduzione è bloccata, apri la fonte originale.',
+    iframeReady: 'Lettore caricato. Usa i controlli o apri la fonte originale.',
+    iframeError: 'Impossibile caricare il lettore incorporato. Apri la fonte originale.',
+    videoLoading: 'Caricamento del video con diritti verificati. Nessun avvio automatico.',
+    videoReady: 'Video pronto. Usa i controlli di riproduzione; non parte automaticamente.',
+    videoError: 'Impossibile caricare il video qui. Apri la fonte originale.',
+    fallbackTitle: 'Video'
+  },
+  pt: {
+    play: 'Ver na AURORA', close: 'Fechar reprodutor', kicker: 'Reprodutor AURORA',
+    source: 'Fonte', original: 'Abrir fonte original',
+    iframeLoading: 'Carregando o reprodutor oficial. Se a reprodução estiver bloqueada, abra a fonte original.',
+    iframeReady: 'Reprodutor carregado. Use os controles ou abra a fonte original.',
+    iframeError: 'Não foi possível carregar o reprodutor incorporado. Abra a fonte original.',
+    videoLoading: 'Carregando vídeo com direitos verificados. A reprodução não inicia automaticamente.',
+    videoReady: 'Vídeo pronto. Use os controles de reprodução; não inicia automaticamente.',
+    videoError: 'Não foi possível carregar este vídeo aqui. Abra a fonte original.',
+    fallbackTitle: 'Vídeo'
+  },
+  ru: {
+    play: 'Смотреть в AURORA', close: 'Закрыть плеер', kicker: 'Плеер AURORA',
+    source: 'Источник', original: 'Открыть первоисточник',
+    iframeLoading: 'Загрузка официального плеера. Если воспроизведение заблокировано, откройте первоисточник.',
+    iframeReady: 'Плеер загружен. Используйте элементы управления или откройте первоисточник.',
+    iframeError: 'Встроенный плеер не удалось загрузить. Откройте первоисточник.',
+    videoLoading: 'Загрузка видео с проверенными правами. Автовоспроизведение отключено.',
+    videoReady: 'Видео готово. Используйте элементы управления; оно не запускается автоматически.',
+    videoError: 'Не удалось загрузить видео здесь. Проверьте первоисточник.',
+    fallbackTitle: 'Видео'
+  },
+  pl: {
+    play: 'Oglądaj w AURORA', close: 'Zamknij odtwarzacz', kicker: 'Odtwarzacz AURORA',
+    source: 'Źródło', original: 'Otwórz oryginalne źródło',
+    iframeLoading: 'Ładowanie oficjalnego odtwarzacza. Jeśli odtwarzanie jest zablokowane, otwórz oryginalne źródło.',
+    iframeReady: 'Odtwarzacz załadowany. Użyj elementów sterujących lub otwórz oryginalne źródło.',
+    iframeError: 'Nie udało się załadować osadzonego odtwarzacza. Otwórz oryginalne źródło.',
+    videoLoading: 'Ładowanie wideo ze zweryfikowanymi prawami. Brak autoodtwarzania.',
+    videoReady: 'Wideo gotowe. Użyj elementów sterujących; nie uruchamia się automatycznie.',
+    videoError: 'Nie udało się załadować tego wideo. Otwórz oryginalne źródło.',
+    fallbackTitle: 'Wideo'
+  },
+  nl: {
+    play: 'Bekijk in AURORA', close: 'Speler sluiten', kicker: 'AURORA-speler',
+    source: 'Bron', original: 'Originele bron openen',
+    iframeLoading: 'Officiële speler laden. Open de originele bron als afspelen is geblokkeerd.',
+    iframeReady: 'Speler geladen. Gebruik de bediening of open de originele bron.',
+    iframeError: 'De ingesloten speler kon niet worden geladen. Open de originele bron.',
+    videoLoading: 'Video met geverifieerde rechten laden. Start niet automatisch.',
+    videoReady: 'Video gereed. Gebruik de afspeelknoppen; start niet automatisch.',
+    videoError: 'Deze video kon hier niet worden geladen. Open de originele bron.',
+    fallbackTitle: 'Video'
+  },
+  ro: {
+    play: 'Vizionează în AURORA', close: 'Închide playerul', kicker: 'Player AURORA',
+    source: 'Sursă', original: 'Deschide sursa originală',
+    iframeLoading: 'Se încarcă playerul oficial. Dacă redarea este blocată, deschide sursa originală.',
+    iframeReady: 'Player încărcat. Folosește comenzile sau deschide sursa originală.',
+    iframeError: 'Playerul încorporat nu a putut fi încărcat. Deschide sursa originală.',
+    videoLoading: 'Se încarcă videoclipul cu drepturi verificate. Nu pornește automat.',
+    videoReady: 'Videoclip pregătit. Folosește comenzile de redare; nu pornește automat.',
+    videoError: 'Acest videoclip nu a putut fi încărcat aici. Deschide sursa originală.',
+    fallbackTitle: 'Video'
+  },
+  el: {
+    play: 'Προβολή στο AURORA', close: 'Κλείσιμο προγράμματος αναπαραγωγής', kicker: 'Πρόγραμμα αναπαραγωγής AURORA',
+    source: 'Πηγή', original: 'Άνοιγμα αρχικής πηγής',
+    iframeLoading: 'Φόρτωση επίσημου προγράμματος αναπαραγωγής. Αν η αναπαραγωγή αποκλείεται, ανοίξτε την αρχική πηγή.',
+    iframeReady: 'Το πρόγραμμα αναπαραγωγής φορτώθηκε. Χρησιμοποιήστε τα χειριστήρια ή ανοίξτε την αρχική πηγή.',
+    iframeError: 'Δεν ήταν δυνατή η φόρτωση του ενσωματωμένου προγράμματος. Ανοίξτε την αρχική πηγή.',
+    videoLoading: 'Φόρτωση βίντεο με επαληθευμένα δικαιώματα. Δεν ξεκινά αυτόματα.',
+    videoReady: 'Το βίντεο είναι έτοιμο. Χρησιμοποιήστε τα χειριστήρια αναπαραγωγής.',
+    videoError: 'Δεν ήταν δυνατή η φόρτωση αυτού του βίντεο εδώ. Ανοίξτε την αρχική πηγή.',
+    fallbackTitle: 'Βίντεο'
+  },
+  tr: {
+    play: 'AURORA’da izle', close: 'Oynatıcıyı kapat', kicker: 'AURORA oynatıcı',
+    source: 'Kaynak', original: 'Orijinal kaynağı aç',
+    iframeLoading: 'Resmi oynatıcı yükleniyor. Oynatma engellenmişse orijinal kaynağı açın.',
+    iframeReady: 'Oynatıcı yüklendi. Kontrollerini kullanın veya orijinal kaynağı açın.',
+    iframeError: 'Yerleşik oynatıcı yüklenemedi. Orijinal kaynağı açın.',
+    videoLoading: 'Hakları doğrulanmış video yükleniyor. Otomatik başlamaz.',
+    videoReady: 'Video hazır. Oynatma kontrollerini kullanın; otomatik başlamaz.',
+    videoError: 'Bu video burada yüklenemedi. Orijinal kaynağı açın.',
+    fallbackTitle: 'Video'
+  },
+  sv: {
+    play: 'Titta i AURORA', close: 'Stäng spelare', kicker: 'AURORA-spelare',
+    source: 'Källa', original: 'Öppna originalkälla',
+    iframeLoading: 'Laddar officiell spelare. Om uppspelning blockeras, öppna originalkällan.',
+    iframeReady: 'Spelaren har laddats. Använd kontrollerna eller öppna originalkällan.',
+    iframeError: 'Den inbäddade spelaren kunde inte laddas. Öppna originalkällan.',
+    videoLoading: 'Laddar rättighetskontrollerad video. Startar inte automatiskt.',
+    videoReady: 'Videon är klar. Använd uppspelningskontrollerna; den startar inte automatiskt.',
+    videoError: 'Den här videon kunde inte laddas här. Öppna originalkällan.',
+    fallbackTitle: 'Video'
+  },
+  ja: {
+    play: 'AURORAで再生', close: 'プレーヤーを閉じる', kicker: 'AURORAプレーヤー',
+    source: '出典', original: '元の出典を開く',
+    iframeLoading: '公式プレーヤーを読み込んでいます。再生できない場合は元の出典を開いてください。',
+    iframeReady: 'プレーヤーが読み込まれました。コントロールを使用するか元の出典を開いてください。',
+    iframeError: '埋め込みプレーヤーを読み込めませんでした。元の出典を開いてください。',
+    videoLoading: '権利確認済みの動画を読み込んでいます。自動再生はされません。',
+    videoReady: '動画の準備ができました。再生コントロールを使用してください。',
+    videoError: 'この動画をここで読み込めませんでした。元の出典を確認してください。',
+    fallbackTitle: '動画'
+  },
+  ko: {
+    play: 'AURORA에서 보기', close: '플레이어 닫기', kicker: 'AURORA 플레이어',
+    source: '출처', original: '원본 출처 열기',
+    iframeLoading: '공식 플레이어를 불러오는 중입니다. 재생이 차단된 경우 원본 출처를 여세요.',
+    iframeReady: '플레이어가 로드되었습니다. 컨트롤을 사용하거나 원본 출처를 여세요.',
+    iframeError: '임베드된 플레이어를 불러올 수 없습니다. 원본 출처를 여세요.',
+    videoLoading: '권리가 확인된 동영상을 불러오는 중입니다. 자동 재생되지 않습니다.',
+    videoReady: '동영상 준비 완료. 재생 컨트롤을 사용하세요.',
+    videoError: '이 동영상을 여기서 불러올 수 없습니다. 원본 출처를 확인하세요.',
+    fallbackTitle: '동영상'
+  },
+  zh: {
+    play: '在 AURORA 中观看', close: '关闭播放器', kicker: 'AURORA 播放器',
+    source: '来源', original: '打开原始来源',
+    iframeLoading: '正在加载官方播放器。如果播放受阻，请打开原始来源。',
+    iframeReady: '播放器已加载。请使用其控件或打开原始来源。',
+    iframeError: '无法加载嵌入式播放器。请打开原始来源。',
+    videoLoading: '正在加载已核实版权的视频。不会自动播放。',
+    videoReady: '视频已就绪。请使用播放控件；不会自动开始播放。',
+    videoError: '无法在此处加载此视频。请打开原始来源查看。',
+    fallbackTitle: '视频'
+  },
+  ar: {
+    play: 'شاهد في AURORA', close: 'إغلاق المشغل', kicker: 'مشغل AURORA',
+    source: 'المصدر', original: 'فتح المصدر الأصلي',
+    iframeLoading: 'جارٍ تحميل المشغل الرسمي. إذا تعذر التشغيل، افتح المصدر الأصلي.',
+    iframeReady: 'تم تحميل المشغل. استخدم عناصر التحكم أو افتح المصدر الأصلي.',
+    iframeError: 'تعذر تحميل المشغل المضمن. افتح المصدر الأصلي.',
+    videoLoading: 'جارٍ تحميل الفيديو الموثق الحقوق. لا يبدأ التشغيل تلقائياً.',
+    videoReady: 'الفيديو جاهز. استخدم عناصر التحكم في التشغيل.',
+    videoError: 'تعذر تحميل هذا الفيديو هنا. افتح المصدر الأصلي للتحقق.',
+    fallbackTitle: 'فيديو'
   }
 };
 
 function localeFor(documentRef) {
   let stored = '';
   try { stored = documentRef.defaultView?.localStorage?.getItem('aurora-lang') || ''; } catch { /* storage may be restricted */ }
-  const language = stored || documentRef.documentElement.lang || 'bg';
-  return language.toLowerCase().startsWith('bg') ? 'bg' : 'en';
+  const raw = (stored || documentRef.documentElement.lang || 'bg').toLowerCase().split('-')[0];
+  return Object.hasOwn(COPY, raw) ? raw : 'en';
 }
 
 function localizedTitle(media, locale, fallback) {
   const value = media?.title;
-  if (value && typeof value === 'object') return String(value[locale] || value.en || value.bg || fallback || COPY[locale].fallbackTitle).trim();
-  return String(value || fallback || COPY[locale].fallbackTitle).trim();
+  const pack = COPY[locale] || COPY.en;
+  if (value && typeof value === 'object') return String(value[locale] || value.en || value.bg || fallback || pack.fallbackTitle).trim();
+  return String(value || fallback || pack.fallbackTitle).trim();
 }
 
 function normalizeTitle(value) {

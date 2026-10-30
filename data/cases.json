@@ -264,7 +264,19 @@
             "bg": "Пентагон — официално публикуваните FLIR1, GIMBAL и GOFAST",
             "en": "Pentagon — official FLIR1, GIMBAL and GOFAST release"
           },
-          "url": "https://www.defense.gov/News/Releases/release/article/2165713/statement-by-the-department-of-defense-on-the-release-of-historical-navy-videos/"
+          "source_name": "U.S. Department of Defense / U.S. Navy (Public Domain)",
+          "url": "https://www.defense.gov/News/Releases/release/article/2165713/statement-by-the-department-of-defense-on-the-release-of-historical-navy-videos/",
+          "playback": {
+            "mode": "html5",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/7/70/FLIR1_Official_UAP_Footage_from_the_USG_for_Public_Release.webm",
+            "mime_type": "video/webm",
+            "rights_status": "verified",
+            "hosting_permission": true,
+            "authorization_type": "public_domain",
+            "rights_checked_at": "2026-10-30",
+            "rights_evidence_url": "https://commons.wikimedia.org/wiki/File:FLIR1_Official_UAP_Footage_from_the_USG_for_Public_Release.webm",
+            "rights_evidence_ref": "PD-USGov-Military-Navy-FLIR1-2020"
+          }
         }
       ],
       "visual": {
@@ -317,7 +329,19 @@
             "bg": "GIMBAL — официално публикуван запис на ВМС",
             "en": "GIMBAL — official Navy video release"
           },
-          "url": "https://www.defense.gov/News/Releases/release/article/2165713/statement-by-the-department-of-defense-on-the-release-of-historical-navy-videos/"
+          "source_name": "U.S. Department of Defense / U.S. Navy (Public Domain)",
+          "url": "https://www.defense.gov/News/Releases/release/article/2165713/statement-by-the-department-of-defense-on-the-release-of-historical-navy-videos/",
+          "playback": {
+            "mode": "html5",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/5/52/Gimbal_The_First_Official_UAP_Footage_from_the_USG_for_Public_Release.webm",
+            "mime_type": "video/webm",
+            "rights_status": "verified",
+            "hosting_permission": true,
+            "authorization_type": "public_domain",
+            "rights_checked_at": "2026-10-30",
+            "rights_evidence_url": "https://commons.wikimedia.org/wiki/File:Gimbal_The_First_Official_UAP_Footage_from_the_USG_for_Public_Release.webm",
+            "rights_evidence_ref": "PD-USGov-Military-Navy-GIMBAL-2020"
+          }
         }
       ],
       "visual": {
@@ -370,7 +394,19 @@
             "bg": "GOFAST — официално публикуван запис на ВМС",
             "en": "GOFAST — official Navy video release"
           },
-          "url": "https://www.defense.gov/News/Releases/release/article/2165713/statement-by-the-department-of-defense-on-the-release-of-historical-navy-videos/"
+          "source_name": "U.S. Department of Defense / U.S. Navy (Public Domain)",
+          "url": "https://www.defense.gov/News/Releases/release/article/2165713/statement-by-the-department-of-defense-on-the-release-of-historical-navy-videos/",
+          "playback": {
+            "mode": "html5",
+            "url": "https://upload.wikimedia.org/wikipedia/commons/b/be/Go_Fast_Official_USG_Footage_of_UAP_for_Public_Release.webm",
+            "mime_type": "video/webm",
+            "rights_status": "verified",
+            "hosting_permission": true,
+            "authorization_type": "public_domain",
+            "rights_checked_at": "2026-10-30",
+            "rights_evidence_url": "https://commons.wikimedia.org/wiki/File:Go_Fast_Official_USG_Footage_of_UAP_for_Public_Release.webm",
+            "rights_evidence_ref": "PD-USGov-Military-Navy-GOFAST-2020"
+          }
         }
       ],
       "visual": {
