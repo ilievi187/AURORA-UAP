@@ -2,6 +2,13 @@ name: AURORA localization & UX quality gate
 on:
   pull_request:
     paths:
+      - 'index.html'
+      - 'script.js'
+      - 'i18n-extra.js'
+      - 'aurora-v1.js'
+      - 'mission-control.js'
+      - 'ui-locales.js'
+      - 'world-atlas-labels.js'
       - 'functions/_lib/news-translation.js'
       - 'subpage-i18n.js'
       - 'donate*'
@@ -17,6 +24,13 @@ on:
   push:
     branches: [main]
     paths:
+      - 'index.html'
+      - 'script.js'
+      - 'i18n-extra.js'
+      - 'aurora-v1.js'
+      - 'mission-control.js'
+      - 'ui-locales.js'
+      - 'world-atlas-labels.js'
       - 'functions/_lib/news-translation.js'
       - 'subpage-i18n.js'
       - 'donate*'
