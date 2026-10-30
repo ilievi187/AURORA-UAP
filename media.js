@@ -223,7 +223,15 @@
    const original=document.createElement("a");original.href=m.url;original.target="_blank";original.rel="noopener noreferrer";
    original.textContent=(m.title?.[locale]||m.title?.en||words.view)+" ↗";
    const dossier=document.createElement("a");dossier.href="/archive/"+encodeURIComponent(c.id);dossier.textContent=words.case;
-   links.append(original,dossier);
+   if(m.type==="video"){
+    const play=document.createElement("button");play.type="button";play.className="aurora-player-button";
+    play.textContent=locale==="bg"?"▶ ГЛЕДАЙ В AURORA":"▶ WATCH IN AURORA";
+    play.setAttribute("aria-label",play.textContent+": "+(m.title?.[locale]||m.title?.en||"Video"));
+    play.addEventListener("click",()=>window.dispatchEvent(new CustomEvent("aurora:play-media",{
+     detail:{media:m,title:m.title?.[locale]||m.title?.en||"Video",caseTitle:c.title?.[locale]||c.title?.en||"",sourceName:c.source?.name||"",trigger:play}
+    })));
+    links.append(play,original,dossier);
+   }else links.append(original,dossier);
    const caution=document.createElement("small");caution.className="media-caption";caution.textContent=words.illustration;
    body.append(meta,heading,summary,links,caution);card.append(picture,body);root.append(card);
   }
