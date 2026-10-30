@@ -259,7 +259,11 @@ export async function fetchHeadlines(edition,fetcher=fetch){
 }
 const FRESH_AGE=900;
 const FALLBACK_AGE=43200;
-const NEWS_CACHE_REVISION="publisher-catalog-v1";
+const NEWS_CACHE_REVISION="publisher-catalog-v2";
+// Small live result sets are technically valid but poor newsroom refreshes.
+// Preserve the last complete snapshot until new coverage is healthier.
+const MIN_LIVE_ITEMS=5;
+const MIN_STALE_ITEMS=2;
 const PUBLISHER_FEED_LIMIT=DISCOVERY_TOTAL_LIMIT;
 const PUBLISHER_FEED_CONCURRENCY=3;
 const GOOGLE_FEED_CONCURRENCY=2;
@@ -283,7 +287,7 @@ async function fetchPublisherHeadlines(edition,fetcher=fetch,timeoutMs=NEWS_REQU
   return {status:"unavailable",checked:[],failed:[],count:0,items:[]};
  }
 }
-async function getRawNews({request,ctx,fetcher=fetch,catalogFetcher=fetch,timeoutMs=NEWS_REQUEST_TIMEOUT_MS}){
+async function getRawNews({request,ctx,fetcher=fetch,catalogFetcher=fetch,timeoutMs=NEWS_REQUEST_TIMEOUT_MS,skipStaleFallback=false}){
  const edition=new URL(request.url).searchParams.get("edition")||"global";
  if(!Object.hasOwn(EDITIONS,edition))return Response.json({error:"invalid_edition"},{status:400});
  const key=new Request("https://aurora-cache.invalid/news/fresh/"+NEWS_CACHE_REVISION+"/"+edition);
@@ -292,6 +296,21 @@ async function getRawNews({request,ctx,fetcher=fetch,catalogFetcher=fetch,timeou
   if(typeof caches!=="undefined")cache=caches.default;
   const saved=cache&&await cache.match(key);if(saved)return saved;
  }catch{}
+ if(cache&&ctx?.waitUntil&&!skipStaleFallback){
+  try{
+   const saved=await cache.match(backup);
+   if(saved){
+    const payload=await saved.clone().json();
+    const age=Date.now()-Date.parse(payload.updated_at);
+    if(age>=0&&age<FALLBACK_AGE*1000&&Array.isArray(payload.items)&&payload.items.length>=MIN_STALE_ITEMS){
+     ctx.waitUntil(getRawNews({request,ctx,fetcher,catalogFetcher,timeoutMs,skipStaleFallback:true}).catch(()=>{}));
+     return Response.json({...payload,status:"cached",last_attempt:{status:"refreshing",at:new Date().toISOString(),count:0,items:[],diagnostics:null}},{headers:{
+      "Cache-Control":"no-store","X-Content-Type-Options":"nosniff"
+     }});
+    }
+   }
+  }catch{}
+ }
  const requestDeadline=AbortSignal.timeout(timeoutMs);
  // Run independent sources together while reserving five total in-flight fetches.
  const withRequestDeadline=fetcher=>async(url,init={})=>{
@@ -311,7 +330,8 @@ async function getRawNews({request,ctx,fetcher=fetch,catalogFetcher=fetch,timeou
   publisher_matches:publisher.count||0,
   items_returned:items.length
  };
- if(items.length){
+ const isHealthyRefresh=items.length>=MIN_LIVE_ITEMS;
+ if(items.length&&isHealthyRefresh){
   const payload={status:"live",edition,updated_at:new Date().toISOString(),count:items.length,items,diagnostics};
   const out=response(payload,FRESH_AGE);
   if(cache&&ctx?.waitUntil)ctx.waitUntil(Promise.all([
@@ -327,12 +347,19 @@ async function getRawNews({request,ctx,fetcher=fetch,catalogFetcher=fetch,timeou
     const payload=await saved.json();
     const age=Date.now()-Date.parse(payload.updated_at);
     if(age>=0&&age<FALLBACK_AGE*1000&&Array.isArray(payload.items)&&payload.items.length){
-     return Response.json({...payload,status:"cached",last_attempt:{status:"unavailable",at:new Date().toISOString(),diagnostics}},{headers:{
+     const hasLiveItems=items.length>0;
+     return Response.json({...payload,status:"cached",last_attempt:{status:hasLiveItems?"degraded":"unavailable",at:new Date().toISOString(),count:items.length,items,diagnostics}},{headers:{
       "Cache-Control":"no-store","X-Content-Type-Options":"nosniff"
      }});
     }
    }
   }catch{}
+ }
+ if(items.length){
+  const payload={status:"live",edition,updated_at:new Date().toISOString(),count:items.length,items,diagnostics};
+  const out=response(payload,FRESH_AGE);
+  if(cache&&ctx?.waitUntil)ctx.waitUntil(cache.put(key,out.clone()).catch(()=>{}));
+  return out;
  }
  return Response.json({status:"unavailable",error:"news_source_unavailable",items:[],diagnostics},{status:503,headers:{"Cache-Control":"no-store"}});
 }
