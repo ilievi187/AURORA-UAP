@@ -53,6 +53,9 @@ test("Cloudflare D1 workflows are manual and cannot silently activate public reg
  assert.match(bootstrap,/- name: Verify real D1 seed records before claiming completion\s+if: \$\{\{ inputs\.mode == 'seed' \}\}/);
  assert.match(bootstrap,/check-d1-remote\.mjs schema/);
  assert.doesNotMatch(bootstrap,/^\s+schedule:|^\s+push:|AURORA_REGISTRY_PUBLIC\s*=\s*enabled/m);
+ const deploymentGuide=readFileSync(new URL("../docs/V1.4-DEPLOYMENT.md",import.meta.url),"utf8");
+ assert.doesNotMatch(deploymentGuide,/npx\s+wrangler\s+d1\s+create\b/);
+ assert.match(deploymentGuide,/V1\.4\.2-REGISTRY-RELEASE\.md/);
  assert.match(verify,/workflow_dispatch:/);
  assert.doesNotMatch(verify,/^\s+schedule:|^\s+push:/m);
 });
