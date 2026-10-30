@@ -11,3 +11,6 @@
 .media-entry-links a{display:block;color:#a9ffed;text-decoration:none;font:12px/1.55 Consolas,monospace;padding:12px 15px;border:1px solid #4b9293;background:#153b44;overflow-wrap:anywhere}
 .media-entry-links a:hover,.media-entry-links a:focus-visible{border-color:#dcfffb;color:#fff;background:#1b5059}
 .media-caption{font:10px/1.5 Consolas,monospace;color:#a4c7ca;border-top:1px solid #315d67;padding-top:9px}
+
+.media-entry-image-play{position:absolute;inset:0;z-index:1;background:transparent;border:0;color:#d2fffa;cursor:pointer;display:grid;place-items:center;font:700 40px/1 Arial,sans-serif;text-shadow:0 0 15px #000;}
+.media-entry-image-play:hover,.media-entry-image-play:focus-visible{background:#001d2b66;outline:2px solid #b4fff7;outline-offset:-2px;}
