@@ -390,6 +390,46 @@ test("global RSS fan-out stays within a five-request concurrency budget",async()
  assert.equal(items.length,1);
  assert.ok(maximum<=5,"expected at most five simultaneous feed requests, observed "+maximum);
 });
+test("publisher requests overlap the Google lane while combined request concurrency remains bounded",async()=>{
+ let googleCompleted=0,firstPublisherAfterGoogle=null,active=0,maximum=0;
+ const track=async(fn)=>{active++;maximum=Math.max(maximum,active);try{return await fn()}finally{active--}};
+ const response=await newsRoute({
+  request:new Request("https://aurorauap.org/api/news?edition=global"),
+  fetcher:async()=>track(async()=>{await new Promise(resolve=>setTimeout(resolve,60));googleCompleted++;return textResponse(xml)}),
+  catalogFetcher:async()=>track(async()=>{if(firstPublisherAfterGoogle===null)firstPublisherAfterGoogle=googleCompleted;await new Promise(resolve=>setTimeout(resolve,3));return textResponse("<rss><channel></channel></rss>")})
+ });
+ assert.equal(response.status,200);
+ assert.ok(firstPublisherAfterGoogle<10,"publisher feed requests should start before all Google News queries finish");
+ assert.ok(maximum<=5,`combined upstream concurrency must remain at most five; observed ${maximum}`);
+});
+
+test("one request deadline bounds both news lanes when upstreams stall",async()=>{
+ let googleStarted=0,publisherStarted=0,active=0,maximum=0;
+ const stall=async(_url,{signal})=>{
+  active++;maximum=Math.max(maximum,active);
+  try{
+   if(signal.aborted)throw signal.reason;
+   await new Promise((_,reject)=>signal.addEventListener("abort",()=>reject(signal.reason),{once:true}));
+  }finally{active--}
+ };
+ const keepAlive=setTimeout(()=>{},1000);
+ try{
+  const start=performance.now();
+  const response=await newsRoute({
+   request:new Request("https://aurorauap.org/api/news?edition=global"),
+   timeoutMs:120,
+   fetcher:async(...args)=>{googleStarted++;return stall(...args)},
+   catalogFetcher:async(...args)=>{publisherStarted++;return stall(...args)}
+  });
+  const elapsed=performance.now()-start;
+  assert.ok(elapsed<500,`shared endpoint deadline should cap both lanes; observed ${Math.round(elapsed)}ms`);
+  assert.equal(response.status,503);
+  assert.ok(googleStarted>0&&googleStarted<=10);
+  assert.ok(publisherStarted>0&&publisherStarted<=globalPublisherSources.length);
+  assert.ok(maximum<=5,`combined upstream concurrency must remain at most five; observed ${maximum}`);
+ }finally{clearTimeout(keepAlive)}
+});
+
 test("global RSS batches share one total fetch deadline",async()=>{
  const signals=new Set;
  const feed=async(_url,options)=>{signals.add(options.signal);return textResponse(xml)};
