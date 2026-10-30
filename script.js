@@ -31,6 +31,33 @@ const translations = {
 
 
 Object.assign(translations, window.AURORA_LOCALES || {});
+// The news archive is a first-class destination on desktop and mobile.
+// Keep its navigation label complete across all 18 public locales.
+const navNewsLabels = {
+  "bg": "Новини",
+  "en": "News",
+  "de": "Nachrichten",
+  "ru": "Новости",
+  "zh-CN": "新闻",
+  "fr": "Actualités",
+  "es": "Noticias",
+  "it": "Notizie",
+  "pt": "Notícias",
+  "tr": "Haberler",
+  "ro": "Știri",
+  "el": "Ειδήσεις",
+  "sr": "Вести",
+  "uk": "Новини",
+  "pl": "Wiadomości",
+  "ar": "الأخبار",
+  "ja": "ニュース",
+  "ko": "뉴스"
+};
+for (const [locale, label] of Object.entries(navNewsLabels)) {
+  if (!translations[locale]) throw new Error("Missing AURORA locale: " + locale);
+  translations[locale].navNews = label;
+}
+
 const donationNav = {
  bg:{navDonate:'ДАРИ',donateKicker:'ПОДКРЕПИ НЕЗАВИСИМИТЕ ИЗСЛЕДВАНИЯ',donateTitle:'ПОМОГНИ НИ ДА ИЗГРАДИМ AURORA.',donateSummary:'Подкрепата ще бъде използвана за оборудване, разследвания, пътувания, софтуер, хостинг и прозрачни разходи по проекта.'},
  en:{navDonate:'DONATE',donateKicker:'SUPPORT INDEPENDENT RESEARCH',donateTitle:'HELP US BUILD AURORA.',donateSummary:'Support will fund equipment, investigations, field travel, software, hosting, and transparent project costs.'},
