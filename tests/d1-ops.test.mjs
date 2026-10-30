@@ -8,11 +8,12 @@ const validRows=["aaro-pr-2013","aaro-iraq-2017","aaro-west-us-2021"].map(id=>({
  source_url:"https://www.aaro.mil/Portals/136/PDFs/case_resolution_reports/AARO.pdf"
 }));
 test("existing D1 database must match both UUID and exact expected name",()=>{
- assert.equal(verifyDatabaseIdentity([{uuid,name:"aurora-uap-cases"}],uuid),true);
- assert.equal(verifyDatabaseIdentity({result:[{uuid,name:"aurora-uap-cases"}]},uuid),true);
- assert.throws(()=>verifyDatabaseIdentity([{uuid,name:"different-site"}],uuid),/not uniquely bound/);
- assert.throws(()=>verifyDatabaseIdentity([{uuid,name:"aurora-uap-cases"},{uuid,name:"aurora-uap-cases"}],uuid),/not uniquely bound/);
- assert.throws(()=>verifyDatabaseIdentity([{uuid,name:"aurora-uap-cases"}],"../not-a-uuid"),/Invalid D1 UUID/);
+ assert.equal(verifyDatabaseIdentity([{uuid,name:"aurora-uap-production"}],uuid),true);
+ assert.equal(verifyDatabaseIdentity({result:[{uuid,name:"aurora-uap-production"}]},uuid),true);
+ assert.throws(()=>verifyDatabaseIdentity([{uuid,name:"aurora-uap-cases"}],uuid),/not uniquely bound/);
+ assert.throws(()=>verifyDatabaseIdentity([{uuid,name:"aurora-uap-production"},{uuid,name:"aurora-uap-production"}],uuid),/not uniquely bound/);
+ assert.throws(()=>verifyDatabaseIdentity([{uuid,name:"aurora-uap-production"}],"../not-a-uuid"),/Invalid D1 UUID/);
+ assert.throws(()=>verifyDatabaseIdentity([{uuid,name:"aurora-uap-production"}],"00000000-0000-0000-0000-000000000001"),/not uniquely bound/);
 });
 test("remote seed check accepts only three published editorially approved historical records",()=>{
  assert.equal(verifySeedRows([{results:validRows}]),3);
