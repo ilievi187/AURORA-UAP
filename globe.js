@@ -170,7 +170,9 @@
     ui.title.textContent=localized(c.title);
     ui.location.textContent=localized(c.city)+" · "+c.country;
     ui.summary.textContent=localized(c.summary);
-    ui.precision.textContent=l().prec+": "+c.location_precision;
+    const known=Number.isFinite(c.lat)&&Number.isFinite(c.lng);
+    ui.precision.textContent=known?l().prec+": "+c.location_precision:
+      (document.documentElement.lang==="bg"?"Координатите не са публикувани.":"Coordinates not published.");
     const dossier=document.getElementById("globeCaseDossier");
     dossier.hidden=false;
     dossier.href=(c.recordOrigin==="d1"?"/cases/":"/archive/")+encodeURIComponent(c.id);
@@ -353,9 +355,13 @@
     const response=await fetch("/data/cases.json",{cache:"force-cache"});
     if(!response.ok)throw Error("Worldwide archive not available");
     const dataset=await response.json();
-    archiveCases=(Array.isArray(dataset.cases)?dataset.cases:[]).filter(c=>
-      typeof c.id==="string"&&Number.isFinite(c.lat)&&Number.isFinite(c.lng)&&
-      Math.abs(c.lat)<=90&&Math.abs(c.lng)<=180&&c.title?.en&&c.summary?.en&&validUrl(c.source?.url)
+    const sourceCases=Array.isArray(dataset.cases)?dataset.cases:[];
+    const normalized=globalThis.AURORA_ARCHIVE?.prepareArchiveCases(sourceCases)??sourceCases;
+    archiveCases=normalized.filter(c=>
+      typeof c.id==="string"&&
+      (!Number.isFinite(c.lat)||!Number.isFinite(c.lng)||
+       (Math.abs(c.lat)<=90&&Math.abs(c.lng)<=180))&&
+      c.title?.en&&c.summary?.en&&validUrl(c.source?.url)
     ).map(c=>({...c,recordOrigin:"archive"}));
     cases=archiveCases.slice();
     legacyArchive=true;
