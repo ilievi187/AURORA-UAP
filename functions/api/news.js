@@ -210,7 +210,7 @@ export async function fetchHeadlinesWithDiagnostics(edition,fetcher=fetch,parser
  const fetchFeed=async f=>{
   const url=new URL("https://news.google.com/rss/search");
   for(const [k,v] of Object.entries(f))url.searchParams.set(k,v);
-  const r=await fetcher(url.toString(),{headers:{Accept:"application/rss+xml, application/xml"},signal:deadline});
+  const r=await fetcher(url.toString(),{headers:{Accept:"application/rss+xml, application/xml, text/xml","User-Agent":"AURORA-UAP-newsroom/1.0 (+https://aurorauap.org/news)"},signal:deadline});
   if(!r.ok){cancelBody(r);return {items:[],kind:"http_error",status:String(r.status)}}
   const xml=await readLimitedResponseText(r);if(xml===null)return {items:[],kind:"invalid"};
   const document=tokenizeRss(xml);if(!document)return {items:[],kind:"invalid"};
@@ -259,7 +259,7 @@ export async function fetchHeadlines(edition,fetcher=fetch){
 }
 const FRESH_AGE=900;
 const FALLBACK_AGE=43200;
-const NEWS_CACHE_REVISION="publisher-catalog-v2";
+const NEWS_CACHE_REVISION="publisher-catalog-v3";
 // Small live result sets are technically valid but poor newsroom refreshes.
 // Preserve the last complete snapshot until new coverage is healthier.
 const MIN_LIVE_ITEMS=5;
@@ -321,7 +321,18 @@ async function getRawNews({request,ctx,fetcher=fetch,catalogFetcher=fetch,timeou
   fetchHeadlinesWithDiagnostics(edition,withRequestDeadline(fetcher),parseNewsRss,timeoutMs,GOOGLE_FEED_CONCURRENCY),
   fetchPublisherHeadlines(edition,withRequestDeadline(catalogFetcher),timeoutMs)
  ]);
- const items=dedupeHeadlines([...(result?.items??[]),...(publisher.items??[])]).slice(0,200);
+ let publisherItems=publisher.items??[];
+ if(!result?.items?.length&&!publisherItems.length&&edition!=="global"&&publisher.status!=="unavailable"&&!requestDeadline.aborted){
+  try{
+   const fallbackCatalog=SOURCE_CATALOG.filter(source=>source.role==="specialist-press").slice(0,4);
+   const supplemental=await discoverMatches({
+    catalog:fallbackCatalog,fetcher:withRequestDeadline(catalogFetcher),region:"all",timeoutMs,
+    feedLimit:4,maxConcurrency:PUBLISHER_FEED_CONCURRENCY,maxAttempts:1
+   });
+   if(supplemental.items?.length)publisherItems=supplemental.items;
+  }catch{}
+ }
+ const items=dedupeHeadlines([...(result?.items??[]),...publisherItems]).slice(0,200);
  const diagnostics={
   ...(result?.diagnostics||{}),
   publisher_status:publisher.status,

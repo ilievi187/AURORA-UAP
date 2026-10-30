@@ -77,6 +77,7 @@ function publishedMs(raw) {
 export function shrinkFeedXml(xml) {
   return String(xml || "")
     .replace(/<content:encoded\b[^>]*>[\s\S]*?<\/content:encoded>/gi, "")
+    .replace(/<dc:content\b[^>]*>[\s\S]*?<\/dc:content>/gi, "")
     .replace(/<description\b[^>]*>[\s\S]*?<\/description>/gi, "");
 }
 

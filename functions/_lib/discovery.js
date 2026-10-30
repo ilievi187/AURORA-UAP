@@ -10,11 +10,12 @@ export const MAX_DOWNLOAD_BYTES = 2_000_000;
 const MAX_DOWNLOAD_CHUNKS = 4_096;
 export const FEED_USER_AGENT = "AURORA-UAP-source-check/1.0 (+https://aurorauap.org/sources)";
 
-const LATIN = /(?<![\p{L}\p{N}])(?:uap|ufo|ovni|aaro)(?![\p{L}\p{N}])/iu;
+const LATIN = /(?<![\p{L}\p{N}])(?:uaps?|ufos?|ovnis?|aaro)(?![\p{L}\p{N}])/iu;
 const PHRASES = [
   "unidentified anomalous",
   "unidentified aerial",
   "unidentified flying",
+  "flying saucer",
   "fenómeno anómalo",
   "fenómeno aéreo no identificado",
   "phénomène aérien non identifié",

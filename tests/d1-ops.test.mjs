@@ -16,18 +16,19 @@ test("existing D1 database must match both UUID and exact expected name",()=>{
  assert.throws(()=>verifyDatabaseIdentity([{uuid:"00000000-0000-0000-0000-000000000001",name:"aurora-uap-production"}],"00000000-0000-0000-0000-000000000001"),/Unexpected production D1 UUID/);
 });
 const schema={
- sources:"id,name,publisher,homepage_url,license,license_url,rights_note,rights_checked_at,approved_for_ingest",
- cases:"id,record_kind,title,title_bg,description,description_bg,date,date_precision,country_code,region,location,latitude,longitude,location_precision,category,review_status,publication_status,source_name,source_url,license,media,assessment_status,assessment_authority,assessment_confidence",
- case_sources:"case_id,source_id,source_record_id,source_url",
- import_runs:"id,source_id,run_type,status,inserted_count,updated_count,started_at,completed_at,details",
- moderation_events:"id,case_id,action",
- media_assets:"id,case_id,rights_status"
+ sources:"id,name,publisher,homepage_url,license,license_url,rights_note,rights_checked_at,approved_for_ingest,created_at",
+ cases:"id,record_kind,title,title_bg,description,description_bg,date,date_precision,country_code,region,location,latitude,longitude,location_precision,category,review_status,publication_status,source_name,source_url,license,media,assessment_status,assessment_authority,assessment_confidence,created_at,updated_at",
+ case_sources:"case_id,source_id,source_record_id,source_url,recorded_at",
+ import_runs:"id,source_id,run_type,status,inserted_count,updated_count,rejected_count,started_at,completed_at,details",
+ moderation_events:"id,case_id,actor_type,actor_id,action,old_status,new_status,explanation,created_at",
+ media_assets:"id,case_id,object_key,source_url,media_type,rights_status,is_public,created_at"
 };
 test("read-only preflight refuses missing or incompatible existing D1 schema",()=>{
  assert.equal(verifyExistingSchema([{results:[schema]}]),true);
  assert.equal(verifyExistingSchema({result:[{results:[schema]}]}),true);
  assert.throws(()=>verifyExistingSchema([{results:[{...schema,cases:null}]}]),/Missing D1 schema table: cases/);
  assert.throws(()=>verifyExistingSchema([{results:[{...schema,cases:"id,title"}]}]),/Missing D1 schema column: cases.record_kind/);
+ assert.throws(()=>verifyExistingSchema([{results:[{...schema,media_assets:"id,case_id,rights_status"}]}]),/Missing D1 schema column: media_assets.object_key/);
  assert.throws(()=>verifyExistingSchema([{results:[]}]),/Expected one D1 schema summary row/);
 });
 test("remote seed check accepts only three published editorially approved historical records",()=>{

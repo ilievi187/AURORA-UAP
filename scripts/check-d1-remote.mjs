@@ -17,12 +17,12 @@ export function verifyDatabaseIdentity(list,uuid){
  return true;
 }
 const requiredSchema={
- sources:["id","name","publisher","homepage_url","license","license_url","rights_note","rights_checked_at","approved_for_ingest"],
- cases:["id","record_kind","title","title_bg","description","description_bg","date","date_precision","country_code","region","location","latitude","longitude","location_precision","category","review_status","publication_status","source_name","source_url","license","media","assessment_status","assessment_authority","assessment_confidence"],
- case_sources:["case_id","source_id","source_record_id","source_url"],
- import_runs:["id","source_id","run_type","status","inserted_count","updated_count","started_at","completed_at","details"],
- moderation_events:["id","case_id","action"],
- media_assets:["id","case_id","rights_status"]
+ sources:["id","name","publisher","homepage_url","license","license_url","rights_note","rights_checked_at","approved_for_ingest","created_at"],
+ cases:["id","record_kind","title","title_bg","description","description_bg","date","date_precision","country_code","region","location","latitude","longitude","location_precision","category","review_status","publication_status","source_name","source_url","license","media","assessment_status","assessment_authority","assessment_confidence","created_at","updated_at"],
+ case_sources:["case_id","source_id","source_record_id","source_url","recorded_at"],
+ import_runs:["id","source_id","run_type","status","inserted_count","updated_count","rejected_count","started_at","completed_at","details"],
+ moderation_events:["id","case_id","actor_type","actor_id","action","old_status","new_status","explanation","created_at"],
+ media_assets:["id","case_id","object_key","source_url","media_type","rights_status","is_public","created_at"]
 };
 export function verifyExistingSchema(payload){
  const items=Array.isArray(payload)?payload:Array.isArray(payload?.result)?payload.result:[payload];
