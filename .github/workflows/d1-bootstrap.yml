@@ -2,6 +2,14 @@ name: AURORA D1 Bootstrap (manual and gated)
 on:
   workflow_dispatch:
     inputs:
+      mode:
+        description: "Choose read-only preflight; seed requires explicit approval"
+        type: choice
+        required: true
+        default: preflight
+        options:
+          - preflight
+          - seed
       database_uuid:
         description: "Existing Cloudflare D1 UUID (aurora-uap-production), not a secret"
         type: string
@@ -9,7 +17,8 @@ on:
       approval_phrase:
         description: "Type SEED_EXISTING_AURORA_D1 to authorize writing 3 reviewed cases"
         type: string
-        required: true
+        required: false
+        default: ""
 permissions:
   contents: read
 concurrency:
@@ -18,7 +27,7 @@ concurrency:
 jobs:
   bootstrap:
     name: Verify D1 identity, apply schema, import reviewed facts
-    if: ${{ inputs.approval_phrase == 'SEED_EXISTING_AURORA_D1' }}
+    if: ${{ inputs.mode == 'preflight' || (inputs.mode == 'seed' && inputs.approval_phrase == 'SEED_EXISTING_AURORA_D1') }}
     runs-on: ubuntu-latest
     environment: aurora-d1-ops
     timeout-minutes: 15
@@ -35,7 +44,7 @@ jobs:
         run: |
           test -n "$CLOUDFLARE_API_TOKEN" || { echo "::error::Missing AURORA_CF_D1_TOKEN environment secret"; exit 1; }
           test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "::error::Missing AURORA_CF_ACCOUNT_ID environment secret"; exit 1; }
-          node --experimental-sqlite --test tests/database.test.mjs tests/deployment-gate.test.mjs
+          node --experimental-sqlite --test tests/database.test.mjs tests/deployment-gate.test.mjs tests/d1-ops.test.mjs
       - name: Install Wrangler CLI
         run: npm install --no-save wrangler@4
       - name: Verify target UUID is the existing AURORA database
@@ -43,17 +52,35 @@ jobs:
           npx wrangler d1 list --json > /tmp/aurora-d1-list.json
           node scripts/check-d1-remote.mjs identity /tmp/aurora-d1-list.json "$D1_UUID"
           node -e 'const fs=require("node:fs");fs.writeFileSync(".aurora-bootstrap.json",JSON.stringify({name:"aurora-d1-bootstrap",compatibility_date:"2026-10-27",d1_databases:[{binding:"DB",database_name:"aurora-uap-production",database_id:process.env.D1_UUID}]},null,2))'
+      - name: Verify existing D1 schema before any writes (read only)
+        run: |
+          npx wrangler d1 execute DB --config .aurora-bootstrap.json --remote --yes --json --command "SELECT
+            (SELECT group_concat(name) FROM pragma_table_info('sources')) AS sources,
+            (SELECT group_concat(name) FROM pragma_table_info('cases')) AS cases,
+            (SELECT group_concat(name) FROM pragma_table_info('case_sources')) AS case_sources,
+            (SELECT group_concat(name) FROM pragma_table_info('import_runs')) AS import_runs,
+            (SELECT group_concat(name) FROM pragma_table_info('moderation_events')) AS moderation_events,
+            (SELECT group_concat(name) FROM pragma_table_info('media_assets')) AS media_assets" > /tmp/aurora-d1-schema.json
+          node scripts/check-d1-remote.mjs schema /tmp/aurora-d1-schema.json
       - name: Apply existing, reviewed initial schema
+        if: ${{ inputs.mode == 'seed' }}
         run: npx wrangler d1 execute DB --config .aurora-bootstrap.json --remote --yes --file migrations/0001_init.sql
       - name: Import only the three approved AARO cases
+        if: ${{ inputs.mode == 'seed' }}
         run: |
           node scripts/build-seed.mjs > /tmp/aurora-reviewed-seed.sql
           npx wrangler d1 execute DB --config .aurora-bootstrap.json --remote --yes --file /tmp/aurora-reviewed-seed.sql
       - name: Verify real D1 seed records before claiming completion
+        if: ${{ inputs.mode == 'seed' }}
         run: |
           npx wrangler d1 execute DB --config .aurora-bootstrap.json --remote --yes --json --command "SELECT id,record_kind,review_status,publication_status,source_url FROM cases WHERE id IN ('aaro-pr-2013','aaro-iraq-2017','aaro-west-us-2021') ORDER BY id" > /tmp/aurora-d1-rows.json
           node scripts/check-d1-remote.mjs seed /tmp/aurora-d1-rows.json
       - name: Report remaining Pages binding gate
+        if: ${{ inputs.mode == 'seed' }}
         run: |
           echo "Verified reviewed D1 seed rows. The public registry is NOT activated."
           echo "Next: verify Pages production DB binding and redeploy state. Enable the public registry separately only after verifying preview and production routes."
+      - name: Report successful read-only preflight
+        if: ${{ inputs.mode == 'preflight' }}
+        run: |
+          echo "Verified production D1 identity and existing registry schema. No migrations or seed writes were performed."
