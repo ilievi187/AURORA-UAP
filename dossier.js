@@ -214,7 +214,7 @@
   const src=$("dossierSourceUrl");
   src.hidden=!source;
   if(source){src.href=source;src.textContent=t.openSource}
-  label("dossierLicense",legacy?t.reference:(c.license||provenance.license||""));
+  label("dossierLicense",legacy?(provenance.license?(t.reference+" · "+provenance.source_name+" — "+provenance.license+" · "+provenance.source_url):t.reference):(c.license||provenance.license||""));
   const authority=c.assessment_authority?
    c.assessment_authority+" · "+(t.confidence[c.assessment_confidence]||t.confidence.not_stated):"";
   label("dossierAssessmentAuthority",authority);

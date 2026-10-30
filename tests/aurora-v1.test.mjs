@@ -100,8 +100,12 @@ test('case data has sourced prose, conservative statuses and approximate map anc
   assert.ok(raw.cases.length>=15);
   for(const c of raw.cases){
     assert.equal(ids.has(c.id),false,'duplicate case '+c.id);ids.add(c.id);
-    assert.ok(Number.isFinite(c.lat)&&Math.abs(c.lat)<=90);
-    assert.ok(Number.isFinite(c.lng)&&Math.abs(c.lng)<=180);
+    if(c.lat===null&&c.lng===null){
+      assert.ok(c.location_precision.length>=8,'unmapped case must explain missing coordinates');
+    }else{
+      assert.ok(Number.isFinite(c.lat)&&Math.abs(c.lat)<=90);
+      assert.ok(Number.isFinite(c.lng)&&Math.abs(c.lng)<=180);
+    }
     assert.match(c.source.url,/^https:\/\//);
     assert.ok(c.summary.bg.length>=45&&c.summary.en.length>=45);
     assert.ok(['reported','official_record','explained'].includes(c.status));
