@@ -202,7 +202,7 @@ function tokenizeRss(xml){
  }
  return roots===1&&root?.name==="rss"&&channelCount===1&&channel&&!stack.length?{root,channel}:null;
 }
-export async function fetchHeadlinesWithDiagnostics(edition,fetcher=fetch,parser=parseNewsRss,timeoutMs=9000){
+export async function fetchHeadlinesWithDiagnostics(edition,fetcher=fetch,parser=parseNewsRss,timeoutMs=9000,maxConcurrency=5){
  const cfg=EDITIONS[edition];if(!cfg)return null;
  const fetched=new Array(cfg.length);
  let next=0;
@@ -220,7 +220,7 @@ export async function fetchHeadlinesWithDiagnostics(edition,fetcher=fetch,parser
   }catch{return {items:[],kind:"parse_error"}}
  };
  // Bound fan-out so slow upstream responses do not exhaust this request's fetch budget.
- const workers=Array.from({length:Math.min(5,cfg.length)},async()=>{
+ const workers=Array.from({length:Math.min(Number.isInteger(maxConcurrency)?Math.max(1,maxConcurrency):5,cfg.length)},async()=>{
   while(true){
    const index=next++;
    if(index>=cfg.length)return;
@@ -261,13 +261,14 @@ const FRESH_AGE=900;
 const FALLBACK_AGE=43200;
 const NEWS_CACHE_REVISION="publisher-catalog-v1";
 const PUBLISHER_FEED_LIMIT=DISCOVERY_TOTAL_LIMIT;
-const PUBLISHER_FEED_CONCURRENCY=5;
-const PUBLISHER_FEED_TIMEOUT_MS=1500;
+const PUBLISHER_FEED_CONCURRENCY=3;
+const GOOGLE_FEED_CONCURRENCY=2;
+const NEWS_REQUEST_TIMEOUT_MS=9000;
 const response=(data,age)=>Response.json(data,{headers:{
  "Cache-Control":"public, max-age=60, s-maxage="+age,
  "X-Content-Type-Options":"nosniff"
 }});
-async function fetchPublisherHeadlines(edition,fetcher=fetch){
+async function fetchPublisherHeadlines(edition,fetcher=fetch,timeoutMs=NEWS_REQUEST_TIMEOUT_MS){
  let catalog;
  if(edition==="global")catalog=SOURCE_CATALOG;
  else if(edition==="official")catalog=SOURCE_CATALOG.filter(source=>source.role==="official-institution");
@@ -275,14 +276,14 @@ async function fetchPublisherHeadlines(edition,fetcher=fetch){
  else return {status:"not_applicable",checked:[],failed:[],count:0,items:[]};
  try{
   return await discoverMatches({
-   catalog,fetcher,region:"all",timeoutMs:PUBLISHER_FEED_TIMEOUT_MS,
+   catalog,fetcher,region:"all",timeoutMs,
    feedLimit:PUBLISHER_FEED_LIMIT,maxConcurrency:PUBLISHER_FEED_CONCURRENCY,maxAttempts:1
   });
  }catch{
   return {status:"unavailable",checked:[],failed:[],count:0,items:[]};
  }
 }
-async function getRawNews({request,ctx,fetcher=fetch,catalogFetcher=fetch}){
+async function getRawNews({request,ctx,fetcher=fetch,catalogFetcher=fetch,timeoutMs=NEWS_REQUEST_TIMEOUT_MS}){
  const edition=new URL(request.url).searchParams.get("edition")||"global";
  if(!Object.hasOwn(EDITIONS,edition))return Response.json({error:"invalid_edition"},{status:400});
  const key=new Request("https://aurora-cache.invalid/news/fresh/"+NEWS_CACHE_REVISION+"/"+edition);
@@ -291,9 +292,16 @@ async function getRawNews({request,ctx,fetcher=fetch,catalogFetcher=fetch}){
   if(typeof caches!=="undefined")cache=caches.default;
   const saved=cache&&await cache.match(key);if(saved)return saved;
  }catch{}
- const result=await fetchHeadlinesWithDiagnostics(edition,fetcher);
- // Run the five-worker publisher lane afterward, preserving the combined fetch cap.
- const publisher=await fetchPublisherHeadlines(edition,catalogFetcher);
+ const requestDeadline=AbortSignal.timeout(timeoutMs);
+ // Run independent sources together while reserving five total in-flight fetches.
+ const withRequestDeadline=fetcher=>async(url,init={})=>{
+  const signal=init.signal?AbortSignal.any([requestDeadline,init.signal]):requestDeadline;
+  return fetcher(url,{...init,signal});
+ };
+ const [result,publisher]=await Promise.all([
+  fetchHeadlinesWithDiagnostics(edition,withRequestDeadline(fetcher),parseNewsRss,timeoutMs,GOOGLE_FEED_CONCURRENCY),
+  fetchPublisherHeadlines(edition,withRequestDeadline(catalogFetcher),timeoutMs)
+ ]);
  const items=dedupeHeadlines([...(result?.items??[]),...(publisher.items??[])]).slice(0,200);
  const diagnostics={
   ...(result?.diagnostics||{}),
@@ -330,14 +338,14 @@ async function getRawNews({request,ctx,fetcher=fetch,catalogFetcher=fetch}){
 }
 
 // Optional server translation is restricted to fixed, fetched news headlines.
-export async function onRequestGet({request,env,ctx,fetcher=fetch,catalogFetcher=fetch}){
+export async function onRequestGet({request,env,ctx,fetcher=fetch,catalogFetcher=fetch,timeoutMs=NEWS_REQUEST_TIMEOUT_MS}){
  const u=new URL(request.url),lang=u.searchParams.get("lang");
  if(lang!==null&&!NEWS_LANGUAGES.has(lang))
   return Response.json({error:"unsupported_language"},{status:400});
  const offsetValue=u.searchParams.get("offset")||"0";
  if(!/^(0|[1-9]\d{0,2})$/.test(offsetValue)||Number(offsetValue)>192||Number(offsetValue)%PAGE_SIZE!==0)
   return Response.json({error:"invalid_translation_offset"},{status:400});
- const original=await getRawNews({request,ctx,fetcher,catalogFetcher});
+ const original=await getRawNews({request,ctx,fetcher,catalogFetcher,timeoutMs});
  if(lang===null||original.status!==200)return original;
  const data=await original.clone().json(),offset=Number(offsetValue);
  if(!Array.isArray(data.items))return original;
