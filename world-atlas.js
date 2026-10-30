@@ -645,7 +645,9 @@ async function start() {
     return;
   }
   const archive = Array.isArray(caseResult.value?.cases) ? caseResult.value.cases : [];
-  baseCases = archive.filter(validRecord).map((item) => ({ ...item, recordOrigin: 'archive' }));
+  // Normalize historical cases consistently with the globe and country views.
+  const archiveRecords = globalThis.AURORA_ARCHIVE?.prepareArchiveCases(archive) ?? archive;
+  baseCases = archiveRecords.filter(validRecord).map((item) => ({ ...item, recordOrigin: 'archive' }));
   cases = baseCases.slice();
   dataReady = true;
   archiveFailed = false;
