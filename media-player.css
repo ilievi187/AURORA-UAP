@@ -180,3 +180,5 @@
     transition: none;
   }
 }
+
+.aurora-player-unavailable{max-width:58ch;padding:20px;color:#daf8f4;font-size:15px;line-height:1.65;text-align:center;}
