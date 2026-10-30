@@ -2,7 +2,7 @@
 export function reply(data,status=200){
  return Response.json(data,{status,headers:{"Cache-Control":status===200?"public, max-age=90":"no-store","X-Content-Type-Options":"nosniff"}});
 }
-export const unavailable=()=>reply({error:"database_unavailable",message:"D1 binding DB is not configured. No demo data are used as registered cases."},503);
+export const unavailable=()=>reply({error:"database_unavailable",message:"Public registry is unavailable (database binding missing or public registry disabled). No demo data are used as registered cases."},503);
 export const invalid=reason=>reply({error:"invalid_query",message:reason},400);
 const PUBLIC="publication_status='published' AND review_status='approved' AND record_kind!='demo'";
 const fields="id,record_kind,title,title_bg,description,description_bg,date,date_precision,country_code,region,location,latitude,longitude,location_precision,category,assessment_status,assessment_authority,assessment_confidence,review_status,source_name,source_url,license,media,created_at,updated_at";
