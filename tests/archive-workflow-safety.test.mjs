@@ -17,12 +17,28 @@ test("archive validation is read-only and manual/PR events cannot enter the publ
  assert.ok(!validate.includes("workflow_dispatch"));
 });
 
-test("only scheduled main runs in the canonical repository can publish with job-scoped write permission",()=>{
+test("only scheduled main runs in the canonical repository can publish on a dedicated branch",()=>{
+ assert.ok(publish.includes("github.event_name == 'schedule'"));
  assert.ok(publish.includes("github.ref == 'refs/heads/main'"));
- assert.ok(publish.includes("github.ref_protected && github.repository == 'ilievi187/AURORA-UAP'"));
- assert.ok(publish.includes("permissions:"+String.fromCharCode(13)+String.fromCharCode(10)+"      contents: write")||publish.includes("permissions:"+String.fromCharCode(10)+"      contents: write"));
+ assert.ok(publish.includes("github.repository == 'ilievi187/AURORA-UAP'"));
+ assert.ok(!publish.includes("github.ref_protected"));
+ assert.match(publish,/permissions:\s+contents: write\s+pull-requests: write/);
  assert.ok(publish.indexOf("node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs")<publish.indexOf("node scripts/sync-open-case-archive.mjs"));
- assert.ok(publish.indexOf("node scripts/sync-open-case-archive.mjs")<publish.indexOf("git push origin HEAD:main"));
+ assert.ok(publish.indexOf("node scripts/sync-open-case-archive.mjs")<publish.indexOf("git add data/cases.json data/archive-sync-status.json"));
+ assert.ok(publish.includes("branch=automation/archive-sync"));
+ assert.match(publish,/git push[^\n]*HEAD:\$branch_ref/);
+ assert.doesNotMatch(publish,/git push[^\n]*(?:HEAD:main|refs\/heads\/main)/);
+});
+
+test("scheduled archive runs update one existing PR instead of creating duplicates",()=>{
+ assert.ok(publish.includes("--state open --base main --head \"$GITHUB_REPOSITORY_OWNER:$branch\""));
+ assert.ok(publish.includes("gh pr edit \"$existing\""));
+ assert.ok(publish.includes("--state closed --base main --head \"$GITHUB_REPOSITORY_OWNER:$branch\" --json number,mergedAt"));
+ assert.ok(publish.includes("if [ -z \"$merged_at\" ]"));
+ assert.ok(publish.includes("closed but unmerged; refusing to create a duplicate"));
+ assert.ok(publish.includes("Previous archive update PR #$closed_number is merged"));
+ assert.ok(publish.includes("gh pr create --draft --repo \"$GITHUB_REPOSITORY\" --base main --head \"$branch\""));
+ assert.ok(publish.includes("--force-with-lease=$branch_ref:$expected"));
 });
 
 test("workflow has no caller-controlled publishing inputs and fixtures precede import",()=>{

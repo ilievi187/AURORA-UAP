@@ -47,11 +47,12 @@ jobs:
           git diff --check
 
   publish-scheduled-main-archive:
-    if: github.event_name == 'schedule' && github.ref == 'refs/heads/main' && github.ref_protected && github.repository == 'ilievi187/AURORA-UAP'
+    if: github.event_name == 'schedule' && github.ref == 'refs/heads/main' && github.repository == 'ilievi187/AURORA-UAP'
     runs-on: ubuntu-latest
     timeout-minutes: 12
     permissions:
       contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -68,14 +69,44 @@ jobs:
         run: |
           node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs
           git diff --check
-      - name: Commit verified archival metadata only
+      - name: Commit verified archive snapshot
         run: |
           git add data/cases.json data/archive-sync-status.json
           if git diff --cached --quiet; then
-            echo "No source changes; nothing to publish"
+            echo "No source changes; no archive update PR needed"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "data(archive): refresh attributed open UAP case records"
-          git push origin HEAD:main
+      - name: Push bot branch and open or update one archive PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          branch=automation/archive-sync
+          branch_ref="refs/heads/$branch"
+          remote_ref="refs/remotes/origin/$branch"
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+            git fetch --no-tags origin "$branch_ref:$remote_ref"
+            expected="$(git rev-parse "$remote_ref")"
+          else
+            expected=""
+          fi
+          git push "--force-with-lease=$branch_ref:$expected" origin "HEAD:$branch_ref"
+
+          existing="$(gh pr list --repo "$GITHUB_REPOSITORY" --state open --base main --head "$GITHUB_REPOSITORY_OWNER:$branch" --json number --jq '.[0].number // empty')"
+          if [ -n "$existing" ]; then
+            gh pr edit "$existing" --title "data(archive): refresh attributed open UAP case records" --body "Automated proposal from the licensed archive synchronizer. Data changes retain source provenance and deduplication; no data is published to main until this PR is reviewed and merged."
+            echo "Updated existing archive PR #$existing"
+          else
+            closed="$(gh pr list --repo "$GITHUB_REPOSITORY" --state closed --base main --head "$GITHUB_REPOSITORY_OWNER:$branch" --json number,mergedAt --jq '.[0] | if . then "\(.number)\t\(.mergedAt // empty)" else empty end')"
+            if [ -n "$closed" ]; then
+              IFS=$'\t' read -r closed_number merged_at <<< "$closed"
+              if [ -z "$merged_at" ]; then
+                echo "Archive update PR #$closed_number is closed but unmerged; refusing to create a duplicate. Reopen it before the next scheduled update."
+                exit 1
+              fi
+              echo "Previous archive update PR #$closed_number is merged; a new update PR is needed."
+            fi
+            gh pr create --draft --repo "$GITHUB_REPOSITORY" --base main --head "$branch" --title "data(archive): refresh attributed open UAP case records" --body "Automated proposal from the licensed archive synchronizer. Data changes retain source provenance and deduplication; no data is published to main until this PR is reviewed and merged."
+          fi
