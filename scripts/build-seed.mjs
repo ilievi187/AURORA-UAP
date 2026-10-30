@@ -1,6 +1,6 @@
 /* Generate offline reviewed seed SQL; the SQL must be manually applied to the D1 database.
    Run: node scripts/build-seed.mjs > /tmp/aurora-seed.sql
-   Then: npx wrangler d1 execute aurora-uap-cases --remote --file=/tmp/aurora-seed.sql
+   Use only the reviewed, manual D1 bootstrap workflow against the verified aurora-uap-production database; do not run this SQL without its approval and identity gates.
 */
 import {readFileSync} from "node:fs";
 import {validateManifest} from "../worker/import-core.js";
