@@ -294,6 +294,39 @@ const COPY = {
     videoError: '无法在此处加载此视频。请打开原始来源查看。',
     fallbackTitle: '视频'
   },
+  'zh-CN': {
+    play: '在 AURORA 中观看', close: '关闭播放器', kicker: 'AURORA 播放器',
+    source: '来源', original: '打开原始来源',
+    iframeLoading: '正在加载官方播放器。如果播放受阻，请打开原始来源。',
+    iframeReady: '播放器已加载。请使用其控件或打开原始来源。',
+    iframeError: '无法加载嵌入式播放器。请打开原始来源。',
+    videoLoading: '正在加载已核实版权的视频。不会自动播放。',
+    videoReady: '视频已就绪。请使用播放控件；不会自动开始播放。',
+    videoError: '无法在此处加载此视频。请打开原始来源查看。',
+    fallbackTitle: '视频'
+  },
+  sr: {
+    play: 'Гледај у AURORA', close: 'Затвори плејер', kicker: 'AURORA плејер',
+    source: 'Извор', original: 'Отвори изворни линк',
+    iframeLoading: 'Учитавање званичног плејера. Ако је репродукција блокирана, отворите изворни линк.',
+    iframeReady: 'Плејер је учитан. Користите контроле или отворите изворни линк.',
+    iframeError: 'Уграђени плејер није могао да се учита. Отворите изворни линк.',
+    videoLoading: 'Учитавање видео снимка са провереним правима. Не покреће се аутоматски.',
+    videoReady: 'Видео је спреман. Користите контроле за репродукцију.',
+    videoError: 'Овај видео није могао да се учита овде. Отворите изворни линк.',
+    fallbackTitle: 'Видео'
+  },
+  uk: {
+    play: 'Дивитися в AURORA', close: 'Закрити плеєр', kicker: 'Плеєр AURORA',
+    source: 'Джерело', original: 'Відкрити першоджерело',
+    iframeLoading: 'Завантаження офіційного плеєра. Якщо відтворення заблоковано, відкрийте першоджерело.',
+    iframeReady: 'Плеєр завантажено. Використовуйте елементи керування або відкрийте першоджерело.',
+    iframeError: 'Вбудований плеєр не вдалося завантажити. Відкрийте першоджерело.',
+    videoLoading: 'Завантаження відео з перевіреними правами. Автовідтворення вимкнено.',
+    videoReady: 'Відео готове. Використовуйте елементи керування відтворенням.',
+    videoError: 'Не вдалося завантажити це відео тут. Перевірте першоджерело.',
+    fallbackTitle: 'Відео'
+  },
   ar: {
     play: 'شاهد في AURORA', close: 'إغلاق المشغل', kicker: 'مشغل AURORA',
     source: 'المصدر', original: 'فتح المصدر الأصلي',
@@ -310,14 +343,16 @@ const COPY = {
 function localeFor(documentRef) {
   let stored = '';
   try { stored = documentRef.defaultView?.localStorage?.getItem('aurora-lang') || ''; } catch { /* storage may be restricted */ }
-  const raw = (stored || documentRef.documentElement.lang || 'bg').toLowerCase().split('-')[0];
+  const full = String(stored || documentRef.documentElement.lang || 'bg').trim();
+  if (Object.hasOwn(COPY, full)) return full;
+  const raw = full.toLowerCase().split('-')[0];
   return Object.hasOwn(COPY, raw) ? raw : 'en';
 }
 
 function localizedTitle(media, locale, fallback) {
   const value = media?.title;
   const pack = COPY[locale] || COPY.en;
-  if (value && typeof value === 'object') return String(value[locale] || value.en || value.bg || fallback || pack.fallbackTitle).trim();
+  if (value && typeof value === 'object') return String(value[locale] || value[locale.split('-')[0]] || value.en || value.bg || fallback || pack.fallbackTitle).trim();
   return String(value || fallback || pack.fallbackTitle).trim();
 }
 
@@ -363,11 +398,13 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
   const windowRef = documentRef.defaultView;
   if (!gallery || !windowRef) return null;
 
-  const locale = localeFor(documentRef);
-  const words = COPY[locale];
+  let locale = localeFor(documentRef);
+  let words = COPY[locale];
   const index = new Map();
   let catalogReady = false;
   let dialog = null;
+  let kickerNode = null;
+  let attributionLabelNode = null;
   let playerHost = null;
   let playerStatus = null;
   let playerTitle = null;
@@ -379,8 +416,20 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
   let iframeTimer = null;
   let activeNode = null;
 
+  function syncLocale() {
+    locale = localeFor(documentRef);
+    words = COPY[locale] || COPY.en;
+    if (kickerNode) kickerNode.textContent = words.kicker;
+    if (closeButton) closeButton.setAttribute('aria-label', words.close);
+    if (attributionLabelNode) attributionLabelNode.textContent = `${words.source}: `;
+    if (originalLink) originalLink.textContent = `${words.original} ↗`;
+  }
+
   function ensureDialog() {
-    if (dialog) return dialog;
+    if (dialog) {
+      syncLocale();
+      return dialog;
+    }
     dialog = documentRef.createElement('dialog');
     dialog.className = 'aurora-player-dialog';
     dialog.setAttribute('aria-labelledby', 'aurora-player-title');
@@ -391,15 +440,15 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
     const header = documentRef.createElement('header');
     header.className = 'aurora-player-header';
     const headingGroup = documentRef.createElement('div');
-    const kicker = documentRef.createElement('p');
-    kicker.className = 'aurora-player-kicker';
-    kicker.textContent = words.kicker;
+    kickerNode = documentRef.createElement('p');
+    kickerNode.className = 'aurora-player-kicker';
+    kickerNode.textContent = words.kicker;
     playerTitle = documentRef.createElement('h2');
     playerTitle.className = 'aurora-player-title';
     playerTitle.id = 'aurora-player-title';
     playerContext = documentRef.createElement('p');
     playerContext.className = 'aurora-player-context';
-    headingGroup.append(kicker, playerTitle, playerContext);
+    headingGroup.append(kickerNode, playerTitle, playerContext);
 
     closeButton = documentRef.createElement('button');
     closeButton.type = 'button';
@@ -422,11 +471,11 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
     footer.className = 'aurora-player-footer';
     const attribution = documentRef.createElement('p');
     attribution.className = 'aurora-player-attribution';
-    const attributionLabel = documentRef.createElement('span');
-    attributionLabel.textContent = `${words.source}: `;
+    attributionLabelNode = documentRef.createElement('span');
+    attributionLabelNode.textContent = `${words.source}: `;
     sourceName = documentRef.createElement('strong');
     sourceName.className = 'aurora-player-source-name';
-    attribution.append(attributionLabel, sourceName);
+    attribution.append(attributionLabelNode, sourceName);
     originalLink = documentRef.createElement('a');
     originalLink.className = 'aurora-player-original';
     originalLink.target = '_blank';
@@ -476,6 +525,7 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
   }
 
   function openPlayback(playback, details, trigger) {
+    syncLocale();
     const modal = ensureDialog();
     focusedTrigger = trigger;
     playerTitle.textContent = details.title;
@@ -543,13 +593,14 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
 
   function decorate() {
     if (!catalogReady) return;
+    syncLocale();
     for (const card of gallery.querySelectorAll('.media-entry')) {
       if (card.querySelector('.aurora-player-button') || card.querySelector('video.archive-video')) continue;
       const sourceLink = card.querySelector('.media-entry-links a[target="_blank"]');
       if (!sourceLink) continue;
       const record = recordForCard(card, sourceLink);
       const badgeText = card.querySelector('.media-entry-image span')?.textContent || '';
-      const isVideo = record?.mediaItem?.type === 'video' || /\bvideo\b|видео/i.test(badgeText);
+      const isVideo = record?.mediaItem?.type === 'video' || /\bvideo\b|видео|wideo|βίντεο|فيديو|動画|동영상|视频/i.test(badgeText);
       if (!isVideo) continue;
       const media = record?.mediaItem || { type: 'video', url: sourceLink.href };
       const playback = resolveMediaPlayback(media);

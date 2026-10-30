@@ -74,8 +74,8 @@
  }
  function apply(){
   const page=detectRoute();
-  const news=page==="news",sky=page==="sky",report=page==="report",countries=page==="countries",country=page==="country",dossier=page==="dossier";
-  if(!news&&!sky&&!report&&!countries&&!country&&!dossier)return;
+  const news=page==="news",sky=page==="sky",report=page==="report",countries=page==="countries",country=page==="country",dossier=page==="dossier",media=page==="media";
+  if(!news&&!sky&&!report&&!countries&&!country&&!dossier&&!media)return;
   const nav=[...document.querySelectorAll(".live-links a")];
   for(const anchor of nav){const href=anchor.getAttribute("href");
    const id=href==="/"? "home":href==="/news.html"?"news":href==="/sky.html"?"sky":href==="/report.html"?"report":href==="/countries.html"?"countries":null;
@@ -87,7 +87,7 @@
    syncSeoMeta(text("report")+" | AURORA UAP",document.getElementById("reportHeroLead")?.textContent||"");
    return;
   }
-  if(countries||country||dossier){
+  if(countries||country||dossier||media){
    syncSeoMeta(null,null);
    return;
   }
