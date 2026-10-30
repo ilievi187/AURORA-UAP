@@ -25,8 +25,10 @@ function csvHeader(csv){
 }
 try{
  const upstream=JSON.parse(await get(METADATA));
- const licence=upstream.metadata?.rightsList?.map(x=>x.id||x.title||x.description).filter(Boolean)||
-               (upstream.metadata?.license?[upstream.metadata.license.id||upstream.metadata.license.title||"unknown"] : []);
+ const rights=upstream.metadata?.rights;
+ const rawLicenses=Array.isArray(rights)?rights:Array.isArray(upstream.metadata?.rightsList)?upstream.metadata.rightsList:[];
+ const licence=rawLicenses.map(x=>x.id||x.title?.en||x.title||x.description?.en||x.description).filter(Boolean);
+ if(!licence.length&&upstream.metadata?.license)licence.push(upstream.metadata.license.id||upstream.metadata.license.title||"unknown");
  const files=Array.isArray(upstream.files?.entries)?upstream.files.entries:Object.entries(upstream.files?.entries||{}).map(([key,value])=>({key,...value}));
  const csv=files.find(x=>/\.csv$/i.test(x.key||""));
  const download=csv?.links?.content||csv?.links?.self;
