@@ -412,19 +412,22 @@ test("one request deadline bounds both news lanes when upstreams stall",async()=
    await new Promise((_,reject)=>signal.addEventListener("abort",()=>reject(signal.reason),{once:true}));
   }finally{active--}
  };
- const start=performance.now();
- const response=await newsRoute({
-  request:new Request("https://aurorauap.org/api/news?edition=global"),
-  timeoutMs:120,
-  fetcher:async(...args)=>{googleStarted++;return stall(...args)},
-  catalogFetcher:async(...args)=>{publisherStarted++;return stall(...args)}
- });
- const elapsed=performance.now()-start;
- assert.ok(elapsed<500,`shared endpoint deadline should cap both lanes; observed ${Math.round(elapsed)}ms`);
- assert.equal(response.status,503);
- assert.ok(googleStarted>0&&googleStarted<=10);
- assert.ok(publisherStarted>0&&publisherStarted<=globalPublisherSources.length);
- assert.ok(maximum<=5,`combined upstream concurrency must remain at most five; observed ${maximum}`);
+ const keepAlive=setTimeout(()=>{},1000);
+ try{
+  const start=performance.now();
+  const response=await newsRoute({
+   request:new Request("https://aurorauap.org/api/news?edition=global"),
+   timeoutMs:120,
+   fetcher:async(...args)=>{googleStarted++;return stall(...args)},
+   catalogFetcher:async(...args)=>{publisherStarted++;return stall(...args)}
+  });
+  const elapsed=performance.now()-start;
+  assert.ok(elapsed<500,`shared endpoint deadline should cap both lanes; observed ${Math.round(elapsed)}ms`);
+  assert.equal(response.status,503);
+  assert.ok(googleStarted>0&&googleStarted<=10);
+  assert.ok(publisherStarted>0&&publisherStarted<=globalPublisherSources.length);
+  assert.ok(maximum<=5,`combined upstream concurrency must remain at most five; observed ${maximum}`);
+ }finally{clearTimeout(keepAlive)}
 });
 
 test("global RSS batches share one total fetch deadline",async()=>{
