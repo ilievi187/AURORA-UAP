@@ -113,7 +113,12 @@ test("public Pages Functions exercise actual SQLite data and fail closed without
 test("D1 public API requires an explicit release flag even when DB binding exists",async()=>{
  const blocked=await statsHandler({env:{DB:db}});
  assert.equal(blocked.status,503);
- assert.equal((await blocked.json()).error,"database_unavailable");
+ const blockedBody=await blocked.json();
+ assert.equal(blockedBody.error,"database_unavailable");
+ assert.match(blockedBody.message,/database binding missing or public registry disabled/i);
+ const unbound=await statsHandler({env:{}});
+ assert.equal(unbound.status,503);
+ assert.equal((await unbound.json()).message,blockedBody.message);
  const active=await statsHandler({env:{DB:db,AURORA_REGISTRY_PUBLIC:"enabled"}});
  assert.equal(active.status,200);
 });
