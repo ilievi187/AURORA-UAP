@@ -39,6 +39,12 @@ function youtubeId(url) {
   return id && YOUTUBE_ID.test(id) ? id : null;
 }
 
+function dvidsEmbed(url) {
+  if (!['dvidshub.net', 'www.dvidshub.net'].includes(url.hostname.toLowerCase())) return null;
+  const match = url.pathname.match(/^\/video\/(\d{5,10})(?:\/[a-z0-9-]+)?\/?$/i);
+  return match ? 'https://www.dvidshub.net/video/embed/' + match[1] : null;
+}
+
 function vimeoEmbed(url) {
   const host = url.hostname.toLowerCase();
   if (!['vimeo.com', 'www.vimeo.com', 'player.vimeo.com'].includes(host)) return null;
@@ -99,6 +105,8 @@ export function resolveMediaPlayback(media) {
       originalUrl: original.href
     };
   }
+  const dvids = dvidsEmbed(original);
+  if (dvids) return { kind: 'iframe', provider: 'dvids', embedUrl: dvids, originalUrl: original.href };
   const embedUrl = vimeoEmbed(original);
   if (embedUrl) {
     return { kind: 'iframe', provider: 'vimeo', embedUrl, originalUrl: original.href };
@@ -394,7 +402,7 @@ function hostnameLabel(value) {
 
 export function initializeMediaPlayer(documentRef = globalThis.document, options = {}) {
   if (!documentRef) return null;
-  const gallery = documentRef.querySelector('#mediaGallery');
+  const gallery = documentRef.querySelector('#mediaGallery, #caseMediaGrid, #worldCaseDetail');
   const windowRef = documentRef.defaultView;
   if (!gallery || !windowRef) return null;
 
@@ -539,6 +547,18 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
     if (!modal.open) modal.showModal();
     closeButton.focus();
 
+    if (playback.kind === 'unavailable') {
+      const info = documentRef.createElement('p');
+      info.className = 'aurora-player-unavailable';
+      info.textContent = locale === 'bg'
+        ? 'Издателят не предоставя проверен плейър за вграждане на този запис. Не можем да го възпроизведем тук без разрешен видеоизточник. Оригиналът е достъпен от връзката отдолу.'
+        : 'No verified embeddable player is available for this recording. AURORA cannot play it without an authorized video source. Open the original using the link below.';
+      playerHost.append(info);
+      playerStatus.textContent = locale === 'bg' ? 'Няма разрешено вграждане за този запис.' : 'No verified in-site playback for this recording.';
+      playerStatus.dataset.state = 'error';
+      return;
+    }
+
     if (playback.kind === 'iframe') {
       playerStatus.textContent = words.iframeLoading;
       const frame = documentRef.createElement('iframe');
@@ -630,6 +650,21 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
     }
   }
 
+  // All video links on media, dossier and atlas pages use this same in-site dialog.
+  function onVideoRequest(event) {
+    const detail = event.detail || {};
+    const media = detail.media;
+    const url = safeHttpsUrl(media?.url);
+    if (media?.type !== 'video' || !url) return;
+    const playback = resolveMediaPlayback(media) || { kind: 'unavailable', provider: 'source', originalUrl: url.href };
+    openPlayback(playback, {
+      title: String(detail.title || localizedTitle(media, locale, words.fallbackTitle)).slice(0, 240),
+      caseTitle: String(detail.caseTitle || '').slice(0, 240),
+      sourceName: String(detail.sourceName || hostnameLabel(url.href)).slice(0, 120)
+    }, detail.trigger || null);
+  }
+  windowRef.addEventListener('aurora:play-media', onVideoRequest);
+
   const Observer = windowRef.MutationObserver;
   const observer = Observer ? new Observer(decorate) : null;
   observer?.observe(gallery, { childList: true, subtree: true });
@@ -650,9 +685,9 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
     catalogReady = true;
     decorate();
   }
-  return { destroy() { observer?.disconnect(); dialog?.remove(); } };
+  return { destroy() { observer?.disconnect(); windowRef.removeEventListener('aurora:play-media', onVideoRequest); dialog?.remove(); } };
 }
 
-if (typeof document !== 'undefined' && document.querySelector('#mediaGallery')) {
+if (typeof document !== 'undefined' && document.querySelector('#mediaGallery, #caseMediaGrid, #worldCaseDetail')) {
   initializeMediaPlayer(document);
 }
