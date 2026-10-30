@@ -125,7 +125,7 @@ export function buildArchive(existing,source){
      existingNames.has(canonical(c.title.en))){duplicates++;continue}
   imported.push(c);
  }
- if(!imported.length&&source.cases.length>1)throw Error("No importable source records: refusing replacement");
+ if(!imported.length)throw Error("No importable source records: refusing replacement");
  const previous=existing.cases.filter(x=>x?.provenance?.source_url===SOURCE_URL).length;
  if(previous>=10&&imported.length<previous*.75)throw Error("Source shrank unexpectedly; refusing destructive update");
  const merged=[...current,...imported].sort((a,b)=>String(b.date).localeCompare(String(a.date))||a.id.localeCompare(b.id));
