@@ -180,6 +180,22 @@ test("official and Bulgarian editions query only their matching checked publishe
  assert.ok(calls.every(url=>bulgarian.some(source=>source.feed_url===url)));
  assert.equal((await bulgariaResponse.json()).diagnostics.publisher_sources_checked,bulgarian.length);
 });
+test("official and Bulgarian editions supplement with checked specialist UAP feeds when Google News and regional feeds return zero items",async()=>{
+ const debrief=SOURCE_CATALOG.find(source=>source.id==="the-debrief");
+ const directUrl=`https://${debrief.link_hosts[0]}/supplemental-uap-report`;
+ const publisherXml='<rss><channel><item><title>New Pentagon UAPs report released</title><link>'+directUrl+'</link><pubDate>'+new Date().toUTCString()+'</pubDate></item></channel></rss>';
+ const headersSeen=[];
+ const fetcher=async(_url,init)=>{headersSeen.push(init?.headers?.["User-Agent"]||"");return {ok:false,status:503}};
+ const catalogFetcher=async url=>textResponse(url===debrief.feed_url?publisherXml:'<rss><channel></channel></rss>');
+ const officialRes=await newsRoute({
+  request:new Request("https://aurorauap.org/api/news?edition=official&lang=en&offset=0"),fetcher,catalogFetcher
+ });
+ assert.equal(officialRes.status,200);
+ const officialBody=await officialRes.json();
+ assert.equal(officialBody.status,"live");
+ assert.equal(officialBody.items[0].url,directUrl);
+ assert.ok(headersSeen.every(ua=>ua.includes("AURORA-UAP-newsroom/1.0")));
+});
 test("publisher integration bypasses the pre-integration fresh cache key",async()=>{
  const staleKey="https://aurora-cache.invalid/news/fresh/global";
  const stale={status:"live",edition:"global",updated_at:new Date().toISOString(),count:1,items:[{title:"Old Google-only cache",url:"https://news.google.com/rss/articles/stale",source:"Google News",published:new Date().toISOString()}]};
