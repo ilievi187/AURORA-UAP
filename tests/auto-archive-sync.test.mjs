@@ -109,7 +109,8 @@ test("fixture workflow check precedes import and never stages fixture data",()=>
  const importing=workflow.indexOf("run: node scripts/sync-open-case-archive.mjs");
  const committing=workflow.indexOf("- name: Commit verified archival metadata only");
  assert.ok(fixture>=0&&importing>fixture&&committing>importing);
- assert.ok(!workflow.slice(fixture,importing).includes("sync-open-case-archive.mjs"));
+ assert.ok(workflow.indexOf("run: node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs")<workflow.indexOf("node scripts/sync-open-case-archive.mjs"));
+ assert.ok(!workflow.slice(fixture,importing).includes("git push"));
  assert.ok(workflow.slice(committing).includes("git add data/cases.json data/archive-sync-status.json"));
 });
 
