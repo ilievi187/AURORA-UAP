@@ -159,7 +159,7 @@ test("checked publisher headlines keep the news endpoint live during a Google Ne
  assert.doesNotMatch(JSON.stringify(body),/private-upstream-exception/);
 });
 test("official and Bulgarian editions query only their matching checked publishers",async()=>{
- const official=SOURCE_CATALOG.filter(source=>source.role==="official-institution");
+ const official=SOURCE_CATALOG.filter(source=>source.role==="official-institution"||["the-debrief","guardian-science","space-com"].includes(source.id));
  const bulgarian=SOURCE_CATALOG.filter(source=>source.country==="BG");
  const calls=[];
  const catalogFetcher=async url=>{calls.push(url);return textResponse('<rss><channel></channel></rss>')};

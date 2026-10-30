@@ -18,7 +18,14 @@
   const root=$("newsList");root.replaceChildren();
   const reqLang=language();
   for(const item of matches.slice(0,total)){
-   const card=document.createElement("article");card.className="live-card";
+   const card=document.createElement("article");card.className="live-card news-card";
+   const thumb=document.createElement("div");thumb.className="news-thumb";thumb.setAttribute("aria-hidden","true");
+   const fallback=()=>{thumb.replaceChildren();thumb.classList.add("news-thumb--fallback");thumb.textContent=String(item.source||"AURORA").trim().charAt(0).toUpperCase()||"✦"};
+   if(typeof item.image==="string"&&/^https:\/\//.test(item.image)){
+    const img=document.createElement("img");img.loading="lazy";img.decoding="async";img.referrerPolicy="no-referrer";img.alt="";
+    img.addEventListener("error",fallback,{once:true});img.src=item.image;thumb.append(img);
+   }else fallback();
+   card.append(thumb);
    const srcLang=String(item.source_language||item.language||"").split("-")[0];
    const meta=document.createElement("div");meta.className="live-meta";
    meta.textContent=item.source+" · "+date(item.published);

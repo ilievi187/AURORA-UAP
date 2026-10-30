@@ -259,7 +259,10 @@ export async function fetchHeadlines(edition,fetcher=fetch){
 }
 const FRESH_AGE=900;
 const FALLBACK_AGE=43200;
-const NEWS_CACHE_REVISION="publisher-catalog-v3";
+const NEWS_CACHE_REVISION="publisher-catalog-v4";
+// Topic-specific UAP desks (UAP category / UFO tag feeds) that report on official
+// releases, hearings and AARO. Institutional feeds alone rarely mention UAP.
+const UAP_TOPIC_FEEDS=new Set(["the-debrief","guardian-science","space-com"]);
 // Small live result sets are technically valid but poor newsroom refreshes.
 // Preserve the last complete snapshot until new coverage is healthier.
 const MIN_LIVE_ITEMS=5;
@@ -275,7 +278,7 @@ const response=(data,age)=>Response.json(data,{headers:{
 async function fetchPublisherHeadlines(edition,fetcher=fetch,timeoutMs=NEWS_REQUEST_TIMEOUT_MS){
  let catalog;
  if(edition==="global")catalog=SOURCE_CATALOG;
- else if(edition==="official")catalog=SOURCE_CATALOG.filter(source=>source.role==="official-institution");
+ else if(edition==="official")catalog=SOURCE_CATALOG.filter(source=>source.role==="official-institution"||UAP_TOPIC_FEEDS.has(source.id));
  else if(edition==="bulgaria")catalog=SOURCE_CATALOG.filter(source=>source.country==="BG");
  else return {status:"not_applicable",checked:[],failed:[],count:0,items:[]};
  try{

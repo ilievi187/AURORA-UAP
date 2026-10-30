@@ -454,3 +454,26 @@ test("page and worker agree on region ids", async () => {
   assert.match(html, /не потвърдени случаи|не е архив на потвърдени случаи/);
   assert.equal(page.includes("innerHTML"), false);
 });
+
+test("feed shrinking keeps a bounded summary and one safe https thumbnail", async () => {
+  const {shrinkFeedXml, MAX_SUMMARY_CHARS} = await import("../functions/_lib/feed-parse.js");
+  const source = SOURCE_CATALOG.find((entry) => entry.id === "guardian-science");
+  const long = "Pentagon files describe a black triangle. ".repeat(30);
+  const xml = `<?xml version="1.0"?><rss xmlns:media="http://search.yahoo.com/mrss/"><channel><item><title>Pentagon releases new UFO files</title><link>https://www.theguardian.com/world/ufo</link><pubDate>Wed, 28 Oct 2026 12:00:00 GMT</pubDate><description>&lt;p&gt;${long}&lt;/p&gt;</description><media:content width="140" url="https://i.guim.co.uk/small.jpg"/><media:content width="460" url="https://i.guim.co.uk/large.jpg?a=1&amp;b=2"/></item><item><title>Unidentified aerial phenomena hearing</title><link>https://www.theguardian.com/world/uap</link><pubDate>Wed, 28 Oct 2026 12:00:00 GMT</pubDate><content:encoded><![CDATA[<p><img src="javascript:alert(1)"></p>]]></content:encoded><media:content url="http://i.guim.co.uk/insecure.jpg"/></item></channel></rss>`;
+  const items = parseFeedXml(shrinkFeedXml(xml), source, now);
+  assert.equal(items.length, 2);
+  assert.ok(items[0].summary.startsWith("Pentagon files describe"));
+  assert.ok(items[0].summary.length <= MAX_SUMMARY_CHARS);
+  assert.equal(items[0].summary.includes("<"), false);
+  assert.equal(items[0].image, "https://i.guim.co.uk/large.jpg?a=1&b=2");
+  assert.equal(items[1].image, undefined, "insecure and script image URLs must be dropped");
+  assert.equal(items[1].summary, undefined);
+});
+
+test("topic discovery also matches UAP terms that appear only in the publisher summary", async () => {
+  const source = SOURCE_CATALOG.find((entry) => entry.id === "space-com");
+  const xml = `<?xml version="1.0"?><rss><channel><item><title>Area 51: What is it and what goes on there?</title><link>https://www.space.com/area-51</link><pubDate>Wed, 28 Oct 2026 12:00:00 GMT</pubDate><description>Area 51 is a U.S. military base synonymous with tales of UFOs and government secrecy.</description></item></channel></rss>`;
+  const result = await discoverMatches({catalog: [source], fetcher: async () => responseFor(xml), now, region: "all"});
+  assert.equal(result.items.length, 1);
+  assert.match(result.items[0].summary, /UFOs/);
+});
