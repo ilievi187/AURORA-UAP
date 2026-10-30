@@ -23,6 +23,7 @@ const canonical=(value)=>safeText(value,240).normalize("NFKC").toLowerCase().rep
 const knownExisting=existing=>new Set(existing.map(x=>canonical(x.title?.en)).filter(Boolean));
 const sourcePage="https://www.uap-archive.org/uap/cases/";
 const urlSafe=(raw)=>{
+ if(typeof raw!=="string"||!(/^(https:\/\/|\/)/i).test(raw.trim()))return "";
  try{
   const u=new URL(raw,"https://www.uap-archive.org");
   if(u.protocol!=="https:"||u.username||u.password||u.port)return "";
