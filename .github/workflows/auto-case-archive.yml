@@ -1,0 +1,45 @@
+name: AURORA automatic licensed case archive
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/sync-open-case-archive.mjs'
+      - '.github/workflows/auto-case-archive.yml'
+  schedule:
+    - cron: '17 2,14 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: aurora-automated-case-archive
+  cancel-in-progress: false
+jobs:
+  sync-licensed-case-data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test archive importer using deterministic offline fixtures
+        run: node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs
+      - name: Fetch only approved, attributed case dataset
+        run: node scripts/sync-open-case-archive.mjs
+      - name: Validate updated archive and static site contracts
+        run: |
+          node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs
+          git diff --check
+      - name: Commit verified archival metadata only
+        run: |
+          git add data/cases.json data/archive-sync-status.json
+          if git diff --cached --quiet; then
+            echo "No source changes; nothing to publish"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "data(archive): refresh attributed open UAP case records"
+          git push origin HEAD:main
