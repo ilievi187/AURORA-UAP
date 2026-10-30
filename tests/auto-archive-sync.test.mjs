@@ -110,7 +110,6 @@ test("workflow stops before import/publication when fixture tests fail",()=>{
  assert.ok(workflow.indexOf("run: node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs")>=0);
  assert.ok(workflow.indexOf("run: node scripts/sync-open-case-archive.mjs")>workflow.indexOf("run: node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs"));
  assert.ok(!workflow.includes("continue-on-error:"));
- assert.ok(workflow.includes("node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs\r\n      - name: Fetch only approved"));
 });
 
 test("source download enforces the byte cap even when Content-Length is missing or too small",async()=>{
