@@ -103,15 +103,18 @@ test("deterministic fixtures never replace or shrink the real archive",async()=>
  assert.equal(fixture.archive.cases.length,3);
 });
 
-test("fixture workflow check precedes import and never stages fixture data",()=>{
+test("fixture workflow check precedes import and only verified archive data reaches the bot branch",()=>{
  const workflow=readFileSync(new URL("../.github/workflows/auto-case-archive.yml",import.meta.url),"utf8");
  const fixture=workflow.indexOf("run: node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs");
  const importing=workflow.indexOf("run: node scripts/sync-open-case-archive.mjs");
- const committing=workflow.indexOf("- name: Commit verified archival metadata only");
- assert.ok(fixture>=0&&importing>fixture&&committing>importing);
+ const committing=workflow.indexOf("- name: Commit verified archive snapshot");
+ const pushing=workflow.indexOf("- name: Push bot branch and open or update one archive PR");
+ assert.ok(fixture>=0&&importing>fixture&&committing>importing&&pushing>committing);
  assert.ok(workflow.indexOf("run: node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs")<workflow.indexOf("node scripts/sync-open-case-archive.mjs"));
  assert.ok(!workflow.slice(fixture,importing).includes("git push"));
  assert.ok(workflow.slice(committing).includes("git add data/cases.json data/archive-sync-status.json"));
+ assert.ok(workflow.slice(pushing).includes("HEAD:$branch_ref"));
+ assert.doesNotMatch(workflow,/git push[^\n]*(?:HEAD:main|refs\/heads\/main)/);
 });
 
 test("workflow stops before import/publication when fixture tests fail",()=>{
