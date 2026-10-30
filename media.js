@@ -215,6 +215,15 @@
    img.alt=words.illustration;
    const badge=document.createElement("span");badge.textContent=m.type==="video"?"▶ VIDEO":m.type==="photo"?"▧ PHOTO":"▤ ARCHIVE";
    picture.append(img,badge);
+   if(m.type==="video"){
+    const thumbnailPlay=document.createElement("button");thumbnailPlay.type="button";
+    thumbnailPlay.className="media-entry-image-play";thumbnailPlay.textContent="▶";
+    thumbnailPlay.setAttribute("aria-label",(locale==="bg"?"Гледай в AURORA: ":"Watch in AURORA: ")+(m.title?.[locale]||m.title?.en||"Video"));
+    thumbnailPlay.addEventListener("click",()=>window.dispatchEvent(new CustomEvent("aurora:play-media",{
+      detail:{media:m,title:m.title?.[locale]||m.title?.en||"Video",caseTitle:c.title?.[locale]||c.title?.en||"",sourceName:c.source?.name||"",trigger:thumbnailPlay}
+    })));
+    picture.append(thumbnailPlay);
+   }
    const body=document.createElement("div");body.className="media-entry-body";
    const meta=document.createElement("small");meta.textContent=c.date+" · "+c.country+" · "+(c.source?.name||"");
    const heading=document.createElement("h2");heading.textContent=c.title?.[locale]||c.title?.en||"";
