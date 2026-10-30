@@ -299,7 +299,8 @@
    const res=await fetch("/data/cases.json",{cache:"force-cache"});if(!res.ok)throw Error("Archive offline");
    const json=await res.json(),counts=new Map();
    if(!Array.isArray(json.cases))throw Error("Bad archive");
-   for(const c of json.cases)if(/^[A-Z]{2}$/.test(c.country||"")&&c.title?.en&&c.source?.url?.startsWith("https://"))
+   const sourceCases=globalThis.AURORA_ARCHIVE?.prepareArchiveCases(json.cases)??json.cases;
+   for(const c of sourceCases)if(/^[A-Z]{2}$/.test(c.country||"")&&c.title?.en&&c.source?.url?.startsWith("https://"))
     counts.set(c.country,(counts.get(c.country)||0)+1);
    rawSourceCounts=counts;sourceError=false;
    renderSourceCountries();

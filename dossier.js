@@ -262,7 +262,7 @@
     const res=await fetch("/data/cases.json",{cache:"force-cache"});
     if(!res.ok)throw Error("archive");
     const data=await res.json();
-    archiveCases=Array.isArray(data.cases)?data.cases:[];
+    archiveCases=globalThis.AURORA_ARCHIVE?.prepareArchiveCases(data.cases)??(Array.isArray(data.cases)?data.cases:[]);
     c=archiveCases.find(x=>x.id===id);
    }else{
     const res=await fetch("/api/cases/"+encodeURIComponent(id),{cache:"no-store"});
@@ -273,7 +273,7 @@
     if(c.review_status!=="approved"||c.record_kind==="demo"){feedback("missing",true);return}
     try{
      const archRes=await fetch("/data/cases.json",{cache:"force-cache"});
-     if(archRes.ok){const archData=await archRes.json();archiveCases=Array.isArray(archData.cases)?archData.cases:[];}
+     if(archRes.ok){const archData=await archRes.json();archiveCases=globalThis.AURORA_ARCHIVE?.prepareArchiveCases(archData.cases)??(Array.isArray(archData.cases)?archData.cases:[]);}
     }catch{}
    }
    if(!c){feedback("missing",true);return}

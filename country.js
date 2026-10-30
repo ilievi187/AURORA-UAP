@@ -466,7 +466,8 @@
   try{
    const res=await fetch("/data/cases.json",{cache:"force-cache"});if(!res.ok)throw Error("Source archive unavailable");
    const data=await res.json();if(!Array.isArray(data.cases))throw Error("Invalid source data");
-   historyCases=data.cases.filter(c=>c.country===code&&/^[a-z0-9-]{3,90}$/.test(c.id)&&c.title?.en&&c.summary?.en&&c.source?.url?.startsWith("https://"))
+   const sourceCases=globalThis.AURORA_ARCHIVE?.prepareArchiveCases(data.cases)??data.cases;
+   historyCases=sourceCases.filter(c=>c.country===code&&/^[a-z0-9-]{3,90}$/.test(c.id)&&c.title?.en&&c.summary?.en&&c.source?.url?.startsWith("https://"))
     .sort((a,b)=>String(b.date).localeCompare(String(a.date)));
    historyError=false;
    renderCountryHistory();
