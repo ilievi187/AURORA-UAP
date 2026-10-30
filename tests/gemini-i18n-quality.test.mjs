@@ -242,3 +242,30 @@ test('ui-locales.js and world-atlas-labels.js cover all 18 locales without broke
     assert.ok(!JSON.stringify(atlasLabels[locale]).includes('\uFFFD'), `world-atlas-labels.js ${locale} has replacement char`);
   }
 });
+
+test('media.js and media-player.js define complete 18-locale packs without replacement characters', () => {
+  const mediaCode = read('media.js');
+  const i18nMatch = mediaCode.match(/const PACKS=(\{[\s\S]*?\n \});/);
+  assert.ok(i18nMatch, 'media.js must define PACKS dictionary');
+  const mediaI18n = vm.runInNewContext('(' + i18nMatch[1] + ')');
+  const enMediaKeys = Object.keys(mediaI18n.en).sort();
+
+  const playerCode = read('media-player.js');
+  const copyMatch = playerCode.match(/const COPY = (\{[\s\S]*?\n\});/);
+  assert.ok(copyMatch, 'media-player.js must define COPY dictionary');
+  const playerCopy = vm.runInNewContext('(' + copyMatch[1] + ')');
+  const enPlayerKeys = Object.keys(playerCopy.en).sort();
+
+  for (const locale of EXPECTED_LOCALES) {
+    assert.ok(mediaI18n[locale], `media.js missing locale ${locale}`);
+    assert.deepEqual(Object.keys(mediaI18n[locale]).sort(), enMediaKeys, `media.js ${locale} key mismatch`);
+    assert.equal(typeof mediaI18n[locale].count, 'function', `media.js ${locale}.count must be function`);
+    assert.ok(mediaI18n[locale].count(3).includes('3'), `media.js ${locale}.count(3) must format count`);
+    assert.ok(!JSON.stringify(mediaI18n[locale]).includes('\uFFFD'), `media.js ${locale} contains replacement character`);
+
+    assert.ok(playerCopy[locale], `media-player.js COPY missing locale ${locale}`);
+    assert.deepEqual(Object.keys(playerCopy[locale]).sort(), enPlayerKeys, `media-player.js COPY ${locale} key mismatch`);
+    assert.ok(!JSON.stringify(playerCopy[locale]).includes('\uFFFD'), `media-player.js COPY ${locale} contains replacement character`);
+  }
+});
+
