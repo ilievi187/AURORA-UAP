@@ -191,11 +191,20 @@ function renderDetails(item) {
     list.className = 'world-media-links';
     for (const entry of media) {
       const li = document.createElement('li');
-      const link = document.createElement('a');
-      link.href = entry.url;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      link.textContent = `${entry.type ? `${entry.type} · ` : ''}${localized(entry.title) || t('originalSource')}`;
+      const isVideo = entry.type === 'video';
+      const link = document.createElement(isVideo ? 'button' : 'a');
+      if (isVideo) {
+        link.type = 'button';
+        link.className = 'world-media-play';
+        link.addEventListener('click', () => window.dispatchEvent(new CustomEvent('aurora:play-media', {
+          detail: { media: entry, title: localized(entry.title) || 'Video', caseTitle: localized(item.title) || '', sourceName: item.source?.name || '', trigger: link }
+        })));
+      } else {
+        link.href = entry.url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+      }
+      link.textContent = `${isVideo ? '▶ ' : ''}${localized(entry.title) || t('originalSource')}`;
       li.append(link);
       list.append(li);
     }
