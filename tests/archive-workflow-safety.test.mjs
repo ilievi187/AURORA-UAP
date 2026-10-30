@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 
 const workflow=readFileSync(new URL("../.github/workflows/auto-case-archive.yml",import.meta.url),"utf8");
+const qualityGate=readFileSync(new URL("../.github/workflows/aurora-v1-checks.yml",import.meta.url),"utf8");
 const validate=workflow.slice(workflow.indexOf("  validate-licensed-case-data:"),workflow.indexOf("  publish-scheduled-main-archive:"));
 const publish=workflow.slice(workflow.indexOf("  publish-scheduled-main-archive:"));
 
@@ -22,7 +23,7 @@ test("only scheduled main runs in the canonical repository can publish on a dedi
  assert.ok(publish.includes("github.ref == 'refs/heads/main'"));
  assert.ok(publish.includes("github.repository == 'ilievi187/AURORA-UAP'"));
  assert.ok(!publish.includes("github.ref_protected"));
- assert.match(publish,/permissions:\s+contents: write\s+pull-requests: write/);
+ assert.match(publish,/permissions:\s+contents: write\s+pull-requests: write\s+actions: write/);
  assert.ok(publish.indexOf("node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs")<publish.indexOf("node scripts/sync-open-case-archive.mjs"));
  assert.ok(publish.indexOf("node scripts/sync-open-case-archive.mjs")<publish.indexOf("git add data/cases.json data/archive-sync-status.json"));
  assert.ok(publish.includes("branch=automation/archive-sync"));
@@ -40,6 +41,15 @@ test("scheduled archive runs update one existing PR instead of creating duplicat
  assert.ok(publish.includes("gh pr create --draft --repo \"$GITHUB_REPOSITORY\" --base main --head \"$branch\""));
  assert.ok(publish.includes("--force-with-lease=$branch_ref:$expected"));
 });
+
+test("scheduled archive PRs dispatch the full read-only CI suite on the bot branch",()=>{
+ assert.ok(qualityGate.includes("  workflow_dispatch:"));
+ assert.ok(!qualityGate.includes("inputs:"));
+ assert.match(qualityGate,/permissions:\r?\n  contents: read/);
+ assert.ok(publish.includes("gh workflow run aurora-v1-checks.yml --repo \"$GITHUB_REPOSITORY\" --ref \"$branch\""));
+ assert.ok(publish.indexOf("gh workflow run aurora-v1-checks.yml")>publish.indexOf("gh pr create --draft"));
+});
+
 
 test("workflow has no caller-controlled publishing inputs and fixtures precede import",()=>{
  assert.ok(!workflow.includes("inputs:"));

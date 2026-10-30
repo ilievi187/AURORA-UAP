@@ -53,6 +53,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      actions: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -110,3 +111,4 @@ jobs:
             fi
             gh pr create --draft --repo "$GITHUB_REPOSITORY" --base main --head "$branch" --title "data(archive): refresh attributed open UAP case records" --body "Automated proposal from the licensed archive synchronizer. Data changes retain source provenance and deduplication; no data is published to main until this PR is reviewed and merged."
           fi
+          gh workflow run aurora-v1-checks.yml --repo "$GITHUB_REPOSITORY" --ref "$branch"
