@@ -145,7 +145,8 @@ export function buildArchive(existing,source){
 export function runFixtureChecks(){
  // Deliberately fixture-only: no repository data paths are opened or written.
  const curated={schema_version:1,cases:[{id:"fixture-editorial",title:{en:"Curated Fixture Record"},source:{url:"https://example.org/source"}}]};
- const {archive,report}=buildArchive(curated,FIXTURE_SOURCE);
+ const fixtureInput=structuredClone(FIXTURE_SOURCE);
+ const {archive,report}=buildArchive(curated,fixtureInput);
  if(archive.cases.length!==3||report.generated!==2)throw Error("Deterministic archive fixture check failed");
  return {archive,report};
 }

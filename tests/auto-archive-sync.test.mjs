@@ -66,6 +66,13 @@ test("license and suspicious upstream data are rejected closed",()=>{
  assert.throws(()=>buildArchive(first.archive,{...source,cases:[source.cases[0]]}),/shrank/);
 });
 
+test("repeated archive sync is stable and shrink protection retains imported records",()=>{
+ const expanded={...source,cases:[...source.cases,...Array.from({length:10},(_,i)=>raw(`case-${i+3}`,`Case number ${i+3}`))]};
+ const first=buildArchive(curated,expanded);
+ assert.equal(first.report.generated,12);
+ assert.throws(()=>buildArchive(first.archive,{...source,cases:[source.cases[0]]}),/shrank/);
+ assert.equal(first.archive.cases.filter(c=>c.provenance?.source_url===SOURCE_URL).length,12);
+});
 test("unsafe media are rejected; local paths only resolve against the approved archive host",()=>{
  const item=normalizeCase({...raw("blocked-media"),assets:[
   {type:"video",label:"bad",url:"javascript:alert(1)"},
@@ -78,8 +85,9 @@ test("unsafe media are rejected; local paths only resolve against the approved a
 
 test("repository baseline is compatible with generated records and public display views",()=>{
  const dataset=JSON.parse(readFileSync(new URL("../data/cases.json",import.meta.url),"utf8"));
- const {archive,report}=buildArchive(dataset,source);
- assert.equal(archive.cases.length,dataset.cases.length+2);
+ const baseline={...dataset,cases:dataset.cases.filter(c=>c?.provenance?.source_url!==SOURCE_URL)};
+ const {archive,report}=buildArchive(baseline,source);
+ assert.equal(archive.cases.length,baseline.cases.length+2);
  assert.equal(report.generated,2);
  for(const c of archive.cases.filter(x=>x.provenance?.source_url===SOURCE_URL)){
   assert.equal(c.lat,null);
