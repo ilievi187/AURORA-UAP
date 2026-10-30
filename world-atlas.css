@@ -84,3 +84,6 @@
 @media(max-width:900px){.world-atlas-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.world-atlas-filters .world-search{grid-column:1/-1}.world-map-results{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.world-atlas-filters{grid-template-columns:1fr 1fr;gap:10px}.world-atlas-filters label{font-size:9px}.world-atlas-filters input,.world-atlas-filters select{height:44px;font-size:13px}.world-atlas-count-block{align-items:flex-start}.world-map-layout{gap:12px}.world-map-surface{aspect-ratio:1.55/1}.world-map-controls{right:8px;bottom:8px;gap:4px;padding:4px}.world-map-controls button{width:44px;height:44px}.world-map-results{grid-template-columns:1fr}.world-result{min-height:96px}.world-results-head{align-items:flex-start;flex-direction:column;gap:5px}}
 @media(prefers-reduced-motion:reduce){.world-map-marker{transition:none}}
+
+.world-media-links button.world-media-play{cursor:pointer;background:#0b3c43;border:1px solid #65c8c2;color:#eafff9;padding:9px 12px;text-align:start;font:inherit;max-width:100%;}
+.world-media-links button.world-media-play:focus-visible{outline:2px solid #affffb;outline-offset:2px;}
