@@ -45,6 +45,12 @@ test("Cloudflare D1 workflows are manual and cannot silently activate public reg
  assert.match(bootstrap,/environment: aurora-d1-ops/);
  assert.match(bootstrap,/AURORA_CF_D1_TOKEN/);
  assert.match(bootstrap,/AURORA_CF_ACCOUNT_ID/);
+ assert.match(bootstrap,/default: preflight/);
+ assert.match(bootstrap,/inputs\.mode == 'preflight'/);
+ assert.match(bootstrap,/inputs\.mode == 'seed' && inputs\.approval_phrase == 'SEED_EXISTING_AURORA_D1'/);
+ assert.match(bootstrap,/- name: Apply existing, reviewed initial schema\s+if: \$\{\{ inputs\.mode == 'seed' \}\}/);
+ assert.match(bootstrap,/- name: Import only the three approved AARO cases\s+if: \$\{\{ inputs\.mode == 'seed' \}\}/);
+ assert.match(bootstrap,/- name: Verify real D1 seed records before claiming completion\s+if: \$\{\{ inputs\.mode == 'seed' \}\}/);
  assert.match(bootstrap,/check-d1-remote\.mjs schema/);
  assert.doesNotMatch(bootstrap,/^\s+schedule:|^\s+push:|AURORA_REGISTRY_PUBLIC\s*=\s*enabled/m);
  assert.match(verify,/workflow_dispatch:/);
