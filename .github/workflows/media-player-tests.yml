@@ -1,0 +1,31 @@
+name: AURORA media player quality gate
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  media-player-unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify official embed URL parsing and direct-video rights gate
+        run: node --test tests/media-player.unit.test.mjs
+  media-player-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright browser test tooling
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --only-shell chromium
+      - name: Verify local rendering, accessibility and modal lifecycle
+        run: node --test tests/media-player-browser.test.mjs
