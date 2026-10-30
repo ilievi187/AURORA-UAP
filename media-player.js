@@ -402,7 +402,7 @@ function hostnameLabel(value) {
 
 export function initializeMediaPlayer(documentRef = globalThis.document, options = {}) {
   if (!documentRef) return null;
-  const gallery = documentRef.querySelector('#mediaGallery, #caseMediaGrid, #worldCaseDetail');
+  const gallery = documentRef.querySelector('#mediaGallery, #caseMediaGrid, #worldCaseDetail, #countryCases');
   const windowRef = documentRef.defaultView;
   if (!gallery || !windowRef) return null;
 
@@ -688,6 +688,6 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
   return { destroy() { observer?.disconnect(); windowRef.removeEventListener('aurora:play-media', onVideoRequest); dialog?.remove(); } };
 }
 
-if (typeof document !== 'undefined' && document.querySelector('#mediaGallery, #caseMediaGrid, #worldCaseDetail')) {
+if (typeof document !== 'undefined' && document.querySelector('#mediaGallery, #caseMediaGrid, #worldCaseDetail, #countryCases')) {
   initializeMediaPlayer(document);
 }
