@@ -165,15 +165,23 @@
    }
   }
   const mediaBox=$("caseMediaSection"),mediaGrid=$("caseMediaGrid");
-  const existingIframe=mediaGrid.querySelector("iframe");
   mediaGrid.replaceChildren();
   $("caseMediaTitle").textContent=window.AURORA_UI?.label("mediaTitle")||(language==="bg"?"СНИМКИ, ВИДЕО И ДОКУМЕНТИ":"PHOTOS, VIDEO & SOURCE DOCUMENTS");
   const approvedTypes=new Set(["video","documents","archive","photo"]);
   for(const m of (Array.isArray(c.media)?c.media:[]).slice(0,12)){
    if(!approvedTypes.has(m.type))continue;
    const safe=sourceUrl(m.url);if(!safe)continue;
-   const anchor=document.createElement("a");anchor.href=safe;anchor.target="_blank";anchor.rel="noopener noreferrer";
-   anchor.className="case-media-link";
+   const anchor=document.createElement(m.type==="video"?"button":"a");
+   if(m.type==="video"){
+    anchor.type="button";
+    anchor.className="case-media-link case-media-play";
+    anchor.addEventListener("click",()=>window.dispatchEvent(new CustomEvent("aurora:play-media",{
+      detail:{media:m,title:local(m.title)||"Video",caseTitle:local(c.title)||"",sourceName:c.source?.name||c.source_name||"",trigger:anchor}
+    })));
+   }else{
+    anchor.href=safe;anchor.target="_blank";anchor.rel="noopener noreferrer";
+    anchor.className="case-media-link";
+   }
    const icon=document.createElement("span");
    icon.className="case-media-icon";icon.setAttribute("aria-hidden","true");
    icon.textContent=m.type==="video"?"▶":m.type==="photo"?"▧":"▤";
@@ -182,28 +190,6 @@
    const type=document.createElement("small");
    type.textContent=({video:"VIDEO",photo:"PHOTO",documents:"DOCUMENTS",archive:"ARCHIVE"})[m.type];
    anchor.append(icon,text,type);mediaGrid.append(anchor);
-  }
-  // Native viewing for the one verified public-domain DVIDS video. The player
-  // is intentionally created only after an explicit user click (no third-party
-  // cookie or media request on initial page load).
-  if(c.id==="al-taqaddum-2017"&&legacy){
-   const watch=document.createElement("button");
-   watch.type="button";watch.className="case-watch-button";
-   watch.textContent=window.AURORA_UI?.label("watch")||(language==="bg"?"▶ ГЛЕДАЙ ОРИГИНАЛНИЯ ЗАПИС":"▶ WATCH THE ORIGINAL FOOTAGE");
-   watch.addEventListener("click",()=>{
-    if(mediaGrid.querySelector("iframe"))return;
-    const frame=document.createElement("iframe");
-    frame.src="https://www.dvidshub.net/video/embed/960331";
-    frame.title="DVIDS — Al Taqaddum original AARO video";
-    frame.className="case-video-frame";
-    frame.loading="lazy";frame.allowFullscreen=true;
-    frame.referrerPolicy="strict-origin-when-cross-origin";
-    frame.setAttribute("sandbox","allow-scripts allow-same-origin allow-presentation");
-    mediaGrid.append(frame);
-    watch.disabled=true;
-   });
-   mediaGrid.prepend(watch);
-   if(existingIframe){mediaGrid.append(existingIframe);watch.disabled=true}
   }
   mediaBox.hidden=mediaGrid.childElementCount===0;
 
