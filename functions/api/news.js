@@ -259,7 +259,10 @@ export async function fetchHeadlines(edition,fetcher=fetch){
 }
 const FRESH_AGE=900;
 const FALLBACK_AGE=43200;
-const NEWS_CACHE_REVISION="publisher-catalog-v1";
+const NEWS_CACHE_REVISION="publisher-catalog-v2";
+// Small live result sets are technically valid but poor newsroom refreshes.
+// Preserve the last complete snapshot until new coverage is healthier.
+const MIN_LIVE_ITEMS=5;
 const PUBLISHER_FEED_LIMIT=DISCOVERY_TOTAL_LIMIT;
 const PUBLISHER_FEED_CONCURRENCY=3;
 const GOOGLE_FEED_CONCURRENCY=2;
@@ -311,7 +314,8 @@ async function getRawNews({request,ctx,fetcher=fetch,catalogFetcher=fetch,timeou
   publisher_matches:publisher.count||0,
   items_returned:items.length
  };
- if(items.length){
+ const isHealthyRefresh=items.length>=MIN_LIVE_ITEMS;
+ if(items.length&&isHealthyRefresh){
   const payload={status:"live",edition,updated_at:new Date().toISOString(),count:items.length,items,diagnostics};
   const out=response(payload,FRESH_AGE);
   if(cache&&ctx?.waitUntil)ctx.waitUntil(Promise.all([
@@ -327,12 +331,19 @@ async function getRawNews({request,ctx,fetcher=fetch,catalogFetcher=fetch,timeou
     const payload=await saved.json();
     const age=Date.now()-Date.parse(payload.updated_at);
     if(age>=0&&age<FALLBACK_AGE*1000&&Array.isArray(payload.items)&&payload.items.length){
-     return Response.json({...payload,status:"cached",last_attempt:{status:"unavailable",at:new Date().toISOString(),diagnostics}},{headers:{
+     const hasLiveItems=items.length>0;
+     return Response.json({...payload,status:"cached",last_attempt:{status:hasLiveItems?"degraded":"unavailable",at:new Date().toISOString(),count:items.length,items,diagnostics}},{headers:{
       "Cache-Control":"no-store","X-Content-Type-Options":"nosniff"
      }});
     }
    }
   }catch{}
+ }
+ if(items.length){
+  const payload={status:"live",edition,updated_at:new Date().toISOString(),count:items.length,items,diagnostics};
+  const out=response(payload,FRESH_AGE);
+  if(cache&&ctx?.waitUntil)ctx.waitUntil(cache.put(key,out.clone()).catch(()=>{}));
+  return out;
  }
  return Response.json({status:"unavailable",error:"news_source_unavailable",items:[],diagnostics},{status:503,headers:{"Cache-Control":"no-store"}});
 }

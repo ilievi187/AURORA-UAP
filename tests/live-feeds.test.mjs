@@ -332,6 +332,69 @@ test("last-good news is marked cached and includes the failed refresh diagnostic
   if(originalCaches===undefined)delete globalThis.caches;else globalThis.caches=originalCaches;
  }
 });
+test("underfilled live refresh uses last-good without losing current headlines or provenance",async()=>{
+ const key="https://aurora-cache.invalid/news/last-good/global";
+ const backup={status:"live",edition:"global",updated_at:new Date().toISOString(),count:6,items:Array.from({length:6},(_,i)=>({
+  title:"Previously sourced headline "+i,url:"https://publisher.test/story/"+i,source:"Example Press",published:new Date().toISOString()
+ }))};
+ const entries=new Map([[key,Response.json(backup)]]),pending=[];
+ const originalCaches=globalThis.caches,originalFetch=globalThis.fetch;
+ globalThis.caches={default:{
+  async match(request){return entries.get(typeof request==="string"?request:request.url)?.clone()||null},
+  async put(request,response){entries.set(typeof request==="string"?request:request.url,response.clone())}
+ }};
+ globalThis.fetch=async()=>{throw new Error("unexpected_global_fetch")};
+ const ctx={waitUntil(promise){pending.push(promise)}};
+ try{
+  const response=await newsRoute({
+   request:new Request("https://aurorauap.org/api/news?edition=global&lang=bg&offset=0"),ctx,
+   fetcher:async url=>new URL(url).searchParams.get("gl")==="US"?textResponse(xml):{ok:false,status:503},
+   catalogFetcher:async()=>{throw new TypeError("private-catalog-failure")}
+  });
+  assert.equal(response.status,200);
+  assert.equal(response.headers.get("cache-control"),"no-store");
+  const body=await response.json();
+  assert.equal(body.status,"cached");
+  assert.equal(body.count,6);
+  assert.equal(body.items[0].url,"https://publisher.test/story/0");
+  assert.equal(body.items[0].source,"Example Press");
+  assert.equal(body.last_attempt.status,"degraded");
+  assert.equal(body.last_attempt.count,1);
+  assert.equal(body.last_attempt.items[0].url,"https://news.google.com/rss/articles/test");
+  assert.equal(body.last_attempt.diagnostics.items_returned,1);
+ }finally{
+  globalThis.fetch=originalFetch;
+  if(originalCaches===undefined)delete globalThis.caches;else globalThis.caches=originalCaches;
+ }
+});
+test("healthy live coverage replaces the last-good news snapshot",async()=>{
+ const key="https://aurora-cache.invalid/news/last-good/global";
+ const backup={status:"live",edition:"global",updated_at:new Date().toISOString(),count:1,items:[{title:"Old sourced headline",url:"https://publisher.test/old",source:"Example Press",published:new Date().toISOString()}]};
+ const entries=new Map([[key,Response.json(backup)]]),pending=[];
+ const originalCaches=globalThis.caches,originalFetch=globalThis.fetch;
+ globalThis.caches={default:{
+  async match(request){return entries.get(typeof request==="string"?request:request.url)?.clone()||null},
+  async put(request,response){entries.set(typeof request==="string"?request:request.url,response.clone())}
+ }};
+ globalThis.fetch=async()=>{throw new Error("unexpected_global_fetch")};
+ const ctx={waitUntil(promise){pending.push(promise)}};
+ const sixItems='<rss><channel>'+Array.from({length:6},(_,i)=>'<item><title>Verified story '+i+' today</title><link>https://news.google.com/rss/articles/'+i+'</link><source>Example Press</source><pubDate>'+new Date().toUTCString()+'</pubDate></item>').join('')+'</channel></rss>';
+ try{
+  const response=await newsRoute({request:new Request("https://aurorauap.org/api/news?edition=global"),ctx,
+   fetcher:async()=>textResponse(sixItems),catalogFetcher:async()=>({ok:false,status:503})});
+  assert.equal(response.status,200);
+  const body=await response.json();
+  assert.equal(body.status,"live");
+  assert.equal(body.count,6);
+  await Promise.all(pending.splice(0));
+  const refreshed=await entries.get(key).json();
+  assert.equal(refreshed.count,6,"a healthy refresh must become the new last-good snapshot");
+  assert.notEqual(refreshed.items[0].url,"https://publisher.test/old");
+ }finally{
+  globalThis.fetch=originalFetch;
+  if(originalCaches===undefined)delete globalThis.caches;else globalThis.caches=originalCaches;
+ }
+});
 test("translated cached fallback reports diagnostics from the latest failed refresh",async()=>{
  const key="https://aurora-cache.invalid/news/last-good/global";
  const body={status:"live",edition:"global",updated_at:new Date().toISOString(),count:1,items:[{title:"Sourced prior headline",url:"https://publisher.test/story",source:"Example Press",published:new Date().toISOString()}]};
