@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       database_uuid:
-        description: "Existing Cloudflare D1 UUID (aurora-uap-cases), not a secret"
+        description: "Existing Cloudflare D1 UUID (aurora-uap-production), not a secret"
         type: string
         required: true
       approval_phrase:
@@ -42,7 +42,7 @@ jobs:
         run: |
           npx wrangler d1 list --json > /tmp/aurora-d1-list.json
           node scripts/check-d1-remote.mjs identity /tmp/aurora-d1-list.json "$D1_UUID"
-          node -e 'const fs=require("node:fs");fs.writeFileSync(".aurora-bootstrap.json",JSON.stringify({name:"aurora-d1-bootstrap",compatibility_date:"2026-10-27",d1_databases:[{binding:"DB",database_name:"aurora-uap-cases",database_id:process.env.D1_UUID}]},null,2))'
+          node -e 'const fs=require("node:fs");fs.writeFileSync(".aurora-bootstrap.json",JSON.stringify({name:"aurora-d1-bootstrap",compatibility_date:"2026-10-27",d1_databases:[{binding:"DB",database_name:"aurora-uap-production",database_id:process.env.D1_UUID}]},null,2))'
       - name: Apply existing, reviewed initial schema
         run: npx wrangler d1 execute DB --config .aurora-bootstrap.json --remote --yes --file migrations/0001_init.sql
       - name: Import only the three approved AARO cases
@@ -56,4 +56,4 @@ jobs:
       - name: Report remaining Pages binding gate
         run: |
           echo "Verified reviewed D1 seed rows. The public registry is NOT activated."
-          echo "Next: bind this D1 as DB in the correct Cloudflare Pages project. Enable the public registry separately only after verifying preview and production routes."
+          echo "Next: verify Pages production DB binding and redeploy state. Enable the public registry separately only after verifying preview and production routes."

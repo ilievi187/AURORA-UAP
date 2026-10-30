@@ -11,7 +11,7 @@ export function databases(response){
 export function verifyDatabaseIdentity(list,uuid){
  if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(uuid))throw Error("Invalid D1 UUID");
  const matches=databases(list).filter(x=>[x.uuid,x.database_id,x.id].includes(uuid));
- if(matches.length!==1||matches[0].name!=="aurora-uap-cases")throw Error("D1 UUID is not uniquely bound to aurora-uap-cases in authenticated Cloudflare account");
+ if(matches.length!==1||matches[0].name!=="aurora-uap-production")throw Error("D1 UUID is not uniquely bound to aurora-uap-production in authenticated Cloudflare account");
  return true;
 }
 export function verifySeedRows(payload){
