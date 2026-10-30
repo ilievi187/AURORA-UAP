@@ -220,7 +220,7 @@ export async function discoverMatches({
       try {
         const fetched = await readFeedWithRetry(selected[index], fetcher, timeoutMs, safeAttempts);
         if (!fetched.ok) throw new Error("fetch_failed");
-        settled[index] = {status: "fulfilled", value: parseFeedXml(fetched.xml, selected[index], now).filter((item) => titleMatchesTopic(item.title))};
+        settled[index] = {status: "fulfilled", value: parseFeedXml(fetched.xml, selected[index], now).filter((item) => titleMatchesTopic(item.title) || titleMatchesTopic(item.summary))};
       } catch (reason) {
         settled[index] = {status: "rejected", reason};
       }

@@ -4,3 +4,13 @@
 .news-original summary{cursor:pointer;color:#a9f4ed}
 .news-original p{margin:8px 0 2px;line-height:1.65;color:#d7e7e9}
 .news-original-summary{opacity:.86;font-size:11px}
+
+/* Mission 70: publisher thumbnails with a lightweight sci-fi fallback. */
+.news-card{display:flex;flex-direction:column;gap:.55rem;overflow:hidden}
+.news-thumb{position:relative;margin:-1rem -1rem .2rem;aspect-ratio:16/9;max-height:190px;overflow:hidden;background:linear-gradient(135deg,rgba(0,229,255,.12),rgba(6,21,29,.9) 60%);border-bottom:1px solid rgba(0,229,255,.18)}
+.news-thumb img{display:block;width:100%;height:100%;object-fit:cover;filter:saturate(.9) contrast(1.05);transition:transform .4s ease}
+.news-card:hover .news-thumb img{transform:scale(1.03)}
+.news-thumb--fallback{display:grid;place-items:center;font:700 2.4rem/1 system-ui,sans-serif;letter-spacing:.1em;color:rgba(0,229,255,.55);text-shadow:0 0 18px rgba(0,229,255,.35);background:radial-gradient(circle at 30% 30%,rgba(0,229,255,.18),transparent 55%),repeating-linear-gradient(0deg,rgba(0,229,255,.05) 0 1px,transparent 1px 22px),#061219}
+.news-summary{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+@media (prefers-reduced-motion:reduce){.news-thumb img{transition:none}.news-card:hover .news-thumb img{transform:none}}
+@media (max-width:600px){.news-thumb{max-height:160px}}

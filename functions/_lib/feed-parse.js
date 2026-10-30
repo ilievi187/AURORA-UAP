@@ -74,11 +74,59 @@ function publishedMs(raw) {
   return NaN;
 }
 
+export const MAX_SUMMARY_CHARS = 320;
+const MAX_IMAGE_URL_CHARS = 800;
+
+const escapeXml = (value) => String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const unwrapMarkup = (value) => String(value || "")
+  .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
+  .replace(/&lt;/gi, "<").replace(/&gt;/gi, ">").replace(/&quot;/gi, '"').replace(/&#0?39;|&apos;/gi, "'").replace(/&amp;/gi, "&");
+
+export function safeImageUrl(value) {
+  const text = String(value || "").trim().replace(/&amp;/gi, "&");
+  if (!text || text.length > MAX_IMAGE_URL_CHARS) return "";
+  let url;
+  try { url = new URL(text); } catch { return ""; }
+  if (url.protocol !== "https:" || url.username || url.password || url.port) return "";
+  return url.toString();
+}
+
+function firstInlineImage(markup) {
+  const match = unwrapMarkup(markup).match(/<img\b[^>]*?\bsrc\s*=\s*["']([^"']+)["']/i);
+  return safeImageUrl(match?.[1] || "");
+}
+
+// Large article bodies are dropped, but a bounded plain-text summary and at most
+// one https thumbnail per item are kept so the newsroom can show source context.
 export function shrinkFeedXml(xml) {
   return String(xml || "")
-    .replace(/<content:encoded\b[^>]*>[\s\S]*?<\/content:encoded>/gi, "")
-    .replace(/<dc:content\b[^>]*>[\s\S]*?<\/dc:content>/gi, "")
-    .replace(/<description\b[^>]*>[\s\S]*?<\/description>/gi, "");
+    .replace(/<(content:encoded|dc:content)\b[^>]*>([\s\S]*?)<\/\1>/gi, (_, _name, body) => {
+      const src = firstInlineImage(body);
+      return src ? `<aurora:image url="${escapeXml(src)}"/>` : "";
+    })
+    .replace(/<(description|summary)\b([^>]*)>([\s\S]*?)<\/\1>/gi, (_, name, attrs, body) => {
+      const src = firstInlineImage(body);
+      const text = decodeXmlText(body).slice(0, MAX_SUMMARY_CHARS);
+      return `<${name}${attrs}>${escapeXml(text)}</${name}>${src ? `<aurora:image url="${escapeXml(src)}"/>` : ""}`;
+    });
+}
+
+function itemImage(raw) {
+  const candidates = [];
+  for (const match of raw.matchAll(/<(media:content|media:thumbnail|enclosure|aurora:image)\b([^>]*)\/?>/gi)) {
+    const attrs = match[2];
+    const url = safeImageUrl(attrs.match(/\burl\s*=\s*["']([^"']+)["']/i)?.[1] || "");
+    if (!url) continue;
+    const type = (attrs.match(/\btype\s*=\s*["']([^"']+)["']/i)?.[1] || "").toLowerCase();
+    const medium = (attrs.match(/\bmedium\s*=\s*["']([^"']+)["']/i)?.[1] || "").toLowerCase();
+    if (type && !type.startsWith("image/")) continue;
+    if (medium && medium !== "image") continue;
+    if (match[1].toLowerCase() === "enclosure" && !type) continue;
+    const width = Number(attrs.match(/\bwidth\s*=\s*["']?(\d+)/i)?.[1] || 0);
+    candidates.push({url, width});
+  }
+  candidates.sort((a, b) => b.width - a.width);
+  return candidates[0]?.url || "";
 }
 
 export function parseFeedXml(xml, source, now = Date.now()) {
@@ -105,7 +153,7 @@ export function parseFeedXml(xml, source, now = Date.now()) {
     const age = now - ms;
     if (age > MAX_ITEM_AGE_MS || age < -MAX_FUTURE_MS) continue;
     if (title.length < 8) continue;
-    items.push({
+    const item = {
       title,
       url: url.toString(),
       source: source.publisher,
@@ -113,7 +161,12 @@ export function parseFeedXml(xml, source, now = Date.now()) {
       feed_host: source.feed_host || "",
       published: new Date(ms).toISOString(),
       language: source.language
-    });
+    };
+    const summary = decodeXmlText(elementText(raw, "description") || elementText(raw, "summary")).slice(0, MAX_SUMMARY_CHARS);
+    if (summary.length >= 20 && summary !== title) item.summary = summary;
+    const image = itemImage(raw);
+    if (image) item.image = image;
+    items.push(item);
   }
   return items;
 }
