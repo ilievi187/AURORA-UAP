@@ -334,9 +334,9 @@ test("last-good news is marked cached and includes the failed refresh diagnostic
 });
 test("underfilled live refresh uses last-good without losing current headlines or provenance",async()=>{
  const key="https://aurora-cache.invalid/news/last-good/global";
- const backup={status:"live",edition:"global",updated_at:new Date().toISOString(),count:6,items:Array.from({length:6},(_,i)=>({
-  title:"Previously sourced headline "+i,url:"https://publisher.test/story/"+i,source:"Example Press",published:new Date().toISOString()
- }))};
+ const backup={status:"live",edition:"global",updated_at:new Date().toISOString(),count:1,items:[{
+  title:"Previously sourced headline",url:"https://publisher.test/story/0",source:"Example Press",published:new Date().toISOString()
+ }]};
  const entries=new Map([[key,Response.json(backup)]]),pending=[];
  const originalCaches=globalThis.caches,originalFetch=globalThis.fetch;
  globalThis.caches={default:{
@@ -355,7 +355,7 @@ test("underfilled live refresh uses last-good without losing current headlines o
   assert.equal(response.headers.get("cache-control"),"no-store");
   const body=await response.json();
   assert.equal(body.status,"cached");
-  assert.equal(body.count,6);
+  assert.equal(body.count,1);
   assert.equal(body.items[0].url,"https://publisher.test/story/0");
   assert.equal(body.items[0].source,"Example Press");
   assert.equal(body.last_attempt.status,"degraded");
@@ -363,6 +363,45 @@ test("underfilled live refresh uses last-good without losing current headlines o
   assert.equal(body.last_attempt.items[0].url,"https://news.google.com/rss/articles/test");
   assert.equal(body.last_attempt.diagnostics.items_returned,1);
  }finally{
+  globalThis.fetch=originalFetch;
+  if(originalCaches===undefined)delete globalThis.caches;else globalThis.caches=originalCaches;
+ }
+});
+test("last-good newsroom response is returned before a slow refresh completes",async()=>{
+ const key="https://aurora-cache.invalid/news/last-good/global";
+ const saved={status:"live",edition:"global",updated_at:new Date().toISOString(),count:2,items:[
+  {title:"Sourced headline one",url:"https://publisher.test/one",source:"Example Press",published:new Date().toISOString()},
+  {title:"Sourced headline two",url:"https://publisher.test/two",source:"Example Press",published:new Date().toISOString()}
+ ]};
+ const entries=new Map([[key,Response.json(saved)]]),pending=[];
+ const originalCaches=globalThis.caches,originalFetch=globalThis.fetch;
+ globalThis.caches={default:{
+  async match(request){return entries.get(typeof request==="string"?request:request.url)?.clone()||null},
+  async put(request,response){entries.set(typeof request==="string"?request:request.url,response.clone())}
+ }};
+ globalThis.fetch=async()=>{throw new Error("unexpected_global_fetch")};
+ const ctx={waitUntil(promise){pending.push(promise)}};
+ const stall=async(_url,{signal})=>{
+  if(signal.aborted)throw signal.reason;
+  return new Promise((_,reject)=>signal.addEventListener("abort",()=>reject(signal.reason),{once:true}));
+ };
+ const keepAlive=setTimeout(()=>{},1000);
+ try{
+  const start=performance.now();
+  const response=await newsRoute({request:new Request("https://aurorauap.org/api/news?edition=global"),ctx,timeoutMs:300,
+   fetcher:stall,catalogFetcher:stall});
+  const elapsed=performance.now()-start;
+  assert.ok(elapsed<100,`last-good response should not await upstream timeout; observed ${Math.round(elapsed)}ms`);
+  assert.equal(response.status,200);
+  const body=await response.json();
+  assert.equal(body.status,"cached");
+  assert.equal(body.count,2);
+  assert.equal(body.items[0].url,"https://publisher.test/one");
+  assert.equal(body.last_attempt.status,"refreshing");
+  assert.equal(pending.length,1,"refresh should continue through the request lifecycle waitUntil hook");
+  await Promise.all(pending.splice(0));
+ }finally{
+  clearTimeout(keepAlive);
   globalThis.fetch=originalFetch;
   if(originalCaches===undefined)delete globalThis.caches;else globalThis.caches=originalCaches;
  }
