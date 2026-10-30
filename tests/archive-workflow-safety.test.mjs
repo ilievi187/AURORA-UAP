@@ -22,6 +22,7 @@ test("only scheduled main runs in the canonical repository can publish on a dedi
  assert.ok(publish.includes("github.event_name == 'schedule'"));
  assert.ok(publish.includes("github.ref == 'refs/heads/main'"));
  assert.ok(publish.includes("github.repository == 'ilievi187/AURORA-UAP'"));
+ assert.ok(publish.includes("vars.AURORA_ARCHIVE_PR_AUTOMATION_ENABLED == 'true'"));
  assert.ok(!publish.includes("github.ref_protected"));
  assert.match(publish,/permissions:\s+contents: write\s+pull-requests: write\s+actions: write/);
  assert.ok(publish.indexOf("node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs")<publish.indexOf("node scripts/sync-open-case-archive.mjs"));
