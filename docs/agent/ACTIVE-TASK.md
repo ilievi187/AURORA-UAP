@@ -1,31 +1,21 @@
 # Active Task
 
-## P1 — restore the production global newsroom feed
+## P1 — NEWS reliability (successor issue #52; originating from #32)
 
-Status: production `/api/news` remains unavailable; root cause is not established. Keep this issue separate from the completed locale fix and do not synthesize headlines.
+Status: PR #33 app-code checkpoint `59280cb` is based on main `760db33` and includes checked-publisher integration. Follow-up hardening now uses one 1.5-second deadline across each feed, redirects, and body read; streams within 2 MB/4,096-chunk limits; and cancels error/redirect bodies before releasing worker slots. News-source disclosure now names Google News and checked publisher feeds in all 18 locales. Local targeted suite passed 83/83 and Pages Functions build compiled. Require fresh CI on the exact current branch head; keep unmerged until owner-approved functional preview/API verification.
 
-Evidence: at 2026-10-28 21:33:21Z, `/api/news?edition=global&lang=en&offset=0` returned HTTP 503 `news_source_unavailable`, zero items, and no last-good result. Two representative source RSS URLs returned HTTP 200 from this host; this does not establish the Cloudflare Worker outcome. Cloudflare runtime logs/cache state are unavailable.
+Production `/news` displayed “Източникът временно не отговаря.” in the latest browser audit. A direct `/api/news?edition=global&lang=en&offset=0` request returned HTTP 403 with no characterized error body; LUNA made no retry. The earlier probe was HTTP 503 `news_source_unavailable` at 2026-10-29 08:05:59Z; the owner-recorded read-only bridge GET at 21:43 UTC returned HTTP 503. Cloudflare runtime logs/account access are unavailable, so cause is unconfirmed. The branch preview API returned Error 1010 `browser_signature_banned` / `owner_action_required`; do not retry or bypass.
 
-Next: get authorized Cloudflare runtime/log access and, if external Cache API documentation is needed, use Gemini in the browser after the owner signs into the existing guest session or explicitly authorizes another research route. Then isolate fetch versus cache failure, add a failing regression test, and fix only the evidenced cause.
+Candidate scope: five-worker Google News fan-out; bounded catalog-backed publisher headlines for global, official and Bulgaria editions; sanitized diagnostics; bounded XML parsing/streaming; partial-source serving; and explicitly cached last-good fallback. These are mitigations, not proof production is fixed or globally cached.
 
-Do not change production bindings, add stale-as-live data, or expose unpublished reports.
+## PR #34 — in-site video player
+
+Status: draft; checks pass, but actual supported playback has not been verified. The deployed PR preview `/media` showed 20 media links but no play button, iframe, or video element. One preview inspection occurred before the owner’s desktop-safety notice was read; no further shared-browser/GUI actions will be taken. Wait for an isolated, owner-approved test path and a public, rights-cleared source. Do not merge until a legitimate source plays inside AURORA. Never bypass paywalls, CAPTCHA, WAF or publisher restrictions.
 
 ## PR #14 — gated moderation queue
 
-Status: draft PR; implementation exists and tests are green, but final approval/merge is pending.
+Status: draft. Independent read-only review found no introduced JWT/auth/CSRF/XSS/audit/fail-closed bypass. Residual gates: the queue returns only the newest 100 submissions without pagination, and tests omit certificate-fetch failure/unknown key ID. Production still requires Access protection on both UI/API paths, configuration, privacy/retention approval and authenticated synthetic-only verification. Never enable intake as part of D1 registry work.
 
-Scope: Cloudflare Access JWT verification at origin, private queue GET, audited review POST, static moderation shell and operational setup guidance. Review approval must remain distinct from publication.
+## PR #35 — searchable global atlas UX (complete)
 
-Verified: head `b089eb254ecb714df39bcd89653e6db01452aabf`; six PR checks passed; local targeted tests 15/15 and additional suite 48/48 passed; preview unauthenticated API returns 403.
-
-Before merge: complete security/code review, confirm the PR author has marked it ready only when intended, check latest commit and checks again. Before any production enablement, verify the actual Access application protects both UI/API, exact moderator policy, production environment configuration, independent review, and synthetic-only authenticated test. The preview hostname guard means normal preview cannot authenticate; keep it that way unless a separately safe staging design is reviewed.
-
-Do not merge or enable production moderation/intake based solely on these tests. Privacy and retention/deletion operational gates remain open.
-
-## P3 — searchable global case-atlas UX
-
-Status: draft PR #35 open on `feat/luna-radar-search-m34`; all 10 GitHub checks passed and the branch preview was verified. This PR is not merged or production-deployed.
-
-Scope: localized search and country/year/category filters, clustered markers with accessible zoom/pan and a retained location-uncertainty caveat, bounded 60-row result pagination, D1 pagination beyond 250 records with incomplete-registry status, and honest handling of records without coordinates. No new cases or coordinates were added; the sourced archive baseline remains unchanged. This is an atlas UX slice, not completion of worldwide source expansion.
-
-Next: continue outstanding issue #32 work (broader country/source coverage and other planned slices). Keep PR #35 draft while the umbrella acceptance remains open; do not claim new case coverage, merge, or production deployment.
+Squash-merged 2026-10-29 as `8af79e4b14cf9a14bbe0b637911162c71296963a`. Main workflows and production deployment passed; production browser verified 15 archived cases and search. Production `/api/stats` last returned 503 `database_unavailable`; code returns this if `DB` is absent or the public-registry flag is not enabled, and no authorized production inspection confirms which. The UI reports incomplete registry and preserves the static archive. No new cases or coordinates. Issue #32 was still open at that checkpoint; the owner closed it at 21:27:11 UTC and successor #52 now tracks remaining work.

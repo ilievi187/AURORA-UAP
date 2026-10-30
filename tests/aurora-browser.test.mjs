@@ -658,6 +658,21 @@ try{
     assert.deepEqual(errors,[]);
     await context.close();
   });
+  await test('news API outage is shown as an explicit offline state, not a blank loading feed',async()=>{
+    const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});
+    const page=await context.newPage(),errors=[];
+    page.on('pageerror',error=>errors.push(error.message));
+    await page.route('**/api/news?*',route=>route.fulfill({status:503,contentType:'application/json',
+      body:JSON.stringify({status:'unavailable',error:'news_source_unavailable',items:[],diagnostics:{network_errors:10}})}));
+    await page.goto('http://127.0.0.1:'+port+'/news');
+    await page.waitForFunction(()=>document.querySelector('#newsStatus')?.dataset.state==='error');
+    const status=await page.locator('#newsStatus').textContent();
+    assert.ok(status&&status.trim().length>0);
+    assert.doesNotMatch(status,/Loading|Зареждане/);
+    assert.equal(await page.locator('.live-card').count(),0);
+    assert.deepEqual(errors,[]);
+    await context.close();
+  });
 }finally{
   if(browser)await browser.close();
   await new Promise(resolve=>server.close(resolve));

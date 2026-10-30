@@ -1,27 +1,24 @@
 # Current State
 
-Verified: 2026-10-28 21:33 UTC (production checks through 21:33:21Z).
+Verified: 2026-10-29 23:04 UTC. Re-fetch remote state before action.
 
-- Application-code baseline: `9c9d2275e2df6a83d8b755d8f7ad84cd7866441d` (`fix(i18n): localize clean newsroom and radar routes`, PR #30); this snapshot follows it with documentation-only updates.
-- PR #30 merged at 2026-10-28 21:29:04Z; all nine PR checks passed and main-push quality gate run `40772316033` completed successfully.
-- Pre-existing open PR at verification time: #14 `Prepare gated Cloudflare Access moderation queue`, still draft; no other pre-existing PR was open.
-- Production: `/news` and `/sky` both follow the saved `aurora-lang=en` across navigation and a newsroom reload. English selector, document language, page titles, headings and navigation were verified after PR #30 merged. Intake remains `accepting:false`, `mode:local_draft_only`.
-- Production `/api/news?edition=global&lang=en&offset=0` returned HTTP 503 `news_source_unavailable` with zero items and no last-good feed at 2026-10-28 21:33:21Z. Two representative Google News RSS source URLs returned HTTP 200 from the local host; the Cloudflare edge cause remains unknown.
-- Production public D1 registry: staged-mode release verifier passed; public registry endpoints correctly gated and sourced reference archive remains separate.
-- D1: production binding/database existence, schema and backups not verified in the Cloudflare account. No Wrangler installation/auth or Cloudflare environment variables found in this session.
-- Turnstile/WAF: production keys/rules not independently verified; intake disabled.
-- PR #14 preview: `/api/moderation/` without authorization returned HTTP 403 `unavailable`; preview is correctly rejected by hostname guard. Moderation is not production-ready until Access and release gates are configured and tested.
-- PR #30 local tests passed: browser E2E 26/26, static 22/22, feeds 9/9, DB 20/20, intake/deployment 19/19, D1 ops 3/3. The clean-route regression failed before the fix and passed afterward. PR checks and the main-push quality gate both passed.
-- Browser E2E ran locally using Playwright 1.56.1 with system Chromium; no browser dependency or binary was committed.
+## Main and production
 
-- Do not record credentials, private submissions, access tokens, or secret values here.
+- Latest observed `origin/main`: `760db33d8967874cf6d2958d3a4416fb8f0af32a`, including PR #54 specialist discovery; PR #43 remains open and assigned to another agent. Main production behavior after PR #54 is not verified.
+- PR #35 production deployment and browser check remain verified: sourced 15-case archive, `Australia` search → `westall-1966`, accessible map caveat. No new cases or coordinates.
+- Production `/api/stats` last returned HTTP 503 `database_unavailable`. The code returns this when `env.DB` is absent OR `AURORA_REGISTRY_PUBLIC` is not `enabled`; no authorized production inspection confirms which condition applies. UI marked registry completeness unknown and retained the archive. No production D1 writes.
+- Production `/news` displayed the Bulgarian unavailable-source message in the latest browser audit. A direct API request returned HTTP 403 without a characterized error body; LUNA made no retry. The earlier 503 `news_source_unavailable` was at 08:05:59Z; the owner-recorded read-only bridge GET at 21:43 UTC returned HTTP 503. Cause remains unknown; no further production calls without an approved path.
+- PR #33 Pages preview build check is green, but functional preview is blocked by the earlier Error 1010 owner-action response. Production deployment/user-journey after PRs #45–#54 is not verified. Do not infer production behavior from build checks.
 
-## 2026-10-29 branch-local atlas UX candidate
+## Open work
 
-- At this checkpoint PR #35 is draft and open; the implementation and prior docs handoff passed all 10 checks, and the branch preview was verified. The current state update is documentation-only; re-check the latest checks before merge.
-- Branch preview `https://feat-luna-radar-search-m34.aurora-uap.pages.dev/` was checked in a real browser: English entry succeeded, atlas showed the 15-case sourced archive, searching `Australia` returned `westall-1966`, and the location caveat remained visible/accessible.
-- Preview `/api/stats` returns HTTP 503 `database_unavailable` because D1 binding `DB` is not configured there; the UI displays an incomplete-registry warning and retains the sourced archive. Production remains unverified; no merge, production write, or production deploy occurred.
-- Adds 18-locale search/filter/map controls, marker clustering and zoom/pan with the reported-area uncertainty caveat retained in both visible and accessible descriptions, fixed 60-row result windows, bounded D1 page loading with malformed/demo-stat recovery, and visible status when registry completeness is unknown. Locale-aware Turkish casing and separate region-field search have regression tests.
-- No new case records, source claims, or coordinates were added. The existing sourced archive is still the coverage limit; this change must not be described as new worldwide source coverage.
-- Local verification passed: static/model 26/26, existing browser 26/26, atlas browser 8/8, database 20/20, intake 12/12, D1 operations 3/3, deployment 7/7, live feeds 9/9. `git diff --cached --check` passed. All 10 GitHub checks and the branch preview passed; production deployment remains unverified.
-- Next: continue outstanding issue #32 work after re-checking PR/workflow state; keep PR #35 draft until broader source/country acceptance is complete. No production write/deploy occurred.
+- PR #33 app-code checkpoint `59280cb` includes source-catalog integration and main through `760db33`; follow-up hardening shares one deadline across redirect/body reads, streams within 2 MB/4,096-chunk caps, and cancels non-OK/redirect bodies before worker reuse. News disclosure names both sources across all 18 locales. Local tests pass 83/83 and Wrangler Pages Functions compiled. Require fresh CI on the exact current branch head before any merge; preview Error 1010 remains a hard blocker.
+- PR #34 remains draft. Its deployed preview showed 20 media links but no play button, iframe or video element; actual playback is unverified. After one preview inspection before reading the owner’s desktop-safety notice, no further shared-browser/GUI use will occur. No source or media was added.
+- PR #14 moderation remains draft. Independent read-only review found no auth/JWT/CSRF/XSS/audit/fail-closed bypass; the 100-submission cap and missing certificate-fetch/unknown-key tests remain. Production Access, privacy, retention and moderation gates are not verified. Keep intake disabled.
+- Cloudflare D1 binding/database/migrations/backups, Turnstile, WAF and Access settings are unverified; the production 503 could be the DB binding or public-registry flag. `npx wrangler@4.156.0 whoami` reports unauthenticated; example config has a placeholder database ID. No Cloudflare changes made.
+- PR #43 archive expansion remains open and assigned to another agent. Avoid overlapping source/archive work.
+- Issue #32 was closed by the owner at 2026-10-29 21:27:11 UTC. Successor coordination issue #52 is open; PR #33/#34/#43 ownership remains as listed there.
+
+## Coordination
+
+- PRs #38–#42 and #44–#50 are merged by their owners; PR #43 remains open and assigned elsewhere. Do not alter TERA's separate frontend worktree or the active PR #43 archive branch.

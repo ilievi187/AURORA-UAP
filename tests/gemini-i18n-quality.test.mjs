@@ -191,6 +191,40 @@ test('subpage-i18n.js defines all 18 locales with complete keys, ?lang= query su
   assert.ok(code.includes('rel="canonical"') || code.includes('rel","canonical"'), 'subpage-i18n.js must manage canonical link');
 });
 
+test('news source disclosure names Google News and checked publisher feeds in all 18 locales', () => {
+  const code = read('subpage-i18n.js');
+  const match = code.match(/const packs=(\{[\s\S]*?\n \}),choices=/);
+  assert.ok(match, 'subpage-i18n.js must define packs');
+  const packs = vm.runInNewContext('(' + match[1] + ')');
+  const markers = {
+    bg: ['Google News', 'RSS', 'проверени', 'издател', 'не са потвърдени случаи'],
+    en: ['Google News', 'RSS', 'checked', 'publisher', 'not verified UAP cases'],
+    de: ['Google News', 'RSS', 'geprüfte', 'Verlagen', 'keine bestätigten UAP-Fälle'],
+    ru: ['Google News', 'RSS', 'проверенные', 'издателей', 'не являются подтверждёнными случаями UAP'],
+    'zh-CN': ['Google 新闻', 'RSS', '经核验', '媒体', '并非已核实的UAP案例'],
+    fr: ['Google Actualités', 'RSS', 'vérifiés', 'médias', 'pas des cas UAP vérifiés'],
+    es: ['Google Noticias', 'RSS', 'verificados', 'medios', 'no son casos UAP verificados'],
+    it: ['Google News', 'RSS', 'verificati', 'editori', 'non sono casi UAP verificati'],
+    pt: ['Google Notícias', 'RSS', 'verificados', 'editoras', 'não são casos UAP confirmados'],
+    tr: ['Google Haberler', 'RSS', 'doğrulanmış', 'yayıncı', 'doğrulanmış UAP vakaları değildir'],
+    ro: ['Google Știri', 'RSS', 'verificate', 'editorilor', 'nu sunt cazuri UAP verificate'],
+    el: ['Google News', 'RSS', 'επαληθευμένες', 'εκδοτών', 'δεν είναι επιβεβαιωμένα περιστατικά UAP'],
+    sr: ['Google вести', 'RSS', 'проверени', 'издавача', 'нису потврђени случајеви UAP'],
+    uk: ['Google Новин', 'RSS', 'перевірені', 'видавців', 'не підтвердженими випадками UAP'],
+    pl: ['Google News', 'RSS', 'sprawdzone', 'wydawców', 'nie są potwierdzonymi przypadkami UAP'],
+    ar: ['أخبار Google', 'RSS', 'التي تم التحقق', 'للناشرين', 'ليست حالات UAP مؤكدة'],
+    ja: ['Google ニュース', 'RSS', '確認済み', '出版社', '確認済みのUAP事例ではありません'],
+    ko: ['Google 뉴스', 'RSS', '검증된', '언론사', '확인된 UAP 사례가 아닙니다']
+  };
+  for (const locale of EXPECTED_LOCALES) {
+    const warning = packs[locale]?.newsWarning?.toLocaleLowerCase();
+    assert.ok(warning, `subpage-i18n.js ${locale} must define newsWarning`);
+    for (const marker of markers[locale]) {
+      assert.ok(warning.includes(marker.toLocaleLowerCase()), `subpage-i18n.js ${locale}.newsWarning missing disclosure marker: ${marker}`);
+    }
+  }
+});
+
 test('ui-locales.js and world-atlas-labels.js cover all 18 locales without broken characters', () => {
   const uiCode = read('ui-locales.js');
   const packsMatch = uiCode.match(/const packs=(\{[\s\S]*?\});\n/);

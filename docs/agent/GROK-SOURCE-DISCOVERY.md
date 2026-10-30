@@ -1,6 +1,6 @@
 # GROK source discovery
 
-Status: discovery on `agent/grok-discovery-specialists` also reads specialist-press feeds outside the 12-feed preview. The catalog remains 75 feeds. `functions/api/news.js` is unchanged. Health checks stay capped at 12.
+Status: the catalog has 75 checked feeds. PR #54 widens keyword discovery from the 12-feed preview to add specialist-press feeds (21 selected for `all`); health checks remain capped at 12. The PR #33 candidate wires the same selector into `/api/news` by edition; production behavior is unverified.
 
 ## Catalog
 
@@ -44,9 +44,19 @@ Checked and left out, rather than invented:
 
 `GET /api/source-health?region=` checks at most 12 catalog feeds for that region. It records HTTP status, elapsed time, RSS/Atom/RDF format, accepted items, duplicate titles, newest date, and undated, stale, or future counts. One retry is used only for a timeout, a network failure, or HTTP 5xx. A 404 is not retried. The response has no feed body and no article text. Any query other than `region`, including `url` or `feed`, is HTTP 400 and does not fetch.
 
-`/sources.html` runs this check only after "Провери състоянието". Changing region clears the previous result. Keyword discovery is separate. It keeps the same 12-feed preview, then adds specialist-press feeds in that region which the preview did not already include, up to 12 more. For region `all` that is 21 reads: the preview 12 plus Guardian science, Spiegel Wissenschaft, Libération sciences, Nature, Space.com, Science News, Phys.org space, Scientific American, and Live Science. General desks such as Dnevnik and tagesschau stay outside that request. A failed extra feed does not drop matches from feeds that respond.
+`/sources.html` runs health checks only after "Провери състоянието". Changing region clears the previous result. Manual keyword discovery keeps the 12-feed preview and adds up to 12 specialist-press feeds in the selected region; health remains 12. The news endpoint also uses the same title matcher automatically.
 
-This module is the integration surface for a later newsroom hook. It must not be imported into `functions/api/news.js` until LUNA coordinates that change. `dedupeHeadlines()` is still not wired into `fetchHeadlines`.
+## Newsroom integration (PR #33 candidate)
+
+`functions/api/news.js` now combines its existing multi-region Google News results with keyword-matched items from the checked publisher catalog:
+
+- Global edition: the 12 prioritized preview feeds plus up to 12 specialist-press feeds outside the preview (currently 21 total).
+- Official edition: catalog entries with role `official-institution` (currently seven).
+- Bulgaria edition: catalog entries with country `BG` (currently Dnevnik).
+
+The publisher lane uses the allowlisted feed reader, at most five concurrent requests, one attempt per feed, and a 1.5-second total per-feed deadline covering fetch, catalog-allowlisted redirects, and response-body reading. The reader streams at most 2 MB and 4,096 chunks, cancelling when either limit is exceeded; non-OK and redirect bodies are cancelled before the worker slot is reused. It runs after the Google News lane so combined upstream concurrency stays within five. Global may select 21 catalog feeds, so a fully stalled refresh can add several seconds; redirects are still restricted to catalog-listed hosts. `dedupeHeadlines()` prefers a direct publisher URL when a title also appears through Google News. Publisher status, checked/failed counts, and matches are included in diagnostics. The localized news-source notice names both Google News and checked publisher feeds in every supported locale.
+
+The worker's internal fresh-cache key is versioned so it does not reuse its pre-integration Google-only snapshot. A previously cached external `/api/news` response may remain visible until its current 15-minute shared-cache TTL expires. The last-good cache remains available as a clearly labeled fallback. `/api/discovery` and `/api/source-health` remain separate endpoints for manual source inspection.
 
 ## Keywords
 
@@ -54,10 +64,9 @@ Titles match UAP, UFO, OVNI, AARO, НЛО, OZN, and ΑΤΙΑ as whole tokens, pl
 
 ## Verification
 
-PR #51 (`d5339ab1ad228724a757ffffc7f5d32e37385524`) is on production. At 2026-10-29T21:21:07Z, `/api/sources` returned count 75 without Corriere, and `/api/discovery?region=all` returned one Debrief headline from the 12 preview feeds, with `cbc-world` failed. Caller `url` queries returned HTTP 400. Scientific American's headline from the catalog audit was not in that response.
+In `/home/nightknight/Work/aurora-grok-reliability` on 2026-10-29:
 
-In `/home/nightknight/Work/aurora-grok-discovery` on 2026-10-29, after the specialist selection change:
+- `node --test tests/source-catalog.test.mjs tests/source-health.test.mjs` — 16 passed. Coverage includes a bulk `content:encoded` feed, the IAEA compact date, a surname containing "ufo", one timed-out feed beside a live match, and the 2 MB download ceiling.
+- `AURORA_CHROMIUM=/usr/bin/chromium node --test tests/source-discovery-browser.test.mjs` — 2 passed. A failed fixture source is named, and the matching headline stays on the page. Caller URLs are still absent.
 
-- `node --test tests/source-catalog.test.mjs tests/source-health.test.mjs` — 18 passed. The new tests require Scientific American in the discovery set and reject Dnevnik and tagesschau there. Health remains 12 feeds and still rejects a caller URL.
-
-This branch is not on production yet. No change to intake, payments, moderation, or the news worker. `/api/source-health?url=` remains HTTP 400.
+PR #54's specialist discovery change is merged to `main`; whether its main deployment completed has not been verified. PR #33's `/api/news` integration remains a candidate and has no verified production recovery. No changes to intake, payments, or moderation. `/api/source-health?url=` remains HTTP 400.

@@ -1,14 +1,10 @@
 # Deployment Status
 
-Verified 2026-10-28 21:33 UTC.
+Verified 2026-10-29 23:04 UTC. Re-check live state before claiming a new release.
 
-- Production custom domain is reachable: `https://aurorauap.org/` responds 200 (canonical redirects may occur).
-- Production clean routes `/news` and `/sky` now render the selected English locale and retain it across navigation/reload after PR #30. Production browser verification passed on 2026-10-28.
-- Production `/api/news?edition=global&lang=en&offset=0` returned HTTP 503 `news_source_unavailable`, zero items and no last-good response at 21:33:21Z. Do not claim the global newsroom is currently live.
-- PR #29 merged to main at 20:59:01Z; its main-push quality gate passed. PR #30 merged at 21:29:04Z; its nine PR checks and main-push quality gate passed. The English clean-route behavior was independently verified on production.
-- Production report route responds 200.
-- Production intake is disabled: `/api/intake/status` reports `accepting:false`, `local_draft_only`.
-- Public registry is in staged mode; remote read-only verifier passes and public D1 endpoints are gated.
-- PR #14 preview deployment reports successful in the PR check; its unauthenticated moderation API returns 403. This does not establish a production moderation deployment.
-- No Cloudflare account admin credentials/tools were found in this session. Production D1, bindings, migrations, backup, Turnstile, WAF, Access application and environment variables are unverified.
-- Do not change gates or claim production intake/admin readiness. Follow `docs/V1.7-LIVE-SUBMISSION-ACTIVATION.md` and `docs/V1.8-MODERATION-SETUP.md` after PR #14 is reviewed/merged and an authorized operator can inspect the account.
+- PR #33 app code adds catalog-backed news; follow-up hardening enforces one total per-feed deadline, streaming 2 MB/4,096-chunk limits, and early cancellation of redirect/error bodies. News-source disclosure now identifies both Google News and checked publisher feeds in 18 locales. Local suites 83/83 and Wrangler build pass. The branch remains open/unmerged; refresh current head/CI. The feature has not been deployed or functionally preview-verified.
+- PR #35 production deployment at `8af79e4b14cf9a14bbe0b637911162c71296963a` and its browser verification remain confirmed: sourced 15-case archive, `Australia` search (`westall-1966`) and accessible location caveat.
+- Latest production `/news` browser audit showed the localized unavailable-source state. A direct API request returned HTTP 403 with no characterized cause; the owner-recorded read-only bridge GET at 2026-10-29 21:43 UTC returned HTTP 503. LUNA made no repeat request; PR #33 has not been deployed.
+- Production `/api/stats` last returned HTTP 503 `database_unavailable`. Code emits this if `env.DB` is absent OR `AURORA_REGISTRY_PUBLIC` is not `enabled`; production configuration has not been confirmed. UI showed incomplete registry and retained the archive. No D1 writes were made.
+- Production report route/intake was previously confirmed disabled/local-draft-only. Access, Turnstile, WAF and moderation remain unverified.
+- A current production browser verification after PR #54 is not available because of the API access-denial blocker. After one preview inspection before reading the owner’s desktop-safety notice, no further shared-browser/GUI actions will be taken. Do not report deployment/user-journey as verified from green CI alone.

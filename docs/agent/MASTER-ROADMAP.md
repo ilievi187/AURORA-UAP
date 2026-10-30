@@ -1,25 +1,26 @@
 # Master Roadmap
 
-Statuses reflect verification on 2026-10-29 (local atlas branch checks only); production and GitHub state must be re-checked before action.
+Statuses reflect evidence checked 2026-10-29 23:04 UTC; re-check remote and production state before action.
 
 | Priority | Status | Task / Acceptance criteria | Dependencies / evidence |
 |---|---|---|---|
-| P0 | COMPLETE (current checks) | Production site and intake are reachable and fail closed; no accidental public intake. | Live `/api/intake/status` false; staged registry verifier passes. |
-| P1 | COMPLETE | Localize newsroom/radar on clean Cloudflare Pages routes and preserve the selected language. | PR #30 merged; production `/news` and `/sky` verified with saved English locale. |
-| P1 | BLOCKED | Restore a dependable sourced global newsroom feed and last-good behavior. | Production `/api/news` returned 503 at 2026-10-28 21:33:21Z; needs Cloudflare Worker runtime/cache diagnostics. Never seed fictional articles. |
-| P1 | IN PROGRESS | Secure moderation queue. Access JWT signature, issuer, audience, expiry and owner identity checked at origin; review audited; no publication. | PR #14 draft, CI green. Require full review and real Cloudflare Access setup before enablement. |
-| P1 | BLOCKED | Provision/verify production D1, apply both migrations safely, bind `DB`, backup/restore and read/write smoke test. | Requires authorized Cloudflare access; preserve existing DB/data. |
-| P1 | BLOCKED | Production Turnstile hostname/widget and Siteverify test; WAF POST limits and abuse monitoring verified. | Requires Cloudflare account and owner-approved setup; never put secret in Git. |
-| P1 | BLOCKED | Final privacy notice, lawful basis, controller/contact, retention, rights and operational handling approved and published. | Owner/legal review and verified privacy contact required; do not assert legal readiness. |
-| P1 | TODO | Secure deletion/access request and retention workflow; tests prove private records/audit handling and no public leak. | Privacy policy and authenticated moderation workflow. |
-| P2 | IN PROGRESS | Complete multilingual persistence/content coverage plus accessibility/mobile audit across all pages. | PR #30 fixes only clean newsroom/radar route localization; audit remaining pages and locale completeness. Local browser E2E is runnable; retain CI evidence. |
-| P2 | TODO | Security headers/CSP/CORS/rate-limit and dependency audit; regressions covered. | Non-destructive tests only. |
-| P2 | TODO | SEO/public content/broken links and truthful status review; protect admin/private routes from indexing. | No private data indexed. |
-| P2 | TODO | Registry provenance and responsive map audit; confirm no fake counts/precise personal coordinates. | Current registry remains safely gated. |
-| P3 | IN PROGRESS (draft PR) | Searchable global case-atlas UX: localized search/filters, accessible clusters/map controls, bounded results and D1 completeness reporting. | PR #35; all 10 checks pass and branch preview verified. No new source data or coordinates; broader coverage remains outstanding. Keep draft; no production deployment. |
-| P3 | TODO | Evaluate private media uploads only after cost approval, privacy and file-safety controls. | No upload endpoint until controls and cost approved. |
-| P3 | TODO | Evaluate AI moderation assistance only after privacy/vendor assessment; human decision required. | No personal data to external AI without approval. |
-| P3 | TODO | Evaluate additional full locales after Bulgarian and English completeness. | Legal text requires specialist review. |
-| P3 | TODO | Verify donation link/account and disclosures. | Owner confirmation; no test payment. |
+| P0 | COMPLETE (staged safeguards) | Production site and intake remain fail-closed; no accidental public intake. | Intake is disabled/local-only; staged registry verifier passes. |
+| P1 | IN PROGRESS | Complete locale persistence, translation and accessibility across all supported pages/routes. | PRs #30, #38, #44, #49 and #50 merged. Remaining route-by-route production verification is blocked; do not claim every page complete from CI alone. |
+| P1 | IN PROGRESS / PREVIEW BLOCKED | Restore dependable sourced news, partial-source success, diagnostics, last-good behavior and connect checked publisher feeds to the live API. | PR #33 app-code checkpoint `59280cb` is based on main `760db33`; follow-up shares one deadline across redirects/body, streams at most 2 MB/4,096 chunks, cancels failed/redirect bodies before worker release, and localizes the combined source disclosure in 18 locales. Local suite 83/83; build compiled. Owner-recorded read-only bridge GET at 21:43 UTC returned production `/api/news` HTTP 503; cause unverified. Preview Error 1010 remains owner-gated. Do not bypass or merge before functional verification. |
+| P1 | IN PROGRESS (draft PR) | Gated moderation queue with Cloudflare Access verification and audited private review; approval never publishes. | PR #14 independent read-only review found no auth bypass; pagination (newest 100 only), certificate-fetch/unknown-key test gaps and production Access/privacy/retention approval remain blockers. |
+| P1 | BLOCKED | Provision/verify production D1, safely apply migrations, bind `DB`, verify backups and a read/write smoke test. | Production `/api/stats` last returned 503 `database_unavailable`; the code guard is `!env.DB || AURORA_REGISTRY_PUBLIC !== "enabled"`, but production config has not been confirmed. Wrangler v4.156.0 is not authenticated and example ID is a placeholder. Requires authorized account access; preserve data. |
+| P1 | BLOCKED | Production Turnstile hostname/widget, Siteverify, WAF limits and abuse monitoring. | Cloudflare account and owner-approved configuration required; no secrets in Git. |
+| P1 | BLOCKED | Final privacy notice, lawful basis, controller/contact, retention and rights handling. | Owner/legal review and verified privacy-contact test required; intake stays disabled. |
+| P1 | TODO | Secure deletion/access-request and retention workflow with no public data leak. | Depends on approved privacy policy and authenticated moderation workflow. |
+| P2 | IN PROGRESS | Responsive mobile/desktop audit, keyboard access and no-overflow across every route. | PRs #37, #40–#42 and #47 merged with browser tests. Broader route/browser audit remains; PR #43 archive/source work is owned by another agent. |
+| P2 | IN PROGRESS | Build an attributable international source-discovery pipeline without automatic publication. | PR #39 added the catalog; #45 source health; #46 Africa/Americas; #54 specialist discovery; PR #33 now wires the checked catalog into the live news API candidate. No source finding auto-publishes a case. PR #43 archive expansion remains assigned to another agent. |
+| P2 | TODO | Security headers/CSP/CORS/rate limits and dependency audit. | Non-destructive tests only. |
+| P2 | TODO | SEO, broken-link and truthful-content review; protect private/admin routes from indexing. | Never index private data. |
+| P2 | TODO | Registry provenance and responsive map audit; no fake counts or precise personal coordinates. | Sourced 15-case archive remains fallback; production D1 is unavailable. |
+| P3 | COMPLETE (merged) | Searchable global case-atlas UX with localized search, accessible clusters and honest D1 completeness state. | PR #35 merged as `8af79e4b14cf9a14bbe0b637911162c71296963a`; main workflows and production deployment passed. No new cases/coordinates. Issue #32 was later closed by the owner; successor coordination is issue #52. |
+| P3 | IN PROGRESS (draft PR) | Accessible in-site media player; verify actual supported playback. | PR #34 checks pass, but deployed preview has no play control/iframe/video on its 20 linked media cards; live playback remains unverified. Obtain a public, rights-cleared source or approved test path. Never bypass access controls. |
+| P3 | TODO | Private media uploads only after cost, privacy and file-safety approval. | No upload endpoint until controls/cost approved. |
+| P3 | TODO | AI moderation only after privacy/vendor assessment; human decision required. | No personal data to external AI without approval. |
+| P3 | TODO | Verify donation account and disclosures. | Owner confirmation; no test payment. |
 
-Definition of V1.8 completion remains the full acceptance list in the owner contract, not a green build alone.
+V1.8 completion is the full owner acceptance list, not a green build alone. Issue #32 was closed by the owner at 2026-10-29 21:27:11 UTC; active coordination continues under issue #52. Remaining gates include functional preview, production news/D1, actual in-site video playback, privacy/security controls and source-backed archive coverage.
