@@ -87,3 +87,54 @@ test("repository baseline is compatible with generated records and public displa
   assert.ok(c.source?.url?.startsWith("https://"));
  }
 });
+
+test("deterministic fixtures never replace or shrink the real archive",async()=>{
+ const {runFixtureChecks}=await import("../scripts/sync-open-case-archive.mjs");
+ const fixture=runFixtureChecks();
+ assert.equal(fixture.report.generated,2);
+ assert.equal(fixture.archive.cases.length,3);
+});
+
+test("fixture workflow check precedes import and never stages fixture data",()=>{
+ const workflow=readFileSync(new URL("../.github/workflows/auto-case-archive.yml",import.meta.url),"utf8");
+ const fixture=workflow.indexOf("run: node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs");
+ const importing=workflow.indexOf("run: node scripts/sync-open-case-archive.mjs");
+ const committing=workflow.indexOf("- name: Commit verified archival metadata only");
+ assert.ok(fixture>=0&&importing>fixture&&committing>importing);
+ assert.ok(!workflow.slice(fixture,importing).includes("sync-open-case-archive.mjs"));
+ assert.ok(workflow.slice(committing).includes("git add data/cases.json data/archive-sync-status.json"));
+});
+
+test("workflow stops before import/publication when fixture tests fail",()=>{
+ const workflow=readFileSync(new URL("../.github/workflows/auto-case-archive.yml",import.meta.url),"utf8");
+ assert.ok(workflow.indexOf("run: node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs")>=0);
+ assert.ok(workflow.indexOf("run: node scripts/sync-open-case-archive.mjs")>workflow.indexOf("run: node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs"));
+ assert.ok(!workflow.includes("continue-on-error:"));
+ assert.ok(workflow.includes("node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs\r\n      - name: Fetch only approved"));
+});
+
+test("source download enforces the byte cap even when Content-Length is missing or too small",async()=>{
+ const {fetchSource}=await import("../scripts/sync-open-case-archive.mjs");
+ const encoder=new TextEncoder();
+ for(const headers of [{},{"content-length":"1"},{"content-length":"not-a-number"}]){
+  let cancelled=false;
+  const oversized=new Response(new ReadableStream({
+   start(controller){controller.enqueue(encoder.encode(" ".repeat(5_000_001)));},
+   cancel(){cancelled=true;}
+  }),{headers});
+  await assert.rejects(fetchSource(async()=>oversized),/5 MB limit/);
+  assert.equal(cancelled,true,`oversized body with headers ${JSON.stringify(headers)} is cancelled`);
+ }
+ const valid=await fetchSource(async()=>new Response(JSON.stringify({license:source.license,cases:source.cases}),{headers:{"content-length":"0"}}));
+ assert.equal(valid.cases.length,2);
+});
+
+test("upstream errors cancel their body and timeouts propagate",async()=>{
+ const {fetchSource}=await import("../scripts/sync-open-case-archive.mjs");
+ let cancelled=false;
+ const errorResponse=new Response(new ReadableStream({start(controller){controller.enqueue(new TextEncoder().encode("upstream error"));},cancel(){cancelled=true;}}),{status:503});
+ await assert.rejects(fetchSource(async()=>errorResponse),/Upstream HTTP 503/);
+ assert.equal(cancelled,true);
+ const timeout=new DOMException("The operation was aborted due to timeout","TimeoutError");
+ await assert.rejects(fetchSource(async(_url,options)=>{options.signal.throwIfAborted();options.signal.addEventListener("abort",()=>{}, {once:true});throw timeout;}),/timed out|timeout|aborted/i);
+});

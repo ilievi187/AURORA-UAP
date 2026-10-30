@@ -10,6 +10,11 @@ export const SOURCE_LICENSE="CC BY 4.0";
 const ROOT=path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const DATA=path.join(ROOT,"data","cases.json");
 const MANIFEST=path.join(ROOT,"data","archive-sync-status.json");
+const MAX_SOURCE_BYTES=5_000_000;
+const FIXTURE_SOURCE={license:"U.S. government works; Creative Commons Attribution 4.0 (CC BY 4.0)",cases:[
+ {id:"fixture-colorado-2022",designation:"Colorado Springs UAP Incident",kind:"pursue-cluster",card:{en:{apparent:"Documents describing a published observation; no further findings are provided."}},assets:[{type:"document",label:"Original release",url:"https://media.uap-archive.org/pursue-docs/example.pdf"}],incidentDates:["February, 2022"],incidentLocations:["Colorado Springs, Colorado, U.S."]},
+ {id:"fixture-western-us-2022",designation:"Western US Event",kind:"pursue-cluster",card:{en:{apparent:"Documents describing a published observation; no further findings are provided."}},assets:[{type:"document",label:"Original release",url:"https://media.uap-archive.org/pursue-docs/example.pdf"}],incidentDates:["2022"],incidentLocations:["Unknown area"]}
+]};
 const ALIASES={
   "aaro-gofast-case":"gofast-2015",
   "aaro-mt-etna-case":"etna-2018",
@@ -137,14 +142,34 @@ export function buildArchive(existing,source){
    status:"ok"
  }};
 }
+export function runFixtureChecks(){
+ // Deliberately fixture-only: no repository data paths are opened or written.
+ const curated={schema_version:1,cases:[{id:"fixture-editorial",title:{en:"Curated Fixture Record"},source:{url:"https://example.org/source"}}]};
+ const {archive,report}=buildArchive(curated,FIXTURE_SOURCE);
+ if(archive.cases.length!==3||report.generated!==2)throw Error("Deterministic archive fixture check failed");
+ return {archive,report};
+}
 export async function fetchSource(fetcher=fetch){
  const response=await fetcher(SOURCE_URL,{headers:{Accept:"application/json","User-Agent":"AURORA-UAP-source-sync/1.0 (+https://aurorauap.org)"},signal:AbortSignal.timeout(18000)});
- if(!response.ok)throw Error("Upstream HTTP "+response.status);
- const length=Number(response.headers.get("content-length")||"0");
- if(length>5_000_000)throw Error("Source exceeds 5 MB limit");
- const body=await response.text();
- if(body.length>5_000_000)throw Error("Source exceeds limit");
- return JSON.parse(body);
+ if(!response.ok){if(response.body)await response.body.cancel().catch(()=>{});throw Error("Upstream HTTP "+response.status)}
+ const declared=response.headers.get("content-length");
+ if(declared!==null&&/^\d+$/.test(declared)&&BigInt(declared)>BigInt(MAX_SOURCE_BYTES)){
+  if(response.body)await response.body.cancel().catch(()=>{});
+  throw Error("Source exceeds 5 MB limit");
+ }
+ if(!response.body)throw Error("Source response has no body");
+ const reader=response.body.getReader();const chunks=[];let total=0;
+ try{
+  while(true){
+   const {done,value}=await reader.read();if(done)break;
+   total+=value.byteLength;
+   if(total>MAX_SOURCE_BYTES){await reader.cancel("Source exceeds 5 MB limit").catch(()=>{});throw Error("Source exceeds 5 MB limit")}
+   chunks.push(value);
+  }
+ }catch(error){await reader.cancel().catch(()=>{});throw error}
+ const bytes=new Uint8Array(total);let offset=0;
+ for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength}
+ return JSON.parse(new TextDecoder("utf-8",{fatal:true}).decode(bytes));
 }
 async function atomicWrite(file,contents){
  const temp=file+".next";
