@@ -29,3 +29,11 @@ jobs:
           npx playwright install --only-shell chromium
       - name: Verify local rendering, accessibility and modal lifecycle
         run: node --test tests/media-player-browser.test.mjs
+      - name: Upload sleek media layout browser screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aurora-media-sleek-visuals
+          path: artifacts/media-sleek-gallery-*.png
+          if-no-files-found: ignore
+          retention-days: 7
