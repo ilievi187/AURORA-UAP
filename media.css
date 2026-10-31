@@ -2,6 +2,19 @@
 .media-entry{display:flex;flex-direction:column;min-width:0;border:1px solid #397484;background:linear-gradient(140deg,#103542,#071b27);overflow:hidden}
 .media-entry-image{position:relative;background:#051d2b;aspect-ratio:16/8;overflow:hidden}
 .media-entry-image img{width:100%;height:100%;object-fit:cover;opacity:.85}
+.media-entry-image img[hidden],.media-entry-image span[hidden]{display:none}
+.media-entry-image.media-inline-active{aspect-ratio:16/9;background:#000}
+.media-inline-play{position:absolute;inset:0;margin:auto;width:76px;height:76px;border-radius:50%;background:#052d39e8;border:2px solid #9cfff3;color:#e6fff9;font-size:29px;cursor:pointer;z-index:3;box-shadow:0 0 25px #65eadd55;transition:transform .16s ease,background .16s ease}
+.media-inline-play:hover{transform:scale(1.08);background:#156073}
+.media-inline-play:focus-visible{outline:3px solid #fff;outline-offset:4px}
+.media-inline-play[hidden]{display:none}
+.media-inline-player-stage{position:absolute;inset:0;width:100%;height:100%;display:grid;place-items:center;overflow:hidden;background:#000}
+.media-inline-player-stage iframe,.media-inline-player-stage video{width:100%;height:100%;border:0;display:block;background:#000;object-fit:contain}
+.media-inline-close{position:absolute;z-index:4;top:8px;right:8px;width:36px;height:36px;border:1px solid #8bd4d1;background:#051820e8;color:#fff;font-size:20px;cursor:pointer}
+.media-inline-status{position:absolute;left:0;right:0;bottom:0;padding:7px 10px;background:#081b25e8;color:#dcffff;font:11px/1.5 Consolas,monospace;pointer-events:none}
+.media-inline-status:empty{display:none}
+@media(prefers-reduced-motion:reduce){.media-inline-play{transition:none}}
+
 .media-entry-image span{position:absolute;left:12px;bottom:12px;padding:7px 10px;background:#08232be8;border:1px solid #70b5b5;color:#d6fffa;font:11px/1.2 Consolas,monospace}
 .media-entry-body{display:flex;flex-direction:column;gap:12px;padding:21px;flex:1}
 .media-entry-body h2{font-size:21px;font-weight:590;line-height:1.3;margin:0}
