@@ -39,23 +39,19 @@ test("publisher landing pages are never misrepresented as playable footage",()=>
   for(const item of media)assert.equal(resolveMediaPlayback(item),null,id+" illegally inferred embed");
  }
 });
-test("DVIDS exception remains narrowly scoped; players load only on deliberate click",()=>{
- const dossier=read("dossier.js");
- assert.match(dossier,/import\("\/media-player\.js"\)/);
- assert.match(dossier,/resolveMediaPlayback\(media\)/);
- assert.match(dossier,/watch\.addEventListener\("click",async/);
- assert.match(dossier,/c\.id==="al-taqaddum-2017"/);
- assert.match(dossier,/960331/);
- assert.match(dossier,/sandbox","allow-scripts allow-same-origin allow-presentation"/);
- assert.match(dossier,/video\.controls=true/);
- assert.match(dossier,/video\.preload="metadata"/);
- assert.match(dossier,/media\.playback\?\.rights_status==="verified"/);
- const page=read("dossier.html");
- assert.match(page,/id="dossierDepth"/);
- assert.match(page,/id="caseMediaGrid"/);
- assert.match(read("dossier.css"),/case-video-frame/);
+test("only the hero mounts a verified player, never the lower archive",()=>{
+ const hero=read("dossier-hero.js"),dossier=read("dossier.js"),page=read("dossier.html");
+ assert.match(hero,/import\("\/media-player\.js"\)/);
+ assert.match(hero,/resolveMediaPlayback\(media\)/);
+ assert.match(hero,/button\.addEventListener\("click"/);
+ assert.match(hero,/v\.controls=true/);
+ assert.match(hero,/v\.preload="metadata"/);
+ assert.match(hero,/sandbox","allow-scripts allow-same-origin allow-presentation"/);
+ assert.doesNotMatch(dossier,/case-watch-button|case-video-frame|mediaGrid\.append\(video\)|mediaGrid\.append\(frame\)/);
+ assert.match(dossier,/new Set\(\["documents","archive","photo"\]\)/);
+ assert.ok(page.includes('id="caseHeroStage"'));
+ assert.ok(page.includes('id="caseMediaGrid"'));
 });
-
 
 test("official DVIDS Al Taqaddum recording is real in-page source media, not a fake badge",()=>{
  const c=cases.find(x=>x.id==="al-taqaddum-2017");
