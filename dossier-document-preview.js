@@ -38,30 +38,36 @@ function sourcePdf(url){
 }
 function words(lang){return text[lang]||text.en}
 function close(){
- const viewer=document.getElementById("caseDocumentViewer"),iframe=document.getElementById("caseDocumentFrame");
- if(!viewer||!iframe)return;
- iframe.removeAttribute("src");
+ const viewer=document.getElementById("caseDocumentViewer"),host=document.getElementById("caseDocumentFrameHost");
+ if(!viewer||!host)return;
+ host.replaceChildren();
  viewer.hidden=true;
 }
 function open(url,title,lang){
  const safe=sourcePdf(url);
  if(!safe)return false;
  const viewer=document.getElementById("caseDocumentViewer");
- const iframe=document.getElementById("caseDocumentFrame");
+ const host=document.getElementById("caseDocumentFrameHost");
  const name=document.getElementById("caseDocumentTitle");
  const closeBtn=document.getElementById("caseDocumentClose");
  const origin=document.getElementById("caseDocumentSource");
  const note=document.getElementById("caseDocumentNote");
- if(!viewer||!iframe||!name||!closeBtn||!origin||!note)return false;
+ if(!viewer||!host||!name||!closeBtn||!origin||!note)return false;
  const w=words(lang);
  name.textContent=title||"Original published document";
  closeBtn.textContent=w[1]+" ×";closeBtn.setAttribute("aria-label",w[1]);
  origin.href=safe;origin.textContent=w[2];
  note.textContent=w[3];
+ const iframe=document.createElement("iframe");
+ iframe.className="case-document-frame";
  iframe.title=(title||"Original document")+" — PDF";
+ iframe.loading="lazy";
+ iframe.referrerPolicy="no-referrer";
+ iframe.setAttribute("sandbox","allow-scripts allow-same-origin allow-downloads");
  iframe.src=safe;
+ host.replaceChildren(iframe);
  viewer.hidden=false;
- viewer.scrollIntoView({behavior:"instant",block:"nearest"});
+ viewer.scrollIntoView({behavior:"auto",block:"nearest"});
  return true;
 }
 root.AURORA_DOCUMENT_PREVIEW=Object.freeze({sourcePdf,words,open,close});
