@@ -79,9 +79,21 @@ test("a native full translation needs no AI; a truncated authored story is not c
  assert.deepEqual(original.story,record.story.bg);
  assert.equal(isFullTranslation(record,"bg",true),true);
  record.story.bg.pop();
- assert.equal(isFullTranslation(record,"bg",true),false);
+ assert.equal(isFullTranslation(record,"bg",true),true,
+  "a three-paragraph authored Bulgarian narrative need not mirror English paragraph boundaries");
+ assert.equal((await translatePublishedCase(record,"bg",null,{detail:true})).status,"original");
+ record.story.bg.pop();
+ assert.equal(isFullTranslation(record,"bg",true),false,"two paragraphs are not an authored full dossier");
  record.story.bg=[];
  assert.equal(isFullTranslation(record,"bg",true),false);
+});
+test("existing source-authored Bulgarian case files with different paragraph counts stay native",()=>{
+ const cases=JSON.parse(readFileSync(new URL("../data/cases.json",import.meta.url),"utf8")).cases;
+ const authored=cases.filter(c=>Array.isArray(c.story?.bg)&&c.story.bg.length>=3&&
+  Array.isArray(c.story?.en)&&c.story.bg.length!==c.story.en.length);
+ assert.ok(authored.length>0,"catalog includes independently authored language narratives");
+ for(const c of authored)assert.equal(isFullTranslation(c,"bg",true),true,
+  "do not replace authored Bulgarian prose with unrequested machine output: "+c.id);
 });
 test("Cloudflare edge cache stores only fully translated detail and reuses summary on subsequent requests",async()=>{
  const record=baseCase(),p=provider(),saved=new Map(),pending=[];
