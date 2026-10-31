@@ -178,17 +178,7 @@
  let locale=getLocale();
  document.documentElement.lang=locale;
  const valid=u=>{try{const x=new URL(u);return x.protocol==="https:"&&!x.username&&!x.password}catch{return false}};
- let items=[],loadedOk=false,embeddedPlayer=null,playbackResolver=null;
- async function enhanceMedia(){
-  try{
-   const [player,playback]=await Promise.all([
-    import("/archive-inline-player.js"),import("/media-player.js")
-   ]);
-   embeddedPlayer=player;playbackResolver=playback;
-   if(loadedOk)render();
-  }catch{/* Source links always remain available. */}
- }
- void enhanceMedia();
+ let items=[],loadedOk=false;
  function requestMediaTranslation(record,heading,summary,language,card){
   if(language==="en"||record.title?.[language]&&record.summary?.[language])return;
   const note=document.createElement("small");note.className="archive-translation-disclosure";
@@ -234,14 +224,13 @@
    const hay=[c.title?.bg,c.title?.en,c.summary?.bg,c.summary?.en,m.title?.bg,m.title?.en,c.source?.name,c.country,c.date].filter(Boolean).join(" ").toLocaleLowerCase();
    return !search||hay.includes(search);
   });
-  embeddedPlayer?.resetArchivePlayback();
   root.replaceChildren();
   for(const {c,m} of matches){
    const card=document.createElement("article");card.className="media-entry";
    const picture=document.createElement("div");picture.className="media-entry-image";
    const img=document.createElement("img");img.loading="lazy";img.decoding="async";
-   img.src=m.type==="video"?(playbackResolver?.resolveVideoPoster(m)||"/assets/video-poster.svg"):(/^\/assets\/[a-z0-9-]+\.webp$/.test(c.visual?.src||"")?c.visual.src:"/assets/feature-media.webp");
-   img.alt=m.type==="video"&&playbackResolver?.resolveVideoPoster(m)?"Source-published video thumbnail":words.illustration;
+   img.src=m.type==="video"?"/assets/video-poster.svg":(/^\/assets\/[a-z0-9-]+\.webp$/.test(c.visual?.src||"")?c.visual.src:"/assets/feature-media.webp");
+   img.alt=words.illustration;
    const badge=document.createElement("span");badge.textContent=m.type==="video"?"VIDEO":m.type==="photo"?"▧ PHOTO":"▤ ARCHIVE";
    picture.append(img,badge);
    const body=document.createElement("div");body.className="media-entry-body";
@@ -255,9 +244,6 @@
    links.append(original,dossier);
    const caution=document.createElement("small");caution.className="media-caption";caution.textContent=words.illustration;
    body.append(meta,heading,summary,links,caution);card.append(picture,body);
-   if(m.type==="video"&&embeddedPlayer?.addArchivePlayback){
-     embeddedPlayer.addArchivePlayback(card,m,locale,m.title?.[locale]||m.title?.en||c.title?.[locale]||c.title?.en||"Published recording");
-   }
    root.append(card);
    requestMediaTranslation(c,heading,summary,locale,card);
   }
