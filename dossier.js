@@ -237,6 +237,10 @@
   const approvedTypes=new Set(["documents","archive","photo"]);
   const availableMedia=contentHelper?.media(c)||[];
   const photoGallery=$("casePhotoGallery");photoGallery.replaceChildren();
+  // Close the prior document on language change or record navigation.
+  globalThis.AURORA_DOCUMENT_PREVIEW?.close();
+  const previewClose=$("caseDocumentClose");
+  if(previewClose)previewClose.onclick=()=>globalThis.AURORA_DOCUMENT_PREVIEW?.close();
   for(const m of availableMedia){
    if(!approvedTypes.has(m.type))continue;
    const safe=sourceUrl(m.url);if(!safe)continue;
@@ -249,7 +253,21 @@
    text.textContent=local(m.title)||m.type;
    const type=document.createElement("small");
    type.textContent=({photo:"PHOTO",documents:"DOCUMENTS",archive:"ARCHIVE"})[m.type];
-   anchor.append(icon,text,type);mediaGrid.append(anchor);
+   anchor.append(icon,text,type);
+   const reader=globalThis.AURORA_DOCUMENT_PREVIEW;
+   const previewUrl=["documents","archive"].includes(m.type)?reader?.sourcePdf(safe):null;
+   if(previewUrl){
+    const tile=document.createElement("div");tile.className="case-media-tile";
+    tile.append(anchor);
+    const openButton=document.createElement("button");
+    openButton.className="case-media-preview";openButton.type="button";
+    openButton.textContent=reader.words(language)[0]+" ⤢";
+    openButton.addEventListener("click",()=>{
+     reader.open(previewUrl,local(m.title)||m.type,language);
+    });
+    tile.append(openButton);
+    mediaGrid.append(tile);
+   }else{mediaGrid.append(anchor);}
    if(m.type==="photo"){
     const preview=contentHelper?.photoPreview(m);
     if(preview){
