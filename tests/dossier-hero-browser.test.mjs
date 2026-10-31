@@ -51,6 +51,26 @@ test("FLIR1 hero replaces misleading stock screenshot with real source-verified 
   assert.deepEqual(errors,[]);
  }finally{await ctx.close()}
 });
+test("legacy Bulgarian source catalog narratives remain readable and are not passed off as translations",async()=>{
+ const {page,ctx,errors}=await pageFor("disclosure-virginia-2024");
+ try{
+  assert.match(await page.locator("#dossierSummary").textContent(),/US Navy reported approximately 100 aerial objects/);
+  assert.doesNotMatch(await page.locator("#dossierSummary").textContent(),/е случай, описан/);
+  assert.match(await page.locator("#dossierStory").textContent(),/The US Navy reported approximately 100 aerial objects/);
+  assert.doesNotMatch(await page.locator("#dossierStory").textContent(),/Следва оригиналното описание/);
+  assert.equal(await page.locator("#dossierTranslationDisclosure").isVisible(),true);
+  assert.match(await page.locator("#dossierTranslationDisclosure").textContent(),/на английски/);
+  assert.deepEqual(errors,[]);
+ }finally{await ctx.close()}
+});
+test("source-authored Bulgarian dossiers remain displayed without English-fallback warning",async()=>{
+ const {page,ctx,errors}=await pageFor("disclosure-harare-2008");
+ try{
+  assert.match(await page.locator("#dossierStory").textContent(),/[а-яА-Я]{5}/);
+  assert.equal(await page.locator("#dossierTranslationDisclosure").isVisible(),false);
+  assert.deepEqual(errors,[]);
+ }finally{await ctx.close()}
+});
 test("single-player rule: top FLIR1 video only; lower archive and second video removed",async()=>{
  const{page,ctx,errors}=await pageFor("nimitz-2004");
  try{
