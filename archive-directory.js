@@ -1,4 +1,5 @@
 import {resolveMediaPlayback} from "./media-player.js";
+// 10 records per page; 101 published dossiers provide 11 navigable pages.
 const PAGE_SIZE=10,$=id=>document.getElementById(id),storageKey="aurora-lang";
 const supported=new Set(["bg","en","de","ru","zh-CN","fr","es","it","pt","tr","ro","el","sr","uk","pl","ar","ja","ko"]);
 let language="bg";try{language=localStorage.getItem(storageKey)||"bg"}catch{}
@@ -9,7 +10,7 @@ const packs={
  heading:"СВЕТОВЕН АРХИВ UAP",intro:"Публикувани случаи и архивни документи от посочени източници. Отвори досието за подробни описания, оценки, документи и вградени видеа, когато има такива.",
  caseCount:"ДОСИЕТА",pageCount:"СТРАНИЦИ",countryCount:"ДЪРЖАВИ",
  browse:"РАЗГЛЕДАЙ СЛУЧАИТЕ",search:"ТЪРСИ",filterCountry:"ДЪРЖАВА",filterMedia:"МАТЕРИАЛИ",
- allCountries:"Всички държави",allMedia:"Всички",hasVideo:"С видеоизточник",hasDocuments:"С документи",
+ allCountries:"Всички държави",allMedia:"Всички",hasPlayable:"С вградено видео",hasVideo:"С видеоизточник",hasDocuments:"С документи",
  loading:"Зареждане на световния архив…",offline:"Архивът временно не отговаря.",empty:"Няма случаи по избраните критерии.",
  results:"случая",page:"Страница",of:"от",prev:"← Предишна",next:"Следваща →",view:"ОТВОРИ ПЪЛНОТО ДОСИЕ",
  source:"ОРИГИНАЛЕН ИЗТОЧНИК",video:"▶ ВГРАДИМО ВИДЕО",linkedVideo:"ВИДЕОИЗТОЧНИК",documents:"ДОКУМЕНТИ",
@@ -19,7 +20,7 @@ const packs={
  heading:"WORLD UAP ARCHIVE",intro:"Published case records and original documents from attributed sources. Open each dossier for detailed context, assessments, documents and embedded video when playback is available.",
  caseCount:"CASE FILES",pageCount:"PAGES",countryCount:"COUNTRIES",
  browse:"EXPLORE CASES",search:"SEARCH",filterCountry:"COUNTRY",filterMedia:"MATERIALS",
- allCountries:"All countries",allMedia:"All records",hasVideo:"With video source",hasDocuments:"With documents",
+ allCountries:"All countries",allMedia:"All records",hasPlayable:"With embedded player",hasVideo:"With video source",hasDocuments:"With documents",
  loading:"Loading the world archive…",offline:"Archive temporarily unavailable.",empty:"No cases match your filters.",
  results:"records",page:"Page",of:"of",prev:"← Previous",next:"Next →",view:"OPEN FULL DOSSIER",
  source:"ORIGINAL SOURCE",video:"▶ PLAYABLE VIDEO",linkedVideo:"VIDEO SOURCE",documents:"DOCUMENTS",
@@ -40,6 +41,7 @@ const playable=x=>(x.media||[]).some(m=>m.type==="video"&&resolveMediaPlayback(m
 function filtered(){
  return records.filter(r=>{
   if(country&&r.country!==country)return false;
+  if(mediaType==="playable"&&!playable(r))return false;
   if(mediaType==="video"&&!(r.media||[]).some(m=>m.type==="video"))return false;
   if(mediaType==="documents"&&!(r.media||[]).some(m=>["documents","archive"].includes(m.type)))return false;
   const searchable=[local(r.title),local(r.summary),local(r.city),r.date,r.country,
