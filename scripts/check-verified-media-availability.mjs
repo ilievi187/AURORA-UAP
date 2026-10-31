@@ -1,5 +1,5 @@
-// Bounded read-only media source availability check, not a playback guarantee.
-// Does not bypass publisher access controls or download full video files.
+// Bounded, read-only reachability test. Approved alternative providers are
+// independent public-domain government sources, never a bypass of the same WAF.
 import {readFileSync} from "node:fs";
 import {resolveMediaPlayback} from "../media-player.js";
 const data=JSON.parse(readFileSync(new URL("../data/cases.json",import.meta.url),"utf8"));
@@ -9,20 +9,27 @@ for(const c of data.cases.filter(x=>wanted.has(x.id))){
  for(const m of c.media.filter(x=>x.type==="video")){
   const playback=resolveMediaPlayback(m);
   if(!playback)continue;
-  const endpoint=playback.kind==="html5"?playback.mediaUrl:playback.embedUrl;
-  const controller=new AbortController();
-  const timer=setTimeout(()=>controller.abort(),13000);
-  try{
-   const r=await fetch(endpoint,{headers:{Range:"bytes=0-1023",Accept:"video/*,text/html;q=0.8,*/*;q=0.5"},redirect:"follow",signal:controller.signal});
-   const ct=r.headers.get("content-type")||"";
-   const result={case:c.id,provider:playback.provider,status:r.status,
-    contentType:ct,acceptRanges:r.headers.get("accept-ranges"),length:r.headers.get("content-length")};
-   console.log(JSON.stringify(result));
-   if(!r.ok||!(playback.kind==="html5"?/video|octet-stream/i.test(ct):/text\/html/i.test(ct)))failed++;
-   if(r.body)await r.body.cancel().catch(()=>{});
-  }catch(e){failed++;console.log(JSON.stringify({case:c.id,source:endpoint,error:String(e?.name||e),note:"publisher/network refusal; no bypass"}))}
-  finally{clearTimeout(timer)}
+  const urls=playback.kind==="html5"?
+   [playback.mediaUrl,...(playback.alternatives||[]).map(x=>x.url)]:[playback.embedUrl];
+  let reachable=false;
+  for(const endpoint of urls){
+   const controller=new AbortController();
+   const timer=setTimeout(()=>controller.abort(),11000);
+   try{
+    const r=await fetch(endpoint,{headers:{Range:"bytes=0-1023",Accept:"video/*,text/html;q=0.8,*/*;q=0.5"},redirect:"follow",signal:controller.signal});
+    const ct=r.headers.get("content-type")||"";
+    const ok=r.ok&&(playback.kind==="html5"?/video|octet-stream/i.test(ct):/text\/html/i.test(ct));
+    console.log(JSON.stringify({case:c.id,provider:playback.provider,
+     origin:new URL(endpoint).origin,status:r.status,contentType:ct,ok}));
+    if(r.body)await r.body.cancel().catch(()=>{});
+    if(ok){reachable=true;break}
+   }catch(error){
+    console.log(JSON.stringify({case:c.id,origin:new URL(endpoint).origin,
+     error:String(error?.name||error),note:"inconclusive; no retry to blocked source"}));
+   }finally{clearTimeout(timer)}
+  }
+  if(!reachable)failed++;
  }
 }
-console.log("REMOTE_SOURCE_FAILURE_COUNT="+failed);
+console.log("UNAVAILABLE_VERIFIED_MEDIA_COUNT="+failed);
 if(failed)process.exitCode=1;
