@@ -89,12 +89,12 @@
       "id": "uap-archive-aaro-eglin-uap-case",
       "date": "undated",
       "date_precision": "unknown",
-      "lat": null,
-      "lng": null,
-      "location_precision": "Coordinates not published in the source case metadata",
+      "lat": 30.5,
+      "lng": -86.5,
+      "location_precision": "Approximate local-area anchor: Eglin Air Force Base area, Florida. Based on published case summary; NOT an observed object position or flight track.",
       "category": "other",
       "status": "explained",
-      "country": "",
+      "country": "US",
       "city": {
         "en": "Location not published",
         "bg": "Location not published"
@@ -165,15 +165,23 @@
         "automated": true
       },
       "assessment_authority": "AARO (as reproduced by source)",
-      "visual": null
+      "visual": null,
+      "location_precision_bg": "Ориентировъчен район: Eglin Air Force Base area, Florida. Изведен от published case summary; НЕ е измерена позиция на обекта.",
+      "map_anchor": {
+        "kind": "approximate_source_locality",
+        "place": "Eglin Air Force Base area, Florida",
+        "level": "local-area",
+        "basis": "published case summary",
+        "not_observation_coordinates": true
+      }
     },
     {
       "id": "uap-archive-aaro-southeast-asia-triangles-case",
       "date": "undated",
       "date_precision": "unknown",
-      "lat": null,
-      "lng": null,
-      "location_precision": "Coordinates not published in the source case metadata",
+      "lat": 12,
+      "lng": 108,
+      "location_precision": "Approximate large-region anchor: Southeast Asia (broad regional reference). Based on published case title; NOT an observed object position or flight track.",
       "category": "other",
       "status": "explained",
       "country": "",
@@ -247,18 +255,26 @@
         "automated": true
       },
       "assessment_authority": "AARO (as reproduced by source)",
-      "visual": null
+      "visual": null,
+      "location_precision_bg": "Ориентировъчен район: Southeast Asia (broad regional reference). Изведен от published case title; НЕ е измерена позиция на обекта.",
+      "map_anchor": {
+        "kind": "approximate_source_locality",
+        "place": "Southeast Asia (broad regional reference)",
+        "level": "large-region",
+        "basis": "published case title",
+        "not_observation_coordinates": true
+      }
     },
     {
       "id": "uap-archive-aaro-western-united-states-case",
       "date": "undated",
       "date_precision": "unknown",
-      "lat": null,
-      "lng": null,
-      "location_precision": "Coordinates not published in the source case metadata",
+      "lat": 39,
+      "lng": -112,
+      "location_precision": "Approximate large-region anchor: Western United States. Based on published case title; NOT an observed object position or flight track.",
       "category": "other",
       "status": "explained",
-      "country": "",
+      "country": "US",
       "city": {
         "en": "Location not published",
         "bg": "Location not published"
@@ -329,18 +345,26 @@
         "automated": true
       },
       "assessment_authority": "AARO (as reproduced by source)",
-      "visual": null
+      "visual": null,
+      "location_precision_bg": "Ориентировъчен район: Western United States. Изведен от published case title; НЕ е измерена позиция на обекта.",
+      "map_anchor": {
+        "kind": "approximate_source_locality",
+        "place": "Western United States",
+        "level": "large-region",
+        "basis": "published case title",
+        "not_observation_coordinates": true
+      }
     },
     {
       "id": "uap-archive-jal-1628-1986",
       "date": "undated",
       "date_precision": "unknown",
-      "lat": null,
-      "lng": null,
-      "location_precision": "Coordinates not published in the source case metadata",
+      "lat": 64,
+      "lng": -153,
+      "location_precision": "Approximate large-region anchor: Alaska, United States (regional reference). Based on published case summary; NOT an observed object position or flight track.",
       "category": "other",
       "status": "official_record",
-      "country": "",
+      "country": "US",
       "city": {
         "en": "Location not published",
         "bg": "Location not published"
@@ -395,18 +419,26 @@
         "automated": true
       },
       "assessment_authority": "",
-      "visual": null
+      "visual": null,
+      "location_precision_bg": "Ориентировъчен район: Alaska, United States (regional reference). Изведен от published case summary; НЕ е измерена позиция на обекта.",
+      "map_anchor": {
+        "kind": "approximate_source_locality",
+        "place": "Alaska, United States (regional reference)",
+        "level": "large-region",
+        "basis": "published case summary",
+        "not_observation_coordinates": true
+      }
     },
     {
       "id": "uap-archive-navy-flir1-2004",
       "date": "undated",
       "date_precision": "unknown",
-      "lat": null,
-      "lng": null,
-      "location_precision": "Coordinates not published in the source case metadata",
+      "lat": 31.7,
+      "lng": -118.2,
+      "location_precision": "Approximate coastal-region anchor: Southern California offshore. Based on published case summary; NOT an observed object position or flight track.",
       "category": "other",
       "status": "official_record",
-      "country": "",
+      "country": "US",
       "city": {
         "en": "Location not published",
         "bg": "Location not published"
@@ -469,18 +501,26 @@
         "automated": true
       },
       "assessment_authority": "",
-      "visual": null
+      "visual": null,
+      "location_precision_bg": "Ориентировъчен район: Southern California offshore. Изведен от published case summary; НЕ е измерена позиция на обекта.",
+      "map_anchor": {
+        "kind": "approximate_source_locality",
+        "place": "Southern California offshore",
+        "level": "coastal-region",
+        "basis": "published case summary",
+        "not_observation_coordinates": true
+      }
     },
     {
       "id": "uap-archive-navy-gimbal-2015",
       "date": "undated",
       "date_precision": "unknown",
-      "lat": null,
-      "lng": null,
-      "location_precision": "Coordinates not published in the source case metadata",
+      "lat": 35,
+      "lng": -72,
+      "location_precision": "Approximate coastal-region anchor: U.S. East Coast offshore. Based on published case summary; NOT an observed object position or flight track.",
       "category": "other",
       "status": "official_record",
-      "country": "",
+      "country": "US",
       "city": {
         "en": "Location not published",
         "bg": "Location not published"
@@ -543,15 +583,23 @@
         "automated": true
       },
       "assessment_authority": "",
-      "visual": null
+      "visual": null,
+      "location_precision_bg": "Ориентировъчен район: U.S. East Coast offshore. Изведен от published case summary; НЕ е измерена позиция на обекта.",
+      "map_anchor": {
+        "kind": "approximate_source_locality",
+        "place": "U.S. East Coast offshore",
+        "level": "coastal-region",
+        "basis": "published case summary",
+        "not_observation_coordinates": true
+      }
     },
     {
       "id": "uap-archive-northeastern-orb-sightings",
       "date": "2026",
       "date_precision": "year",
-      "lat": null,
-      "lng": null,
-      "location_precision": "Coordinates not published in the source case metadata",
+      "lat": 42.5,
+      "lng": -74,
+      "location_precision": "Approximate large-region anchor: Northeastern United States. Based on source city/region; NOT an observed object position or flight track.",
       "category": "other",
       "status": "official_record",
       "country": "US",
@@ -709,7 +757,15 @@
         "automated": true
       },
       "assessment_authority": "",
-      "visual": null
+      "visual": null,
+      "location_precision_bg": "Ориентировъчен район: Northeastern United States. Изведен от source city/region; НЕ е измерена позиция на обекта.",
+      "map_anchor": {
+        "kind": "approximate_source_locality",
+        "place": "Northeastern United States",
+        "level": "large-region",
+        "basis": "source city/region",
+        "not_observation_coordinates": true
+      }
     },
     {
       "id": "disclosure-six-spheres-2025",
@@ -1676,9 +1732,9 @@
       "id": "uap-archive-western-us-event",
       "date": "2023",
       "date_precision": "year",
-      "lat": null,
-      "lng": null,
-      "location_precision": "Coordinates not published in the source case metadata",
+      "lat": 39,
+      "lng": -112,
+      "location_precision": "Approximate large-region anchor: Western United States. Based on source city/region; NOT an observed object position or flight track.",
       "category": "other",
       "status": "official_record",
       "country": "US",
@@ -1816,7 +1872,15 @@
         "automated": true
       },
       "assessment_authority": "",
-      "visual": null
+      "visual": null,
+      "location_precision_bg": "Ориентировъчен район: Western United States. Изведен от source city/region; НЕ е измерена позиция на обекта.",
+      "map_anchor": {
+        "kind": "approximate_source_locality",
+        "place": "Western United States",
+        "level": "large-region",
+        "basis": "source city/region",
+        "not_observation_coordinates": true
+      }
     },
     {
       "id": "disclosure-iraq-2022",
@@ -2116,9 +2180,9 @@
       "id": "uap-archive-colorado-springs-2022",
       "date": "2022",
       "date_precision": "year",
-      "lat": null,
-      "lng": null,
-      "location_precision": "Coordinates not published in the source case metadata",
+      "lat": 38.8,
+      "lng": -104.8,
+      "location_precision": "Approximate city-area anchor: Colorado Springs, Colorado. Based on source city/region; NOT an observed object position or flight track.",
       "category": "other",
       "status": "official_record",
       "country": "US",
@@ -2192,7 +2256,15 @@
         "automated": true
       },
       "assessment_authority": "",
-      "visual": null
+      "visual": null,
+      "location_precision_bg": "Ориентировъчен район: Colorado Springs, Colorado. Изведен от source city/region; НЕ е измерена позиция на обекта.",
+      "map_anchor": {
+        "kind": "approximate_source_locality",
+        "place": "Colorado Springs, Colorado",
+        "level": "city-area",
+        "basis": "source city/region",
+        "not_observation_coordinates": true
+      }
     },
     {
       "id": "disclosure-persian-gulf-2020",

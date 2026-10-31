@@ -20,8 +20,10 @@ test("publisher case metadata maps to a sourced archive entry without inventing 
  assert.equal(c.country,"US");
  assert.equal(c.date,"2022");
  assert.equal(c.date_precision,"year");
- assert.equal(c.lat,null);
- assert.equal(c.lng,null);
+ assert.equal(c.lat,38.8);
+ assert.equal(c.lng,-104.8);
+ assert.equal(c.map_anchor?.kind,"approximate_source_locality");
+ assert.match(c.location_precision,/NOT an observed object position/);
  assert.equal(c.provenance.source_url,SOURCE_URL);
  assert.equal(c.provenance.license,"CC BY 4.0");
  assert.ok(c.summary.bg.length>=45&&c.summary.en.length>=45);
@@ -90,8 +92,8 @@ test("repository baseline is compatible with generated records and public displa
  assert.equal(archive.cases.length,baseline.cases.length+2);
  assert.equal(report.generated,2);
  for(const c of archive.cases.filter(x=>x.provenance?.source_url===SOURCE_URL)){
-  assert.equal(c.lat,null);
-  assert.equal(c.lng,null);
+  assert.ok(Number.isFinite(c.lat)&&Number.isFinite(c.lng),"named incident region should be approximately mapped");
+  assert.equal(c.map_anchor?.kind,"approximate_source_locality");
   assert.ok(c.source?.url?.startsWith("https://"));
  }
 });
