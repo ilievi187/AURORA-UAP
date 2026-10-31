@@ -56,6 +56,17 @@ const catalog = {
       visual: { src: '/assets/feature-media.webp', kind: 'illustration' }
     },
     {
+      id: 'atmospheric-wakes-fixture', date: 'undated', country: '',
+      title: { en: 'Atmospheric Wakes', bg: 'Атмосферни следи' },
+      summary: { en: 'Archive case with several original reports but no embedded video.', bg: 'Архив с оригинални документи без видео.' },
+      source: { name: 'UAP Records Archive', url: 'https://www.uap-archive.org/uap/cases/' },
+      media: [
+        { type: 'archive', title: { en: 'AARO Atmospheric Wakes report' }, url: 'https://www.uap-archive.org/uap/records/aaro-atmospheric-wakes/' },
+        { type: 'archive', title: { en: 'Translated archive report' }, url: 'https://www.uap-archive.org/zh/uap/records/aaro-atmospheric-wakes/' },
+        { type: 'documents', title: { en: 'Official assessment PDF' }, url: 'https://www.uap-archive.org/uap/docs/aaro-atmospheric-wakes.pdf' }
+      ]
+    },
+    {
       id: 'unsupported-fixture', date: '2024-02-01', country: 'NZ',
       title: { en: 'Unsupported fixture case', bg: 'Неподдържан тестов случай' },
       summary: { en: 'Browser-only player fixture.', bg: 'Тест за браузъра.' },
@@ -121,10 +132,29 @@ async function openMediaPage(viewport = { width: 1280, height: 860 }, options = 
     }));
   }
   await page.goto(`http://127.0.0.1:${port}/media.html`);
-  await page.waitForFunction(() => document.querySelectorAll('#mediaGallery .media-entry').length === 5);
+  await page.waitForFunction(() => document.querySelectorAll('#mediaGallery .media-entry').length === 6);
   await page.waitForFunction(() => document.querySelectorAll('#mediaGallery [data-inline-player-action="play"]').length === 3);
   return { context, page, errors };
 }
+
+test('archive mirrors appear once with source links and never advertise a fake Play button', async()=>{
+ const {context,page,errors}=await openMediaPage();
+ try{
+  const cards=page.locator('#mediaGallery article').filter({hasText:'Atmospheric Wakes'});
+  assert.equal(await cards.count(),1,'three records are one dossier, not three video cards');
+  const card=cards.first();
+  assert.equal(await card.getAttribute('data-media-kind'),'documents');
+  assert.equal(await card.locator('a[target="_blank"]').count(),3,'original archive and PDF links retained');
+  assert.equal(await card.locator('button[data-inline-player-action="play"]').count(),0);
+  assert.equal(await card.locator('.media-entry-image img').getAttribute('src'),'/assets/media-document-preview.svg');
+  assert.equal(await card.locator('.media-entry-image iframe,.media-entry-image video').count(),0);
+  assert.equal(await page.locator('#mediaGallery .media-entry').first().getAttribute('data-playable'),'true',
+   'available embedded recordings lead the full library');
+  await page.locator('#mediaType').selectOption('video');
+  assert.equal(await page.locator('#mediaGallery article').filter({hasText:'Atmospheric Wakes'}).count(),0);
+  assert.deepEqual(errors,[]);
+ }finally{await context.close()}
+});
 
 test('one source-safe Play control per playable card, no stacked or modal launchers', async () => {
  const {context,page,errors}=await openMediaPage();
@@ -139,12 +169,27 @@ test('one source-safe Play control per playable card, no stacked or modal launch
  }finally{await context.close()}
 });
 
+test('clicking anywhere in a playable thumbnail activates the embedded player',async()=>{
+ const {context,page,errors}=await openMediaPage();
+ try{
+  const card=page.locator('#mediaGallery article').filter({hasText:'YouTube fixture case'});
+  const poster=card.locator('.media-entry-image'),button=card.locator('.media-inline-play');
+  const rect=await poster.boundingBox(),hit=await button.boundingBox();
+  assert.ok(rect&&hit);
+  assert.ok(Math.abs(rect.width-hit.width)<3,'the Play target covers the thumbnail');
+  await button.click({position:{x:12,y:12}});
+  assert.equal(await card.locator('iframe').count(),1,'clicking the thumbnail corner starts one embedded player');
+  assert.equal(await page.locator('#mediaGallery iframe').count(),1);
+  assert.deepEqual(errors,[]);
+ }finally{await context.close()}
+});
+
 test('Vimeo opens in the thumbnail with publisher source fallback and close unloads it', async()=>{
  const {context,page,errors}=await openMediaPage();
  try{
   const card=page.locator('#mediaGallery article').filter({hasText:'Vimeo fixture case'});
   await card.locator('.media-inline-play').click();
-  assert.equal(await card.locator('.media-entry-image iframe').getAttribute('src'),'https://player.vimeo.com/video/76979871?dnt=1');
+  assert.equal(await card.locator('.media-entry-image iframe').getAttribute('src'),'https://player.vimeo.com/video/76979871?dnt=1&autoplay=1');
   assert.equal(await card.locator('.media-entry-links a[target="_blank"]').getAttribute('href'),'https://vimeo.com/76979871');
   assert.equal(await page.locator('dialog.aurora-player-dialog[open]').count(),0);
   await card.locator('.media-inline-close').click();
@@ -179,7 +224,7 @@ test('Play over the actual video card reveals a real inline iframe, not an outbo
     assert.equal(await card.locator('.media-entry-image iframe').count(),0,'no network embed before click');
     await overlay.click();
     const picture=card.locator('.media-entry-image');
-    assert.equal(await picture.locator('iframe').getAttribute('src'),'https://www.youtube-nocookie.com/embed/aqz-KE-bpKQ?rel=0&playsinline=1');
+    assert.equal(await picture.locator('iframe').getAttribute('src'),'https://www.youtube-nocookie.com/embed/aqz-KE-bpKQ?rel=0&playsinline=1&autoplay=1');
     assert.equal(await picture.locator('img').isHidden(),true);
     assert.equal(await picture.locator('button.media-inline-play').isHidden(),true);
     assert.equal(await picture.locator('button.media-inline-close').count(),1);

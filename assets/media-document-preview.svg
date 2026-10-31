@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-label="AURORA archive document illustration">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07111a"/><stop offset=".7" stop-color="#010305"/></linearGradient></defs>
+<rect width="1280" height="720" fill="url(#bg)"/>
+<g stroke="#a9c8dd" fill="none" stroke-opacity=".17"><circle cx="902" cy="360" r="242"/><circle cx="902" cy="360" r="193"/><path d="M0 558h1280M0 190h1280M810 0v720M990 0v720"/></g>
+<g transform="translate(746 166)" fill="#091722" stroke="#b6d1e5" stroke-opacity=".65" stroke-width="3"><path d="M60 0h225l78 78v362H60z"/><path d="M285 0v78h78"/></g>
+<g stroke="#b6d1e5" stroke-opacity=".28" stroke-width="5"><path d="M838 300h184M838 342h188M838 384h140M838 426h176M838 468h117"/></g>
+<g stroke="#a0c6df" stroke-opacity=".25" stroke-width="2" fill="none"><path d="M38 38h65M38 38v38M1242 38h-65M1242 38v38M38 682h65M38 682v-38M1242 682h-65M1242 682v-38"/></g>
+<g fill="#bfcedc" font-family="Arial, sans-serif"><text x="65" y="112" font-size="29" letter-spacing="9">AURORA</text><text x="66" y="157" font-size="17" letter-spacing="6" opacity=".64">PUBLIC ARCHIVE / DOCUMENTS</text><text x="67" y="612" font-size="15" letter-spacing="4" opacity=".62">ORIGINAL DOCUMENTS &amp; SOURCES</text></g>
+</svg>

@@ -24,3 +24,57 @@
 .media-entry-links a{display:block;color:#a9ffed;text-decoration:none;font:12px/1.55 Consolas,monospace;padding:12px 15px;border:1px solid #4b9293;background:#153b44;overflow-wrap:anywhere}
 .media-entry-links a:hover,.media-entry-links a:focus-visible{border-color:#dcfffb;color:#fff;background:#1b5059}
 .media-caption{font:10px/1.5 Consolas,monospace;color:#a4c7ca;border-top:1px solid #315d67;padding-top:9px}
+
+/* Honest media types: only a real, resolvable video displays an interactive Play. */
+.media-entry[data-media-kind="documents"] .media-entry-image img{opacity:.8;filter:contrast(1.05) saturate(.6)}
+.media-entry[data-media-kind="video"] .media-entry-image img{opacity:.92;filter:contrast(1.08)}
+.media-entry[data-media-kind="video"][data-playable="false"] .media-entry-image::after{
+ content:"SOURCE VIDEO";pointer-events:none;position:absolute;top:15px;right:15px;
+ background:#02070cdd;color:#b9cddd;border:1px solid #a3b7c644;
+ font:600 10px/1.5 ui-monospace,Consolas,monospace;letter-spacing:.13em;
+ padding:7px 10px;
+}
+.media-entry[data-playable="true"] .media-entry-image{cursor:default}
+.media-entry .media-inline-play{width:clamp(65px,7vw,82px);height:clamp(65px,7vw,82px);
+ border:1.5px solid #d3edfc!important;background:#081723d9!important;color:#ecf7ff!important;
+ box-shadow:0 0 0 7px #c8e6f418,0 0 43px #9bcce444!important;
+ display:grid;place-items:center;border-radius:50%!important;backdrop-filter:blur(11px);
+ font-size:31px;line-height:1;z-index:6}
+.media-entry .media-inline-play:hover{background:#183b53!important;transform:scale(1.06)}
+.media-entry .media-inline-play:focus-visible{outline:3px solid #fff;outline-offset:5px}
+.media-entry .media-inline-play[hidden]{display:none!important}
+.media-entry .media-inline-active{background:#000!important}
+.media-entry .media-inline-active .media-inline-play[hidden]{display:none!important}
+.media-more-sources{margin:5px 0;border-top:1px solid #7897a444;padding-top:10px;min-width:0}
+.media-more-sources summary{cursor:pointer;list-style:revert;color:#bbd1e0;padding:10px 6px;
+ font:600 11px/1.4 ui-monospace,Consolas,monospace;letter-spacing:.05em}
+.media-more-sources a{margin:8px 0 0;word-break:break-word}
+.media-entry[data-media-kind="documents"] .media-entry-body{gap:clamp(11px,1.5vw,17px)}
+.media-entry .media-caption{color:#91aab9!important;border-color:#8ba4b037!important}
+@media(max-width:650px){
+ .media-entry .media-inline-play{width:65px;height:65px;font-size:25px}
+ .media-entry[data-media-kind="video"][data-playable="false"] .media-entry-image::after{font-size:9px}
+}
+
+/* The entire verified video poster is one accessible click target; the circle is visual. */
+.media-entry[data-playable="true"] .media-inline-play{
+ inset:0!important;margin:0!important;width:100%!important;height:100%!important;
+ border:0!important;border-radius:0!important;box-shadow:none!important;
+ background:transparent!important;color:transparent!important;font-size:0!important;
+ display:grid;place-items:center;backdrop-filter:none;
+}
+.media-entry[data-playable="true"] .media-inline-play::after{
+ content:"▶";width:clamp(65px,7vw,82px);height:clamp(65px,7vw,82px);
+ display:grid;place-items:center;border:1.5px solid #d3edfc;border-radius:50%;
+ color:#ecf7ff;background:#081723df;font:500 30px/1 system-ui,sans-serif;
+ box-shadow:0 0 0 7px #c8e6f418,0 0 43px #9bcce444;
+ transition:transform .16s ease,background .16s ease;
+}
+.media-entry[data-playable="true"] .media-inline-play:hover{background:transparent!important;transform:none!important}
+.media-entry[data-playable="true"] .media-inline-play:hover::after{background:#183b53;transform:scale(1.07)}
+.media-entry[data-playable="true"] .media-inline-play:focus-visible{outline:3px solid #fff;outline-offset:-5px}
+.media-entry[data-playable="true"] .media-inline-play[hidden]{display:none!important}
+@media(max-width:650px){
+ .media-entry[data-playable="true"] .media-inline-play::after{width:65px;height:65px;font-size:26px}
+}
+@media(prefers-reduced-motion:reduce){.media-entry[data-playable="true"] .media-inline-play::after{transition:none}}
