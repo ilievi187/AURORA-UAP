@@ -317,7 +317,7 @@
  }
  function translateStatic(){
   const t=getPack();
-  const ids={dossierBack:"home",factsHeading:"facts",labelIdentifier:"id",labelDate:"date",
+  const ids={dossierBack:"home",dossierSubtitle:"subtitle",factsHeading:"facts",labelIdentifier:"id",labelDate:"date",
    labelLocation:"location",labelCategory:"category",labelPublication:"publication",labelAssessment:"assessment",
    labelPrecision:"precision",summaryHeading:"summary",sourceHeading:"source",locationHeading:"geography",relatedHeading:"related"};
   for(const [id,key] of Object.entries(ids))label(id,t[key]);
