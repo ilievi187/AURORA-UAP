@@ -12,15 +12,17 @@ test('homepage translations (script.js + i18n-extra.js), editorialText, HOME_TIT
   const transMatch = scriptJs.match(/const translations = (\{[\s\S]*?\n\});/);
   const donMatch = scriptJs.match(/const donationNav = (\{[\s\S]*?\n\});/);
   const newsMatch = scriptJs.match(/const navNewsLabels = (\{[\s\S]*?\n\});/);
+  const premiumMatch = scriptJs.match(/const premiumNavLabels=(\{[\s\S]*?\n\});/);
   const editMatch = scriptJs.match(/const editorialText=(\{[\s\S]*?\n\});/);
   const titlesMatch = scriptJs.match(/const HOME_TITLES = (\{[\s\S]*?\n\});/);
-  assert.ok(transMatch && donMatch && newsMatch && editMatch && titlesMatch, 'script.js must define translations, donationNav, navNewsLabels, editorialText, and HOME_TITLES');
+  assert.ok(transMatch && donMatch && newsMatch && premiumMatch && editMatch && titlesMatch, 'script.js must define translations, donationNav, navNewsLabels, editorialText, and HOME_TITLES');
 
   const ctx = { window: {} };
   vm.runInNewContext(read('i18n-extra.js'), ctx);
   const translations = vm.runInNewContext('(' + transMatch[1] + ')');
   const donationNav = vm.runInNewContext('(' + donMatch[1] + ')');
   const newsLabels = vm.runInNewContext('(' + newsMatch[1] + ')');
+  const premiumLabels = vm.runInNewContext('(' + premiumMatch[1] + ')');
   const editorialText = vm.runInNewContext('(' + editMatch[1] + ')');
   const homeTitles = vm.runInNewContext('(' + titlesMatch[1] + ')');
 
@@ -33,6 +35,7 @@ test('homepage translations (script.js + i18n-extra.js), editorialText, HOME_TIT
     translations[code].navNews = label;
   }
 
+  for(const [code, labels] of Object.entries(premiumLabels))Object.assign(translations[code],labels);
   const enKeys = Object.keys(translations.en).sort();
   const enEditKeys = Object.keys(editorialText.en).sort();
 
@@ -60,7 +63,7 @@ test('homepage translations (script.js + i18n-extra.js), editorialText, HOME_TIT
 
   const indexHtml = read('index.html');
   const htmlKeys = [...indexHtml.matchAll(/data-i18n(?:-placeholder)?="([^"]+)"/g)].map(m => m[1]);
-  assert.ok(htmlKeys.length >= 60, 'index.html must contain data-i18n attributes');
+  assert.ok(htmlKeys.length >= 45, 'home keeps translation hooks after removing redundant sections');
   for (const key of htmlKeys) {
     assert.ok(enKeys.includes(key), `index.html data-i18n="${key}" is missing from homepage locale packs`);
   }

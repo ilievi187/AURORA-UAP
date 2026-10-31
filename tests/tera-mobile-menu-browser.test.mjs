@@ -66,10 +66,10 @@ try{
       assert.equal(await nav.isHidden(),true);
       assert.equal(await toggle.getAttribute('aria-expanded'),'false');
       await toggle.click();
-      await nav.locator('a[href="#mission"]').click();
+      await nav.locator('a[href="#worldAtlas"]').click();
       assert.equal(await nav.isHidden(),true);
       assert.equal(await toggle.getAttribute('aria-expanded'),'false');
-      assert.equal(new URL(page.url()).hash,'#mission');
+      assert.equal(new URL(page.url()).hash,'#worldAtlas');
     }finally{await page.close();}
   });
 }finally{await browser?.close();await new Promise(resolve=>server.close(resolve));}

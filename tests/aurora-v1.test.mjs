@@ -188,9 +188,9 @@ test('country directory is discoverable and never invents live registry statisti
  assert.match(style,/@media\s*\(max-width:\s*640px\)/);
 });
 
-test("front page report actions point to actual private intake UI",()=>{
- assert.match(html,/<a href="\/report\.html" class="button button-primary">/);
- assert.match(html,/<a href="\/report\.html" class="button button-primary button-join">/);
+test("front page remains linked to private intake without presenting it as an active submission",()=>{
+ assert.match(html,/<a href="\/archive\.html" class="button button-primary">/);
+ assert.match(html,/href="\/report\.html" data-i18n="reportButton"/);
  assert.doesNotMatch(html,/<button[^>]*data-open-report/);
  assert.match(read("report.html"),/id="receiptPanel"[^>]*hidden/);
  assert.match(read("report.js"),/result\.status!=="pending"/);
@@ -242,5 +242,5 @@ test('dedicated media library exposes real source links without copying media',(
  assert.match(html,/id="mediaType"/);
  assert.match(js,/fetch\("\/data\/cases\.json"/);
  assert.match(js,/rel="noopener noreferrer"/);
- assert.match(read('index.html'),/href="\/media\.html" class="feature-card"/);
+ assert.match(read('index.html'),/href="\/media\.html" data-i18n="navMedia"/);
 });

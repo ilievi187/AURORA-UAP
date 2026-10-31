@@ -253,3 +253,6 @@ body,body.live-page,body.donate-v1 {
   .hero-image,.hero h1,.hero-copy,.hero-buttons,.hero-content .eyebrow,.tiny-rule{animation:none!important}
   :where(.archive-card,.country-card,.live-card,.button,.world-result){transition:none!important}
 }
+
+/* Country directory uses .hero too; preserve its compact listing header. */
+.page-shell .hero{min-height:0;height:auto;margin:0;padding-block:clamp(44px,6vw,74px) 32px;overflow:visible;}

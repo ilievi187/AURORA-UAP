@@ -593,8 +593,8 @@ try{
     await page.locator('button[data-language="bg"]').click();
     await page.locator('#gateContinue').click();
     await page.locator('#languageGate').waitFor({state:'hidden',timeout:2500});
-    assert.equal(await page.locator('.button-join[href="/report.html"]').count(),1);
-    await page.locator('.hero-buttons a[href="/report.html"]').click();
+    assert.equal(await page.locator('.footer a[href="/report.html"]').count(),1);
+    await page.locator('.footer a[href="/report.html"]').click();
     await page.waitForURL('**/report.html');
     assert.equal(await page.locator('#observationForm').isVisible(),true);
     assert.equal(await page.locator('#sendReport').isDisabled(),true);
