@@ -1,4 +1,5 @@
 import {resolveMediaPlayback} from "./media-player.js";
+import {addArchivePlayback,resetArchivePlayback} from "./archive-inline-player.js";
 // 10 records per page; 101 published dossiers provide 11 navigable pages.
 const PAGE_SIZE=10,$=id=>document.getElementById(id),storageKey="aurora-lang";
 const supported=new Set(["bg","en","de","ru","zh-CN","fr","es","it","pt","tr","ro","el","sr","uk","pl","ar","ja","ko"]);
@@ -63,6 +64,9 @@ function card(r){
  const paragraphs=Array.isArray(r.story?.[language])?r.story[language]:Array.isArray(r.story?.en)?r.story.en:[];
  const detail=paragraphs.find(p=>typeof p==="string"&&p!==local(r.summary)&&p.length>95);
  if(detail)article.append(el("p","card-context",detail.slice(0,350)+(detail.length>350?"…":"")));
+ // Play directly on the archive card instead of redirecting to a publisher.
+ const clip=(r.media||[]).find(m=>m.type==="video"&&resolveMediaPlayback(m));
+ if(clip)addArchivePlayback(article,clip,language,local(clip.title)||local(r.title));
  const tags=el("div","card-tags");
  const sources=new Set([r.source?.url,...(r.sources||[]).map(s=>s.url),...(r.media||[]).map(m=>m.url)].filter(safeUrl));
  tags.append(el("span","tag",num(sources.size)+" · "+T().source));
@@ -107,7 +111,7 @@ function pagination(total){
 function render(){
  const matches=filtered(),total=matches.length,pages=Math.ceil(total/PAGE_SIZE);
  currentPage=Math.max(1,Math.min(currentPage,Math.max(1,pages)));
- const host=$("archiveResults");host.replaceChildren();
+ const host=$("archiveResults");resetArchivePlayback();host.replaceChildren();
  $("archiveStatus").textContent=sourceError?T().offline:total?
   T().count+": "+num(total)+" "+T().results+" · "+T().page+" "+currentPage+" "+T().of+" "+pages:T().empty;
  for(const r of matches.slice((currentPage-1)*PAGE_SIZE,currentPage*PAGE_SIZE))host.append(card(r));
