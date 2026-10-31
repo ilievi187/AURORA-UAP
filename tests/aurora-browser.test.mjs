@@ -17,7 +17,7 @@ import {onRequestGet as oneCase} from '../functions/api/cases/[id].js';
 const root=resolve(fileURLToPath(new URL('..',import.meta.url)));
 // Legacy globe/navigation suites intentionally use the 15 curated editorial fixtures.
 // The full licensed multi-provider archive is verified in archive-directory tests.
-const curatedArchive=(()=>{const {cases,...meta}=JSON.parse(readFileSync(new URL('../data/cases.json',import.meta.url)));return JSON.stringify({...meta,cases:cases.filter(c=>!c.provenance?.automated)});})();
+const curatedArchive=(()=>{const {cases,...meta}=JSON.parse(readFileSync(new URL('../data/cases.json',import.meta.url)));return JSON.stringify({...meta,cases:cases.filter(c=>!c.provenance?.automated).sort((a,b)=>a.id==='phoenix-1997'?-1:b.id==='phoenix-1997'?1:0)});})();
 const mime={'.html':'text/html','.css':'text/css','.js':'application/javascript','.webp':'image/webp','.svg':'image/svg+xml','.txt':'text/plain'};
 const sqlite=new DatabaseSync(':memory:');
 sqlite.exec(await readFile(join(root,'migrations/0001_init.sql'),'utf8'));
