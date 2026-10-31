@@ -647,7 +647,7 @@ new MutationObserver(updateLabels).observe(document.documentElement, { attribute
 async function start() {
   updateLabels();
   const [caseResult, landResult] = await Promise.allSettled([
-    fetch('/data/cases.json', { cache: 'force-cache' }).then(async (response) => {
+    fetch('/data/cases.json', { cache: 'no-cache' }).then(async (response) => {
       if (!response.ok) throw new Error('case archive');
       return response.json();
     }),
