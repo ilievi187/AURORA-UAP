@@ -111,6 +111,27 @@ export function resolveMediaPlayback(media) {
   return directPlayback(media, original);
 }
 
+
+/**
+ * Source-safe thumbnail resolver. Returns a real provider preview only where the
+ * video platform publishes one or a separate rights-verified poster is supplied.
+ * Callers must label their own AURORA artwork as an illustration otherwise.
+ */
+export function resolveVideoPoster(media){
+ if(!media||media.type!=="video")return null;
+ const original=safeHttpsUrl(media.url);
+ if(!original)return null;
+ const youtube=youtubeId(original);
+ if(youtube)return "https://i.ytimg.com/vi/"+youtube+"/hqdefault.jpg";
+ const p=media.playback;
+ if(p?.poster_rights_status==="verified"&&p.poster_hosting_permission===true&&
+   (p.poster_rights_evidence_url&&safeHttpsUrl(p.poster_rights_evidence_url))){
+  const url=safeHttpsUrl(p.poster_url);
+  if(url&&/\.(?:jpe?g|png|webp|avif)$/i.test(url.pathname))return url.href;
+ }
+ return null;
+}
+
 const COPY = {
   en: {
     play: 'Watch in AURORA', close: 'Close player', kicker: 'AURORA player',
