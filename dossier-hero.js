@@ -67,7 +67,7 @@
   $("caseHeroKicker").textContent=w.available;
   status.textContent=w.check;
   const first=videos[0],source=safeUrl(first.url);
-  link.href=source;link.textContent=w.original;link.hidden=false;
+  link.href=source;link.textContent=videoUI(lang).original;link.hidden=false;
   try{
    mediaImport??=import("/media-player.js");
    const module=await mediaImport;
@@ -76,7 +76,7 @@
    w=words(lang);
    $("caseHeroKicker").textContent=w.available;
    close.textContent=w.close+" ×";close.setAttribute("aria-label",w.close);
-   link.textContent=w.original;status.textContent=w.check;
+   link.textContent=videoUI(lang).original;status.textContent=w.check;
    const candidates=videos.map(media=>({media,playback:module.resolveMediaPlayback(media)})).filter(x=>x.playback);
    if(!candidates.length){
     status.textContent=w.notSupported;
