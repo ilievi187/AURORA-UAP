@@ -47,9 +47,7 @@ jobs:
           node "$tmp/scripts/sync-disclosure-zone.mjs"
           node -e 'const a=JSON.parse(require("node:fs").readFileSync(process.argv[1])); const m=JSON.parse(require("node:fs").readFileSync(process.argv[2])); const d=JSON.parse(require("node:fs").readFileSync(process.argv[3])); if(a.cases.length!==d.total||m.status!=="ok"||d.status!=="ok"||d.generated<1) process.exit(1); console.log(JSON.stringify({first:m,second:d}))' "$tmp/data/cases.json" "$tmp/data/archive-sync-status.json" "$tmp/data/disclosure-zone-sync-status.json"
           test ! -e "$tmp/.git"
-          # TEMPORARY: export only licensed, normalized public candidate metadata for
-          # owner review on this PR. Remove this step before merging.
-          node -e 'const fs=require("node:fs");for(const [label,file] of [["CASES",process.argv[1]],["FIRST",process.argv[2]],["SECOND",process.argv[3]]]){const text=fs.readFileSync(file,"utf8");for(let i=0;i<text.length;i+=1500){const n=String(i/1500).padStart(4,"0");console.log("AURORA_EXPORT_"+label+"_"+n+":"+JSON.stringify(text.slice(i,i+1500)))}}' "$tmp/data/cases.json" "$tmp/data/archive-sync-status.json" "$tmp/data/disclosure-zone-sync-status.json"
+
       - name: Validate updated archive and static site contracts
         run: |
           node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs tests/disclosure-zone-sync.test.mjs
