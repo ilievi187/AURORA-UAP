@@ -138,6 +138,32 @@ async function openMediaPage(viewport = { width: 1280, height: 860 }, options = 
   return { context, page, errors };
 }
 
+test('uses AURORA homepage UFO art as the real Play preview, never as footage', async()=>{
+ const {context,page,errors}=await openMediaPage();
+ try{
+  const card=page.locator('#mediaGallery article').filter({hasText:'Authorized direct fixture'});
+  const preview=card.locator('.media-entry-image img');
+  await preview.evaluate(image=>image.decode());
+  assert.equal(await preview.getAttribute('src'),'/assets/hero-ufo.webp',
+   'gallery reuses the exact established homepage UFO asset');
+  assert.match(await preview.getAttribute('alt'),/not an original incident frame/i);
+  const play=card.locator('.media-inline-play');
+  assert.equal(await play.count(),1,'one prominent Play action over the art');
+  const bounds=await card.locator('.media-entry-image').boundingBox();
+  const hit=await play.boundingBox();
+  assert.ok(bounds&&hit&&Math.abs(bounds.width-hit.width)<3,'the entire illustration is clickable');
+  const caption=await card.locator('.media-caption').textContent();
+  assert.match(caption,/preview artwork|original frame/i,'creative artwork is not presented as a sourced video still');
+  await play.click();
+  assert.equal(await card.locator('.media-entry-image video').count(),1,
+   'Play replaces artwork with the real in-place video player');
+  assert.equal(await preview.isHidden(),true,'art hides behind active playback');
+  await card.locator('.media-inline-close').click();
+  assert.equal(await preview.isVisible(),true,'closing returns the original UFO art');
+  assert.deepEqual(errors,[]);
+ } finally { await context.close(); }
+});
+
 test('media previews stay dark, cards share balanced 16:9 proportions, Play overlay stays transparent',async()=>{
  const {context,page,errors}=await openMediaPage({width:1280,height:900});
  try{
