@@ -103,6 +103,11 @@ export function resolveMediaPlayback(media) {
   if (embedUrl) {
     return { kind: 'iframe', provider: 'vimeo', embedUrl, originalUrl: original.href };
   }
+  // Verified DVIDS public embed for the official Al Taqaddum case only.
+  if (original.hostname.toLowerCase() === 'www.dvidshub.net' &&
+      /^\/video\/960331(?:\/|$)/.test(original.pathname)) {
+    return { kind: 'iframe', provider: 'dvids', embedUrl: 'https://www.dvidshub.net/video/embed/960331', originalUrl: original.href };
+  }
   return directPlayback(media, original);
 }
 
@@ -415,6 +420,66 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
   let focusedTrigger = null;
   let iframeTimer = null;
   let activeNode = null;
+  let activeInline = null;
+  function resetInline({restoreFocus=false}={}) {
+    if(!activeInline)return;
+    const current=activeInline;activeInline=null;
+    const {picture,stage,trigger,img,badge,close,player,status}=current;
+    if(player?.tagName==="VIDEO"){
+      try{player.pause();player.removeAttribute("src");player.load()}catch{}
+    }else if(player?.tagName==="IFRAME"){player.removeAttribute("src")}
+    stage.remove();close.remove();status.remove();
+    picture.classList.remove("media-inline-active");
+    if(img)img.hidden=false;
+    if(badge)badge.hidden=false;
+    if(trigger?.isConnected)trigger.hidden=false;
+    if(restoreFocus&&trigger?.isConnected)trigger.focus();
+  }
+  function openInlinePlayback(card,picture,trigger,playback,details){
+    resetInline();
+    syncLocale();
+    const img=picture.querySelector("img"),badge=picture.querySelector("span");
+    if(img)img.hidden=true;
+    if(badge)badge.hidden=true;
+    trigger.hidden=true;
+    picture.classList.add("media-inline-active");
+    const stage=documentRef.createElement("div");
+    stage.className="media-inline-player-stage";
+    const status=documentRef.createElement("p");
+    status.className="media-inline-status";
+    status.setAttribute("role","status");
+    status.textContent=playback.kind==="iframe"?words.iframeLoading:words.videoLoading;
+    const close=documentRef.createElement("button");
+    close.type="button";close.className="media-inline-close";
+    close.textContent="×";close.setAttribute("aria-label",words.close);
+    close.addEventListener("click",()=>resetInline({restoreFocus:true}));
+    picture.append(stage,status,close);
+    let player;
+    if(playback.kind==="iframe"){
+      player=documentRef.createElement("iframe");
+      player.title=details.title+" — "+details.sourceName;
+      player.loading="lazy";
+      player.allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen";
+      player.allowFullscreen=true;
+      player.referrerPolicy="strict-origin-when-cross-origin";
+      player.setAttribute("sandbox","allow-scripts allow-same-origin allow-presentation");
+      player.addEventListener("load",()=>{status.textContent=words.iframeReady},{once:true});
+      player.addEventListener("error",()=>{status.textContent=words.iframeError},{once:true});
+      stage.append(player);
+      player.src=playback.embedUrl;
+    }else{
+      player=documentRef.createElement("video");
+      player.controls=true;player.preload="metadata";player.playsInline=true;
+      player.setAttribute("aria-label",details.title);
+      player.addEventListener("loadedmetadata",()=>{status.textContent=words.videoReady},{once:true});
+      player.addEventListener("error",()=>{status.textContent=words.videoError},{once:true});
+      stage.append(player);
+      player.src=playback.mediaUrl;
+    }
+    activeInline={card,picture,stage,trigger,img,badge,close,player,status};
+    close.focus();
+  }
+
 
   function syncLocale() {
     locale = localeFor(documentRef);
@@ -592,6 +657,8 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
   }
 
   function decorate() {
+    // A filter/language change can discard a playing card: unload its media promptly.
+    if (activeInline && !activeInline.picture.isConnected) resetInline();
     if (!catalogReady) return;
     syncLocale();
     for (const card of gallery.querySelectorAll('.media-entry')) {
@@ -627,6 +694,20 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
         sourceName: attribution || sourceHost || providerLabel
       }, button));
       sourceLink.after(button);
+      const picture=card.querySelector(".media-entry-image");
+      if(picture){
+        const inline=documentRef.createElement("button");
+        inline.type="button";inline.className="media-inline-play";
+        inline.dataset.inlinePlayerAction="play";
+        inline.dataset.inlineProvider=playback.provider;
+        inline.setAttribute("aria-label",words.play+": "+title);
+        inline.title=words.play+": "+title;
+        inline.textContent="▶";
+        inline.addEventListener("click",()=>openInlinePlayback(card,picture,inline,playback,{
+          title,caseTitle,sourceName:attribution||sourceHost||providerLabel
+        }));
+        picture.append(inline);
+      }
     }
   }
 
@@ -650,7 +731,7 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
     catalogReady = true;
     decorate();
   }
-  return { destroy() { observer?.disconnect(); dialog?.remove(); } };
+  return { destroy() { observer?.disconnect(); resetInline(); dialog?.remove(); } };
 }
 
 if (typeof document !== 'undefined' && document.querySelector('#mediaGallery')) {

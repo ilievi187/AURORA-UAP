@@ -269,3 +269,48 @@ if (process.env.AURORA_LIVE_EMBED_TEST === '1') {
     }
   });
 }
+
+
+test('Play over the actual video card reveals a real inline iframe, not an outbound website',async()=>{
+  const {context,page,errors}=await openMediaPage();
+  try{
+    const card=page.locator('#mediaGallery article').filter({hasText:'YouTube fixture case'});
+    const overlay=card.locator('button[data-inline-player-action="play"]');
+    assert.equal(await overlay.count(),1);
+    assert.equal(await card.locator('.media-entry-image iframe').count(),0,'no network embed before click');
+    await overlay.click();
+    const picture=card.locator('.media-entry-image');
+    assert.equal(await picture.locator('iframe').getAttribute('src'),'https://www.youtube-nocookie.com/embed/aqz-KE-bpKQ?rel=0&playsinline=1');
+    assert.equal(await picture.locator('img').isHidden(),true);
+    assert.equal(await picture.locator('button.media-inline-play').isHidden(),true);
+    assert.equal(await picture.locator('button.media-inline-close').count(),1);
+    assert.equal(await page.locator('dialog.aurora-player-dialog[open]').count(),0,'overlay opens inline, not a separate modal');
+    assert.equal(await page.locator('#mediaGallery article').filter({hasText:'Unsupported fixture case'}).locator('.media-inline-play').count(),0);
+    await picture.locator('button.media-inline-close').click();
+    assert.equal(await picture.locator('iframe').count(),0);
+    assert.equal(await picture.locator('img').isVisible(),true);
+    assert.equal(await picture.locator('button.media-inline-play').isVisible(),true);
+    assert.equal(await overlay.evaluate(button=>document.activeElement===button),true);
+    assert.deepEqual(errors,[]);
+  }finally{await context.close()}
+});
+
+test('HTML5 Play loads real rights-cleared video inside the same thumbnail with controls',async()=>{
+  const {context,page,errors}=await openMediaPage({width:390,height:844});
+  try{
+    await page.route('https://cdn.publisher.example/**',route=>route.abort());
+    const card=page.locator('#mediaGallery article').filter({hasText:'Authorized direct fixture'});
+    await card.locator('button[data-inline-player-action="play"]').click();
+    const video=card.locator('.media-entry-image video');
+    assert.equal(await video.getAttribute('src'),'https://cdn.publisher.example/footage.mp4');
+    assert.equal(await video.getAttribute('controls'),'');
+    assert.equal(await video.getAttribute('autoplay'),null);
+    assert.equal(await video.getAttribute('preload'),'metadata');
+    assert.equal(await card.locator('.media-entry-links a[target="_blank"]').getAttribute('href'),'https://publisher.example/story');
+    const widths=await page.evaluate(()=>({client:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth}));
+    assert.ok(widths.scroll<=widths.client+1,'the inline player cannot create mobile overflow');
+    await card.locator('.media-inline-close').click();
+    assert.equal(await video.count(),0,'closing unloads the network video');
+    assert.deepEqual(errors,[]);
+  }finally{await context.close()}
+});
