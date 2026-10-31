@@ -98,7 +98,13 @@ test("existing source-authored Bulgarian case files with different paragraph cou
 test("legacy mixed-language catalog entries are NOT counted as translated Bulgarian text",()=>{
  const cases=JSON.parse(readFileSync(new URL("../data/cases.json",import.meta.url),"utf8")).cases;
  const invalid=cases.filter(c=>isLegacyPlaceholder(c,"bg"));
- assert.ok(invalid.length>=60,"the old dataset contains many incomplete Bulgarian imports");
+ const synthetic=baseCase();
+ synthetic.title.bg=synthetic.title.en;
+ synthetic.summary.bg="Това е случай, описан в публичния каталог.";
+ synthetic.story.bg=["Следва оригиналното описание на английски.","EN · Another case description"];
+ assert.equal(isLegacyPlaceholder(synthetic,"bg"),true);
+ assert.equal(isFullTranslation(synthetic,"bg",true),false);
+ // The check remains valid as the 68 inherited placeholders are gradually eliminated.
  for(const c of invalid){
   assert.equal(isFullTranslation(c,"bg",true),false,c.id);
   assert.equal(isFullTranslation(c,"bg",false),false,c.id);
