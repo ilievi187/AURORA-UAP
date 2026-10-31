@@ -657,6 +657,8 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
   }
 
   function decorate() {
+    // A filter/language change can discard a playing card: unload its media promptly.
+    if (activeInline && !activeInline.picture.isConnected) resetInline();
     if (!catalogReady) return;
     syncLocale();
     for (const card of gallery.querySelectorAll('.media-entry')) {
