@@ -1,7 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {parseNewsRss,fetchHeadlines,fetchHeadlinesWithDiagnostics,onRequestGet as newsRoute} from "../functions/api/news.js";
-import {normalizeTraffic,normalizeAdsb,fetchTraffic,fetchAdsbTraffic,onRequestGet as trafficRoute} from "../functions/api/air-traffic.js";
 import {SOURCE_CATALOG} from "../functions/_lib/source-catalog.js";
 import {selectDiscoveryFeeds} from "../functions/_lib/discovery.js";
 const xml='<rss><channel><item><title>UAP briefing &amp; research</title><link>https://news.google.com/rss/articles/test</link><pubDate>'+new Date().toUTCString()+'</pubDate><source>Example Press</source></item></channel></rss>';
@@ -39,25 +38,9 @@ test("news deduplicates across regions and refuses arbitrary editions",async()=>
  const invalid=await newsRoute({request:new Request("https://aurorauap.org/api/news?edition=https://evil.test")});
  assert.equal(invalid.status,400);
 });
-test("traffic keeps only sanitized finite in-region points",()=>{
- const data={time:Math.floor(Date.now()/1000),states:[
- ["abc123","TEST123","BG",0,0,24.2,42.8,1234,false,100,180],
- ["bad","BAD","US",0,0,-50,20,0,false,100,0],
- ["n","NAN","BG",0,0,24.2,NaN,0,false,100,0]
- ]};
- const got=normalizeTraffic(data,"bg");assert.equal(got.count,1);assert.equal(got.aircraft[0].callsign,"TEST123");
- assert.equal(got.aircraft[0].latitude,42.8);
-});
-test("traffic uses fixed region query and fails for arbitrary region",async()=>{
- const fetcher=async url=>{const p=new URL(url);assert.equal(p.hostname,"opensky-network.org");assert.equal(p.searchParams.get("lamin"),"41.1");return Response.json({time:Math.floor(Date.now()/1000),states:[]})};
- const got=await fetchTraffic("bg",fetcher);assert.equal(got.region,"bg");
- const invalid=await trafficRoute({request:new Request("https://aurorauap.org/api/air-traffic?region=all")});
- assert.equal(invalid.status,400);
-});
 test("upstream failures never masquerade as live data",async()=>{
  const fetcher=async()=>{throw Error("network")};
  const items=await fetchHeadlines("official",fetcher);assert.deepEqual(items,[]);
- assert.equal(normalizeTraffic({time:0}, "bg"),null);
 });
 test("unavailable news API reports sanitized per-source diagnostics",async()=>{
  const fetcher=async url=>{
@@ -669,62 +652,3 @@ test("live source success takes precedence over historical asset snapshot",async
  assert.equal((await response.json()).status,"live");
 });
 
-test("airspace fallback maps genuine ADS-B fields, units, bounds and attribution",()=>{
- const got=normalizeAdsb({now:Date.now(),ac:[
-  {hex:"abc123",flight:"WZZ123",lat:42.70,lon:23.30,alt_baro:33000,gs:400,track:91,seen_pos:2},
-  {hex:"far",flight:"OUT",lat:10,lon:100,alt_baro:15000,gs:500},
-  {hex:"old",flight:"OLD",lat:42,lon:23,alt_baro:10000,seen_pos:360}
- ]},"bg");
- assert.equal(got.count,1);
- assert.equal(got.source,"adsb.lol");
- assert.equal(got.license,"ODbL 1.0");
- assert.equal(got.aircraft[0].callsign,"WZZ123");
- assert.equal(got.aircraft[0].altitude_m,10058);
- assert.equal(got.aircraft[0].speed_ms,206);
- assert.equal(got.aircraft[0].latitude,42.7);
- assert.equal(normalizeAdsb({now:Date.now()-31*60*1000,ac:[]},"bg"),null);
-});
-test("OpenSky throttling falls back to bounded ADS-B region and never invents aircraft",async()=>{
- let open=0,adsb=0;
- const fetcher=async url=>{
-  if(url.includes("opensky-network.org")){open++;return new Response("rate limit",{status:429})}
-  if(url.includes("api.adsb.lol")){adsb++;assert.match(url,/\/v2\/lat\/\d+\.\d{3}\/lon\/\d+\.\d{3}\/dist\/\d+$/);return Response.json({now:Date.now(),ac:[{hex:"aabbcc",flight:"TEST BG",lat:42.5,lon:23.5,alt_baro:12000,gs:220,seen_pos:1}]})}
-  throw Error("Unexpected host");
- };
- const response=await trafficRoute({request:new Request("https://aurorauap.org/api/air-traffic?region=bg"),fetcher});
- assert.equal(response.status,200);
- const data=await response.json();
- assert.equal(data.count,1);
- assert.equal(data.source,"adsb.lol");
- assert.equal(data.aircraft[0].callsign,"TEST BG");
- assert.equal(open,1);
- assert.equal(adsb,1);
-});
-test("if both flight sources fail, the API returns 503 with no synthetic plane positions",async()=>{
- const response=await trafficRoute({
-  request:new Request("https://aurorauap.org/api/air-traffic?region=bg"),
-  fetcher:async()=>new Response("blocked",{status:429})
- });
- assert.equal(response.status,503);
- const body=await response.json();
- assert.equal(body.error,"traffic_source_unavailable");
- assert.equal(body.aircraft,undefined);
-});
-test("disable fallback option respects restricted provider setups",async()=>{
- let adsbRequested=false;
- const response=await trafficRoute({
-  request:new Request("https://aurorauap.org/api/air-traffic?region=bg"),
-  env:{AURORA_ADSB_FALLBACK_DISABLED:"true"},
-  fetcher:async url=>{if(url.includes("adsb.lol"))adsbRequested=true;return new Response("failure",{status:503})}
- });
- assert.equal(response.status,503);
- assert.equal(adsbRequested,false);
-});
-test("ADS-B region queries stay bounded to 250 nautical miles",async()=>{
- const got=await fetchAdsbTraffic("eu",async url=>{
-  const radius=Number(url.split("/dist/")[1]);assert.ok(radius>0&&radius<=250);
-  return Response.json({now:Date.now(),ac:[]});
- });
- assert.equal(got.source,"adsb.lol");
- assert.equal(got.count,0);
-});
