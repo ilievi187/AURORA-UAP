@@ -151,7 +151,9 @@
   // Source provenance is preserved; visuals are labelled if illustrative.
   const visual=c.visual;
   const visualBox=$("caseVisual"),visualImage=$("caseVisualImage");
-  const allowedVisual=typeof visual?.src==="string"&&/^\/assets\/[a-z0-9-]+\.webp$/.test(visual.src);
+  // feature-media.webp contains a baked-in ▶ graphic, not real footage.
+  // Never show that stock image as if it were a player in any dossier.
+  const allowedVisual=typeof visual?.src==="string"&&visual.src!=="/assets/feature-media.webp"&&/^\/assets\/[a-z0-9-]+\.webp$/.test(visual.src);
   const videoReferences=Array.isArray(c.media)&&c.media.some(m=>m?.type==="video"&&sourceUrl(m.url));
   visualBox.hidden=!allowedVisual&&!videoReferences;
   visualImage.hidden=!!videoReferences;
