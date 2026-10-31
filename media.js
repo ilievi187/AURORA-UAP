@@ -219,6 +219,23 @@
  let playbackFor=()=>null;
  const titleFor=value=>typeof value==="string"?value:(value?.[locale]||value?.en||value?.bg||"");
  const rank=entry=>entry.m.type==="video"?(entry.playable?0:1):entry.m.type==="photo"?2:3;
+ // Long government filenames belong in the source metadata, not in giant card headings.
+ // Keep the unabridged original in the title tooltip and linked primary source.
+ const videoHeadline=(c,m)=>{
+  const original=titleFor(m.title)||titleFor(c.title);
+  if(original.length<=70)return original;
+  if(/^FBI-UAP-PR\d+/i.test(original)){
+   const quote=original.match(/["“]([^"”]+)["”]/);
+   if(quote){
+    const subject=quote[1].replace(/[,\s]+$/,"").trim();
+    const tail=original.slice(quote.index+quote[0].length).split(/[—(]/)[0]
+     .replace(/^[,\s]+/,"").replace(/,\s*\d{4}.*$/,"").trim();
+    if(subject)return [subject,tail].filter(Boolean).join(" — ");
+   }
+  }
+  const recordId=original.match(/\b(?:FBI|DOW)-UAP-PR\d+\b/i)?.[0];
+  return [titleFor(c.title)||original,recordId].filter(Boolean).join(" · ");
+ };
  function render(){
   applyChrome();
   const words=PACKS[locale]||PACKS.en;
@@ -246,10 +263,14 @@
    const badge=document.createElement("span");badge.textContent=video?words.video:documents?words.documents:words.photo;
    picture.append(img,badge);
    const body=document.createElement("div");body.className="media-entry-body";
-   const meta=document.createElement("small");meta.textContent=[c.date,c.country,titleFor(c.title),c.source?.name].filter(Boolean).join(" · ");
+   const meta=document.createElement("small");meta.textContent=[c.date,c.country,titleFor(c.title),
+    video?titleFor(m.title).match(/\b(?:FBI|DOW)-UAP-PR\d+\b/i)?.[0]:null,
+    video?titleFor(m.title).match(/\bRelease\s*\d+/i)?.[0]:null,c.source?.name]
+    .filter(Boolean).join(" · ");
    const heading=document.createElement("h2");
    // Distinguish individual recordings from the same case; archives use the case title.
-   heading.textContent=video?(titleFor(m.title)||titleFor(c.title)):titleFor(c.title);
+   heading.textContent=video?videoHeadline(c,m):titleFor(c.title);
+   if(video){heading.title=titleFor(m.title)||titleFor(c.title);heading.setAttribute("aria-label",heading.title);}
    const summary=document.createElement("p");summary.textContent=titleFor(c.summary);
    const links=document.createElement("div");links.className="media-entry-links";
    for(const [i,sourceItem] of sources.entries()){
