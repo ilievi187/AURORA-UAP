@@ -144,7 +144,7 @@ test('uses AURORA homepage UFO art as the real Play preview, never as footage', 
   const card=page.locator('#mediaGallery article').filter({hasText:'Authorized direct fixture'});
   const preview=card.locator('.media-entry-image img');
   await preview.evaluate(image=>image.decode());
-  assert.equal(await preview.getAttribute('src'),'/assets/hero-ufo.webp',
+  assert.equal(await preview.getAttribute('src'),'/assets/media-ufo-earth-preview.svg',
    'gallery reuses the exact established homepage UFO asset');
   assert.match(await preview.getAttribute('alt'),/not an original incident frame/i);
   const play=card.locator('.media-inline-play');
