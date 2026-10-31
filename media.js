@@ -179,7 +179,6 @@
  document.documentElement.lang=locale;
  const valid=u=>{try{const x=new URL(u);return x.protocol==="https:"&&!x.username&&!x.password}catch{return false}};
  let items=[],loadedOk=false,embeddedPlayer=null,playbackResolver=null;
- const translationRequested=new Set();
  async function enhanceMedia(){
   try{
    const [player,playback]=await Promise.all([
@@ -196,10 +195,10 @@
   note.textContent=language==="bg"?"Оригинален английски текст · преводът не е наличен":
     "Original English · automatic translation pending or unavailable";
   summary.after(note);
-  const key=record.id+"/"+language;
-  if(translationRequested.has(key))return;
-  translationRequested.add(key);
-  void import("/archive-localization.js").then(m=>m.translatePublicCase(record,language))
+  void import("/archive-localization.js").then(m=>{
+    note.textContent=m.translationDisclosure(language);
+    return m.translatePublicCase(record,language);
+  })
    .then(result=>{
     if(!result||!card.isConnected||locale!==language)return;
     heading.textContent=record.title?.[language]||record.title?.en||"";
