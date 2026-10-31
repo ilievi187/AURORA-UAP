@@ -755,6 +755,54 @@ try{
     }
     await context.close();
   });
+  await test("Black Edition mobile pages preserve French and never overflow",async()=>{
+    const ctx=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:"reduce"});
+    const page=await ctx.newPage();
+    await page.addInitScript(()=>localStorage.setItem("aurora-lang","fr"));
+    for(const uri of ["/archive.html","/countries.html","/country.html","/media.html","/news.html","/report.html","/sources.html","/donate.html"]){
+      await page.goto("http://127.0.0.1:"+port+uri);
+      const result=await page.evaluate(()=>({
+        delta:document.documentElement.scrollWidth-document.documentElement.clientWidth,
+        width:document.body.getBoundingClientRect().width,
+        lang:document.documentElement.lang
+      }));
+      assert.ok(result.delta<=1,uri+" horizontal overflow "+JSON.stringify(result));
+      assert.ok(result.width<=391,uri+" body exceeds viewport");
+      assert.equal(result.lang,"fr",uri+" must persist chosen locale");
+      if(uri==="/archive.html")
+        assert.match(await page.locator(".archive-hero h1").textContent(),/ARCHIVES UAP MONDIALES/);
+      if(uri==="/sources.html")
+        assert.match(await page.locator(".live-hero h1").textContent(),/SOURCES INTERNATIONALES/);
+    }
+    await ctx.close();
+  });
+  await test("Translated dossier retains one original verified embedded player",async()=>{
+    const ctx=await browser.newContext({viewport:{width:1280,height:850}});
+    const page=await ctx.newPage(),errors=[];
+    page.on("pageerror",error=>errors.push(error.message));
+    await page.addInitScript(()=>localStorage.setItem("aurora-lang","de"));
+    await page.route("**/data/cases.json",route=>route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({cases:[{
+      id:"mock-case-video",date:"2026-10-05",country:"US",category:"lights",status:"undetermined",
+      title:{en:"Witness-recorded sighting",bg:"Свидетелски запис"},
+      summary:{en:"A sourced report with an original video.",bg:"Сигнал с оригинално видео."},
+      story:{en:["Several witnesses saw lights above the city."]},
+      source:{name:"Public Publisher",url:"https://example.org/record"},
+      media:[{type:"video",url:"https://www.youtube.com/watch?v=aqz-KE-bpKQ",title:{en:"Original footage",bg:"Оригинален запис"}}]
+    }]})}));
+    await page.goto("http://127.0.0.1:"+port+"/archive/mock-case-video");
+    await page.waitForFunction(()=>document.querySelector("#dossierContent")?.hidden===false);
+    assert.equal(await page.locator("#dossierTitle").textContent(),"Witness-recorded sighting");
+    assert.ok(await page.locator("#dossierTranslationDisclosure").isVisible());
+    await page.locator("#caseHeroPlay").waitFor({state:"visible"});
+    await page.locator("#caseHeroPlay").click();
+    const frame=page.locator("#caseHeroStage iframe.case-hero-media");
+    await frame.waitFor({state:"attached"});
+    assert.match(await frame.getAttribute("src"),/youtube-nocookie\.com\/embed\/aqz-KE-bpKQ/);
+    assert.equal(await page.locator("#caseHeroStage iframe").count(),1);
+    await page.screenshot({path:"artifacts/aurora-black-real-dossier.png",animations:"disabled"});
+    assert.deepEqual(errors,[]);
+    await ctx.close();
+  });
   await test("Media page offers one playable embedded source recording without redirecting away",async()=>{
     const ctx=await browser.newContext({viewport:{width:1240,height:800}});
     const page=await ctx.newPage(),errors=[];
