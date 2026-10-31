@@ -1,0 +1,20 @@
+name: AURORA production archive freshness diagnostic
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/archive-production-health.yml'
+      - 'scripts/check-production-archive.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare-public-archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Read-only compare production, default Pages domain and deployed SHA preview
+        run: node scripts/check-production-archive.mjs
