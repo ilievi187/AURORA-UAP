@@ -8,7 +8,7 @@
 <title>AURORA UAP | Case dossier</title>
 <meta name="description" content="AURORA UAP — independently sourced UAP case documentation and reference archive.">
 <link rel="stylesheet" href="/dossier.css">
-<script defer src="/ui-locales.js"></script><script defer src="/subpage-i18n.js"></script><script defer src="/archive-records.js"></script><script defer src="/dossier.js"></script>
+<script defer src="/ui-locales.js"></script><script defer src="/subpage-i18n.js"></script><script defer src="/archive-records.js"></script><script defer src="/dossier-content.js"></script><script defer src="/dossier.js"></script>
 </head>
 <body>
 <a class="skip" href="#dossierMain">Към съдържанието</a>
@@ -46,11 +46,13 @@
     </div>
     <p class="dossier-depth" id="dossierDepth"></p>
     <p class="dossier-summary" id="dossierSummary"></p>
-    <div class="dossier-story" id="dossierStory" aria-label="Case timeline and context"></div>
+    <div class="dossier-story" id="dossierStory" aria-label="Case narrative and context"></div>
+    <div class="dossier-timeline" id="dossierTimeline" hidden><h3 id="dossierTimelineHeading">ХРОНОЛОГИЯ ПО ИЗТОЧНИЦИ</h3><ol id="dossierTimelineList"></ol></div>
     <p class="dossier-caution" id="dossierCaution"></p>
    </article>
    <article class="dossier-section" id="caseMediaSection" hidden>
     <div class="dossier-section-heading"><span>02 / MEDIA ARCHIVE</span><h2 id="caseMediaTitle">СНИМКИ, ВИДЕО И ДОКУМЕНТИ</h2></div>
+    <div class="dossier-photo-gallery" id="casePhotoGallery" aria-label="Source photographs"></div>
     <div class="case-media-grid" id="caseMediaGrid"></div>
    </article>
    <article class="dossier-section">
@@ -59,6 +61,7 @@
     <a class="dossier-source" id="dossierSourceUrl" href="/" target="_blank" rel="noopener noreferrer" hidden></a>
     <p id="dossierLicense"></p>
     <p id="dossierAssessmentAuthority"></p>
+    <div class="dossier-sources" id="dossierSourcesSection" hidden><h3 id="dossierSourcesHeading">ДОПЪЛНИТЕЛНИ ПУБЛИЧНИ ИЗТОЧНИЦИ</h3><ul id="dossierSourcesList"></ul></div>
    </article>
    <article class="dossier-section">
     <div class="dossier-section-heading"><span>04 / CARTOGRAPHY</span><h2 id="locationHeading">ГЕОГРАФСКА НЕСИГУРНОСТ</h2></div>
