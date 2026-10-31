@@ -698,6 +698,11 @@ try{
     assert.match(background,/hero-ufo\.webp/);
     mkdirSync("artifacts",{recursive:true});
     await page.screenshot({path:"artifacts/aurora-silence-desktop.png",fullPage:false,animations:"disabled"});
+    // Visual evidence for the satellite atlas, captured with real data and rendered local textures.
+    await page.waitForFunction(()=>Number(document.querySelector("#worldMapCount")?.textContent)>0);
+    await page.evaluate(async()=>{const image=new Image();image.src="/assets/earth/earth-night-4096.jpg";await image.decode()});
+    await page.locator("#worldAtlas").screenshot({path:"artifacts/aurora-orbital-atlas.png",animations:"disabled"});
+    assert.ok((await page.locator("#worldMapPins button").count())>0,"satellite atlas retains sourced markers");
     assert.deepEqual(errors,[]);
     await context.close();
   });
