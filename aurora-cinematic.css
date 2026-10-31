@@ -1,0 +1,253 @@
+
+/* AURORA / WORLD V3: original glacial art direction.
+   One continuous cinematic scene, not a conventional neon dashboard. */
+body:has(#odyssey){background:#151c23;color:#e7ecf0;overflow-x:clip;}
+body:not(.gate-open):has(#odyssey){overflow-x:clip;}
+body:has(#odyssey)::before{display:none;}
+body:has(#odyssey) .site-shell{
+  max-width:none;width:100%;padding:0;overflow:visible;background:#101821;
+}
+body:has(#odyssey) .site-shell>main{overflow:visible;}
+body:has(#odyssey) .site-header{
+  position:absolute;z-index:51;top:0;left:0;right:0;height:96px;min-height:96px;
+  padding:0 clamp(24px,5.4vw,104px);
+  background:transparent!important;border:0!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+body:has(#odyssey) .site-header::before{display:none!important;}
+body:has(#odyssey) .site-header .brand{gap:13px;min-width:0;}
+body:has(#odyssey) .site-header .brand-icon{width:38px;height:38px;color:#f2f7fa;filter:none;}
+body:has(#odyssey) .site-header .brand-text b{
+  font-size:clamp(16px,1.8vw,24px);font-weight:850;letter-spacing:.24em;color:#f1f7fa;text-shadow:0 2px 20px #0005;
+}
+body:has(#odyssey) .site-header .brand-text small{font-size:8px;letter-spacing:.15em;color:#dce6eb;}
+body:has(#odyssey) .site-header .desktop-nav{justify-content:flex-end;gap:clamp(18px,2.5vw,41px);}
+body:has(#odyssey) .site-header .desktop-nav a{
+  font:650 11px/1.3 ui-monospace,SFMono-Regular,Consolas,monospace;
+  letter-spacing:.12em;text-transform:uppercase;color:#f3f8fa;text-shadow:0 1px 14px #0008;padding:10px 0;
+}
+body:has(#odyssey) .site-header .desktop-nav a:after{display:none!important;}
+body:has(#odyssey) .site-header .desktop-nav .nav-donate{background:transparent;border:0;border-bottom:1px solid #eaf2f6;border-radius:0;}
+body:has(#odyssey) .site-header .gate-trigger{font-size:10px;background:transparent;border:1px solid #ebf0f481;color:#fff;letter-spacing:.11em;padding:10px 15px;text-shadow:0 1px 12px #0007;}
+body:has(#odyssey) .site-header .menu-button{background:#0f1b27d9;border:1px solid #fff8;}
+body:has(#odyssey) .mobile-nav{z-index:52;margin:82px 16px 0;border:1px solid #ffffff38;background:#121d2ee8;backdrop-filter:blur(16px);position:absolute;right:0;left:0;}
+body:has(#odyssey) .aurora-odyssey{
+  --odyssey-progress:0;
+  display:block;position:relative;min-height:1800px;height:365svh;
+  margin:0;padding:0;overflow:visible;background:#737e89;border:0;
+}
+body:has(#odyssey) .aurora-odyssey::before,
+body:has(#odyssey) .aurora-odyssey::after{display:none!important;}
+.aurora-odyssey .odyssey-sticky{
+  position:sticky;inset:0 auto auto 0;width:100%;height:100svh;min-height:580px;
+  overflow:hidden;isolation:isolate;
+  background:radial-gradient(ellipse at 50% 44%,#aeb6c1 0%,#697684 42%,#303b4a 78%,#1c2532 100%);
+}
+.aurora-odyssey .odyssey-fallback{
+  position:absolute;inset:0;width:100%;height:100%;z-index:0;
+  opacity:1!important;background:none!important;filter:none!important;mask-image:none!important;animation:none!important;
+}
+.aurora-odyssey .odyssey-fallback::before{
+  content:"";position:absolute;top:16%;left:43%;width:28vw;height:49vh;min-width:200px;
+  background:linear-gradient(105deg,#242e3e 2%,#6b7d90 29%,#bbc8d4 48%,#647286 73%,#252f3f 100%);
+  clip-path:polygon(49% 0%,81% 23%,98% 70%,66% 100%,18% 84%,2% 42%);
+  transform:rotate(-17deg);filter:drop-shadow(0 35px 30px #10182580);
+}
+.aurora-odyssey .odyssey-fallback::after{
+  content:"";position:absolute;top:24%;left:36%;width:46vw;height:36vh;
+  border:15px solid #d8e0e790;border-left-color:#333e4e;border-bottom-color:#425467;
+  border-radius:50%;transform:rotate(-28deg) skewY(-19deg);
+  box-shadow:0 0 66px #ced8e244;
+}
+.aurora-odyssey[data-renderer="webgl"] .odyssey-fallback{opacity:0!important;}
+.aurora-odyssey .odyssey-webgl{
+  position:absolute;inset:0;display:block;width:100%;height:100%;z-index:1;
+  pointer-events:none;opacity:0;transition:opacity .55s ease;
+}
+.aurora-odyssey[data-renderer="webgl"] .odyssey-webgl{opacity:1;}
+.aurora-odyssey .odyssey-vignette{
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(90deg,#141c274d 0%,transparent 38%,transparent 66%,#141f2d24 100%),
+             linear-gradient(0deg,#131c28b0 0%,transparent 24%,transparent 69%,#28354480 100%);
+}
+.aurora-odyssey .odyssey-scene{
+  position:absolute;inset:0;z-index:3;transition:opacity .7s ease,transform .9s cubic-bezier(.17,.84,.23,1);
+}
+.aurora-odyssey .odyssey-intro{opacity:1;transform:none;}
+.aurora-odyssey .odyssey-chapter,
+.aurora-odyssey .odyssey-archive-chapter{opacity:0;pointer-events:none;transform:translateY(48px);}
+.aurora-odyssey[data-chapter="1"] .odyssey-intro,
+.aurora-odyssey[data-chapter="2"] .odyssey-intro{opacity:0;pointer-events:none;transform:translateY(-30px);}
+.aurora-odyssey[data-chapter="1"] .odyssey-chapter{opacity:1;pointer-events:auto;transform:none;}
+.aurora-odyssey[data-chapter="2"] .odyssey-archive-chapter{opacity:1;pointer-events:auto;transform:none;}
+.aurora-odyssey .odyssey-topline{
+  position:absolute;left:clamp(25px,5.4vw,104px);right:clamp(25px,5.4vw,104px);
+  top:clamp(131px,15vh,165px);display:flex;justify-content:space-between;gap:16px;
+  color:#eef4f7;font:650 10px/1.5 ui-monospace,Consolas,monospace;
+  text-shadow:0 2px 18px #101b26a0;letter-spacing:.16em;text-transform:uppercase;
+}
+.aurora-odyssey .odyssey-first-line{
+  position:absolute;bottom:clamp(130px,17vh,245px);left:clamp(26px,5.4vw,104px);
+  max-width:min(360px,72vw);text-shadow:0 2px 22px #101b26bb;
+}
+.aurora-odyssey .odyssey-line-lead{
+  font-size:clamp(15px,2.2vw,25px);line-height:1.3;letter-spacing:-.03em;
+  color:#f6f8fa;font-weight:750;text-transform:uppercase;margin:0 0 12px;
+}
+.aurora-odyssey .odyssey-line-note{font:500 10px/1.5 ui-monospace,Consolas,monospace;color:#e6eef1;letter-spacing:.1em;text-transform:uppercase;}
+.aurora-odyssey .odyssey-intro-foot{
+  position:absolute;left:clamp(26px,5.4vw,104px);right:clamp(26px,5.4vw,104px);
+  bottom:clamp(25px,5vh,60px);display:flex;align-items:center;justify-content:space-between;gap:20px;
+  color:#eef3f6;font:600 10px/1.6 ui-monospace,Consolas,monospace;
+  text-shadow:0 2px 18px #101b26c0;letter-spacing:.13em;text-transform:uppercase;
+}
+.aurora-odyssey .odyssey-scroll-symbol{display:flex;align-items:center;gap:13px;}
+.aurora-odyssey .odyssey-scroll-symbol b{font-size:22px;font-weight:400;animation:odyssey-nudge 2.5s ease-in-out infinite;}
+.aurora-odyssey .hero-content{
+  position:absolute;top:auto;bottom:clamp(115px,14vh,205px);
+  left:clamp(26px,5.4vw,104px);margin:0;width:min(850px,61vw);transform:none;z-index:4;
+}
+.aurora-odyssey .hero-content .eyebrow{
+  color:#e5eef2;font:700 11px/1.6 ui-monospace,Consolas,monospace;
+  letter-spacing:.13em;text-shadow:0 2px 24px #131a27dd;margin:0 0 21px;animation:none;
+}
+.aurora-odyssey .hero-content .eyebrow:before{width:19px;box-shadow:none;}
+.aurora-odyssey h1{
+  color:#f6f8fa;text-shadow:0 2px 25px #161d2c87;
+  font-size:clamp(61px,9vw,151px);line-height:.9;
+  letter-spacing:-.078em;font-weight:730;margin:0 0 clamp(20px,4vh,42px);max-width:1080px;animation:none;
+}
+.aurora-odyssey h1 span{color:#f5f8fa;font-weight:420;display:block;letter-spacing:-.078em;}
+.aurora-odyssey h1 strong{color:#f1f6f9;font-weight:810;display:block;letter-spacing:-.078em;text-shadow:none;}
+.aurora-odyssey .hero-copy{
+  font-size:clamp(15px,1.4vw,20px);line-height:1.63;color:#f1f4f6;max-width:590px;
+  text-shadow:0 2px 25px #111a27b3;margin-bottom:24px;animation:none;
+}
+.aurora-odyssey .hero-buttons{animation:none;display:flex;gap:12px;}
+.aurora-odyssey .hero-buttons .button{
+  border-radius:30px;min-height:52px;font-size:13px;letter-spacing:.01em;
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:13px 21px;
+}
+.aurora-odyssey .hero-buttons .button-primary{background:#eaf0f4;color:#101d28;border-color:#eaf0f4;box-shadow:none;}
+.aurora-odyssey .hero-buttons .button-secondary{background:#162334a1;color:#fff;border:1px solid #f5f9fb9e;}
+.aurora-odyssey .odyssey-archive-copy{
+  position:absolute;bottom:clamp(115px,14vh,195px);right:clamp(65px,12vw,230px);
+  width:min(650px,55vw);text-shadow:0 2px 24px #111b2c9d;
+}
+.aurora-odyssey .odyssey-archive-copy .eyebrow{color:#f5f8f9;letter-spacing:.13em;font-size:11px;}
+.aurora-odyssey .odyssey-archive-copy h2{
+  font-weight:780;letter-spacing:-.07em;font-size:clamp(48px,7vw,113px);line-height:.95;
+  color:#f6fafb;text-wrap:balance;margin:22px 0 30px;
+}
+.aurora-odyssey .odyssey-archive-copy p:not(.eyebrow){font-size:clamp(15px,1.4vw,20px);max-width:520px;color:#e6edf1;line-height:1.7;}
+.aurora-odyssey .odyssey-link{
+  display:inline-flex;align-items:center;gap:28px;margin:17px 25px 0 0;
+  border-bottom:1px solid #e7eff4;color:#fff;padding:10px 0;
+  font-weight:750;text-transform:uppercase;font-size:13px;letter-spacing:.055em;
+}
+.aurora-odyssey .odyssey-link:hover{gap:36px;color:white;}
+.aurora-odyssey .odyssey-chapter-rail{
+  position:absolute;right:clamp(24px,4vw,65px);top:45%;z-index:6;
+  display:flex;flex-direction:column;align-items:center;gap:13px;
+  color:#f5f8fa;font:700 10px/1.4 ui-monospace,Consolas,monospace;text-shadow:0 1px 14px #000a;
+}
+.aurora-odyssey .odyssey-rail-track{height:130px;width:1px;background:#e5f1f473;position:relative;}
+.aurora-odyssey .odyssey-rail-track i{
+  display:block;width:3px;position:absolute;top:0;left:-1px;
+  height:calc(var(--odyssey-progress,0) * 100%);background:#f4f7f9;box-shadow:0 0 20px #fff9;
+}
+.aurora-odyssey .odyssey-skip{
+  position:absolute;bottom:clamp(25px,5vh,60px);right:clamp(26px,5.4vw,104px);z-index:8;
+  font:700 10px/1.5 ui-monospace,Consolas,monospace;letter-spacing:.12em;
+  color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:13px;text-shadow:0 2px 16px #000a;
+}
+.aurora-odyssey .orbital-stage,.aurora-odyssey #heroHudCanvas{display:none!important;}
+/* Real data is still completely available below the journey. Present it as a
+   museum-like exhibit, not a pile of game HUD cards. */
+body:has(#odyssey) main>.world-atlas,
+body:has(#odyssey) main>.home-news,
+body:has(#odyssey) main>.mission-console,
+body:has(#odyssey) main>.methodology,
+body:has(#odyssey) main>.reports-section,
+body:has(#odyssey) main>.donate-banner,
+body:has(#odyssey) main>.mission-intro{
+  width:min(1480px,calc(100% - clamp(36px,8vw,160px)));
+  max-width:1480px;margin-inline:auto;
+}
+body:has(#odyssey) main>.world-atlas{
+  padding:clamp(48px,7vw,100px) 0 80px;
+  border:0;background:transparent;border-radius:0;margin-top:0;
+}
+body:has(#odyssey) .world-atlas-head h2,
+body:has(#odyssey) .home-news h2,
+body:has(#odyssey) .section-heading h2{
+  font-size:clamp(44px,6.2vw,100px);line-height:1;letter-spacing:-.065em;
+  text-transform:uppercase;font-weight:790;text-wrap:balance;
+}
+body:has(#odyssey) .world-atlas-head p{font-size:15px;line-height:1.72;color:#a8b7c5;}
+body:has(#odyssey) .world-map-surface{min-height:490px;border:1px solid #d5e2ef32;border-radius:5px;background:#0b1520;}
+body:has(#odyssey) .world-case-detail{border:0;border-top:1px solid #d8e5ef44;border-radius:0;background:transparent;}
+body:has(#odyssey) .world-result{border:0;border-bottom:1px solid #d5e4f12b;border-radius:0;background:transparent;box-shadow:none;}
+body:has(#odyssey) .world-result:hover{background:#ffffff12;}
+body:has(#odyssey) main>.home-news{border:0;border-top:1px solid #dbe8f43a;border-radius:0;background:transparent;padding:70px 0;}
+body:has(#odyssey) .home-news-grid article{border:0;border-top:1px solid #d8e9ee35;border-radius:0;background:transparent;padding:26px 0;}
+body:has(#odyssey) main>.mission-console{border:0;border-top:1px solid #dce5f033;border-radius:0;margin-block:65px;}
+body:has(#odyssey) main>.methodology{background:transparent;border:0;border-top:1px solid #dce5f02f;border-radius:0;padding:70px 0;}
+body:has(#odyssey) main>.donate-banner{border:0;border-top:1px solid #e4eefa2d;border-radius:0;background:transparent;padding:70px 0;}
+body:has(#odyssey) .footer{padding-inline:clamp(24px,5vw,96px);}
+@media(max-width:950px){
+  body:has(#odyssey) .site-header .desktop-nav{gap:13px;}
+  body:has(#odyssey) .site-header .desktop-nav a{font-size:10px;}
+  .aurora-odyssey .hero-content{width:min(750px,73vw);}
+}
+@media(max-width:680px){
+  body:has(#odyssey) .site-header{height:76px;min-height:76px;padding-inline:21px;}
+  body:has(#odyssey) .site-header .brand-icon{width:30px;height:30px;}
+  body:has(#odyssey) .site-header .brand-text b{font-size:16px;}
+  body:has(#odyssey) .site-header .brand-text small{font-size:7px;}
+  body:has(#odyssey) .aurora-odyssey{height:285svh;min-height:1650px;}
+  .aurora-odyssey .odyssey-sticky{height:100svh;min-height:540px;}
+  .aurora-odyssey .odyssey-topline{top:95px;left:22px;right:22px;font-size:9px;}
+  .aurora-odyssey .odyssey-topline span:last-child{display:none;}
+  .aurora-odyssey .odyssey-fallback::before{width:59vw;left:22%;height:42vh;top:18%;}
+  .aurora-odyssey .odyssey-fallback::after{width:68vw;left:14%;top:29%;height:20vh;border-width:9px;}
+  .aurora-odyssey .odyssey-vignette{
+    background:linear-gradient(0deg,#121b2cbb,transparent 48%,#121b2c76);
+  }
+  .aurora-odyssey .odyssey-first-line{left:24px;bottom:122px;width:260px;}
+  .aurora-odyssey .odyssey-line-lead{font-size:17px;}
+  .aurora-odyssey .odyssey-intro-foot{left:24px;right:24px;bottom:40px;font-size:9px;}
+  .aurora-odyssey .odyssey-intro-foot>span:first-child{display:none;}
+  .aurora-odyssey .hero-content{left:24px;right:24px;bottom:119px;width:calc(100% - 48px);}
+  .aurora-odyssey .hero-content .eyebrow{font-size:9px;line-height:1.4;letter-spacing:.07em;margin-bottom:15px;}
+  .aurora-odyssey h1{font-size:clamp(45px,11.5vw,73px);letter-spacing:-.07em;margin-bottom:17px;}
+  .aurora-odyssey .hero-copy{font-size:13px;line-height:1.65;margin-bottom:17px;}
+  .aurora-odyssey .hero-buttons{gap:9px;}
+  .aurora-odyssey .hero-buttons .button{padding:11px 13px;font-size:11px;min-height:43px;}
+  .aurora-odyssey .odyssey-archive-copy{bottom:120px;left:24px;right:28px;width:auto;}
+  .aurora-odyssey .odyssey-archive-copy h2{font-size:clamp(43px,10vw,66px);}
+  .aurora-odyssey .odyssey-archive-copy p:not(.eyebrow){font-size:13px;}
+  .aurora-odyssey .odyssey-archive-link{margin-left:15px;}
+  .aurora-odyssey .odyssey-chapter-rail{top:34%;right:18px;gap:9px;}
+  .aurora-odyssey .odyssey-rail-track{height:78px;}
+  .aurora-odyssey .odyssey-skip{bottom:37px;right:24px;font-size:9px;}
+  body:has(#odyssey) main>.world-atlas,
+  body:has(#odyssey) main>.home-news,
+  body:has(#odyssey) main>.mission-console,
+  body:has(#odyssey) main>.methodology,
+  body:has(#odyssey) main>.reports-section,
+  body:has(#odyssey) main>.donate-banner,
+  body:has(#odyssey) main>.mission-intro{width:calc(100% - 36px);}
+  body:has(#odyssey) .world-atlas-head h2,
+  body:has(#odyssey) .home-news h2,
+  body:has(#odyssey) .section-heading h2{font-size:clamp(35px,8vw,53px);}
+  body:has(#odyssey) .world-map-surface{min-height:310px;}
+}
+@media(prefers-reduced-motion:reduce){
+ body:has(#odyssey) .aurora-odyssey{height:auto;min-height:0;}
+ .aurora-odyssey .odyssey-sticky{position:relative;height:100svh;min-height:640px;}
+ .aurora-odyssey .odyssey-intro,.aurora-odyssey .odyssey-archive-chapter{display:none!important;}
+ .aurora-odyssey .odyssey-chapter{opacity:1;transform:none;pointer-events:auto;transition:none;}
+ .aurora-odyssey .odyssey-webgl,.aurora-odyssey .odyssey-fallback{transition:none;}
+ .aurora-odyssey .odyssey-scroll-symbol b{animation:none;}
+}
