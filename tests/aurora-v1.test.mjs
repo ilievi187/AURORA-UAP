@@ -18,7 +18,9 @@ test('entry route includes full-viewport accessible language picker',()=>{
 test('cinematic visual assets load from repository',()=>{
   assert.match(html,/href="aurora-v1\.css"/);
   assert.match(html,/src="aurora-v1\.js"/);
-  assert.match(html,/class="orbital-stage"/);
+  assert.match(html,/class="silence-space"/);
+  assert.match(html,/href="\/aurora-silence\.css"/);
+  assert.match(html,/src="\/aurora-silence\.js"/);
   for(const name of ['aurora-v1.css','aurora-v1.js','jarvis-hud.css','jarvis-hud.js','mission-control.css','mission-control.js','assets/hero-ufo.webp','assets/favicon.svg']){
     assert.ok(existsSync(new URL('../'+name,import.meta.url)),name+' missing');
   }

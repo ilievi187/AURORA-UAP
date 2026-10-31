@@ -666,81 +666,69 @@ try{
     await context.close();
   });
 
-  await test("AURORA 4K Earth scene renders pixels and changes through all three scroll chapters",async()=>{
-    const ctx=await browser.newContext({viewport:{width:1365,height:900},reducedMotion:"no-preference"});
-    const page=await ctx.newPage(),errors=[];
+  await test("AURORA black saucer hero matches reference hierarchy on desktop with sourced numbers",async()=>{
+    const context=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:"no-preference"});
+    const page=await context.newPage(),errors=[];
     page.on("pageerror",e=>errors.push(e.message));
     await page.goto("http://127.0.0.1:"+port+"/");
     await page.locator('#gateLanguageGrid button[data-language="en"]').click();
     await page.locator("#gateContinue").click();
     await page.locator("#languageGate").waitFor({state:"hidden"});
-    const mode=page.locator("#odyssey");
-    await page.waitForFunction(()=>["webgl","fallback"].includes(document.querySelector("#odyssey")?.dataset.renderer));
-    mkdirSync("artifacts",{recursive:true});
-
-    assert.equal(await page.locator("#auroraSceneCanvas").count(),1);
-    if(await mode.getAttribute("data-renderer")==="webgl"){
-      await page.waitForFunction(()=>document.querySelector("#odyssey")?.dataset.scenePixels,{timeout:10000});
-      const values=(await mode.getAttribute("data-scene-pixels")).split("|").map(x=>x.split(",").map(Number));
-      assert.ok(values.some(row=>row.some(v=>v>12)),"GPU must render visibly non-black pixel values");
-      await page.waitForFunction(()=>["photographic","fallback"].includes(document.querySelector("#odyssey")?.dataset.earthImagery),{timeout:15000});
-      assert.equal(await mode.getAttribute("data-earth-imagery"),"photographic","real photographed Earth must load, not flat fallback");
-      assert.equal(await mode.getAttribute("data-earth-texture"),"photo-4096");
-      assert.equal(await mode.getAttribute("data-photo-maps"),"7","day/night/cloud/specular and planetary maps loaded");
-      const probes=await page.evaluate(async()=>Promise.all([
-        "earth-day-4096.jpg","earth-night-4096.jpg","earth-clouds-1024.png",
-        "earth-specular-2048.jpg","moon-1024.jpg","mars-2048.jpg","saturn-2048.jpg"
-      ].map(async name=>{
-        const res=await fetch("/assets/earth/"+name);
-        return {name,status:res.status,type:res.headers.get("content-type"),length:(await res.blob()).size};
-      })));
-      for(const item of probes){
-        assert.equal(item.status,200,item.name);
-        assert.ok(item.length>100000,item.name+" too small");
-      }
-      await page.screenshot({path:"artifacts/aurora-earth-desktop.png",fullPage:false,animations:"disabled"});
-    }
-    await page.evaluate(()=>{
-      const el=document.querySelector("#odyssey"),r=el.getBoundingClientRect();
-      window.scrollTo({top:window.scrollY+r.top+(r.height-window.innerHeight)*.42,behavior:"instant"});
+    assert.equal(await page.locator("#silenceHero h1").textContent(),"AURORA");
+    assert.ok(await page.locator("#silenceHero h1").isVisible());
+    assert.equal(await page.locator("#odyssey").count(),0,"the abandoned multi-scroll scene is gone");
+    const hero=page.locator("#silenceHero");
+    assert.ok((await hero.boundingBox()).height<=1050,"hero must fit first viewport; no 3-screen prologue");
+    await page.waitForFunction(()=>["sourced","unavailable"].includes(document.querySelector("#silenceHero")?.dataset.stats));
+    assert.equal(await hero.getAttribute("data-stats"),"sourced");
+    const expected=await page.evaluate(async()=>{
+      const data=await (await fetch("/data/cases.json")).json();
+      const cases=data.cases.filter(x=>x&&typeof x.id==="string");
+      return [cases.length,cases.filter(x=>Number.isFinite(x.lat)&&Number.isFinite(x.lng)&&Math.abs(x.lat)<=90&&Math.abs(x.lng)<=180).length];
     });
-    await page.waitForFunction(()=>document.querySelector("#odyssey")?.dataset.chapter==="1");
-    assert.equal(await page.locator(".odyssey-chapter").getAttribute("aria-hidden"),"false");
-    await page.screenshot({path:"artifacts/aurora-earth-story-chapter.png",fullPage:false,animations:"disabled"});
-    await page.evaluate(()=>{
-      const el=document.querySelector("#odyssey"),r=el.getBoundingClientRect();
-      window.scrollTo({top:window.scrollY+r.top+(r.height-window.innerHeight)*.84,behavior:"instant"});
-    });
-    await page.waitForFunction(()=>document.querySelector("#odyssey")?.dataset.chapter==="2");
-    assert.equal(await page.locator(".odyssey-archive-chapter").getAttribute("aria-hidden"),"false");
-    await page.screenshot({path:"artifacts/aurora-earth-archive-chapter.png",fullPage:false,animations:"disabled"});
+    assert.deepEqual([
+      Number(await page.locator("#auroraArchiveCount").textContent()),
+      Number(await page.locator("#auroraMappedCount").textContent())
+    ],expected);
+    assert.equal(await page.locator("#auroraLanguageCount").textContent(),"18");
+    assert.equal(await page.locator(".silence-actions a[href='/archive.html']").count(),1);
+    assert.equal(await page.locator(".silence-actions a[href='/media.html']").count(),1);
     assert.equal(await page.locator("#worldMapCanvas").count(),1);
+    const background=await page.locator(".silence-ship").evaluate(el=>getComputedStyle(el).backgroundImage);
+    assert.match(background,/hero-ufo\.webp/);
+    mkdirSync("artifacts",{recursive:true});
+    await page.screenshot({path:"artifacts/aurora-silence-desktop.png",fullPage:false,animations:"disabled"});
     assert.deepEqual(errors,[]);
-    await ctx.close();
+    await context.close();
   });
-  await test("AURORA Earth renders a still accessible mobile view for reduced motion",async()=>{
-    const ctx=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:"reduce"});
-    const page=await ctx.newPage(),errors=[];
+  await test("black saucer homepage stays legible on mobile and reduced motion",async()=>{
+    const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:"reduce"});
+    const page=await context.newPage(),errors=[];
     page.on("pageerror",e=>errors.push(e.message));
     await page.goto("http://127.0.0.1:"+port+"/");
     await page.locator('#gateLanguageGrid button[data-language="bg"]').click();
     await page.locator("#gateContinue").click();
     await page.locator("#languageGate").waitFor({state:"hidden"});
-    assert.equal(await page.locator("#odyssey").getAttribute("data-chapter"),"1");
-    mkdirSync("artifacts",{recursive:true});
-    await page.waitForFunction(()=>["photographic","fallback"].includes(document.querySelector("#odyssey")?.dataset.earthImagery),{timeout:15000});
-    assert.equal(await page.locator("#odyssey").getAttribute("data-earth-imagery"),"photographic");
-    assert.equal(await page.locator("#odyssey").getAttribute("data-earth-texture"),"photo-2048","mobile texture resolution must be capped");
-    await page.screenshot({path:"artifacts/aurora-earth-mobile.png",fullPage:false,animations:"disabled"});
-    assert.equal(await page.locator(".odyssey-chapter").getAttribute("aria-hidden"),"false");
-    assert.equal(await page.locator(".odyssey-chapter .hero-content").isVisible(),true,"reduced-motion mobile must show its heading and navigation");
-    assert.equal(await page.locator(".odyssey-chapter .hero-content h1").isVisible(),true);
-    assert.equal(await page.locator(".odyssey-archive-chapter").isVisible(),false);
-    assert.equal(await page.locator('.hero-buttons a[href="/archive.html"]').count(),1);
+    assert.equal(await page.locator("#hero-title").textContent(),"AURORA");
+    assert.ok(await page.locator(".silence-actions a[href='/archive.html']").isVisible());
+    await page.waitForFunction(()=>document.querySelector("#silenceHero")?.dataset.stats==="sourced");
+    const columns=await page.locator(".silence-stats").evaluate(el=>getComputedStyle(el).gridTemplateColumns);
+    assert.equal(columns.split(" ").length,2,"mobile displays two metric columns");
+    const statGeometry=await page.locator(".silence-stat").evaluateAll(items=>items.map(el=>({left:el.getBoundingClientRect().left,right:el.getBoundingClientRect().right,width:el.getBoundingClientRect().width})));
+    assert.equal(statGeometry.length,4);
+    const layout=await page.evaluate(()=>{
+      const get=selector=>{const el=document.querySelector(selector);const r=el.getBoundingClientRect(),style=getComputedStyle(el);return {x:r.left,y:r.top,width:r.width,height:r.height,position:style.position,display:style.display,columns:style.gridTemplateColumns,transform:style.transform,overflow:style.overflow};};
+      return {hero:get("#silenceHero"),copy:get(".silence-copy"),bottom:get(".silence-bottom"),grid:get(".silence-stats"),cards:[...document.querySelectorAll(".silence-stat")].map((e,i)=>({index:i,x:e.getBoundingClientRect().left,y:e.getBoundingClientRect().top,w:e.getBoundingClientRect().width,h:e.getBoundingClientRect().height}))};
+    });
+    assert.ok(layout.cards.every(x=>x.w>=120&&x.x>=10&&x.x+x.w<=391),"stats must have usable widths: "+JSON.stringify(layout));
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
-    assert.ok(overflow<=1,"mobile viewport overflows by "+overflow);
+    assert.ok(overflow<=1,"homepage overflow: "+overflow);
+    const heroWidth=await page.locator("#silenceHero").evaluate(el=>el.getBoundingClientRect().width);
+    assert.ok(heroWidth<=391,"full-width hero within mobile viewport");
+    mkdirSync("artifacts",{recursive:true});
+    await page.screenshot({path:"artifacts/aurora-silence-mobile.png",fullPage:true,animations:"disabled"});
     assert.deepEqual(errors,[]);
-    await ctx.close();
+    await context.close();
   });
   await test('news API outage is shown as an explicit offline state, not a blank loading feed',async()=>{
     const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});

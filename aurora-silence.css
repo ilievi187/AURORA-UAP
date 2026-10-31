@@ -1,0 +1,366 @@
+/* AURORA / SILENCE — original black cinematic landing design.
+   Owner-provided mockup is the art-direction reference: sparse chrome,
+   photographic saucer, Earth horizon, archival typography, no fake counters. */
+:root{--silence-white:#e8edf2;--silence-muted:#a5b0ba;}
+html:has(.silence-hero){scroll-padding-top:85px;overflow-x:clip;}
+body:has(.silence-hero){
+  color:#ecf1f5;
+  background:#010305!important;
+  overflow-x:clip;
+}
+body:has(.silence-hero) .site-shell{
+  width:100%;max-width:none;min-width:0;padding:0;
+  background:#010305!important;overflow:visible;
+}
+body:has(.silence-hero) .site-shell>main{overflow:visible;}
+body:has(.silence-hero) .site-header{
+  position:absolute;z-index:55;left:0;right:0;top:0;
+  width:100%;min-height:91px;height:91px;
+  padding:0 clamp(20px,5.6vw,106px);
+  border:0!important;background:transparent!important;
+  box-shadow:none!important;backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+body:has(.silence-hero) .site-header::before{display:none!important;}
+body:has(.silence-hero) .site-header .brand{
+  min-width:0;gap:18px;align-items:center;text-decoration:none;z-index:2;
+}
+body:has(.silence-hero) .site-header .brand-icon{
+  border:0;box-shadow:none;filter:none;width:43px;height:43px;color:#cfdae2;
+}
+body:has(.silence-hero) .site-header .brand-icon svg{opacity:.64;}
+body:has(.silence-hero) .site-header .brand-text b{
+  display:block;color:#f2f6fa;font-size:clamp(17px,2vw,26px);
+  font-family:Inter,system-ui,sans-serif;font-weight:460;letter-spacing:.27em;
+  text-shadow:0 2px 24px #000;white-space:nowrap;
+}
+body:has(.silence-hero) .site-header .brand-text small{
+  font-family:ui-monospace,Consolas,monospace;
+  color:#aebbc7;font-weight:570;font-size:9px;letter-spacing:.12em;
+}
+body:has(.silence-hero) .site-header .desktop-nav{
+  gap:clamp(16px,2vw,40px);justify-content:center;
+  flex:1;margin-inline:clamp(10px,3vw,55px);
+}
+body:has(.silence-hero) .site-header .desktop-nav a{
+  color:#bac4cc;font-size:12px;letter-spacing:.045em;font-weight:650;
+  text-transform:uppercase;text-shadow:0 1px 14px #000a;
+  padding:10px 0;
+}
+body:has(.silence-hero) .site-header .desktop-nav a:hover,
+body:has(.silence-hero) .site-header .desktop-nav a.active{color:white;}
+body:has(.silence-hero) .site-header .desktop-nav a.active:after{
+  display:block;left:12%;right:12%;bottom:-2px;height:1px;
+  background:#d8eff8;box-shadow:0 0 12px #a0ddfa;
+}
+body:has(.silence-hero) .site-header .header-actions{gap:10px;min-width:0;}
+body:has(.silence-hero) .site-header .gate-trigger{
+  border:1px solid #ffffff53;border-radius:0;background:#050a11b3;
+  color:#e9f0f4;padding:10px 14px;font-size:10px;font-weight:700;
+  letter-spacing:.10em;box-shadow:none;
+}
+body:has(.silence-hero) .site-header .lang-select{background:#0306098a;border-color:#fff3;color:#eaf0f5;}
+body:has(.silence-hero) .site-header .menu-button{background:#07101acc;border-color:#a5b1bc44;}
+body:has(.silence-hero) .mobile-nav{
+  position:absolute;z-index:56;right:15px;left:15px;top:82px;
+  background:#03080fee;border:1px solid #8facc43d;
+  backdrop-filter:blur(19px);
+}
+body:has(.silence-hero) .mobile-nav[hidden]{display:none!important;}
+body:has(.silence-hero) .silence-hero{
+  --silence-pad:clamp(22px,9vw,150px);
+  position:relative;isolation:isolate;width:100%;margin:0;padding:0;
+  height:100svh;min-height:760px;max-height:1160px;
+  background:#010305!important;overflow:hidden;border:0!important;
+}
+.silence-hero::before,.silence-hero::after{display:none!important;}
+.silence-hero .silence-space{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse at 61% 45%,#0b1620 0%,#03070c 40%,#010305 72%);
+}
+.silence-hero .silence-starfield{
+  position:absolute;inset:0;opacity:.48;
+  background-image:
+   radial-gradient(1px 1px at 10% 12%,#d0e4f8 55%,transparent),
+   radial-gradient(1px 1px at 22% 38%,#eff9ff 55%,transparent),
+   radial-gradient(1px 1px at 38% 11%,#adbdcc 55%,transparent),
+   radial-gradient(1px 1px at 59% 6%,#dbe4f2 55%,transparent),
+   radial-gradient(2px 2px at 77% 23%,#c9e3f6 55%,transparent),
+   radial-gradient(1px 1px at 90% 34%,#cbdce8 55%,transparent),
+   radial-gradient(1px 1px at 72% 49%,#9fb8cc 55%,transparent),
+   radial-gradient(1px 1px at 47% 62%,#e7eef4 55%,transparent),
+   radial-gradient(1px 1px at 83% 65%,#8fb4ce 55%,transparent);
+  background-size:437px 379px,337px 427px,281px 463px,577px 389px,389px 571px,419px 307px,491px 283px,523px 413px,313px 391px;
+  mask-image:linear-gradient(180deg,#000 0%,#000 65%,transparent 100%);
+}
+.silence-hero .silence-moon{
+  position:absolute;z-index:1;top:14%;right:7%;
+  width:clamp(75px,9vw,172px);aspect-ratio:1;border-radius:50%;
+  background:url("/assets/earth/moon-1024.jpg") center/cover no-repeat;
+  filter:brightness(.33) saturate(.37) contrast(1.3);
+  box-shadow:inset -21px -14px 28px #000,0 0 16px #a3cbf013;
+  opacity:.62;
+}
+.silence-hero .silence-ship{
+  position:absolute;z-index:2;
+  right:1%;top:20%;width:min(61vw,1050px);height:53%;
+  background:url("/assets/hero-ufo.webp") 51% 18% / cover no-repeat;
+  filter:grayscale(.63) brightness(.90) contrast(1.24) saturate(.42);
+  opacity:.91;
+  mask-image:radial-gradient(ellipse 63% 56% at 57% 37%,#000 30%,#000c 54%,transparent 94%);
+  transform:translate3d(var(--silence-shift-x,0px),var(--silence-shift-y,0px),0);
+  transition:transform 600ms cubic-bezier(.2,.6,.2,1);
+}
+.silence-hero .silence-horizon{
+  position:absolute;z-index:3;left:-12%;right:-10%;bottom:-31%;
+  height:66%;border-radius:50% 50% 0 0 / 33% 33% 0 0;
+  background:
+    linear-gradient(0deg,#010305e8 2%,#01060fa8 40%,transparent 100%),
+    url("/assets/earth/earth-night-4096.jpg") 54% 42% / cover no-repeat;
+  box-shadow:inset 0 20px 60px #19374d9c,0 -3px 3px #9ccbd8aa,0 -18px 52px #659bb94f;
+  filter:brightness(.80) saturate(.55);
+  transform:rotate(-3deg);
+  opacity:.8;
+}
+.silence-hero .silence-beam{
+  position:absolute;z-index:2;right:23%;top:47%;width:17%;height:38%;
+  background:linear-gradient(180deg,#c6e4ef2e,transparent 80%);
+  clip-path:polygon(46% 0,55% 0,100% 100%,0 100%);
+  filter:blur(10px);opacity:.35;mix-blend-mode:screen;
+}
+.silence-hero .silence-shade{
+  position:absolute;inset:0;z-index:4;
+  background:
+   linear-gradient(90deg,#010305 0%,#010305ed 16%,#010305bb 35%,#01030510 66%,transparent 100%),
+   linear-gradient(180deg,#010305 0%,transparent 24%,transparent 73%,#010305 100%);
+}
+.silence-hero .silence-rail{
+  position:absolute;z-index:6;top:31%;left:clamp(20px,2.1vw,38px);
+  display:flex;flex-direction:column;align-items:center;gap:21px;
+  color:#7f8992;font:600 13px/1.2 ui-monospace,Consolas,monospace;
+  border-left:1px solid #77899c5a;padding:4px 0 4px 18px;
+}
+.silence-hero .silence-rail span{display:block;letter-spacing:.08em;}
+.silence-hero .silence-rail .is-active{color:#f1f7fb;}
+.silence-hero .silence-rail .is-active::before{
+  content:"";position:absolute;left:-2px;top:0;width:3px;height:28px;
+  background:white;box-shadow:0 0 13px #fff8;
+}
+.silence-hero .silence-copy{
+  position:absolute;z-index:7;top:29%;left:var(--silence-pad);
+  width:min(660px,47vw);
+  text-shadow:0 2px 22px #000a;
+}
+.silence-hero .silence-eyebrow{
+  margin:0 0 27px;color:#a9b4bd;
+  font:650 12px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;
+  letter-spacing:.30em;text-transform:uppercase;
+}
+.silence-hero h1#hero-title{
+  margin:0;color:#f1f5f8!important;
+  font-family:Inter,"Segoe UI",system-ui,sans-serif;
+  font-weight:500;font-size:clamp(66px,8.2vw,134px);
+  line-height:.97;letter-spacing:.12em;
+  text-shadow:0 3px 35px #000;
+  animation:none!important;
+}
+.silence-hero .silence-subtitle{
+  margin:18px 0 32px;
+  font:500 clamp(10px,1.18vw,16px)/1.6 ui-monospace,Consolas,monospace;
+  letter-spacing:.33em;color:#a9b6c2;text-transform:uppercase;
+  white-space:nowrap;
+}
+.silence-hero .silence-description{
+  margin:0 0 33px;color:#c4cbd1;
+  font-size:clamp(16px,1.23vw,19px);line-height:1.75;
+  max-width:580px;font-weight:430;
+}
+.silence-hero .silence-actions{
+  display:flex;align-items:center;gap:17px;flex-wrap:wrap;margin:0;
+}
+.silence-hero .silence-actions .button{
+  display:inline-flex;align-items:center;justify-content:center;gap:13px;
+  min-height:51px;border-radius:5px;padding:14px 25px;
+  font-size:12px;font-weight:680;letter-spacing:.035em;
+  animation:none;text-transform:uppercase;
+}
+.silence-hero .silence-actions .button-primary{
+  color:#f9fdff;background:#071019d0;border:1px solid #9fc9db;
+  box-shadow:0 0 0 1px #e5f6ff24,0 0 15px #a4def033;
+}
+.silence-hero .silence-actions .button-primary:hover{
+  background:#152b3b;color:white;box-shadow:0 0 25px #9bd9f74b;
+}
+.silence-hero .silence-actions .button-secondary{
+  color:#d6e1e8;background:#03080fa3;border:1px solid #71808e66;box-shadow:none;
+}
+.silence-hero .silence-actions .button-secondary:hover{color:white;border-color:#a6c4d4;}
+.silence-hero .silence-actions .icon{width:17px;height:17px;}
+.silence-hero .silence-bottom{
+  position:absolute;z-index:8;left:var(--silence-pad);right:clamp(24px,5.3vw,88px);
+  bottom:clamp(35px,6vh,82px);
+  display:flex;align-items:flex-end;gap:30px;justify-content:space-between;
+}
+.silence-hero .silence-stats{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;width:min(1050px,79vw);
+}
+.silence-hero .silence-stat{
+  min-width:0;display:flex;align-items:center;gap:17px;
+  padding:18px 19px 17px;border:1px solid #687a883d;
+  border-radius:8px 8px 3px 3px;
+  background:linear-gradient(110deg,#060b11d6,#0104078a);
+  box-shadow:0 8px 25px #0007;
+  backdrop-filter:blur(6px);
+}
+.silence-hero .silence-stat>.icon{
+  flex:none;width:26px;height:26px;color:#c9d4dc;opacity:.9;
+}
+.silence-hero .silence-stat strong{
+  display:block;font-family:Inter,system-ui,sans-serif;
+  color:#eef3f7;font-weight:640;font-size:clamp(22px,2vw,34px);
+  line-height:1.08;letter-spacing:.01em;font-variant-numeric:tabular-nums;
+}
+.silence-hero .silence-stat strong.silence-open{font-size:clamp(17px,1.4vw,25px);}
+.silence-hero .silence-stat span{
+  display:block;margin-top:6px;
+  font:600 10px/1.35 ui-monospace,Consolas,monospace;
+  letter-spacing:.1em;color:#a2afb9;text-transform:uppercase;
+}
+.silence-hero .silence-micro-map{
+  flex:none;display:flex;flex-direction:column;align-items:center;
+  gap:6px;color:#c1d4df;text-decoration:none;font-size:10px;letter-spacing:.1em;
+}
+.silence-hero .silence-micro-orbit{
+  width:clamp(74px,8vw,125px);height:clamp(74px,8vw,125px);
+  border:1px solid #5373884f;border-radius:50%;
+  background:
+    radial-gradient(circle at 36% 28%,#3c7fa9ad,#102135ad 46%,#030811 70%),
+    url("/assets/earth/earth-night-4096.jpg") 48% 38% / cover;
+  display:grid;place-items:center;box-shadow:0 0 25px #2d60822b;
+}
+.silence-hero .silence-micro-orbit .icon{width:44px;height:44px;opacity:.62;color:#bcdeef;}
+body:has(.silence-hero) main>.world-atlas,
+body:has(.silence-hero) main>.home-news,
+body:has(.silence-hero) main>.mission-console,
+body:has(.silence-hero) main>.methodology,
+body:has(.silence-hero) main>.reports-section,
+body:has(.silence-hero) main>.donate-banner,
+body:has(.silence-hero) main>.mission-intro{
+  width:min(1440px,calc(100% - clamp(40px,8vw,152px)));
+  max-width:1440px;margin-inline:auto;
+}
+body:has(.silence-hero) main>.world-atlas{
+  background:#04070b;border:0;border-top:1px solid #63778832;
+  border-radius:0;margin-block:0;padding-block:72px;
+}
+body:has(.silence-hero) main>.home-news,
+body:has(.silence-hero) main>.mission-console{
+  background:#04070b;border-radius:0;border:0;border-top:1px solid #52667b37;
+  box-shadow:none;margin-block:30px;
+}
+body:has(.silence-hero) .world-atlas-head h2,
+body:has(.silence-hero) .home-news h2{
+  font-family:Inter,system-ui,sans-serif;
+  font-size:clamp(31px,3.9vw,64px);line-height:1.08;letter-spacing:-.045em;
+}
+body:has(.silence-hero) .world-result,
+body:has(.silence-hero) .home-news-grid article{
+  background:#080d13;border:1px solid #657d9133;border-radius:7px;
+}
+body:has(.silence-hero) .world-map-surface{background:#060e15;border-color:#6a889e43;}
+body:has(.silence-hero) .footer{padding-inline:clamp(24px,5vw,90px);}
+@media(max-width:1200px){
+ body:has(.silence-hero) .site-header .desktop-nav{gap:12px;margin-inline:18px;}
+ body:has(.silence-hero) .site-header .desktop-nav a{font-size:11px;}
+ body:has(.silence-hero) .site-header .brand-text b{font-size:17px;}
+ .silence-hero .silence-copy{width:min(600px,57vw);}
+ .silence-hero h1#hero-title{font-size:clamp(60px,7.9vw,96px);}
+ .silence-hero .silence-stats{width:min(960px,84vw);}
+ .silence-hero .silence-stat{padding:14px;gap:12px;}
+}
+@media(max-width:900px){
+ body:has(.silence-hero) .site-header{height:76px;min-height:76px;padding-inline:25px;}
+ body:has(.silence-hero) .site-header .brand-icon{width:33px;height:33px;}
+ .silence-hero .silence-rail{display:none;}
+ .silence-hero .silence-copy{left:clamp(27px,6vw,60px);top:37%;width:min(560px,64vw);}
+ .silence-hero .silence-bottom{left:clamp(27px,6vw,60px);right:24px;}
+ .silence-hero .silence-ship{right:-12%;top:17%;width:90%;height:52%;}
+ .silence-hero .silence-shade{background:linear-gradient(90deg,#010305 0%,#010305e3 25%,#01030562 65%,transparent),linear-gradient(180deg,#010305 0%,transparent 23%,transparent 65%,#010305 100%);}
+ .silence-hero .silence-stats{width:100%;}
+ .silence-hero .silence-micro-map{display:none;}
+}
+@media(max-width:640px){
+ body:has(.silence-hero) .site-header{height:71px;min-height:71px;padding-inline:19px;}
+ body:has(.silence-hero) .site-header .brand-icon{width:27px;height:27px;}
+ body:has(.silence-hero) .site-header .brand{gap:8px;}
+ body:has(.silence-hero) .site-header .brand-text b{font-size:15px;letter-spacing:.12em;}
+ body:has(.silence-hero) .site-header .brand-text small{font-size:7px;letter-spacing:.04em;}
+ body:has(.silence-hero) .site-header .gate-trigger{display:none;}
+ body:has(.silence-hero) .silence-hero{min-height:830px;height:auto;max-height:none;padding-bottom:24px;}
+ .silence-hero .silence-space{height:650px;bottom:auto;}
+ .silence-hero .silence-ship{left:4%;right:-15%;top:10%;width:112%;height:330px;opacity:.92;}
+ .silence-hero .silence-moon{width:74px;top:16%;right:9%;}
+ .silence-hero .silence-beam{top:28%;height:30%;right:23%;}
+ .silence-hero .silence-horizon{height:350px;bottom:-150px;opacity:.60;}
+ .silence-hero .silence-shade{background:linear-gradient(180deg,#010305b0,transparent 23%,#010305df 76%,#010305 100%);}
+ .silence-hero .silence-copy{position:relative;top:auto;left:auto;width:auto;padding:0 24px;margin-top:335px;z-index:7;}
+ .silence-hero .silence-eyebrow{font-size:9px;letter-spacing:.13em;margin-bottom:11px;}
+ .silence-hero h1#hero-title{font-size:clamp(46px,13.1vw,69px);letter-spacing:.08em;}
+ .silence-hero .silence-subtitle{white-space:normal;letter-spacing:.13em;font-size:9px;margin:10px 0 16px;}
+ .silence-hero .silence-description{font-size:13px;line-height:1.63;margin-bottom:18px;}
+ .silence-hero .silence-actions{flex-wrap:nowrap;gap:8px;}
+ .silence-hero .silence-actions .button{min-height:44px;padding:11px 12px;font-size:10px;gap:7px;}
+ .silence-hero .silence-actions .icon{width:13px;height:13px;}
+ .silence-hero .silence-bottom{position:relative;left:auto;right:auto;bottom:auto;margin:28px 18px 0;}
+ .silence-hero .silence-stats{grid-template-columns:repeat(2,minmax(0,1fr));width:100%;gap:8px;}
+ .silence-hero .silence-stat{padding:12px;gap:10px;background:#03070ccc;}
+ .silence-hero .silence-stat>.icon{width:20px;height:20px;}
+ .silence-hero .silence-stat strong{font-size:23px;}
+ .silence-hero .silence-stat strong.silence-open{font-size:19px;}
+ .silence-hero .silence-stat span{font-size:8px;letter-spacing:.06em;}
+ body:has(.silence-hero) main>.world-atlas,
+ body:has(.silence-hero) main>.home-news,
+ body:has(.silence-hero) main>.mission-console,
+ body:has(.silence-hero) main>.methodology,
+ body:has(.silence-hero) main>.reports-section,
+ body:has(.silence-hero) main>.donate-banner,
+ body:has(.silence-hero) main>.mission-intro{width:calc(100% - 32px);}
+ body:has(.silence-hero) main>.world-atlas{padding-block:44px;}
+ body:has(.silence-hero) .world-atlas-head h2,body:has(.silence-hero) .home-news h2{font-size:clamp(29px,7vw,44px);}
+}
+@media(prefers-reduced-motion:reduce){
+ .silence-hero .silence-ship{transition:none!important;transform:none!important;}
+ html:has(.silence-hero){scroll-behavior:auto;}
+}
+
+/* Hide obsolete animated HUD completely: the approved aesthetic is silent. */
+body:has(.silence-hero) #heroHudCanvas,
+body:has(.silence-hero) .hero-hud-canvas{
+  display:none!important;visibility:hidden!important;opacity:0!important;
+}
+@media(max-width:640px){
+ .silence-hero .silence-bottom{
+   display:block!important;position:relative!important;
+   width:calc(100% - 36px)!important;max-width:calc(100vw - 36px)!important;
+   left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;
+   margin:28px 18px 0!important;transform:none!important;
+ }
+ .silence-hero .silence-stats{
+   position:relative!important;display:grid!important;
+   grid-template-columns:repeat(2,minmax(0,1fr))!important;
+   gap:8px!important;width:100%!important;max-width:100%!important;
+   margin:0!important;transform:none!important;
+ }
+ .silence-hero .silence-stat{
+   width:auto!important;min-width:0!important;max-width:100%!important;
+   position:relative!important;margin:0!important;box-sizing:border-box!important;
+ }
+ .silence-hero .silence-stat>div{min-width:0;overflow-wrap:anywhere;}
+ .silence-hero .silence-stat span{overflow-wrap:anywhere;}
+ .silence-hero .silence-micro-map{display:none!important;}
+}
+
+/* The legacy .hero selector is display:flex; the reference hero's stacked mobile
+   copy + metric cards must flow as block elements, not flex columns. */
+body:has(.silence-hero) .silence-hero{display:block!important;}
