@@ -769,10 +769,10 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
       if(picture){
         const thumb=resolveVideoPoster(media),img=picture.querySelector("img");
         if(img){
-          img.src=thumb||"/assets/media-video-preview.svg";
+          img.src=thumb||"/assets/hero-ufo.webp";
           img.alt=thumb?
             ("Published video thumbnail: "+title):
-            ("Decorative AURORA preview, not an original incident frame");
+            ("AURORA UFO artwork, not an original incident frame");
         }
         const credit=card.querySelector(".media-caption");
         if(credit)credit.textContent=thumb?
