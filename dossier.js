@@ -176,7 +176,7 @@
   label("factCategory",t.categoryName[c.category]||c.category||"—");
   label("factPublication",legacy?t.reference:t.approved);
   label("factAssessment",t.statusName[assessment]||t.statusName.undetermined);
-  label("factPrecision",c.location_precision||"—");
+  label("factPrecision",Number.isFinite(c.lat)&&Number.isFinite(c.lng)?(language==="en"?(c.location_precision||t.approx):t.approx):t.noCoords);
   label("dossierSummary",summary);
   label("dossierDepth",c.content_depth==="editorial"?
    (language==="bg"?"ИСТОРИЯ И КОНТЕКСТ · РАЗШИРЕНО ДОСИЕ":"STORY & CONTEXT · EXTENDED FILE"):
@@ -188,13 +188,18 @@
   // Never show that stock image as if it were a player in any dossier.
   const allowedVisual=typeof visual?.src==="string"&&visual.src!=="/assets/feature-media.webp"&&/^\/assets\/[a-z0-9-]+\.webp$/.test(visual.src);
   const videoReferences=Array.isArray(c.media)&&c.media.some(m=>m?.type==="video"&&sourceUrl(m.url));
-  visualBox.hidden=!allowedVisual&&!videoReferences;
+  // All dossiers have a cinematic reading cover. Only source-cleared visuals
+  // are described as incident photographs; the generic cover is labelled art.
+  visualBox.hidden=false;
   visualImage.hidden=!!videoReferences;
   $("caseVisualCaption").hidden=!!videoReferences;
-  if(allowedVisual&&!videoReferences){
-   visualImage.src=visual.src;
-   visualImage.alt=local(visual.caption)||"Case illustration";
-   $("caseVisualCaption").textContent=local(visual.caption)||"Illustrative image";
+  if(!videoReferences){
+   visualImage.src=allowedVisual?visual.src:"/assets/media-ufo-earth-preview.svg";
+   visualImage.alt=allowedVisual?(local(visual.caption)||"Published source illustration"):
+    (language==="bg"?"Илюстрация на AURORA — не е кадър от наблюдението":"AURORA illustration — not an image of the incident");
+   $("caseVisualCaption").textContent=allowedVisual?
+    (local(visual.caption)||"Illustrative image"):
+    (language==="bg"?"Илюстрация на AURORA · не е оригинален кадър от събитието":"AURORA illustration · not an original incident frame");
   }else{visualImage.removeAttribute("src")}
   // Replace baked-in stock Play with an actual, lazy source-verified video hero.
   window.AURORA_DOSSIER_HERO?.render({caseRecord:c,lang:language});
@@ -298,10 +303,21 @@
   if(typeof lat==="number"&&Number.isFinite(lat)&&Math.abs(lat)<=90&&
      typeof lng==="number"&&Number.isFinite(lng)&&Math.abs(lng)<=180){
    label("dossierCoordinate",lat.toFixed(3)+"°, "+lng.toFixed(3)+"°");
-   label("dossierLocationCaveat",t.approx+" "+(c.location_precision||""));
+   label("dossierLocationCaveat",t.approx+(language==="bg"&&c.location_precision_bg?" "+c.location_precision_bg:language==="en"&&c.location_precision?" "+c.location_precision:""));
   }else{
    label("dossierCoordinate","N/A — POSITION NOT PUBLISHED");
-   label("dossierLocationCaveat",t.noCoords+" "+(c.location_precision||""));
+   label("dossierLocationCaveat",t.noCoords+(language==="en"&&c.location_precision?" "+c.location_precision:""));
+  }
+  const sourceLocation=$("dossierOriginalLocation");
+  if(sourceLocation){
+   const raw=typeof c.location_context==="string"?c.location_context:c.location_context?.en;
+   const text=typeof raw==="string"?raw.trim():"";
+   sourceLocation.hidden=!text||text.length<65;
+   if(!sourceLocation.hidden){
+    sourceLocation.querySelector("summary").textContent=language==="bg"?
+     "ПЪЛНО ОПИСАНИЕ НА МЯСТОТО ОТ ИЗТОЧНИКА (EN)":"ORIGINAL SOURCE LOCATION NOTE (EN)";
+    sourceLocation.querySelector("p").textContent=text;
+   }
   }
   renderRelatedCases(c,t);
   narrativeDisclosure(c);

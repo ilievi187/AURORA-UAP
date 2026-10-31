@@ -75,3 +75,28 @@ test("all historical views load the shared helper before their consumers", () =>
   }
   assert.match(read("world-atlas.js"),/prepareArchiveCases/);
 });
+
+
+test("all 101 sourced dossiers keep short geographic labels and full source context",()=>{
+ const published=JSON.parse(readFileSync(new URL("../data/cases.json",import.meta.url),"utf8")).cases;
+ const normalized=prepareArchiveCases(published);
+ assert.equal(normalized.length,101);
+ const harare=normalized.find(c=>c.id==="disclosure-harare-2008");
+ assert.equal(harare.city.bg,"Международно летище Хараре, Зимбабве");
+ assert.ok(harare.location_context.en.length>120,"full original geographic note retained");
+ assert.ok(Number.isFinite(harare.lat)&&Number.isFinite(harare.lng));
+ assert.equal(harare.story.bg.length,7);
+ assert.ok(harare.story.bg.join(" ").length>1600,"real Bulgarian narrative replaces boilerplate");
+ assert.ok(!harare.story.bg.some(t=>t.startsWith("EN ·")));
+ const long=normalized.filter(c=>typeof c.city?.en==="string"&&c.city.en.length>120);
+ assert.equal(long.length,0,"source coordinate essays must not be rendered as city names");
+ const unknown=normalized.filter(c=>!hasCoordinates(c));
+ assert.deepEqual(unknown.map(c=>c.id).sort(),[
+  "disclosure-six-spheres-2025","disclosure-test-site-2023","uap-archive-aaro-atmospheric-wakes-case"
+ ]);
+ assert.ok(unknown.every(c=>c.lat===null&&c.lng===null),"unknown geographic sites stay unpinned");
+ const sanitized=normalized.find(c=>c.id==="disclosure-virginia-2024");
+ assert.ok(!sanitized.summary.bg,"legacy Bulgarian template removed to request actual translation");
+ assert.ok(!sanitized.story.bg,"English source paragraphs no longer masquerade as Bulgarian");
+ assert.ok(sanitized.summary.en?.length>100);
+});

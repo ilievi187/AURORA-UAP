@@ -512,7 +512,9 @@ try{
     assert.match(await page.locator('#factPublication').textContent(),/ИСТОРИЧЕСКИ АРХИВ/);
     assert.equal(await page.locator('#dossierCountry').isVisible(),false);
     assert.ok((await page.locator('#dossierStory p').count())>=1);
-    assert.equal(await page.locator('#caseVisualImage').isVisible(),false,'stock artwork with baked-in fake Play must not impersonate a video');
+    assert.equal(await page.locator('#caseVisualImage').isVisible(),true,'sourced dossier without video has an illustrated reading cover');
+     assert.equal(await page.locator('#caseVisualImage').getAttribute('src'),'/assets/media-ufo-earth-preview.svg');
+     assert.match(await page.locator('#caseVisualCaption').textContent(),/Илюстрация на AURORA/,'not represented as real incident footage');
     assert.equal(await page.locator('#caseHeroPlay').isVisible(),false,'no video published for Phoenix');
     assert.ok((await page.locator('#caseMediaGrid a').count())>=1);
     assert.equal(await page.locator('#dossierSourceUrl').getAttribute('rel'),'noopener noreferrer');

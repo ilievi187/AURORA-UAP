@@ -180,7 +180,8 @@
  const valid=u=>{try{const x=new URL(u);return x.protocol==="https:"&&!x.username&&!x.password}catch{return false}};
  let items=[],loadedOk=false;
  function requestMediaTranslation(record,heading,summary,language,card){
-  if(language==="en"||record.title?.[language]&&record.summary?.[language])return;
+  if(language==="en")return;
+  if(record.title?.[language]&&record.summary?.[language]&&record.story?.[language])return;
   const note=document.createElement("small");note.className="archive-translation-disclosure";
   note.textContent=language==="bg"?"Оригинален английски текст · преводът не е наличен":
     "Original English · automatic translation pending or unavailable";
@@ -310,7 +311,8 @@
    if(!r.ok)throw Error("source");
    const data=await r.json();if(!Array.isArray(data.cases))throw Error("archive");
    if(typeof playerModule?.resolveMediaPlayback==="function")playbackFor=playerModule.resolveMediaPlayback;
-   const entries=data.cases.flatMap(c=>(Array.isArray(c.media)?c.media:[])
+   const safeCases=globalThis.AURORA_ARCHIVE?.prepareArchiveCases(data.cases)||data.cases;
+   const entries=safeCases.flatMap(c=>(Array.isArray(c.media)?c.media:[])
     .filter(m=>m&&["video","documents","archive","photo"].includes(m.type)&&valid(m.url)&&/^[a-z0-9-]{3,90}$/.test(c.id))
     .map(m=>({c,m,sources:[m],playable:m.type==="video"&&Boolean(playbackFor(m))})));
    const grouped=new Map(),deduped=[];
