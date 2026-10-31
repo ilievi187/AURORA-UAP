@@ -246,7 +246,7 @@
    const badge=document.createElement("span");badge.textContent=video?words.video:documents?words.documents:words.photo;
    picture.append(img,badge);
    const body=document.createElement("div");body.className="media-entry-body";
-   const meta=document.createElement("small");meta.textContent=c.date+" · "+c.country+" · "+(c.source?.name||"");
+   const meta=document.createElement("small");meta.textContent=[c.date,c.country,titleFor(c.title),c.source?.name].filter(Boolean).join(" · ");
    const heading=document.createElement("h2");
    // Distinguish individual recordings from the same case; archives use the case title.
    heading.textContent=video?(titleFor(m.title)||titleFor(c.title)):titleFor(c.title);
