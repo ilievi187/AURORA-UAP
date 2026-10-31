@@ -3,16 +3,16 @@
 (function(root){
  "use strict";
  const $=id=>document.getElementById(id);
- let revision=0,player=null,mediaImport=null,selectedMedia=null,selectedPlayback=null;
+ let revision=0,player=null,mediaImport=null,selectedMedia=null,selectedPlayback=null,availableChoices=[];
  const words=lang=>lang==="bg"?{
-  available:"ПУБЛИКУВАН ВИДЕОЗАПИС",check:"Проверка на наличния плейър…",
+  available:"ПУБЛИКУВАН ВИДЕОЗАПИС",check:"Проверка на наличния плейър…",choose:"ИЗБЕРИ ВИДЕОЗАПИС",
   play:"▶ ГЛЕДАЙ ОРИГИНАЛНОТО ВИДЕО",close:"Затвори видеото",
   original:"Оригинален източник ↗",notSupported:"Видеозаписът е достъпен при оригиналния издател, но не може да се възпроизведе директно тук.",
   loading:"Зареждане на видеозаписа…",ready:"Видеото е готово. Използвай контролите за пускане.",
   iframe:"Плейърът е зареден. Ако издателят блокира възпроизвеждането, отвори оригиналния източник.",
   error:"Видеото не може да се зареди тук. Използвай оригиналния източник."
  }:{
-  available:"PUBLISHED SOURCE VIDEO",check:"Checking available player…",
+  available:"PUBLISHED SOURCE VIDEO",check:"Checking available player…",choose:"CHOOSE SOURCE VIDEO",
   play:"▶ WATCH ORIGINAL VIDEO",close:"Close video",
   original:"Open original source ↗",notSupported:"The source video is available from the publisher, but cannot be played directly on AURORA.",
   loading:"Loading source video…",ready:"Video ready. Use playback controls.",
@@ -31,10 +31,12 @@
  }
  async function render({caseRecord,lang}){
   revision++;const token=revision,w=words(lang);
-  stop();selectedMedia=null;selectedPlayback=null;
+  stop();selectedMedia=null;selectedPlayback=null;availableChoices=[];
   const box=$("caseVisual"),img=$("caseVisualImage"),caption=$("caseVisualCaption");
   const hero=$("caseHeroPlayback"),button=$("caseHeroPlay"),close=$("caseHeroClose");
   const status=$("caseHeroStatus"),link=$("caseHeroSource");
+  const chooser=$("caseHeroVideoChooser"),select=$("caseHeroVideoSelect");
+  chooser.hidden=true;select.replaceChildren();
   const videos=(Array.isArray(caseRecord?.media)?caseRecord.media:[])
    .filter(m=>m?.type==="video"&&safeUrl(m.url)&&m.private!==true&&m.public!==false);
   // A graphic with a baked-in ▶ should never pose as an actual video player.
@@ -52,12 +54,21 @@
    mediaImport??=import("/media-player.js");
    const module=await mediaImport;
    if(token!==revision)return;
-   const candidate=videos.map(media=>({media,playback:module.resolveMediaPlayback(media)})).find(x=>x.playback);
-   if(!candidate){
+   availableChoices=videos.map(media=>({media,playback:module.resolveMediaPlayback(media)})).filter(x=>x.playback);
+   if(!availableChoices.length){
     status.textContent=w.notSupported;
     return;
    }
+   const candidate=availableChoices[0];
    selectedMedia=candidate.media;selectedPlayback=candidate.playback;
+   if(availableChoices.length>1){
+    chooser.hidden=false;$("caseHeroVideoLabel").textContent=w.choose;
+    for(const [i,choice] of availableChoices.entries()){
+     const option=document.createElement("option");option.value=String(i);
+     option.textContent=title(choice.media.title,lang)||"Video "+(i+1);
+     select.append(option);
+    }
+   }
    const original=safeUrl(candidate.playback.originalUrl)||safeUrl(candidate.media.url);
    link.href=original;
    status.textContent="";
@@ -70,6 +81,15 @@
  }
  function attach(){
   const button=$("caseHeroPlay"),close=$("caseHeroClose");
+  $("caseHeroVideoSelect").addEventListener("change",event=>{
+   const next=availableChoices[Number(event.target.value)];if(!next)return;
+   stop();selectedMedia=next.media;selectedPlayback=next.playback;
+   const w=words(document.documentElement.lang);
+   $("caseHeroSource").href=safeUrl(next.playback.originalUrl)||safeUrl(next.media.url);
+   $("caseHeroStatus").textContent="";
+   button.hidden=false;button.textContent=w.play;
+   button.setAttribute("aria-label",w.play+" · "+title(next.media.title,document.documentElement.lang));
+  });
   if(!button||!close)return;
   button.addEventListener("click",()=>{
    if(!selectedPlayback||player)return;

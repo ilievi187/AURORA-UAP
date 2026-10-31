@@ -82,6 +82,34 @@ for(const [caseId,expectedKind] of [["gimbal-2015","video"],["gofast-2015","vide
   }finally{await ctx.close()}
  });
 }
+test("two AARO DVIDS clips share ONE top embedded player with selectable original videos",async()=>{
+ const{page,ctx,errors}=await pageFor("disclosure-eastern-mediterranean-2024",{width:390,height:844});
+ try{
+  await page.route("https://www.dvidshub.net/**",route=>route.fulfill({status:200,contentType:"text/html",body:"<!doctype html><title>DVIDS embed fixture</title>"}));
+  await page.locator("#caseHeroPlay").waitFor({state:"visible"});
+  const choose=page.locator("#caseHeroVideoSelect");
+  assert.equal(await choose.locator("option").count(),2);
+  assert.equal(await page.locator("#caseHeroVideoChooser").isVisible(),true);
+  await page.locator("#caseHeroPlay").click();
+  const frame=page.locator("#caseHeroStage iframe");
+  await frame.waitFor({state:"attached"});
+  assert.equal(await frame.getAttribute("src"),"https://www.dvidshub.net/video/embed/1006073");
+  assert.equal(await page.locator("video,iframe").count(),1);
+  await choose.selectOption("1");
+  assert.equal(await page.locator("video,iframe").count(),0,"switching clips must unload old iframe");
+  assert.match(await page.locator("#caseHeroSource").getAttribute("href"),/\/1006074\//);
+  assert.equal(await page.locator("#caseHeroPlay").isVisible(),true);
+  await page.locator("#caseHeroPlay").click();
+  await frame.waitFor({state:"attached"});
+  assert.equal(await frame.getAttribute("src"),"https://www.dvidshub.net/video/embed/1006074");
+  assert.equal(await page.locator("video,iframe").count(),1);
+  assert.equal(await page.locator("#caseMediaGrid video,#caseMediaGrid iframe").count(),0);
+  const size=await page.evaluate(()=>({w:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth}));
+  assert.ok(size.scroll<=size.w+1,"mobile overflow: "+JSON.stringify(size));
+  assert.deepEqual(errors,[]);
+ }finally{await ctx.close()}
+});
+
 test("Westall publisher landing page has no fake playable video target",async()=>{
  const{page,ctx,errors}=await pageFor("westall-1966");
  try{

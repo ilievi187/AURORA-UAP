@@ -97,9 +97,18 @@ export function normalizeCase(row){
  const storyBg=[bgIntro,bgCaution,...originalEnglish.slice(0,6).map((text,i)=>(i===0?"EN · ":"EN · ")+text)];
  // Reference only: we do not rehost third-party media or assume permissions
  // for a PDF, embedded video, photograph or a witness record.
- const media=sources.filter(s=>/\.pdf(?:$|[?#])/i.test(s.url)).slice(0,15).map(s=>({
-  type:"documents",title:{en:s.name,bg:s.name},url:s.url
- }));
+ const media=sources.map(s=>{
+  if(/\.pdf(?:$|[?#])/i.test(s.url)){
+   return {type:"documents",title:{en:s.name,bg:s.name},url:s.url};
+  }
+  // These are official DVIDS source pages with publisher-provided iframe embeds.
+  // Embed the remote player only; do not download or rehost source footage.
+  if(/^https:\/\/www\.dvidshub\.net\/video\/[1-9]\d{5,8}(?:\/[a-z0-9-]+)?\/?$/.test(s.url)){
+   return {type:"video",title:{en:s.name,bg:s.name},url:s.url,
+    playback:{mode:"provider_embed",provider:"dvids",permission:"public_embed",source_url:s.url}};
+  }
+  return null;
+ }).filter(Boolean).slice(0,30);
  const safeSourceName=SOURCE_NAME+" · "+SOURCE_LICENSE;
  return {
   id:"disclosure-"+row.id,
