@@ -1,0 +1,40 @@
+name: AURORA dossier hero playback browser quality
+on:
+  pull_request:
+    paths:
+      - 'dossier.js'
+      - 'dossier-hero.js'
+      - 'dossier.html'
+      - 'dossier.css'
+      - 'tests/dossier-hero-browser.test.mjs'
+      - '.github/workflows/dossier-hero-browser.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'dossier.js'
+      - 'dossier-hero.js'
+      - 'dossier.html'
+      - 'dossier.css'
+      - 'tests/dossier-hero-browser.test.mjs'
+      - '.github/workflows/dossier-hero-browser.yml'
+permissions:
+  contents: read
+jobs:
+  hero-playback-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned isolated Chromium tooling
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --only-shell chromium
+      - name: Verify hero and lower video buttons, no fake stock Play and mobile teardown
+        run: node --test tests/dossier-hero-browser.test.mjs
+      - name: Existing dossier and media contracts
+        run: |
+          node --test tests/dossier-rich-content.test.mjs tests/dossier-universal.test.mjs
+          git diff --check

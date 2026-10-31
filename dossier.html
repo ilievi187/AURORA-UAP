@@ -8,7 +8,7 @@
 <title>AURORA UAP | Case dossier</title>
 <meta name="description" content="AURORA UAP — independently sourced UAP case documentation and reference archive.">
 <link rel="stylesheet" href="/dossier.css">
-<script defer src="/ui-locales.js"></script><script defer src="/subpage-i18n.js"></script><script defer src="/archive-records.js"></script><script defer src="/dossier-content.js"></script><script defer src="/dossier.js"></script>
+<script defer src="/ui-locales.js"></script><script defer src="/subpage-i18n.js"></script><script defer src="/archive-records.js"></script><script defer src="/dossier-content.js"></script><script defer src="/dossier-hero.js"></script><script defer src="/dossier.js"></script>
 </head>
 <body>
 <a class="skip" href="#dossierMain">Към съдържанието</a>
@@ -42,6 +42,16 @@
     <div class="dossier-section-heading"><span>01 / EVIDENCE</span><h2 id="summaryHeading">СВИДЕТЕЛСТВА И ДОКУМЕНТИРАНИ ФАКТИ</h2></div>
     <div class="case-visual" id="caseVisual" hidden>
       <img id="caseVisualImage" src="" alt="" loading="lazy" decoding="async">
+      <div id="caseHeroPlayback" class="case-hero-playback" hidden>
+        <div class="case-hero-placeholder">
+          <span id="caseHeroKicker">ORIGINAL SOURCE VIDEO</span>
+          <button id="caseHeroPlay" class="case-hero-play" type="button" hidden>▶ ГЛЕДАЙ ОРИГИНАЛНОТО ВИДЕО</button>
+        </div>
+        <div id="caseHeroStage" class="case-hero-stage"></div>
+        <button id="caseHeroClose" class="case-hero-close" type="button" hidden>Затвори видеото ×</button>
+        <p id="caseHeroStatus" class="case-hero-status" role="status" aria-live="polite"></p>
+        <a id="caseHeroSource" class="case-hero-source" target="_blank" rel="noopener noreferrer" href="/" hidden>Оригинален източник ↗</a>
+      </div>
       <span id="caseVisualCaption"></span>
     </div>
     <p class="dossier-depth" id="dossierDepth"></p>

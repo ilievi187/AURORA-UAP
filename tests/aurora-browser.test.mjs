@@ -507,7 +507,8 @@ try{
     assert.match(await page.locator('#factPublication').textContent(),/извън D1|Не е потребителски сигнал/);
     assert.equal(await page.locator('#dossierCountry').isVisible(),false);
     assert.ok((await page.locator('#dossierStory p').count())>=1);
-    assert.equal(await page.locator('#caseVisualImage').isVisible(),true);
+    assert.equal(await page.locator('#caseVisualImage').isVisible(),false,'stock artwork with baked-in fake Play must not impersonate a video');
+    assert.equal(await page.locator('#caseHeroPlay').isVisible(),false,'no video published for Phoenix');
     assert.ok((await page.locator('#caseMediaGrid a').count())>=1);
     assert.equal(await page.locator('#dossierSourceUrl').getAttribute('rel'),'noopener noreferrer');
     assert.ok((await page.locator('#dossierSourceUrl').getAttribute('href')).startsWith('https://nuforc.org/'));

@@ -151,13 +151,20 @@
   // Source provenance is preserved; visuals are labelled if illustrative.
   const visual=c.visual;
   const visualBox=$("caseVisual"),visualImage=$("caseVisualImage");
-  const allowedVisual=typeof visual?.src==="string"&&/^\/assets\/[a-z0-9-]+\.webp$/.test(visual.src);
-  visualBox.hidden=!allowedVisual;
-  if(allowedVisual){
+  // feature-media.webp contains a baked-in ▶ graphic, not real footage.
+  // Never show that stock image as if it were a player in any dossier.
+  const allowedVisual=typeof visual?.src==="string"&&visual.src!=="/assets/feature-media.webp"&&/^\/assets\/[a-z0-9-]+\.webp$/.test(visual.src);
+  const videoReferences=Array.isArray(c.media)&&c.media.some(m=>m?.type==="video"&&sourceUrl(m.url));
+  visualBox.hidden=!allowedVisual&&!videoReferences;
+  visualImage.hidden=!!videoReferences;
+  $("caseVisualCaption").hidden=!!videoReferences;
+  if(allowedVisual&&!videoReferences){
    visualImage.src=visual.src;
    visualImage.alt=local(visual.caption)||"Case illustration";
    $("caseVisualCaption").textContent=local(visual.caption)||"Illustrative image";
   }else{visualImage.removeAttribute("src")}
+  // Replace baked-in stock Play with an actual, lazy source-verified video hero.
+  window.AURORA_DOSSIER_HERO?.render({caseRecord:c,lang:language});
   const story=$("dossierStory");story.replaceChildren();
   const narrative=c.story?.[language]||c.story?.en;
   if(Array.isArray(narrative)){
@@ -200,7 +207,7 @@
    const dvidsPublished=legacy&&c.id==="al-taqaddum-2017"&&original==="https://www.dvidshub.net/video/960331/al-taqaddum-object";
    if(!allowedHost&&!rightsCleared&&!dvidsPublished)return;
    const watch=document.createElement("button");
-   watch.type="button";watch.className="case-watch-button";
+   watch.type="button";watch.className="case-watch-button case-media-play-tile";
    watch.textContent=playLabel+" · "+(local(media.title)||c.id);
    const state=document.createElement("p");state.className="case-video-status";state.setAttribute("role","status");
    watch.addEventListener("click",async()=>{
@@ -240,20 +247,24 @@
     }
    });
    mediaGrid.append(watch,state);
+   return true;
   };
   for(const m of availableMedia){
    if(!approvedTypes.has(m.type))continue;
    const safe=sourceUrl(m.url);if(!safe)continue;
+   // The blue video tile must PLAY in-site. The external publisher is a
+   // separately and clearly labelled source link — never a fake ▶ control.
+   const playable=m.type==="video"?addPlayer(m):false;
    const anchor=document.createElement("a");anchor.href=safe;anchor.target="_blank";anchor.rel="noopener noreferrer";
-   anchor.className="case-media-link";
+   anchor.className=playable?"case-media-link case-media-source-link":"case-media-link";
    const icon=document.createElement("span");
    icon.className="case-media-icon";icon.setAttribute("aria-hidden","true");
-   icon.textContent=m.type==="video"?"▶":m.type==="photo"?"▧":"▤";
-   const text=document.createElement("strong");text.textContent=local(m.title)||m.type;
+   icon.textContent=m.type==="video"?"↗":m.type==="photo"?"▧":"▤";
+   const text=document.createElement("strong");
+   text.textContent=playable?(isBg?"ОРИГИНАЛЕН ИЗТОЧНИК":"ORIGINAL VIDEO SOURCE"):(local(m.title)||m.type);
    const type=document.createElement("small");
-   type.textContent=({video:"VIDEO",photo:"PHOTO",documents:"DOCUMENTS",archive:"ARCHIVE"})[m.type];
+   type.textContent=({video:playable?(isBg?"ОТВОРИ ПРИ ИЗДАТЕЛЯ":"OPEN PUBLISHER"):"VIDEO · SOURCE ONLY",photo:"PHOTO",documents:"DOCUMENTS",archive:"ARCHIVE"})[m.type];
    anchor.append(icon,text,type);mediaGrid.append(anchor);
-   if(m.type==="video")addPlayer(m);
    if(m.type==="photo"){
     const preview=contentHelper?.photoPreview(m);
     if(preview){
