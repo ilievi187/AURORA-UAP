@@ -145,6 +145,9 @@
   label("factAssessment",t.statusName[assessment]||t.statusName.undetermined);
   label("factPrecision",c.location_precision||"—");
   label("dossierSummary",summary);
+  label("dossierDepth",c.content_depth==="editorial"?
+   (language==="bg"?"РЕДАКЦИОННО ДОСИЕ · РАЗШИРЕН КОНТЕКСТ":"EDITORIAL DOSSIER · EXPANDED CONTEXT"):
+   (language==="bg"?"КАТАЛОЖЕН ЗАПИС · НАЛИЧНИ ДАННИ ОТ ИЗТОЧНИКА":"CATALOG RECORD · SOURCE DATA ONLY"));
   // Source provenance is preserved; visuals are labelled if illustrative.
   const visual=c.visual;
   const visualBox=$("caseVisual"),visualImage=$("caseVisualImage");
@@ -172,7 +175,7 @@
   const availableMedia=(Array.isArray(c.media)?c.media:[]).slice(0,20);
   const playLabel=isBg?"▶ ГЛЕДАЙ ВИДЕО В AURORA":"▶ WATCH VIDEO IN AURORA";
   const errorLabel=isBg?"Видеото не може да се възпроизведе тук. Използвай оригиналния източник.":"Video playback unavailable here. Open the original source.";
-  const addPlayer=(media,existingUrl)=>{
+  const addPlayer=media=>{
    const original=sourceUrl(media.url);if(!original)return;
    const host=new URL(original).hostname.toLowerCase();
    const allowedHost=["youtube.com","www.youtube.com","m.youtube.com","youtu.be","vimeo.com","www.vimeo.com","player.vimeo.com"].includes(host);
@@ -233,7 +236,7 @@
    const type=document.createElement("small");
    type.textContent=({video:"VIDEO",photo:"PHOTO",documents:"DOCUMENTS",archive:"ARCHIVE"})[m.type];
    anchor.append(icon,text,type);mediaGrid.append(anchor);
-   if(m.type==="video")addPlayer(m,safe);
+   if(m.type==="video")addPlayer(m);
   }
   mediaBox.hidden=mediaGrid.childElementCount===0;
 
