@@ -717,6 +717,17 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
       sourceLink.after(button);
       const picture=card.querySelector(".media-entry-image");
       if(picture){
+        const thumb=resolveVideoPoster(media),img=picture.querySelector("img");
+        if(img){
+          img.src=thumb||"/assets/video-poster.svg";
+          img.alt=thumb?
+            ("Published video thumbnail: "+title):
+            ("Decorative AURORA preview, not an original incident frame");
+        }
+        const credit=card.querySelector(".media-caption");
+        if(credit)credit.textContent=thumb?
+          "Preview from the credited video provider.":
+          "AURORA preview artwork · not an original frame from the incident.";
         const inline=documentRef.createElement("button");
         inline.type="button";inline.className="media-inline-play";
         inline.dataset.inlinePlayerAction="play";
