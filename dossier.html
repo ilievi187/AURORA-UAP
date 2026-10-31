@@ -8,7 +8,7 @@
 <title>AURORA UAP | Case dossier</title>
 <meta name="description" content="AURORA UAP — independently sourced UAP case documentation and reference archive.">
 <link rel="stylesheet" href="/dossier.css">
-<script defer src="/ui-locales.js"></script><script defer src="/subpage-i18n.js"></script><script defer src="/archive-records.js"></script><script defer src="/dossier-content.js"></script><script defer src="/dossier-hero.js"></script><script defer src="/dossier.js"></script>
+<script defer src="/ui-locales.js"></script><script defer src="/subpage-i18n.js"></script><script defer src="/archive-records.js"></script><script defer src="/dossier-content.js"></script><script defer src="/dossier-hero.js"></script><script defer src="/dossier-document-preview.js"></script><script defer src="/dossier.js"></script>
 <link rel="stylesheet" href="/aurora-design-refresh.css">
 <link rel="stylesheet" href="/aurora-black-pages.css">
 <link rel="stylesheet" href="/aurora-editorial-interiors.css">
@@ -67,6 +67,17 @@
    <article class="dossier-section" id="caseMediaSection" hidden>
     <div class="dossier-section-heading"><span>02 / MEDIA ARCHIVE</span><h2 id="caseMediaTitle">СНИМКИ, ВИДЕО И ДОКУМЕНТИ</h2></div>
     <div class="dossier-photo-gallery" id="casePhotoGallery" aria-label="Source photographs"></div>
+    <section id="caseDocumentViewer" class="case-document-viewer" hidden aria-label="Original source document reader">
+      <div class="case-document-toolbar">
+        <span id="caseDocumentTitle"></span>
+        <button id="caseDocumentClose" type="button">ЗАТВОРИ ПРЕГЛЕДА ×</button>
+      </div>
+      <iframe id="caseDocumentFrame" title="Original source PDF" loading="lazy" referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-downloads"></iframe>
+      <div class="case-document-caption">
+        <p id="caseDocumentNote">Ако издателят блокира показването, отвори оригиналния документ.</p>
+        <a id="caseDocumentSource" href="/" target="_blank" rel="noopener noreferrer">ОРИГИНАЛЕН PDF ↗</a>
+      </div>
+    </section>
     <div class="case-media-grid" id="caseMediaGrid"></div>
    </article>
    <article class="dossier-section">
