@@ -296,7 +296,7 @@
  }
  async function loadSourceCountries(){
   try{
-   const res=await fetch("/data/cases.json",{cache:"force-cache"});if(!res.ok)throw Error("Archive offline");
+   const res=await fetch("/data/cases.json",{cache:"no-cache"});if(!res.ok)throw Error("Archive offline");
    const json=await res.json(),counts=new Map();
    if(!Array.isArray(json.cases))throw Error("Bad archive");
    const sourceCases=globalThis.AURORA_ARCHIVE?.prepareArchiveCases(json.cases)??json.cases;
