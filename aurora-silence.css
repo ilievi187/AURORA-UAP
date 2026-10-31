@@ -360,3 +360,7 @@ body:has(.silence-hero) .hero-hud-canvas{
  .silence-hero .silence-stat span{overflow-wrap:anywhere;}
  .silence-hero .silence-micro-map{display:none!important;}
 }
+
+/* The legacy .hero selector is display:flex; the reference hero's stacked mobile
+   copy + metric cards must flow as block elements, not flex columns. */
+body:has(.silence-hero) .silence-hero{display:block!important;}
