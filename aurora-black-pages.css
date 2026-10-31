@@ -1,0 +1,253 @@
+/* AURORA BLACK EDITION — unified satellite/monochrome visual system.
+ * Applies to subpages only; the approved UFO-over-Earth homepage stays intact.
+ * All selectors deliberately preserve the original page DOM and JS identifiers. */
+:root {
+ color-scheme:dark;
+ --aurora-ink:#010305;
+ --aurora-surface:#06090d;
+ --aurora-surface-raised:#0a0f15;
+ --aurora-border:rgba(184,204,219,.16);
+ --aurora-border-strong:rgba(184,204,219,.32);
+ --aurora-text:#eef2f5;
+ --aurora-muted:#a5afb9;
+ --aurora-accent:#c4dfeb;
+ --aurora-accent-strong:#ebf9ff;
+ --aurora-radius:6px;
+ --bg:#010305;--bg2:#04070a;--panel:#090e13;
+ --line:#25313a;--line-strong:#455e6c;--cyan:#c4dfeb;--cyan2:#8ab5c9;
+ --text:#eef2f5;--muted:#a5afb9;--faint:#77838d;--green:#a4e4c9;
+ --radius:6px;--shadow:none;
+}
+html{scroll-behavior:smooth;background:#010305;scroll-padding-top:82px;overflow-x:clip;}
+body,body.live-page,body.donate-v1 {
+ margin:0;color:#e9eff3;min-width:320px;overflow-x:clip;
+ background:#010305!important;
+ font-family:Inter,"Segoe UI Variable","Segoe UI",system-ui,sans-serif;
+ font-size:15px;line-height:1.7;letter-spacing:0;
+}
+body::before{display:none!important;}
+::selection{background:#afcedd;color:#010305;}
+:where(.archive-shell,.page-shell,.country-shell,.dossier-shell,.report-shell,.live-shell,.donation-page) {
+ width:min(1480px,100%);max-width:1480px;
+ margin-inline:auto;padding-inline:clamp(18px,4vw,65px);
+ color:#e9eff3;background:transparent!important;
+ box-shadow:none!important;
+}
+:where(.archive-shell,.page-shell,.country-shell,.dossier-shell,.report-shell,.live-shell) {
+ isolation:isolate;position:relative;
+}
+:where(.archive-shell,.page-shell,.country-shell,.dossier-shell,.report-shell,.live-shell)::before{
+ content:"";position:absolute;z-index:-1;top:67px;right:0;
+ width:min(100%,1050px);height:480px;pointer-events:none;
+ background:
+  radial-gradient(ellipse at 76% 9%,#20314030,transparent 62%),
+  url("/assets/earth/earth-night-4096.jpg") 72% 11%/780px auto no-repeat;
+ opacity:.13;filter:grayscale(1) contrast(1.35);
+ mask-image:linear-gradient(180deg,#000,#0007 50%,transparent 100%);
+}
+:where(.archive-head,.directory-header,.country-header,.dossier-nav,.report-nav,.live-header,.donate-v1 .site-header){
+ position:relative;z-index:20;min-height:82px;height:auto;
+ display:flex;align-items:center;gap:clamp(12px,2vw,30px);
+ border:0!important;border-bottom:1px solid #9babb82b!important;
+ background:rgba(1,3,5,.91)!important;
+ box-shadow:none!important;backdrop-filter:blur(18px);
+ -webkit-backdrop-filter:blur(18px);
+ border-radius:0!important;padding:10px 0;
+}
+:where(.archive-head,.directory-header,.country-header,.dossier-nav,.report-nav,.live-header) :where(a,select,button){z-index:1;}
+:where(.archive-brand,.directory-header .brand,.country-header .logo,.dossier-brand,.report-brand,.live-logo,.donate-v1 .brand){
+ color:#f1f5f7!important;text-shadow:none!important;
+ letter-spacing:.20em!important;font-size:clamp(14px,1.45vw,19px)!important;
+ font-weight:540!important;text-decoration:none!important;
+ filter:none!important;white-space:nowrap;
+}
+:where(.archive-brand,.directory-header .brand,.country-header .logo,.dossier-brand,.report-brand,.live-logo) small{
+ display:block;color:#7f939f!important;font:600 9px/1.5 ui-monospace,Consolas,monospace;
+ letter-spacing:.13em;
+}
+:where(.archive-head nav,.live-links,.aurora-page-nav) {
+ display:flex;flex-wrap:wrap;align-items:center;gap:clamp(12px,2vw,32px);
+}
+:where(.archive-head nav a,.live-links a,.aurora-page-nav a,.dossier-back,.report-back,.home-link,.back-link,.archive-language span) {
+ color:#aab8c2!important;
+ font-size:11px!important;font-weight:650!important;letter-spacing:.09em!important;
+ text-transform:uppercase!important;text-decoration:none;
+}
+:where(.archive-head nav a,.live-links a,.aurora-page-nav a,.dossier-back,.report-back,.home-link,.back-link):hover,
+:where(.archive-head nav a,.live-links a,.aurora-page-nav a,.dossier-back,.report-back,.home-link,.back-link):focus-visible{
+ color:white!important;text-shadow:0 0 16px #b3d7e748!important;
+}
+:where(.archive-language select,.page-language,.report-nav select,.donate-v1 #langSelect,.aurora-language-switch){
+ appearance:auto;color:#eff4f7!important;border:1px solid #70879764!important;
+ background:#05090ecf!important;border-radius:4px!important;
+ min-height:39px;padding:7px 11px;box-shadow:none!important;
+}
+:where(.archive-hero,.page-shell>.hero,.country-hero,.dossier-top,.report-hero,.live-hero,.donate-hero) {
+ position:relative;isolation:isolate;
+ padding:clamp(55px,7vw,105px) 0 clamp(38px,5vw,72px)!important;
+ background:transparent!important;border:0!important;border-bottom:1px solid #8799a42b!important;
+ border-radius:0!important;min-height:0!important;
+ box-shadow:none!important;overflow:hidden;
+}
+:where(.archive-hero,.page-shell>.hero,.country-hero,.dossier-top,.report-hero,.live-hero,.donate-hero)::before{
+ content:"AURORA / OPEN SKY ARCHIVE";position:absolute;top:12px;right:0;
+ font:500 10px/1.5 ui-monospace,Consolas,monospace;letter-spacing:.23em;
+ color:#718793!important;opacity:.65;pointer-events:none;
+ width:auto;height:auto;background:none!important;box-shadow:none!important;transform:none;
+}
+:where(.archive-hero,.page-shell>.hero,.country-hero,.dossier-top,.report-hero,.live-hero,.donate-hero)::after{
+ display:none!important;
+}
+.archive-hero .orbit,.archive-hero .orbit-one,.archive-hero .orbit-two,
+.archive-hero .indicator,.country-hero .eyebrow::before,.live-eyebrow::before{
+ display:none!important;
+}
+:where(.archive-hero,.country-hero,.dossier-top,.report-hero,.live-hero,.page-shell>.hero,.donate-hero)
+ :where(h1,#directoryTitle,#countryName,#dossierTitle){
+ font-family:Inter,"Segoe UI Variable","Segoe UI",system-ui,sans-serif!important;
+ color:#f2f5f8!important;
+ font-size:clamp(43px,6.3vw,104px)!important;
+ font-weight:620!important;line-height:1.02!important;
+ letter-spacing:-.065em!important;text-shadow:none!important;
+ max-width:1110px;text-wrap:balance;
+ margin:12px 0 26px!important;
+}
+:where(.archive-hero,.country-hero,.dossier-top,.report-hero,.live-hero,.page-shell>.hero,.donate-hero)
+ :where(p,.intro,.lede,.dossier-subhead){
+ color:#adb9c2!important;max-width:750px;line-height:1.85!important;font-size:clamp(14px,1.12vw,17px)!important;
+}
+:where(.eyebrow,.kicker,.live-eyebrow,.dossier-kicker,.archive-hero .eyebrow,.report-hero .eyebrow){
+ color:#a8bbc8!important;font:700 10px/1.6 ui-monospace,Consolas,monospace!important;
+ letter-spacing:.21em!important;text-shadow:none!important;text-transform:uppercase;
+}
+:where(.archive-hero em,.donate-hero h1 span:last-child){color:#ccd8de!important;font-style:normal!important;}
+:where(.archive-content,.directory-panel,.sourced-country-archive,.country-content,.country-history,.dossier-facts,.dossier-primary,.dossier-section,.report-section,.live-shell>section,.use-funds,.transparency,.donation-page>section){
+ background:transparent!important;box-shadow:none!important;
+ border-radius:0!important;border-color:#8298a42b!important;
+}
+:where(.archive-content,.directory-panel,.sourced-country-archive,.country-content,.country-history,.report-section,.use-funds,.transparency){
+ margin-block:clamp(34px,5vw,74px)!important;
+}
+:where(.archive-content,.directory-panel,.country-content,.report-section,.use-funds,.transparency) h2,
+:where(.live-shell>section,.dossier-section) h2{
+ font-family:Inter,"Segoe UI Variable","Segoe UI",system-ui,sans-serif;
+ font-size:clamp(25px,3vw,45px);line-height:1.13;
+ letter-spacing:-.045em;font-weight:650;color:#eff3f6;text-shadow:none;
+}
+:where(.archive-toolbar,.live-toolbar,.controls,.panel-top,.archive-hero .hero-meta,.country-kpis,.metrics) {
+ border-radius:5px!important;
+ background:#060a0fc9!important;
+ box-shadow:none!important;border:1px solid #7b909d37!important;
+}
+:where(.hero-meta>div,.country-kpis>div,.metrics>div){
+ background:transparent!important;border-color:#a2b4bf34!important;
+ border-radius:0!important;box-shadow:none!important;
+}
+:where(.hero-meta,.country-kpis,.metrics) strong{color:#e8eff3!important;text-shadow:none!important;font-weight:610!important;}
+:where(.hero-meta,.country-kpis,.metrics) span{color:#98a8b5!important;letter-spacing:.09em!important;}
+:where(input,textarea,select){
+ border-radius:4px!important;background:#080d12!important;
+ border:1px solid #7f99ab51!important;color:#edf1f4!important;
+ box-shadow:none!important;outline-offset:2px;
+}
+:where(input,textarea)::placeholder{color:#718796!important;}
+:where(button,.button,.case-open,.dossier-actions a,.archive-page-btn,.live-more,.archive-video-play,.case-hero-play,.report-actions button){
+ border-radius:4px!important;
+ box-shadow:none!important;
+ transition:background .18s,border-color .18s,color .18s,transform .18s;
+}
+:where(.button-primary,.case-open,.archive-video-play,.case-hero-play,.live-more,#refreshNews,.report-actions button[type="submit"]){
+ background:#d4e0e7!important;color:#07101a!important;
+ border:1px solid #d4e0e7!important;font-weight:730!important;text-shadow:none!important;
+}
+:where(.button-primary,.case-open,.archive-video-play,.case-hero-play,.live-more,#refreshNews):hover{
+ background:#f5fbff!important;border-color:#f5fbff!important;
+}
+:where(.archive-card,.media-entry,.live-card,.world-result,.country-card,.country-case-card,.related-case-card,.case-media-card,.source-card,.source-row,.fund-card,.report-card,.country-history-card,.dossier-facts dl>div){
+ background:#070b10!important;
+ border:1px solid #8397a438!important;
+ border-radius:6px!important;
+ box-shadow:none!important;backdrop-filter:none!important;
+ color:#e8eef2!important;
+}
+:where(.archive-card,.media-entry,.live-card,.world-result,.country-card,.country-case-card,.related-case-card,.case-media-card,.source-card,.fund-card,.report-card):hover{
+ border-color:#b1c9d073!important;background:#0c1218!important;
+ transform:translateY(-2px);
+}
+:where(.archive-card,.media-entry,.live-card,.country-card,.related-case-card,.fund-card,.report-card) h2,
+:where(.archive-card,.media-entry,.live-card,.country-card,.related-case-card,.fund-card,.report-card) h3{
+ color:#eaf0f5!important;font-weight:630!important;text-shadow:none!important;
+ letter-spacing:-.025em!important;
+}
+:where(.archive-card,.media-entry,.live-card,.country-card,.related-case-card,.fund-card,.report-card) p{
+ color:#aebbc4!important;line-height:1.72!important;
+}
+:where(.card-status,.tag,.tag-video,.report-badge,.live-badge,.media-caption,.source-badges span,.card-tags span){
+ border-radius:3px!important;background:#0d161e!important;
+ border:1px solid #a0bdca45!important;color:#a9c7d4!important;
+ box-shadow:none!important;text-shadow:none!important;font-size:10px!important;
+}
+:where(.archive-card img,.media-entry img,.case-media-card img,.dossier-photo-gallery img){
+ border-radius:4px;filter:grayscale(.32) saturate(.70) contrast(1.04);
+}
+:where(.archive-card video,.archive-card iframe,.case-hero-media,.archive-video-media,.media-entry video,.media-entry iframe){
+ width:100%;display:block;background:#000;border-radius:5px;
+ aspect-ratio:16/9;object-fit:contain;max-height:72vh;border:0;
+}
+:where(.archive-video-box,.case-hero-playback,.case-visual-video,.case-hero-stage){
+ border-color:#9cb1c039!important;background:#010305!important;
+ box-shadow:none!important;border-radius:6px!important;
+}
+:where(.archive-video-thumb,.case-hero-poster){object-fit:cover;filter:brightness(.8) saturate(.72);}
+:where(.live-grid,.media-gallery,.archive-results,.country-grid,.related-cases-grid,.fund-grid){gap:clamp(12px,2vw,25px)!important;}
+:where(.dossier-facts,.dossier-section,.dossier-content,.report-grid,.live-status,.archive-disclaimer,.live-warning){
+ color:#aebac5!important;
+}
+:where(.dossier-facts,.dossier-section,.report-section,.live-warning,.archive-disclaimer){
+ border-top:1px solid #8298a438!important;
+}
+:where(.live-status,.archive-disclaimer,.live-warning,.report-status,.notice-payment){
+ background:#080d12!important;box-shadow:none!important;
+ border:1px solid #90a5b13c!important;border-radius:5px!important;
+ color:#b3c0c9!important;
+}
+:where(.archive-shell footer,.page-shell footer,.country-shell footer,.dossier-footer,.report-shell footer,.footer-donate){
+ border-top:1px solid #788e9b36!important;
+ color:#7c8d9b!important;background:transparent!important;text-shadow:none!important;
+ letter-spacing:.13em;font-size:10px;
+}
+:where(.archive-shell,.page-shell,.country-shell,.dossier-shell,.report-shell,.live-shell) a:focus-visible,
+:where(.archive-shell,.page-shell,.country-shell,.dossier-shell,.report-shell,.live-shell) button:focus-visible{
+ outline:2px solid #c6e6f6!important;outline-offset:3px!important;
+}
+@media(max-width:900px){
+ :where(.archive-head,.directory-header,.country-header,.dossier-nav,.report-nav,.live-header,.donate-v1 .site-header){
+  flex-wrap:wrap;justify-content:space-between;gap:10px;padding-block:16px;
+ }
+ :where(.archive-head nav,.live-links,.aurora-page-nav){order:3;width:100%;gap:12px;flex-wrap:wrap;}
+ :where(.archive-head nav a,.live-links a,.aurora-page-nav a){font-size:10px!important;}
+ :where(.archive-hero,.page-shell>.hero,.country-hero,.dossier-top,.report-hero,.live-hero,.donate-hero){
+  padding-top:50px!important;padding-bottom:35px!important;
+ }
+ :where(.archive-hero,.page-shell>.hero,.country-hero,.dossier-top,.report-hero,.live-hero,.donate-hero) h1{
+  font-size:clamp(39px,8vw,69px)!important;
+ }
+}
+@media(max-width:620px){
+ :where(.archive-shell,.page-shell,.country-shell,.dossier-shell,.report-shell,.live-shell,.donation-page){
+  padding-inline:17px!important;
+ }
+ :where(.archive-hero,.page-shell>.hero,.country-hero,.dossier-top,.report-hero,.live-hero,.donate-hero)::before{
+  top:2px;left:0;right:auto;font-size:8px;
+ }
+ :where(.archive-hero,.page-shell>.hero,.country-hero,.dossier-top,.report-hero,.live-hero,.donate-hero) h1{
+  font-size:clamp(33px,9vw,52px)!important;
+ }
+ :where(.archive-head nav,.live-links){gap:10px 15px;}
+ :where(.archive-head nav a,.live-links a){font-size:9px!important;}
+ :where(.archive-hero,.country-hero,.donate-hero,.dossier-top,.report-hero,.live-hero) p{font-size:13px!important;}
+ :where(.archive-card,.media-entry,.live-card,.report-section,.dossier-facts,.dossier-section){max-width:100%;min-width:0;}
+}
+@media(prefers-reduced-motion:reduce){
+ :where(.archive-card,.media-entry,.live-card,.world-result,.country-card,.related-case-card,.fund-card):hover{transform:none;}
+}
