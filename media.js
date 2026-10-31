@@ -257,7 +257,7 @@
    card.dataset.playable=String(Boolean(playable));
    const picture=document.createElement("div");picture.className="media-entry-image";
    const img=document.createElement("img");img.loading="lazy";img.decoding="async";
-   img.src=video?"/assets/hero-ufo.webp":documents?"/assets/media-document-preview.svg":
+   img.src=video?"/assets/media-ufo-earth-preview.svg":documents?"/assets/media-document-preview.svg":
     (/^\/assets\/[a-z0-9-]+\.webp$/.test(c.visual?.src||"")?c.visual.src:"/assets/media-document-preview.svg");
    img.alt=video?"AURORA UFO artwork — illustrative video preview, not an original incident frame":documents?"AURORA archive documents illustration":words.illustration;
    const badge=document.createElement("span");badge.textContent=video?words.video:documents?words.documents:words.photo;
