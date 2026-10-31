@@ -231,7 +231,7 @@
    const img=document.createElement("img");img.loading="lazy";img.decoding="async";
    img.src=m.type==="video"?"/assets/video-poster.svg":(/^\/assets\/[a-z0-9-]+\.webp$/.test(c.visual?.src||"")?c.visual.src:"/assets/feature-media.webp");
    img.alt=words.illustration;
-   const badge=document.createElement("span");badge.textContent=m.type==="video"?"VIDEO":m.type==="photo"?"▧ PHOTO":"▤ ARCHIVE";
+   const badge=document.createElement("span");badge.textContent=m.type==="video"?words.video:m.type==="photo"?words.photo:words.documents;
    picture.append(img,badge);
    const body=document.createElement("div");body.className="media-entry-body";
    const meta=document.createElement("small");meta.textContent=c.date+" · "+c.country+" · "+(c.source?.name||"");
@@ -239,7 +239,7 @@
    const summary=document.createElement("p");summary.textContent=c.summary?.[locale]||c.summary?.en||"";
    const links=document.createElement("div");links.className="media-entry-links";
    const original=document.createElement("a");original.href=m.url;original.target="_blank";original.rel="noopener noreferrer";
-   original.textContent=m.type==="video"?(locale==="bg"?"ОРИГИНАЛНА ПУБЛИКАЦИЯ ↗":"ORIGINAL VIDEO SOURCE ↗"):(m.title?.[locale]||m.title?.en||words.view)+" ↗";
+   original.textContent=m.type==="video"?words.view:(m.title?.[locale]||m.title?.en||words.view).replace(/\s*↗\s*$/,"")+" ↗";
    const dossier=document.createElement("a");dossier.href="/archive/"+encodeURIComponent(c.id);dossier.textContent=words.case;
    links.append(original,dossier);
    const caution=document.createElement("small");caution.className="media-caption";caution.textContent=words.illustration;
