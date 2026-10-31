@@ -76,7 +76,8 @@
 .world-result-unknown{margin-top:auto;color:#c1b49d}
 .world-no-results{grid-column:1/-1;padding:18px;color:#b5d7db;background:#071b24;border:1px solid #2a64718c}
 .world-results-pagination{grid-column:1/-1;list-style:none}
-.world-results-pager{display:flex;align-items:center;justify-content:center;gap:12px;min-height:48px}
+.world-results-pager{display:flex;align-items:center;justify-content:center;gap:7px;min-height:48px;flex-wrap:wrap}
+.world-page-number[aria-current="page"]{background:#9dfce4;color:#051c26;font-weight:800}
 .world-results-range{color:#b5d7db;font:11px/1.4 Consolas,monospace}
 .world-page-button{padding:10px 14px;background:#0a2631;border:1px solid #3a8088;color:#bafff0;font:11px/1.4 Consolas,monospace;cursor:pointer}
 .world-page-button:hover,.world-page-button:focus-visible{background:#12414c;border-color:#a6fff0;outline:2px solid #a6fff0;outline-offset:2px}
