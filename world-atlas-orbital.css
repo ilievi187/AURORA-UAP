@@ -62,15 +62,15 @@ body:has(.silence-hero) .world-map-surface{
   position:relative;isolation:isolate;
   border:1px solid #718da043!important;border-radius:6px!important;
   background:#010307!important;
-  box-shadow:0 25px 80px #0008,inset 0 0 95px #010305!important;
+  box-shadow:0 25px 80px #0008,inset 0 0 75px #01030594!important;
   overflow:hidden;
 }
 body:has(.silence-hero) .world-map-surface:focus-visible{outline:2px solid #d4e8f8;outline-offset:4px}
 body:has(.silence-hero) .world-map-surface::before{
   content:"";position:absolute;z-index:1;inset:0;pointer-events:none;
   background:
-    radial-gradient(ellipse at 50% 40%,transparent 47%,#000a 93%),
-    linear-gradient(180deg,#01050b83 0%,transparent 25%,transparent 73%,#01050bb8 100%),
+    radial-gradient(ellipse at 50% 40%,transparent 55%,#0007 96%),
+    linear-gradient(180deg,#01050b4a 0%,transparent 22%,transparent 78%,#01050b75 100%),
     repeating-linear-gradient(0deg,transparent 0,transparent 3px,#9bc2df06 4px);
 }
 body:has(.silence-hero) .world-map-surface::after{
