@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { resolve, join, sep } from 'node:path';
+import { mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 
@@ -136,6 +137,55 @@ async function openMediaPage(viewport = { width: 1280, height: 860 }, options = 
   await page.waitForFunction(() => document.querySelectorAll('#mediaGallery [data-inline-player-action="play"]').length === 3);
   return { context, page, errors };
 }
+
+test('media previews stay dark, cards share balanced 16:9 proportions, Play overlay stays transparent',async()=>{
+ const {context,page,errors}=await openMediaPage({width:1280,height:900});
+ try{
+  const result=await page.evaluate(async()=>{
+   const gallery=document.querySelector('#mediaGallery');
+   const card=gallery.querySelector('.media-entry');
+   const picture=card.querySelector('.media-entry-image');
+   const play=card.querySelector('.media-inline-play');
+   const image=picture.querySelector('img');
+   await image.decode();
+   const canvas=document.createElement('canvas');
+   canvas.width=20;canvas.height=20;
+   const ctx=canvas.getContext('2d');
+   ctx.drawImage(image,0,0,20,20);
+   const pixel=ctx.getImageData(2,2,1,1).data;
+   return {
+    columns:getComputedStyle(gallery).gridTemplateColumns.split(/\\s+/).length,
+    cardDisplay:getComputedStyle(card).display,
+    cardWidth:card.getBoundingClientRect().width,
+    galleryWidth:gallery.getBoundingClientRect().width,
+    aspect:picture.getBoundingClientRect().width/picture.getBoundingClientRect().height,
+    playBg:getComputedStyle(play).backgroundColor,
+    imageBrightness:(pixel[0]+pixel[1]+pixel[2])/3,
+    headingSize:parseFloat(getComputedStyle(card.querySelector('h2')).fontSize)
+   };
+  });
+  assert.equal(result.columns,2,'desktop gallery has two equal columns');
+  assert.equal(result.cardDisplay,'flex','first card is no longer a large split hero');
+  assert.ok(result.cardWidth/result.galleryWidth<.6,'first card cannot swallow the page width');
+  assert.ok(Math.abs(result.aspect-16/9)<.035,'all thumbnails use compact 16:9');
+  assert.equal(result.playBg,'rgba(0, 0, 0, 0)','full-thumbnail Play overlay must NOT hide its dark poster');
+  assert.ok(result.imageBrightness<65,'poster art stays dark instead of pale blue');
+  assert.ok(result.headingSize<=28,'long video headlines cannot become huge');
+  mkdirSync('artifacts',{recursive:true});
+  await page.locator('#mediaGallery').screenshot({path:'artifacts/media-sleek-gallery-desktop.png',animations:'disabled'});
+  await page.setViewportSize({width:390,height:844});
+  const mobile=await page.evaluate(()=>({
+   columns:getComputedStyle(document.querySelector('#mediaGallery')).gridTemplateColumns.split(/\\s+/).length,
+   overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
+   picture:document.querySelector('.media-entry-image').getBoundingClientRect().width
+  }));
+  assert.equal(mobile.columns,1,'mobile gallery collapses to a single balanced column');
+  assert.ok(mobile.overflow<=1,'mobile layout must not overflow');
+  assert.ok(mobile.picture>250,'the mobile thumbnail stays usable');
+  await page.locator('#mediaGallery').screenshot({path:'artifacts/media-sleek-gallery-mobile.png',animations:'disabled'});
+  assert.deepEqual(errors,[]);
+ }finally{await context.close()}
+});
 
 test('archive mirrors appear once with source links and never advertise a fake Play button', async()=>{
  const {context,page,errors}=await openMediaPage();
