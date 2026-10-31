@@ -27,6 +27,7 @@
 <link rel="stylesheet" href="/world-atlas.css">
 <script defer src="/ui-locales.js"></script><script type="module" src="/world-atlas.js"></script><script defer src="/home-news.js"></script>
 <link rel="stylesheet" href="/aurora-design-refresh.css">
+<link rel="stylesheet" href="/aurora-cinematic.css">
 </head>
 <body class="gate-open">
 <noscript><style>#languageGate{display:none!important}body.gate-open{overflow:auto}.site-shell{pointer-events:auto!important}</style></noscript>
@@ -78,13 +79,10 @@
       <span class="brand-text"><b>A U R O R A</b><small>UAP BULGARIA · RESEARCH INITIATIVE</small></span>
     </a>
     <nav class="desktop-nav" aria-label="Основна навигация">
-      <a class="active" href="#home" data-i18n="navHome">Начало</a>
       <a href="/archive.html" data-i18n="navArchive">Архив</a>
       <a href="#worldAtlas" data-i18n="navMap">Карта</a>
       <a href="/news.html" data-i18n="navNews">Новини</a>
-      <a href="/media.html" data-i18n="navMedia">Видео</a>
-      <a href="#control" data-control-nav>Център</a>
-      <a class="nav-donate" href="/donate.html" data-i18n="navDonate">Дари</a>
+      <a href="/donate.html" class="nav-donate" data-i18n="navDonate">Дари</a>
     </nav>
     <div class="header-actions"><button type="button" class="gate-trigger" id="openLanguageGate" aria-label="Промени езика / Change language">LANGUAGE</button><label class="sr-only" for="langToggle">Language / Език</label><select class="lang-button lang-select" id="langToggle" aria-label="Language / Език"><option value="bg">Български</option><option value="en">English</option><option value="de">Deutsch</option><option value="ru">Русский</option><option value="zh-CN">中文</option></select><button type="button" class="menu-button" id="menuToggle" aria-label="Меню / Menu" aria-expanded="false"><svg class="icon"><use href="#i-menu"/></svg></button></div>
   </header>
@@ -96,15 +94,23 @@
   </nav>
 
   <main id="main">
-  <section class="hero aurora-odyssey" id="odyssey" aria-labelledby="hero-title" data-chapter="0">
+  <section class="hero aurora-odyssey" id="odyssey" aria-labelledby="hero-title" data-chapter="0" data-renderer="fallback">
     <div class="odyssey-sticky">
-      <div class="hero-image odyssey-fallback" role="img" aria-label="Художествена сцена с неизвестен небесен обект над студен каменист пейзаж"></div>
+      <div class="hero-image odyssey-fallback" role="img" aria-label="Художествена композиция: загадъчен леден монолит в сребрист лунен пейзаж"></div>
       <canvas id="auroraSceneCanvas" class="odyssey-webgl" aria-hidden="true"></canvas>
       <div class="odyssey-vignette" aria-hidden="true"></div>
       <div class="orbital-stage" aria-hidden="true"></div>
       <canvas id="heroHudCanvas" class="system-canvas hero-hud-canvas" aria-hidden="true" hidden></canvas>
-      <div class="odyssey-scene odyssey-intro">
-        <div class="odyssey-topline" aria-hidden="true"><span>AURORA / THE SIGNAL</span><span>AN OPEN SKY. AN OPEN QUESTION.</span></div>
+      <div class="odyssey-scene odyssey-intro" aria-hidden="false">
+        <div class="odyssey-topline" aria-hidden="true"><span>THE SIGNAL / 001</span><span>AURORA — INDEPENDENT UAP ARCHIVE</span></div>
+        <div class="odyssey-first-line">
+          <p class="odyssey-line-lead" data-i18n="heroTag">ЕДНО НЕБЕ. МНОГО ВЪПРОСИ.</p>
+          <p class="odyssey-line-note">AN OPEN WORLD OF QUESTIONS.</p>
+        </div>
+        <div class="odyssey-intro-foot" aria-hidden="true"><span>THE UNKNOWN DOES NOT REQUIRE BELIEF.</span><span class="odyssey-scroll-symbol">SCROLL TO DISCOVER <b>↓</b></span></div>
+      </div>
+      <div class="odyssey-scene odyssey-chapter" aria-hidden="true" inert>
+        <div class="odyssey-topline" aria-hidden="true"><span>02 / ENTER THE UNKNOWN</span><span>OPEN SKIES. OPEN SOURCES.</span></div>
         <div class="hero-content">
           <p class="eyebrow" data-i18n="heroKicker">ОТВОРЕНИ ДАННИ. КРИТИЧНО МИСЛЕНЕ. НЕПОЗНАТОТО НИ ОЧАКВА.</p>
           <h1 id="hero-title"><span data-i18n="heroTitle1">ДА ИЗСЛЕДВАМЕ</span><strong data-i18n="heroTitle2">НЕОБЯСНИМОТО</strong></h1>
@@ -114,21 +120,19 @@
             <a href="/news.html" class="button button-secondary"><span data-i18n="navNews">Новини</span><svg class="icon icon-arrow"><use href="#i-arrow"/></svg></a>
           </div>
         </div>
-        <div class="odyssey-intro-foot" aria-hidden="true"><span>AURORA UAP — INDEPENDENT ARCHIVE</span><span class="odyssey-scroll-symbol">SCROLL TO DISCOVER <b>↓</b></span></div>
       </div>
-      <div class="odyssey-scene odyssey-chapter" aria-hidden="true" inert>
-        <div class="odyssey-topline" aria-hidden="true"><span>02 / BEYOND THE VEIL</span><span>AURORA — SOURCE-LINKED RESEARCH</span></div>
-        <div class="odyssey-chapter-copy">
-          <p class="eyebrow" data-i18n="methodKicker">НАШИЯТ ПОДХОД</p>
-          <h2 data-i18n="methodTitle">ЛЮБОПИТСТВО БЕЗ ПРИБЪРЗАНИ ЗАКЛЮЧЕНИЯ.</h2>
-          <p data-i18n="methodBody">Не приемаме автоматично, че необяснен обект е извънземен. Проверяваме първо конвенционални обяснения и описваме какво знаем, какво не знаем и защо.</p>
-          <a href="#worldAtlas" class="odyssey-link"><span data-i18n="navMap">Карта</span><span aria-hidden="true">↗</span></a>
+      <div class="odyssey-scene odyssey-archive-chapter" aria-hidden="true" inert>
+        <div class="odyssey-topline" aria-hidden="true"><span>03 / THE ARCHIVE</span><span>ONE EARTH. THOUSANDS OF QUESTIONS.</span></div>
+        <div class="odyssey-archive-copy">
+          <p class="eyebrow" data-i18n="whatDo">КАКВО ПРАВИМ</p>
+          <h2 data-i18n="mapTitle">КАРТА НА НАБЛЮДЕНИЯТА</h2>
+          <p data-i18n="feature2desc">Свидетелства, материали, ход на проверката и ясни заключения.</p>
+          <a class="odyssey-link" href="#worldAtlas"><span data-i18n="navMap">Карта</span><span aria-hidden="true">↗</span></a>
+          <a class="odyssey-link odyssey-archive-link" href="/archive.html"><span data-i18n="navArchive">Архив</span><span aria-hidden="true">↗</span></a>
         </div>
       </div>
-      <div class="odyssey-chapter-rail" aria-hidden="true">
-        <span>01</span><div class="odyssey-rail-track"><i></i></div><span>02</span>
-      </div>
-      <a href="#worldAtlas" class="odyssey-skip" aria-label="Към картата на документираните случаи">↓ <span data-i18n="navMap">Карта</span></a>
+      <div class="odyssey-chapter-rail" aria-hidden="true"><span>01</span><div class="odyssey-rail-track"><i></i></div><span>03</span></div>
+      <a href="#worldAtlas" class="odyssey-skip" aria-label="Пропусни 3D преживяването и отвори картата">SKIP INTRO <span aria-hidden="true">↗</span></a>
     </div>
   </section>
   <section class="world-atlas" id="worldAtlas" aria-labelledby="worldAtlasHeading">
