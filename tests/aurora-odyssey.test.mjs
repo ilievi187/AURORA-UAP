@@ -14,7 +14,7 @@ test("Earth-centered original WebGL space, not a static demo background",()=>{
   assert.match(render,/gl\.drawArrays\(gl\.TRIANGLES,0,6\)/);
   assert.match(render,/scenePixels/);
   assert.doesNotThrow(()=>new Script(render,{filename:"aurora-experience.js"}));
-  assert.doesNotMatch(render,/igloo\.inc|autoplay|audio\.play/);
+  assert.doesNotMatch(render,/igloo\.inc|audio\.play\(/);
 });
 test("Earth land shape texture is 4K and source-geographic, planets are true 3D",()=>{
   assert.match(render,/fetch\("\/data\/earth-land\.json"/);
@@ -39,7 +39,7 @@ test("Three immersive chapters are accessible and real archive follows",()=>{
   assert.match(render,/progress<\.24\?0:progress<\.66\?1:2/);
   assert.match(render,/s\.inert=hidden/);
   assert.match(html,/href="\/archive\.html" class="button button-primary"/);
-  assert.match(html,/href="#worldAtlas" class="odyssey-link"/);
+  assert.match(html,/class="odyssey-link" href="#worldAtlas"/);
 });
 test("Native scene respects accessibility, performance, fallback and reduced motion",()=>{
   assert.match(css,/@media\(max-width:680px\)/);

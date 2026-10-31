@@ -1,3 +1,5 @@
+html:has(#odyssey){overflow-x:clip;}
+body:has(#odyssey) .site-shell{overflow-x:clip;overflow-y:visible;}
 
 /* AURORA / WORLD V3: original glacial art direction.
    One continuous cinematic scene, not a conventional neon dashboard. */
@@ -261,4 +263,15 @@ body:has(#odyssey) .footer{padding-inline:clamp(24px,5vw,96px);}
  .aurora-odyssey .odyssey-chapter{opacity:1;transform:none;pointer-events:auto;transition:none;}
  .aurora-odyssey .odyssey-webgl,.aurora-odyssey .odyssey-fallback{transition:none;}
  .aurora-odyssey .odyssey-scroll-symbol b{animation:none;}
+}
+
+/* Guard oversized text and legacy width rules in the mobile cinematic layout. */
+@media(max-width:680px){
+ body:has(#odyssey) main{min-width:0;max-width:100vw;}
+ body:has(#odyssey) .site-shell{width:100%;max-width:100vw;overflow-x:clip;}
+ body:has(#odyssey) .aurora-odyssey{width:100%;max-width:100vw;}
+ .aurora-odyssey .odyssey-sticky{max-width:100vw;}
+ .aurora-odyssey h1{overflow-wrap:anywhere;hyphens:auto;}
+ body:has(#odyssey) main>.world-atlas{min-width:0;max-width:calc(100vw - 36px);}
+ body:has(#odyssey) .world-map-layout{min-width:0;}
 }
