@@ -714,12 +714,15 @@ try{
     await page.waitForFunction(()=>document.querySelector("#silenceHero")?.dataset.stats==="sourced");
     const columns=await page.locator(".silence-stats").evaluate(el=>getComputedStyle(el).gridTemplateColumns);
     assert.equal(columns.split(" ").length,2,"mobile displays two metric columns");
+    const statGeometry=await page.locator(".silence-stat").evaluateAll(items=>items.map(el=>({left:el.getBoundingClientRect().left,right:el.getBoundingClientRect().right,width:el.getBoundingClientRect().width})));
+    assert.equal(statGeometry.length,4);
+    assert.ok(statGeometry.every(x=>x.left>=-1&&x.right<=391),"stat cards must fit mobile viewport "+JSON.stringify(statGeometry));
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
     assert.ok(overflow<=1,"homepage overflow: "+overflow);
     const heroWidth=await page.locator("#silenceHero").evaluate(el=>el.getBoundingClientRect().width);
     assert.ok(heroWidth<=391,"full-width hero within mobile viewport");
     mkdirSync("artifacts",{recursive:true});
-    await page.screenshot({path:"artifacts/aurora-silence-mobile.png",fullPage:false,animations:"disabled"});
+    await page.screenshot({path:"artifacts/aurora-silence-mobile.png",fullPage:true,animations:"disabled"});
     assert.deepEqual(errors,[]);
     await context.close();
   });
