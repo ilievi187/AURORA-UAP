@@ -213,7 +213,7 @@
    const img=document.createElement("img");img.loading="lazy";img.decoding="async";
    img.src=/^\/assets\/[a-z0-9-]+\.webp$/.test(c.visual?.src||"")?c.visual.src:"/assets/feature-media.webp";
    img.alt=words.illustration;
-   const badge=document.createElement("span");badge.textContent=m.type==="video"?"▶ VIDEO":m.type==="photo"?"▧ PHOTO":"▤ ARCHIVE";
+   const badge=document.createElement("span");badge.textContent=m.type==="video"?"VIDEO":m.type==="photo"?"▧ PHOTO":"▤ ARCHIVE";
    picture.append(img,badge);
    const body=document.createElement("div");body.className="media-entry-body";
    const meta=document.createElement("small");meta.textContent=c.date+" · "+c.country+" · "+(c.source?.name||"");
