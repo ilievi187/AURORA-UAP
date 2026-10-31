@@ -3,6 +3,8 @@ on:
   pull_request:
     paths:
       - 'dossier.js'
+      - 'dossier-document-preview.js'
+      - 'tests/curated-dossier-stories.test.mjs'
       - 'archive-localization.js'
       - 'archive-records.js'
       - 'functions/api/archive-translation.js'
@@ -19,6 +21,8 @@ on:
     branches: [main]
     paths:
       - 'dossier.js'
+      - 'dossier-document-preview.js'
+      - 'tests/curated-dossier-stories.test.mjs'
       - 'archive-localization.js'
       - 'archive-records.js'
       - 'functions/api/archive-translation.js'
@@ -43,7 +47,7 @@ jobs:
         with:
           node-version: '22'
       - name: Validate dossier descriptions and media rights
-        run: node --test tests/dossier-rich-content.test.mjs tests/dossier-universal.test.mjs tests/archive-authentic-translation.test.mjs
+        run: node --test tests/dossier-rich-content.test.mjs tests/dossier-universal.test.mjs tests/archive-authentic-translation.test.mjs tests/curated-dossier-stories.test.mjs
       - name: Validate baseline archive and media contracts
         run: |
           node --test tests/archive-records.test.mjs tests/aurora-v1.test.mjs

@@ -178,7 +178,7 @@
   label("factAssessment",t.statusName[assessment]||t.statusName.undetermined);
   label("factPrecision",Number.isFinite(c.lat)&&Number.isFinite(c.lng)?(language==="en"?(c.location_precision||t.approx):t.approx):t.noCoords);
   label("dossierSummary",summary);
-  label("dossierDepth",c.content_depth==="editorial"?
+  label("dossierDepth",["editorial","sourced-feature"].includes(c.content_depth)?
    (language==="bg"?"ИСТОРИЯ И КОНТЕКСТ · РАЗШИРЕНО ДОСИЕ":"STORY & CONTEXT · EXTENDED FILE"):
    (language==="bg"?"АРХИВЕН ЗАПИС · ОРИГИНАЛНИ ИЗТОЧНИЦИ":"ARCHIVE FILE · ORIGINAL SOURCES"));
   // Source provenance is preserved; visuals are labelled if illustrative.
@@ -206,8 +206,16 @@
   const story=$("dossierStory");story.replaceChildren();
   const narrative=c.story?.[language]||c.story?.en;
   if(Array.isArray(narrative)){
-   for(const passage of narrative.slice(0,10)){
+   // Skip repeated catalog boilerplate and verbatim copies of the synopsis.
+   // Their source attribution is visible in the separate provenance panel.
+   const compact=value=>String(value||"").replace(/\s+/g," ").trim().toLocaleLowerCase();
+   const opening=compact(summary),seen=new Set();
+   for(const passage of narrative.slice(0,18)){
     if(typeof passage!=="string"||passage.length<15)continue;
+    const normalized=compact(passage);
+    if(/^source-linked case dossier[ ·]/i.test(passage)||/^EN\s*[·:]/.test(passage))continue;
+    if(normalized===opening||seen.has(normalized))continue;
+    seen.add(normalized);
     const paragraph=document.createElement("p");
     paragraph.textContent=passage;story.append(paragraph);
    }
@@ -237,6 +245,10 @@
   const approvedTypes=new Set(["documents","archive","photo"]);
   const availableMedia=contentHelper?.media(c)||[];
   const photoGallery=$("casePhotoGallery");photoGallery.replaceChildren();
+  // Close the prior document on language change or record navigation.
+  globalThis.AURORA_DOCUMENT_PREVIEW?.close();
+  const previewClose=$("caseDocumentClose");
+  if(previewClose)previewClose.onclick=()=>globalThis.AURORA_DOCUMENT_PREVIEW?.close();
   for(const m of availableMedia){
    if(!approvedTypes.has(m.type))continue;
    const safe=sourceUrl(m.url);if(!safe)continue;
@@ -249,7 +261,21 @@
    text.textContent=local(m.title)||m.type;
    const type=document.createElement("small");
    type.textContent=({photo:"PHOTO",documents:"DOCUMENTS",archive:"ARCHIVE"})[m.type];
-   anchor.append(icon,text,type);mediaGrid.append(anchor);
+   anchor.append(icon,text,type);
+   const reader=globalThis.AURORA_DOCUMENT_PREVIEW;
+   const previewUrl=["documents","archive"].includes(m.type)?reader?.sourcePdf(safe):null;
+   if(previewUrl){
+    const tile=document.createElement("div");tile.className="case-media-tile";
+    tile.append(anchor);
+    const openButton=document.createElement("button");
+    openButton.className="case-media-preview";openButton.type="button";
+    openButton.textContent=reader.words(language)[0]+" ⤢";
+    openButton.addEventListener("click",()=>{
+     reader.open(previewUrl,local(m.title)||m.type,language);
+    });
+    tile.append(openButton);
+    mediaGrid.append(tile);
+   }else{mediaGrid.append(anchor);}
    if(m.type==="photo"){
     const preview=contentHelper?.photoPreview(m);
     if(preview){
