@@ -815,14 +815,15 @@ try{
       media:[{type:"video",url:"https://www.youtube.com/watch?v=aqz-KE-bpKQ",title:{en:"Published recording",bg:"Публикувано видео"}}]
     }]})}));
     await page.goto("http://127.0.0.1:"+port+"/media.html");
-    await page.waitForFunction(()=>document.querySelectorAll("#mediaGallery .media-entry").length===1&&!!document.querySelector(".archive-video-play"));
-    const button=page.locator(".archive-video-play");
+    await page.waitForFunction(()=>document.querySelectorAll("#mediaGallery .media-entry").length===1&&!!document.querySelector(".media-inline-play"));
+    const button=page.locator(".media-inline-play");
     assert.equal(await button.isVisible(),true);
     await button.click();
-    const player=page.locator("#mediaGallery iframe.archive-video-media");
+    const player=page.locator("#mediaGallery .media-inline-player-stage iframe");
     await player.waitFor({state:"attached"});
     assert.match(await player.getAttribute("src"),/youtube-nocookie\.com\/embed\/aqz-KE-bpKQ/);
-    assert.equal(await page.locator("#mediaGallery .archive-video-original").count(),1);
+    assert.equal(await page.locator("#mediaGallery .media-entry-links a[target=\"_blank\"]").count(),1);
+    assert.equal(await page.locator("#mediaGallery .archive-video-box, #mediaGallery .aurora-player-button").count(),0);
     assert.deepEqual(errors,[]);
     await ctx.close();
   });
