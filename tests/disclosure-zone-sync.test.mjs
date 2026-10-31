@@ -102,12 +102,36 @@ test("source fetch uses fixed endpoint with byte guard and schema integrity",asy
  await assert.rejects(fetchSource(async()=>new Response("[]",{headers:{"content-length":"9000000"}})),/size limit/);
  await assert.rejects(fetchSource(async()=>Response.json({license:"CC BY 4.0",count:20,cases:[row()]})),/count mismatch/);
 });
-test("archived reviewed records remain untouched in repository",()=>{
+test("archived reviewed records remain untouched while truncated imports fail closed",()=>{
  const current=JSON.parse(readFileSync(new URL("../data/cases.json",import.meta.url),"utf8"));
- const result=buildArchive(current,source([row("nuremberg-1561")]));
- assert.ok(result.archive.cases.length>=current.cases.length);
- for(const c of current.cases){
+ // A single fixture is valid only against a baseline without already-imported
+ // disclosure.zone records. Keep the real 76-record shrink safeguard intact.
+ const curated={...current,cases:current.cases.filter(c=>c.provenance?.source_url!==SOURCE_URL)};
+ const result=buildArchive(curated,source([row("nuremberg-1561")]));
+ assert.ok(result.archive.cases.length>=curated.cases.length);
+ for(const c of curated.cases){
   const original=result.archive.cases.find(x=>x.id===c.id);
   assert.deepEqual(original,c,c.id+" should not change");
  }
+ if(current.cases.length-curated.cases.length>=10)
+  assert.throws(()=>buildArchive(current,source([row("nuremberg-1561")])),/Source shrank unexpectedly/);
+});
+
+
+test("published official DVIDS source links become in-page playable video references, not copied footage",()=>{
+ const url="https://www.dvidshub.net/video/1023397/dow-uap-pr135-unresolved-uap-report-middle-east-2025";
+ const item=normalizeCase(row("six-spheres-2025",{sources:[
+  {tier:"T1",url,label:{en:"Official AARO six spheres footage"}},
+  {tier:"T1",url:"https://publisher.example/article",label:{en:"Separate article"}},
+  {tier:"T2",url:"https://www.dvidshub.net/video/invalid",label:{en:"Invalid player URL"}}
+ ]}));
+ const video=item.media.find(m=>m.type==="video");
+ assert.ok(video,"official video must be exposed in the case");
+ assert.equal(video.url,url);
+ assert.equal(video.playback.mode,"provider_embed");
+ assert.equal(video.playback.provider,"dvids");
+ assert.equal(video.playback.permission,"public_embed");
+ assert.equal(video.playback.source_url,url);
+ assert.equal(item.media.length,1,"articles are not falsely labeled playable video");
+ assert.equal(item.sources.length,3,"all original public sources remain cited");
 });
