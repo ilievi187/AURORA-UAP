@@ -178,7 +178,7 @@
   label("factAssessment",t.statusName[assessment]||t.statusName.undetermined);
   label("factPrecision",Number.isFinite(c.lat)&&Number.isFinite(c.lng)?(language==="en"?(c.location_precision||t.approx):t.approx):t.noCoords);
   label("dossierSummary",summary);
-  label("dossierDepth",c.content_depth==="editorial"?
+  label("dossierDepth",["editorial","sourced-feature"].includes(c.content_depth)?
    (language==="bg"?"ИСТОРИЯ И КОНТЕКСТ · РАЗШИРЕНО ДОСИЕ":"STORY & CONTEXT · EXTENDED FILE"):
    (language==="bg"?"АРХИВЕН ЗАПИС · ОРИГИНАЛНИ ИЗТОЧНИЦИ":"ARCHIVE FILE · ORIGINAL SOURCES"));
   // Source provenance is preserved; visuals are labelled if illustrative.
