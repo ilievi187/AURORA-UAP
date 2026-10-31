@@ -3,9 +3,16 @@
  * translation. Source links and observations stay unchanged. */
 const accepted=new Set(["bg","en","de","ru","zh-CN","fr","es","it","pt","tr","ro","el","sr","uk","pl","ar","ja","ko"]);
 const requests=new Map();
+export function isLegacyPlaceholder(record,language){
+ if(language!=="bg")return false;
+ const summary=String(record?.summary?.bg||"");
+ const story=Array.isArray(record?.story?.bg)?record.story.bg:[];
+ return /(?:е случай, описан в публичния каталог|Публикуваните сведения се отнасят|Маркерът, ако има такъв)/i.test(summary)||
+  story.some(p=>/^EN\s*[·:]/.test(String(p))||/Следва оригиналното описание на английски/.test(String(p)));
+}
 export function caseTextLanguage(record,language){
  const t=record?.title?.[language],s=record?.summary?.[language];
- return t&&s?language:"en";
+ return t&&s&&!isLegacyPlaceholder(record,language)?language:"en";
 }
 export function translationDisclosure(language){
  const labels={
@@ -32,7 +39,7 @@ export function translationDisclosure(language){
 }
 export function isFullTranslation(record,language,detail=false){
  if(!accepted.has(language))return false;
- if(!record?.title?.[language]||!record?.summary?.[language])return false;
+ if(isLegacyPlaceholder(record,language)||!record?.title?.[language]||!record?.summary?.[language])return false;
  return !detail||Array.isArray(record.story?.[language]);
 }
 export async function translatePublicCase(record,language,{detail=false}={}){
@@ -49,6 +56,7 @@ export async function translatePublicCase(record,language,{detail=false}={}){
    // Never copy untrusted HTML or modify source links, statuses and evidence.
    const limit=(x,n)=>typeof x==="string"&&x.length>=2&&x.length<=n?x:null;
    if(!limit(data.title,750)||!limit(data.summary,6000))return null;
+   // Replace legacy boilerplate rather than displaying an English/Bulgarian collage.
    record.title??={};record.summary??={};
    record.title[language]=data.title;record.summary[language]=data.summary;
    if(detail&&Array.isArray(data.story)&&data.story.every(x=>x===null||limit(x,6000))){
