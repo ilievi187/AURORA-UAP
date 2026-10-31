@@ -42,7 +42,7 @@ test("FLIR1 hero replaces misleading stock screenshot with real source-verified 
   assert.match(await page.locator("#caseHeroSource").getAttribute("href"),/^https:\/\/www\.defense\.gov\//);
   await page.locator("#caseHeroPlay").click();
   const video=page.locator("#caseHeroStage video");
-  assert.match(await video.getAttribute("src"),/^https:\/\/upload\.wikimedia\.org\/.*\.webm$/);
+  assert.match(await video.getAttribute("src"),/^https:\/\/(?:upload\.wikimedia\.org\/.*\.webm|www\.navair\.navy\.mil\/foia\/.*FLIR\.mp4)$/,"must use verified public-domain original or authorized official backup");
   assert.equal(await video.getAttribute("controls"),"");
   assert.equal(await video.getAttribute("preload"),"metadata");
   assert.equal(await video.getAttribute("autoplay"),null);
