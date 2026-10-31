@@ -104,7 +104,7 @@ try{
    const before=page.url();
    await card.locator(".archive-video-play").click();
    assert.equal(await card.locator("video").count(),1);
-   assert.match(await card.locator("video").getAttribute("src"),/(?:FLIR1_Official_UAP_Footage|www\\.navair\\.navy\\.mil\\/foia\\/.*FLIR\\.mp4)/);
+   assert.match(await card.locator("video").getAttribute("src"),/(?:FLIR1_Official_UAP_Footage|www\.navair\.navy\.mil\/foia\/.*FLIR\.mp4)/);
    assert.equal(await card.locator("video").getAttribute("controls"),"");
    assert.equal(await card.locator("video").getAttribute("autoplay"),null);
    assert.equal(page.url(),before,"watch in AURORA instead of redirecting");
