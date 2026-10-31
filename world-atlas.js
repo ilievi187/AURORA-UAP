@@ -166,7 +166,7 @@ function renderDetails(item) {
   } else if (item.location_precision) {
     const precision = document.createElement('p');
     precision.className = 'world-location-note';
-    precision.textContent = item.location_precision;
+    precision.textContent = language() === "bg" && item.location_precision_bg ? item.location_precision_bg : item.location_precision;
     ui.detail.append(precision);
   }
   const dossier = document.createElement('a');
@@ -346,21 +346,23 @@ function renderPins() {
   for (const cluster of clusters) {
     const button = document.createElement('button');
     button.type = 'button';
+    const approximate = cluster.count === 1 && cluster.cases[0].map_anchor?.kind === 'approximate_source_locality';
     button.className = cluster.count > 1 ? 'world-map-marker is-cluster' : 'world-map-marker';
+    if (approximate) button.classList.add('is-approximate');
     button.style.left = `${cluster.left}%`;
     button.style.top = `${cluster.top}%`;
     button.dataset.clusterCount = String(cluster.count);
     button.dataset.markerCaseId = cluster.cases[0].id;
-    button.textContent = cluster.count > 1 ? String(cluster.count) : '';
+    button.textContent = cluster.count > 1 ? String(cluster.count) : approximate ? '≈' : '';
     const preview = cluster.cases.slice(0, 3).map((item) => localized(item.title)).join(', ');
     const additional = cluster.count > 3 ? ` (+${cluster.count - 3})` : '';
-    button.title = `${preview}${additional}`;
+    button.title = `${preview}${additional}${approximate ? (language() === 'bg' ? ' · Приблизителна локация' : ' · Approximate area') : ''}`;
     const selectedInCluster = cluster.cases.some((item) => item.id === selected);
     if (selectedInCluster) button.dataset.selectedCaseId = selected;
     button.setAttribute('aria-pressed', String(selectedInCluster));
     button.setAttribute('aria-label', cluster.count > 1
       ? `${cluster.count} ${t('cluster')}. ${t('zoomIn')}. ${button.title}`
-      : `${localized(cluster.cases[0].title)} · ${localized(cluster.cases[0].city) || t('unknownLocation')}`);
+      : `${localized(cluster.cases[0].title)} · ${localized(cluster.cases[0].city) || t('unknownLocation')}${approximate ? ' · ' + (language() === 'bg' ? 'ориентировъчна локация' : 'approximate area') : ''}`);
     button.addEventListener('click', () => {
       if (cluster.count > 1 && zoom < MAX_ZOOM) {
         const representative = cluster.cases[0];

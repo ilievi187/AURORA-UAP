@@ -55,3 +55,12 @@ test("future licensed imports infer an approximate city without guessing an inci
    assets:[{type:"document",label:"Source PDF",url:"https://media.uap-archive.org/pursue-docs/example.pdf"}]});
  assert.equal(unknown.lat,null);assert.equal(unknown.lng,null);
 });
+
+test("world atlas visually distinguishes inferred locations and localizes the warning",()=>{
+ const atlas=readFileSync(new URL("../world-atlas.js",import.meta.url),"utf8");
+ const css=readFileSync(new URL("../world-atlas.css",import.meta.url),"utf8");
+ assert.match(atlas,/is-approximate/);
+ assert.match(atlas,/location_precision_bg/);
+ assert.match(atlas,/approximate area/);
+ assert.match(css,/\.world-map-marker\.is-approximate/);
+});
