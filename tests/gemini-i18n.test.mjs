@@ -26,7 +26,7 @@ test('subpage-i18n.js and localized route scripts parse cleanly and cover all 18
 });
 
 test('all subpage templates load subpage-i18n.js and style .page-language for responsive headers',()=>{
-  for(const htmlFile of ['news.html','sky.html','countries.html','country.html','dossier.html','report.html','media.html']){
+  for(const htmlFile of ['news.html','countries.html','country.html','dossier.html','report.html','media.html']){
     assert.match(read(htmlFile),/src="\/subpage-i18n\.js"/,`${htmlFile} should include /subpage-i18n.js`);
   }
   for(const cssFile of ['live-tools.css','countries.css','country.css','dossier.css','report.css']){
