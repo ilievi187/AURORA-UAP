@@ -677,15 +677,28 @@ try{
     const mode=page.locator("#odyssey");
     await page.waitForFunction(()=>["webgl","fallback"].includes(document.querySelector("#odyssey")?.dataset.renderer));
     mkdirSync("artifacts",{recursive:true});
-    await page.screenshot({path:"artifacts/aurora-earth-desktop.png",fullPage:false,animations:"disabled"});
+
     assert.equal(await page.locator("#auroraSceneCanvas").count(),1);
     if(await mode.getAttribute("data-renderer")==="webgl"){
       await page.waitForFunction(()=>document.querySelector("#odyssey")?.dataset.scenePixels,{timeout:10000});
       const values=(await mode.getAttribute("data-scene-pixels")).split("|").map(x=>x.split(",").map(Number));
       assert.ok(values.some(row=>row.some(v=>v>12)),"GPU must render visibly non-black pixel values");
-      await page.waitForFunction(()=>["4096","fallback"].includes(document.querySelector("#odyssey")?.dataset.earthTexture),{timeout:10000});
-      const tex=await mode.getAttribute("data-earth-texture");
-      assert.equal(tex,"4096","public land vector texture must be 4K in browser");
+      await page.waitForFunction(()=>["photographic","fallback"].includes(document.querySelector("#odyssey")?.dataset.earthImagery),{timeout:15000});
+      assert.equal(await mode.getAttribute("data-earth-imagery"),"photographic","real photographed Earth must load, not flat fallback");
+      assert.equal(await mode.getAttribute("data-earth-texture"),"photo-4096");
+      assert.equal(await mode.getAttribute("data-photo-maps"),"7","day/night/cloud/specular and planetary maps loaded");
+      const probes=await page.evaluate(async()=>Promise.all([
+        "earth-day-4096.jpg","earth-night-4096.jpg","earth-clouds-1024.png",
+        "earth-specular-2048.jpg","moon-1024.jpg","mars-2048.jpg","saturn-2048.jpg"
+      ].map(async name=>{
+        const res=await fetch("/assets/earth/"+name);
+        return {name,status:res.status,type:res.headers.get("content-type"),length:(await res.blob()).size};
+      })));
+      for(const item of probes){
+        assert.equal(item.status,200,item.name);
+        assert.ok(item.length>100000,item.name+" too small");
+      }
+      await page.screenshot({path:"artifacts/aurora-earth-desktop.png",fullPage:false,animations:"disabled"});
     }
     await page.evaluate(()=>{
       const el=document.querySelector("#odyssey"),r=el.getBoundingClientRect();
@@ -715,6 +728,9 @@ try{
     await page.locator("#languageGate").waitFor({state:"hidden"});
     assert.equal(await page.locator("#odyssey").getAttribute("data-chapter"),"1");
     mkdirSync("artifacts",{recursive:true});
+    await page.waitForFunction(()=>["photographic","fallback"].includes(document.querySelector("#odyssey")?.dataset.earthImagery),{timeout:15000});
+    assert.equal(await page.locator("#odyssey").getAttribute("data-earth-imagery"),"photographic");
+    assert.equal(await page.locator("#odyssey").getAttribute("data-earth-texture"),"photo-2048","mobile texture resolution must be capped");
     await page.screenshot({path:"artifacts/aurora-earth-mobile.png",fullPage:false,animations:"disabled"});
     assert.equal(await page.locator(".odyssey-chapter").getAttribute("aria-hidden"),"false");
     assert.equal(await page.locator(".odyssey-chapter .hero-content").isVisible(),true,"reduced-motion mobile must show its heading and navigation");

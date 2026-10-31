@@ -276,3 +276,7 @@ body:has(#odyssey) .footer{padding-inline:clamp(24px,5vw,96px);}
  body:has(#odyssey) main>.world-atlas{min-width:0;max-width:calc(100vw - 36px);}
  body:has(#odyssey) .world-map-layout{min-width:0;}
 }
+
+/* Attribution for NASA-derived CC BY photographic composite data. */
+body:has(#odyssey) .earth-imagery-credit{font:500 10px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.015em;color:#8d9ca9;margin:8px 0 16px;max-width:90ch;}
+body:has(#odyssey) .earth-imagery-credit a{text-decoration:underline;text-underline-offset:3px;color:#b5c7d5;}
