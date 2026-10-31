@@ -11,20 +11,26 @@ test('homepage translations (script.js + i18n-extra.js), editorialText, HOME_TIT
   const scriptJs = read('script.js');
   const transMatch = scriptJs.match(/const translations = (\{[\s\S]*?\n\});/);
   const donMatch = scriptJs.match(/const donationNav = (\{[\s\S]*?\n\});/);
+  const newsMatch = scriptJs.match(/const navNewsLabels = (\{[\s\S]*?\n\});/);
   const editMatch = scriptJs.match(/const editorialText=(\{[\s\S]*?\n\});/);
   const titlesMatch = scriptJs.match(/const HOME_TITLES = (\{[\s\S]*?\n\});/);
-  assert.ok(transMatch && donMatch && editMatch && titlesMatch, 'script.js must define translations, donationNav, editorialText, and HOME_TITLES');
+  assert.ok(transMatch && donMatch && newsMatch && editMatch && titlesMatch, 'script.js must define translations, donationNav, navNewsLabels, editorialText, and HOME_TITLES');
 
   const ctx = { window: {} };
   vm.runInNewContext(read('i18n-extra.js'), ctx);
   const translations = vm.runInNewContext('(' + transMatch[1] + ')');
   const donationNav = vm.runInNewContext('(' + donMatch[1] + ')');
+  const newsLabels = vm.runInNewContext('(' + newsMatch[1] + ')');
   const editorialText = vm.runInNewContext('(' + editMatch[1] + ')');
   const homeTitles = vm.runInNewContext('(' + titlesMatch[1] + ')');
 
   Object.assign(translations, ctx.window.AURORA_LOCALES);
   for (const [code, keys] of Object.entries(donationNav)) {
     Object.assign(translations[code], keys);
+  }
+  for (const [code, label] of Object.entries(newsLabels)) {
+    assert.ok(translations[code], `Unexpected news locale ${code}`);
+    translations[code].navNews = label;
   }
 
   const enKeys = Object.keys(translations.en).sort();
