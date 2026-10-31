@@ -178,7 +178,36 @@
  let locale=getLocale();
  document.documentElement.lang=locale;
  const valid=u=>{try{const x=new URL(u);return x.protocol==="https:"&&!x.username&&!x.password}catch{return false}};
- let items=[],loadedOk=false;
+ let items=[],loadedOk=false,embeddedPlayer=null,playbackResolver=null;
+ const translationRequested=new Set();
+ async function enhanceMedia(){
+  try{
+   const [player,playback]=await Promise.all([
+    import("/archive-inline-player.js"),import("/media-player.js")
+   ]);
+   embeddedPlayer=player;playbackResolver=playback;
+   if(loadedOk)render();
+  }catch{/* Source links always remain available. */}
+ }
+ void enhanceMedia();
+ function requestMediaTranslation(record,heading,summary,language,card){
+  if(language==="en"||record.title?.[language]&&record.summary?.[language])return;
+  const note=document.createElement("small");note.className="archive-translation-disclosure";
+  note.textContent=language==="bg"?"Оригинален английски текст · преводът не е наличен":
+    "Original English · automatic translation pending or unavailable";
+  summary.after(note);
+  const key=record.id+"/"+language;
+  if(translationRequested.has(key))return;
+  translationRequested.add(key);
+  void import("/archive-localization.js").then(m=>m.translatePublicCase(record,language))
+   .then(result=>{
+    if(!result||!card.isConnected||locale!==language)return;
+    heading.textContent=record.title?.[language]||record.title?.en||"";
+    summary.textContent=record.summary?.[language]||record.summary?.en||"";
+    note.remove();
+   }).catch(()=>{});
+ }
+
  function applyChrome(){
   locale=getLocale();
   document.documentElement.lang=locale;
@@ -206,13 +235,14 @@
    const hay=[c.title?.bg,c.title?.en,c.summary?.bg,c.summary?.en,m.title?.bg,m.title?.en,c.source?.name,c.country,c.date].filter(Boolean).join(" ").toLocaleLowerCase();
    return !search||hay.includes(search);
   });
+  embeddedPlayer?.resetArchivePlayback();
   root.replaceChildren();
   for(const {c,m} of matches){
    const card=document.createElement("article");card.className="media-entry";
    const picture=document.createElement("div");picture.className="media-entry-image";
    const img=document.createElement("img");img.loading="lazy";img.decoding="async";
-   img.src=m.type==="video"?"/assets/video-poster.svg":(/^\/assets\/[a-z0-9-]+\.webp$/.test(c.visual?.src||"")?c.visual.src:"/assets/feature-media.webp");
-   img.alt=words.illustration;
+   img.src=m.type==="video"?(playbackResolver?.resolveVideoPoster(m)||"/assets/video-poster.svg"):(/^\/assets\/[a-z0-9-]+\.webp$/.test(c.visual?.src||"")?c.visual.src:"/assets/feature-media.webp");
+   img.alt=m.type==="video"&&playbackResolver?.resolveVideoPoster(m)?"Source-published video thumbnail":words.illustration;
    const badge=document.createElement("span");badge.textContent=m.type==="video"?"VIDEO":m.type==="photo"?"▧ PHOTO":"▤ ARCHIVE";
    picture.append(img,badge);
    const body=document.createElement("div");body.className="media-entry-body";
@@ -225,7 +255,12 @@
    const dossier=document.createElement("a");dossier.href="/archive/"+encodeURIComponent(c.id);dossier.textContent=words.case;
    links.append(original,dossier);
    const caution=document.createElement("small");caution.className="media-caption";caution.textContent=words.illustration;
-   body.append(meta,heading,summary,links,caution);card.append(picture,body);root.append(card);
+   body.append(meta,heading,summary,links,caution);card.append(picture,body);
+   if(m.type==="video"&&embeddedPlayer?.addArchivePlayback){
+     embeddedPlayer.addArchivePlayback(card,m,locale,m.title?.[locale]||m.title?.en||c.title?.[locale]||c.title?.en||"Published recording");
+   }
+   root.append(card);
+   requestMediaTranslation(c,heading,summary,locale,card);
   }
   if(loadedOk)$("mediaStatus").textContent=matches.length?words.count(matches.length):words.empty;
  }
