@@ -299,7 +299,8 @@
    }
    sourceList.append(row);
   }
-  sourcePanel.hidden=citations.length<2;
+  // A case may have only a sources[] entry and no traditional primary source.
+  sourcePanel.hidden=citations.length===0||(citations.length===1&&citations[0].url===source);
 
   const authority=c.assessment_authority?
    c.assessment_authority+" · "+(t.confidence[c.assessment_confidence]||t.confidence.not_stated):"";
