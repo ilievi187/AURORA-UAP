@@ -686,10 +686,10 @@ try{
       await page.waitForFunction(()=>["photographic","fallback"].includes(document.querySelector("#odyssey")?.dataset.earthImagery),{timeout:15000});
       assert.equal(await mode.getAttribute("data-earth-imagery"),"photographic","real photographed Earth must load, not flat fallback");
       assert.equal(await mode.getAttribute("data-earth-texture"),"photo-4096");
-      assert.equal(await mode.getAttribute("data-photo-maps"),"5","day/night/cloud/specular/normal maps loaded");
+      assert.equal(await mode.getAttribute("data-photo-maps"),"7","day/night/cloud/specular and planetary maps loaded");
       const probes=await page.evaluate(async()=>Promise.all([
         "earth-day-4096.jpg","earth-night-4096.jpg","earth-clouds-1024.png",
-        "earth-specular-2048.jpg","earth-normal-2048.jpg"
+        "earth-specular-2048.jpg","moon-1024.jpg","mars-2048.jpg","saturn-2048.jpg"
       ].map(async name=>{
         const res=await fetch("/assets/earth/"+name);
         return {name,status:res.status,type:res.headers.get("content-type"),length:(await res.blob()).size};

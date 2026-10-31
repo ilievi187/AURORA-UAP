@@ -51,7 +51,7 @@ test("Native scene respects accessibility, performance, fallback and reduced mot
 });
 
 test("photo Earth resources are genuine locally hosted images with compliant credits",()=>{
- const assets=["earth-day-4096.jpg","earth-night-4096.jpg","earth-clouds-1024.png","earth-specular-2048.jpg","earth-normal-2048.jpg"];
+ const assets=["earth-day-4096.jpg","earth-night-4096.jpg","earth-clouds-1024.png","earth-specular-2048.jpg","moon-1024.jpg","mars-2048.jpg","saturn-2048.jpg"];
  for(const name of assets){
    const bytes=readFileSync(new URL("../assets/earth/"+name,import.meta.url));
    assert.ok(bytes.length>100000,"binary texture must not be placeholder: "+name);
@@ -64,7 +64,9 @@ test("photo Earth resources are genuine locally hosted images with compliant cre
  assert.match(render,/uNight/);
  assert.match(render,/uClouds/);
  assert.match(render,/uSpecular/);
- assert.match(render,/uNormal/);
+ assert.match(render,/uMoon/);
+ assert.match(render,/uMars/);
+ assert.match(render,/uSaturn/);
  assert.match(render,/root\.dataset\.earthImagery="photographic"/);
  assert.match(html,/Solar System Scope/);
  assert.match(html,/creativecommons\.org\/licenses\/by\/4\.0/);

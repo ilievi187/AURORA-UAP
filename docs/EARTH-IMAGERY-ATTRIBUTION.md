@@ -3,7 +3,7 @@
 ## Earth day, night, clouds, specular and normal maps
 
 - Files: `assets/earth/earth-day-4096.jpg`, `earth-night-4096.jpg`,
-  `earth-clouds-1024.png`, `earth-specular-2048.jpg`, `earth-normal-2048.jpg`
+  `earth-clouds-1024.png`, `earth-specular-2048.jpg`
 - **Origin of planetary maps:** Solar System Scope / INOVE, https://www.solarsystemscope.com/textures/
 - **License:** Creative Commons Attribution 4.0 International (CC BY 4.0),
   https://creativecommons.org/licenses/by/4.0/
@@ -18,3 +18,9 @@
 - The previous hand-painted polygon map remains available only as a technical
   fallback if the photographic assets fail to load.
 - No endorsement by NASA, Solar System Scope or Three.js is implied.
+
+## Other photographic bodies
+
+- `assets/earth/mars-2048.jpg`, `assets/earth/saturn-2048.jpg` — Solar System Scope / INOVE planetary maps, CC BY 4.0; redistributed through the Sanghel/solar-system-3d open texture library.
+- `assets/earth/moon-1024.jpg` — Three.js example Moon texture, credited to the Three.js example asset collection; this is an artistic visualization, not live Moon imagery.
+- The space scene is visual storytelling: apparent planet spacing and scale are artistic, not astronomically accurate.
