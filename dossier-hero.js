@@ -4,7 +4,8 @@
  "use strict";
  const $=id=>document.getElementById(id);
  let revision=0,player=null,mediaImport=null,playerModule=null,selectedMedia=null,selectedPlayback=null;
- const words=lang=>lang==="bg"?{
+ const words=lang=>{
+ const base=lang==="bg"?{
   available:"ПУБЛИКУВАН ВИДЕОЗАПИС",check:"Проверка на наличния плейър…",
   play:"▶ ГЛЕДАЙ ОРИГИНАЛНОТО ВИДЕО",close:"Затвори видеото",
   original:"Оригинален източник ↗",notSupported:"Видеозаписът е достъпен при оригиналния издател, но не може да се възпроизведе директно тук.",
@@ -19,6 +20,20 @@
   iframe:"Player loaded. If the publisher blocks playback, open the original source.",
   error:"Video cannot load here. Open the original source."
  };
+ const copy=playerModule?.mediaWordsFor?.(lang);
+ return copy?{...base,
+  available:copy.fallbackTitle.toUpperCase(),
+  check:copy.iframeLoading,
+  play:"▶ "+copy.play.toUpperCase(),
+  close:copy.close,
+  original:copy.original+" ↗",
+  notSupported:copy.iframeError,
+  loading:copy.videoLoading,
+  ready:copy.videoReady,
+  iframe:copy.iframeReady,
+  error:copy.videoError
+ }:base;
+ };
  const safeUrl=u=>{try{const x=new URL(u);return x.protocol==="https:"&&!x.username&&!x.password&&!x.port?x.href:null}catch{return null}};
  const title=(value,lang)=>typeof value==="string"?value:typeof value==="object"?value?.[lang]||value?.en||value?.bg||"":""; 
  function stop(){
@@ -30,7 +45,7 @@
   $("caseHeroClose").hidden=true;
  }
  async function render({caseRecord,lang}){
-  revision++;const token=revision,w=words(lang);
+  revision++;const token=revision;let w=words(lang);
   stop();selectedMedia=null;selectedPlayback=null;
   const box=$("caseVisual"),img=$("caseVisualImage"),caption=$("caseVisualCaption");
   const hero=$("caseHeroPlayback"),button=$("caseHeroPlay"),close=$("caseHeroClose");
@@ -46,7 +61,7 @@
   }
   box.hidden=false;box.classList.add("case-visual-video");
   img.hidden=true;caption.hidden=true;hero.hidden=false;
-  button.hidden=true;close.hidden=true;
+  button.hidden=true;close.hidden=true;close.textContent=w.close+" ×";close.setAttribute("aria-label",w.close);
   $("caseHeroKicker").textContent=w.available;
   status.textContent=w.check;
   const first=videos[0],source=safeUrl(first.url);
@@ -56,6 +71,10 @@
    const module=await mediaImport;
    if(token!==revision)return;
    playerModule=module;
+   w=words(lang);
+   $("caseHeroKicker").textContent=w.available;
+   close.textContent=w.close+" ×";close.setAttribute("aria-label",w.close);
+   link.textContent=w.original;status.textContent=w.check;
    const candidates=videos.map(media=>({media,playback:module.resolveMediaPlayback(media)})).filter(x=>x.playback);
    if(!candidates.length){
     status.textContent=w.notSupported;
