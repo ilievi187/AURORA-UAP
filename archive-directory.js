@@ -1,5 +1,6 @@
 import {resolveMediaPlayback} from "./media-player.js";
 import {addArchivePlayback,resetArchivePlayback} from "./archive-inline-player.js";
+import {translatePublicCase,translationDisclosure,isFullTranslation} from "./archive-localization.js";
 // 10 records per page; 101 published dossiers provide 11 navigable pages.
 const PAGE_SIZE=10,$=id=>document.getElementById(id),storageKey="aurora-lang";
 const supported=new Set(["bg","en","de","ru","zh-CN","fr","es","it","pt","tr","ro","el","sr","uk","pl","ar","ja","ko"]);
@@ -55,12 +56,26 @@ const el=(tag,cl,txt)=>{
 };
 function card(r){
  const article=el("article","archive-card");
+ article.dataset.caseId=r.id;
  const top=el("div","card-top");
  top.append(el("span","card-meta",(r.date&&r.date!=="undated"?r.date:T().undated)+" · "+(local(r.city)||r.country||T().unknown)));
  top.append(el("span","card-status",r.publisher_assessment||r.status||"reported"));
  const title=el("h3","card-title",local(r.title));
  const summary=el("p","card-description",local(r.summary));
  article.append(top,title,summary);
+ // An English source fallback is never misrepresented as translated content.
+ if(language!=="en"&&!isFullTranslation(r,language)){
+   const disclosure=el("small","archive-translation-disclosure",translationDisclosure(language));
+   disclosure.dataset.translationDisclosure="1";
+   article.append(disclosure);
+   const renderedLang=language;
+   void translatePublicCase(r,renderedLang).then(result=>{
+     if(!result||!article.isConnected||language!==renderedLang)return;
+     title.textContent=local(r.title);
+     summary.textContent=local(r.summary);
+     if(isFullTranslation(r,renderedLang))disclosure.remove();
+   });
+ }
  const paragraphs=Array.isArray(r.story?.[language])?r.story[language]:Array.isArray(r.story?.en)?r.story.en:[];
  const detail=paragraphs.find(p=>typeof p==="string"&&p!==local(r.summary)&&p.length>95);
  if(detail)article.append(el("p","card-context",detail.slice(0,350)+(detail.length>350?"…":"")));
