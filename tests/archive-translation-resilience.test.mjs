@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import {onRequestGet,translatePublishedCase} from "../functions/api/archive-translation.js";
-import {isFullTranslation,translatePublicCase} from "../archive-localization.js";
+import {isFullTranslation,isLegacyPlaceholder,translatePublicCase} from "../archive-localization.js";
 
 const baseCase=()=>({
  id:"translation-fixture-archive",
@@ -90,10 +90,25 @@ test("a native full translation needs no AI; a truncated authored story is not c
 test("existing source-authored Bulgarian case files with different paragraph counts stay native",()=>{
  const cases=JSON.parse(readFileSync(new URL("../data/cases.json",import.meta.url),"utf8")).cases;
  const authored=cases.filter(c=>Array.isArray(c.story?.bg)&&c.story.bg.length>=3&&
-  Array.isArray(c.story?.en)&&c.story.bg.length!==c.story.en.length);
+  !isLegacyPlaceholder(c,"bg")&&Array.isArray(c.story?.en)&&c.story.bg.length!==c.story.en.length);
  assert.ok(authored.length>0,"catalog includes independently authored language narratives");
  for(const c of authored)assert.equal(isFullTranslation(c,"bg",true),true,
   "do not replace authored Bulgarian prose with unrequested machine output: "+c.id);
+});
+test("legacy mixed-language catalog entries are NOT counted as translated Bulgarian text",()=>{
+ const cases=JSON.parse(readFileSync(new URL("../data/cases.json",import.meta.url),"utf8")).cases;
+ const invalid=cases.filter(c=>isLegacyPlaceholder(c,"bg"));
+ assert.ok(invalid.length>=60,"the old dataset contains many incomplete Bulgarian imports");
+ for(const c of invalid){
+  assert.equal(isFullTranslation(c,"bg",true),false,c.id);
+  assert.equal(isFullTranslation(c,"bg",false),false,c.id);
+ }
+ const directory=readFileSync(new URL("../archive-directory.js",import.meta.url),"utf8");
+ const dossier=readFileSync(new URL("../dossier.js",import.meta.url),"utf8");
+ assert.match(directory,/isLegacyPlaceholder\(r,"bg"\)/);
+ assert.match(directory,/caseText\(r,"summary"\)/);
+ assert.match(dossier,/legacyBulgarian\(c\)\?c\.story\?\.en/);
+ assert.match(dossier,/currentIsNative=Boolean/);
 });
 test("Cloudflare edge cache stores only fully translated detail and reuses summary on subsequent requests",async()=>{
  const record=baseCase(),p=provider(),saved=new Map(),pending=[];
