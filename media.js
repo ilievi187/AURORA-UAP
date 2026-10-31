@@ -232,7 +232,7 @@
  async function load(){
   applyChrome();
   try{
-   const r=await fetch("/data/cases.json",{cache:"force-cache"});if(!r.ok)throw Error("source");
+   const r=await fetch("/data/cases.json",{cache:"no-cache"});if(!r.ok)throw Error("source");
    const data=await r.json();if(!Array.isArray(data.cases))throw Error("archive");
    items=data.cases.flatMap(c=>(Array.isArray(c.media)?c.media:[])
     .filter(m=>m&&["video","documents","archive","photo"].includes(m.type)&&valid(m.url)&&/^[a-z0-9-]{3,90}$/.test(c.id))
