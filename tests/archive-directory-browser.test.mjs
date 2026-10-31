@@ -22,6 +22,9 @@ const records=[...Array.from({length:104},(_,i)=>({
  source:{name:"Test-only source",url:"https://example.org/case/"+(i+1)},
  media:[{type:"documents",url:"https://example.org/document/"+(i+1),title:{en:"Fixture document"}}]
 })),navy];
+// One synthetic legacy importer record: Bulgarian boilerplate is NOT native text.
+records[103].summary.bg="Това е случай, описан в публичния каталог; оригиналният разказ е на английски.";
+records[103].story.bg=["Следва оригиналното описание на английски.","EN · Source report not translated."];
 const fixtures={schema_version:1,cases:records};
 const mime={".html":"text/html",".js":"application/javascript",".css":"text/css",".json":"application/json",".svg":"image/svg+xml",".webp":"image/webp"};
 const server=createServer(async(req,res)=>{
@@ -139,6 +142,22 @@ try{
     assert.ok((await card.locator(".archive-video-play").getAttribute("aria-label")).startsWith(current.watchHere+" · "),language);
    }
    assert.equal(await page.locator("video,iframe").count(),0,"language switching must not stream video");
+   assert.deepEqual(errors,[]);
+  }finally{await ctx.close()}
+ });
+ await test("a legacy Bulgarian placeholder shows the actual English source and a visible disclosure",async()=>{
+  const ctx=await browser.newContext({viewport:{width:1180,height:850},reducedMotion:"reduce"});
+  const page=await ctx.newPage(),errors=[];
+  page.on("pageerror",e=>errors.push(e.message));
+  try{
+   await page.addInitScript(()=>localStorage.setItem("aurora-lang","bg"));
+   await page.goto("http://127.0.0.1:"+server.address().port+"/archive.html");
+   await page.waitForFunction(()=>document.querySelector("#archiveCount")?.textContent==="105");
+   await page.locator("#archiveSearch").fill("Historical fixture 104");
+   assert.equal(await page.locator(".archive-card").count(),1);
+   assert.match(await page.locator(".card-description").textContent(),/Public source linked historical observation/i);
+   assert.doesNotMatch(await page.locator(".card-description").textContent(),/е случай, описан/);
+   assert.match(await page.locator(".archive-translation-disclosure").textContent(),/английски/i);
    assert.deepEqual(errors,[]);
   }finally{await ctx.close()}
  });
