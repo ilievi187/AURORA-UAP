@@ -120,7 +120,7 @@ test("three official PURSUE recordings share a SINGLE hero player with selectabl
   assert.equal(await page.locator("#caseHeroPlaylist .case-hero-clip[aria-pressed='true']").count(),1);
   assert.equal(await page.locator("#caseHeroPoster").isVisible(),true);
   const poster=await page.locator("#caseHeroPoster").getAttribute("src");
-  assert.equal(poster,"/assets/video-poster.svg","must not fabricate incident photo");
+  assert.equal(poster,"/assets/media-ufo-earth-preview.svg","AURORA artwork is still not an original incident frame");
   const before=page.url();
   await page.locator("#caseHeroPlay").click();
   const first=await page.locator("#caseHeroStage video").getAttribute("src");
