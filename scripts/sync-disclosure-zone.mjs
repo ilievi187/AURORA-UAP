@@ -3,6 +3,7 @@
 import {readFile,writeFile,rename} from "node:fs/promises";
 import {fileURLToPath} from "node:url";
 import path from "node:path";
+import {withApproximateMapAnchor} from "./approximate-case-geography.mjs";
 
 export const SOURCE_URL="https://disclosure.zone/api/cases.json";
 export const SOURCE_NAME="disclosure.zone";
@@ -110,7 +111,7 @@ export function normalizeCase(row){
   return null;
  }).filter(Boolean).slice(0,30);
  const safeSourceName=SOURCE_NAME+" · "+SOURCE_LICENSE;
- return {
+ return withApproximateMapAnchor({
   id:"disclosure-"+row.id,
   date,date_precision:precision,
   lat,lng,location_precision:locationOk?
@@ -133,7 +134,7 @@ export function normalizeCase(row){
    source_record_id:row.id,license:SOURCE_LICENSE,source_kind:"licensed secondary case compilation",
    automated:true,coordinates_policy:locationOk?"publisher-locality-anchor":"not available",
    verification:"source-attributed; not independently confirmed"}
- };
+ });
 }
 export function buildArchive(existing,source){
  if(!existing||!Array.isArray(existing.cases))throw Error("Invalid existing case archive");

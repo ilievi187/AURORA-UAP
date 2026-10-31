@@ -5,6 +5,8 @@ on:
     paths:
       - 'scripts/sync-open-case-archive.mjs'
       - 'scripts/sync-disclosure-zone.mjs'
+      - 'scripts/approximate-case-geography.mjs'
+      - 'tests/approximate-case-geography.test.mjs'
       - 'tests/disclosure-zone-sync.test.mjs'
       - '.github/workflows/auto-case-archive.yml'
   pull_request:
@@ -34,7 +36,7 @@ jobs:
       - name: Test archive workflow publication safety
         run: node --test tests/archive-workflow-safety.test.mjs
       - name: Test archive importer using deterministic offline fixtures
-        run: node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs tests/disclosure-zone-sync.test.mjs
+        run: node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs tests/disclosure-zone-sync.test.mjs tests/approximate-case-geography.test.mjs
       - name: Validate live import in an isolated temporary copy without publication
         run: |
           tmp="$(mktemp -d)"
@@ -42,6 +44,7 @@ jobs:
           mkdir -p "$tmp/scripts" "$tmp/data"
           cp scripts/sync-open-case-archive.mjs "$tmp/scripts/"
           cp scripts/sync-disclosure-zone.mjs "$tmp/scripts/"
+          cp scripts/approximate-case-geography.mjs "$tmp/scripts/"
           cp data/cases.json "$tmp/data/"
           node "$tmp/scripts/sync-open-case-archive.mjs"
           node "$tmp/scripts/sync-disclosure-zone.mjs"
@@ -50,7 +53,7 @@ jobs:
 
       - name: Validate updated archive and static site contracts
         run: |
-          node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs tests/disclosure-zone-sync.test.mjs
+          node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs tests/disclosure-zone-sync.test.mjs tests/approximate-case-geography.test.mjs
           git diff --check
 
   publish-scheduled-main-archive:
@@ -70,14 +73,14 @@ jobs:
         with:
           node-version: '22'
       - name: Test archive importer using deterministic offline fixtures
-        run: node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs tests/disclosure-zone-sync.test.mjs
+        run: node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs tests/disclosure-zone-sync.test.mjs tests/approximate-case-geography.test.mjs
       - name: Fetch approved, attributed first case dataset
         run: node scripts/sync-open-case-archive.mjs
       - name: Fetch CC BY worldwide case metadata without publishing private reports
         run: node scripts/sync-disclosure-zone.mjs
       - name: Validate updated archive and static site contracts
         run: |
-          node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs tests/disclosure-zone-sync.test.mjs tests/auto-archive-sync.test.mjs
+          node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs tests/disclosure-zone-sync.test.mjs tests/approximate-case-geography.test.mjs tests/auto-archive-sync.test.mjs
           git diff --check
       - name: Commit verified archive snapshot
         run: |

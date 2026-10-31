@@ -46,6 +46,7 @@
 .world-map-surface canvas{position:absolute;inset:0}
 .world-map-pins{pointer-events:none}
 .world-map-marker{position:absolute;display:grid;place-items:center;width:15px;height:15px;min-width:15px;padding:0;border:1px solid #08252d;border-radius:50%;background:#8dfcdd;color:#05252b;box-shadow:0 0 0 4px #7beddb25,0 0 14px #a3fff7bb;pointer-events:auto;cursor:pointer;font:700 10px/1 Inter,"Segoe UI",sans-serif;transition:background-color .15s,box-shadow .15s,scale .15s}
+.world-map-marker.is-approximate{width:20px;height:20px;border:1px dashed #ffe5a4;background:#50442b;color:#ffdd8b;box-shadow:0 0 0 4px #ffda8440,0 0 12px #ffca7666;font-size:14px}
 .world-map-marker.is-cluster{width:32px;height:32px;border:1px solid #c6fff2;background:#0c3948;color:#eafffb;box-shadow:0 0 0 5px #7beddb35,0 0 16px #a3fff766;font-size:12px}
 .world-map-marker[aria-pressed="true"],.world-map-marker:hover,.world-map-marker:focus-visible{background:#fff;color:#062229;box-shadow:0 0 0 6px #a0ffe54d,0 0 23px #a3ffff;scale:1.16;outline:2px solid #eafffb;outline-offset:3px;z-index:5}
 .world-map-marker.is-cluster[aria-pressed="true"],.world-map-marker.is-cluster:hover,.world-map-marker.is-cluster:focus-visible{background:#a7fff0}

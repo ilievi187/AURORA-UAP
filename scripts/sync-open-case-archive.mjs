@@ -3,6 +3,7 @@
 import {readFile, writeFile, rename} from "node:fs/promises";
 import {fileURLToPath} from "node:url";
 import path from "node:path";
+import {withApproximateMapAnchor} from "./approximate-case-geography.mjs";
 
 export const SOURCE_URL="https://www.uap-archive.org/uap/data/cases.json";
 export const SOURCE_NAME="UAP Records Archive";
@@ -90,7 +91,7 @@ export function normalizeCase(row){
  if(!media.length)media.push({type:"archive",title:{en:"Open source case catalog",bg:"Отворен каталог на случаите"},url:sourcePage});
  const english=safeText(row.card?.en?.apparent,450);
  const assessment=safeText(row.card?.en?.assessed||row.card?.en?.status,300);
- return {
+ return withApproximateMapAnchor({
   id:"uap-archive-"+row.id, date,date_precision:precision,
   lat:null,lng:null,location_precision:"Coordinates not published in the source case metadata",
   category:"other",status,country,city:{en:location,bg:location},
@@ -108,7 +109,7 @@ export function normalizeCase(row){
     source_kind:"published public government records",automated:true},
   assessment_authority:row.kind==="aaro-resolved"?"AARO (as reproduced by source)":"",
   visual:null
- };
+ });
 }
 export function buildArchive(existing,source){
  if(!Array.isArray(existing?.cases))throw Error("Invalid current case archive");
