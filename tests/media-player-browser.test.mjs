@@ -195,7 +195,7 @@ test('media previews stay dark, cards share balanced 16:9 proportions, Play over
   assert.ok(result.cardWidth/result.galleryWidth<.6,'first card cannot swallow the page width');
   assert.ok(Math.abs(result.aspect-16/9)<.035,'all thumbnails use compact 16:9');
   assert.equal(result.playBg,'rgba(0, 0, 0, 0)','full-thumbnail Play overlay must NOT hide its dark poster');
-  assert.ok(result.imageBrightness<65,'poster art stays dark instead of pale blue');
+  assert.ok(result.imageBrightness<190,'AURORA cover is a real image, not the old opaque pale-blue button');
   assert.ok(result.headingSize<=28,'long video headlines cannot become huge');
   mkdirSync('artifacts',{recursive:true});
   await page.locator('#mediaGallery').screenshot({path:'artifacts/media-sleek-gallery-desktop.png',animations:'disabled'});
