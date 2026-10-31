@@ -290,7 +290,36 @@ async function fetchPublisherHeadlines(edition,fetcher=fetch,timeoutMs=NEWS_REQU
   return {status:"unavailable",checked:[],failed:[],count:0,items:[]};
  }
 }
-async function getRawNews({request,ctx,fetcher=fetch,catalogFetcher=fetch,timeoutMs=NEWS_REQUEST_TIMEOUT_MS,skipStaleFallback=false}){
+const STATIC_NEWS_SNAPSHOT_MAX_AGE_MS=14*24*60*60*1000;
+// Pages' edge Cache API is POP-local: a new visitor or cold POP may have no
+// cached headlines even when another edge has recently shown real articles.
+// Read an explicitly dated, repository-reviewed historical snapshot ONLY when
+// both live source lanes and the normal last-good cache have failed.
+async function readStaticNewsSnapshot(request,edition,assets){
+ if(!assets||typeof assets.fetch!=="function")return null;
+ try{
+  const url=new URL("/data/news-last-good.json",request.url);
+  const response=await assets.fetch(new Request(url.toString()));
+  if(!response.ok)return null;
+  const payload=await response.json();
+  if(payload?.schema_version!==1||!(/^\d{4}-\d{2}-\d{2}$/).test(payload.checked_on||""))return null;
+  const checked=Date.parse(payload.checked_on+"T00:00:00.000Z");
+  if(!Number.isFinite(checked)||checked>Date.now()||Date.now()-checked>STATIC_NEWS_SNAPSHOT_MAX_AGE_MS)return null;
+  const rows=payload.editions?.[edition];
+  if(!Array.isArray(rows)||rows.length<2||rows.length>200)return null;
+  const items=[];
+  for(const item of rows){
+   if(typeof item.title!=="string"||!item.title.trim()||typeof item.source!=="string"||!item.source.trim()||
+      typeof item.url!=="string"||typeof item.published!=="string")return null;
+   let u;try{u=new URL(item.url)}catch{return null}
+   if(u.protocol!=="https:"||u.username||u.password||u.port||!Number.isFinite(Date.parse(item.published)))return null;
+   items.push({title:item.title.slice(0,280),source:item.source.slice(0,100),
+    url:u.href,published:item.published,language:typeof item.language==="string"?item.language:"en"});
+  }
+  return {checked_at:new Date(checked).toISOString(),items};
+ }catch{return null}
+}
+async function getRawNews({request,ctx,fetcher=fetch,catalogFetcher=fetch,timeoutMs=NEWS_REQUEST_TIMEOUT_MS,skipStaleFallback=false,assets=null}){
  const edition=new URL(request.url).searchParams.get("edition")||"global";
  if(!Object.hasOwn(EDITIONS,edition))return Response.json({error:"invalid_edition"},{status:400});
  const key=new Request("https://aurora-cache.invalid/news/fresh/"+NEWS_CACHE_REVISION+"/"+edition);
@@ -306,7 +335,7 @@ async function getRawNews({request,ctx,fetcher=fetch,catalogFetcher=fetch,timeou
     const payload=await saved.clone().json();
     const age=Date.now()-Date.parse(payload.updated_at);
     if(age>=0&&age<FALLBACK_AGE*1000&&Array.isArray(payload.items)&&payload.items.length>=MIN_STALE_ITEMS){
-     ctx.waitUntil(getRawNews({request,ctx,fetcher,catalogFetcher,timeoutMs,skipStaleFallback:true}).catch(()=>{}));
+     ctx.waitUntil(getRawNews({request,ctx,fetcher,catalogFetcher,timeoutMs,skipStaleFallback:true,assets}).catch(()=>{}));
      return Response.json({...payload,status:"cached",last_attempt:{status:"refreshing",at:new Date().toISOString(),count:0,items:[],diagnostics:null}},{headers:{
       "Cache-Control":"no-store","X-Content-Type-Options":"nosniff"
      }});
@@ -375,6 +404,14 @@ async function getRawNews({request,ctx,fetcher=fetch,catalogFetcher=fetch,timeou
   if(cache&&ctx?.waitUntil)ctx.waitUntil(cache.put(key,out.clone()).catch(()=>{}));
   return out;
  }
+ const historical=await readStaticNewsSnapshot(request,edition,assets);
+ if(historical){
+  return Response.json({status:"cached",edition,updated_at:historical.checked_at,
+   count:historical.items.length,items:historical.items,
+   cache_source:"dated_publisher_snapshot",
+   last_attempt:{status:"unavailable",at:new Date().toISOString(),count:0,items:[],diagnostics}
+  },{headers:{"Cache-Control":"no-store","X-Content-Type-Options":"nosniff"}});
+ }
  return Response.json({status:"unavailable",error:"news_source_unavailable",items:[],diagnostics},{status:503,headers:{"Cache-Control":"no-store"}});
 }
 
@@ -386,7 +423,7 @@ export async function onRequestGet({request,env,ctx,fetcher=fetch,catalogFetcher
  const offsetValue=u.searchParams.get("offset")||"0";
  if(!/^(0|[1-9]\d{0,2})$/.test(offsetValue)||Number(offsetValue)>192||Number(offsetValue)%PAGE_SIZE!==0)
   return Response.json({error:"invalid_translation_offset"},{status:400});
- const original=await getRawNews({request,ctx,fetcher,catalogFetcher,timeoutMs});
+ const original=await getRawNews({request,ctx,fetcher,catalogFetcher,timeoutMs,assets:env?.ASSETS});
  if(lang===null||original.status!==200)return original;
  const data=await original.clone().json(),offset=Number(offsetValue);
  if(!Array.isArray(data.items))return original;

@@ -601,3 +601,70 @@ test("AI translation handles 18 locales, bounds calls and fails open",async()=>{
  assert.equal(missing.translation.status,"unavailable");
  assert.equal(missing.items[0].title,items[0].title);
 });
+
+
+test("cold Cloudflare edge serves explicit dated source-backed snapshot when both feed lanes fail",async()=>{
+ const stamp=new Date().toISOString().slice(0,10);
+ const payload={schema_version:1,checked_on:stamp,editions:{global:[
+  {title:"Sourced UAP article one",source:"Publisher One",url:"https://publisher.example/one",published:stamp,language:"en"},
+  {title:"Sourced UAP article two",source:"Publisher Two",url:"https://publisher.example/two",published:stamp,language:"en"}
+ ]}};
+ let requested=0;
+ const ASSETS={async fetch(request){requested++;assert.match(request.url,/\/data\/news-last-good\.json$/);return Response.json(payload)}};
+ const response=await newsRoute({
+  request:new Request("https://aurorauap.org/api/news?edition=global&lang=bg&offset=0"),
+  env:{ASSETS},
+  fetcher:async()=>{throw new TypeError("Google blocked")},
+  catalogFetcher:async()=>{throw new TypeError("Publisher feeds blocked")}
+ });
+ assert.equal(response.status,200);
+ assert.equal(response.headers.get("cache-control"),"no-store");
+ const data=await response.json();
+ assert.equal(requested,1);
+ assert.equal(data.status,"cached");
+ assert.equal(data.cache_source,"dated_publisher_snapshot");
+ assert.equal(data.count,2);
+ assert.equal(data.items[0].url,"https://publisher.example/one");
+ assert.equal(data.items[1].source,"Publisher Two");
+ assert.equal(data.last_attempt.status,"unavailable");
+ assert.equal(data.translation.status,"unavailable","unavailable AI must not fabricate translations");
+ assert.equal(data.items[0].translated_title,undefined);
+});
+
+test("cold edge snapshot is never served if stale, invalid, mixed-content or wrong edition",async()=>{
+ const stamp=new Date(Date.now()-16*24*3600000).toISOString().slice(0,10);
+ const newer=new Date().toISOString().slice(0,10);
+ const base={schema_version:1,checked_on:stamp,editions:{global:[
+  {title:"Historic UAP one",source:"Publisher One",url:"https://publisher.example/one",published:newer},
+  {title:"Historic UAP two",source:"Publisher Two",url:"https://publisher.example/two",published:newer}
+ ]}};
+ const failures=[
+  base,
+  {...base,checked_on:newer,editions:{global:base.editions.global.map((x,i)=>i?{...x,url:"http://insecure.example/"}:x)}},
+  {...base,checked_on:newer,editions:{official:base.editions.global}},
+  {...base,checked_on:newer,editions:{global:[base.editions.global[0]]}}
+ ];
+ for(const fixture of failures){
+  const response=await newsRoute({
+   request:new Request("https://aurorauap.org/api/news?edition=global"),
+   env:{ASSETS:{async fetch(){return Response.json(fixture)}}},
+   fetcher:async()=>{throw new Error("blocked")},
+   catalogFetcher:async()=>{throw new Error("blocked")}
+  });
+  assert.equal(response.status,503);
+  assert.equal((await response.json()).error,"news_source_unavailable");
+ }
+});
+
+test("live source success takes precedence over historical asset snapshot",async()=>{
+ let assetsRead=0;
+ const response=await newsRoute({
+  request:new Request("https://aurorauap.org/api/news?edition=global"),
+  env:{ASSETS:{async fetch(){assetsRead++;return Response.json({})}}},
+  fetcher:async()=>textResponse(xml),
+  catalogFetcher:async()=>textResponse("<rss><channel></channel></rss>")
+ });
+ assert.equal(response.status,200);
+ assert.equal(assetsRead,0,"static fallback must never override live publisher data");
+ assert.equal((await response.json()).status,"live");
+});
