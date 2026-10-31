@@ -352,7 +352,7 @@
     }
   }
   async function useLegacyArchive(){
-    const response=await fetch("/data/cases.json",{cache:"force-cache"});
+    const response=await fetch("/data/cases.json",{cache:"no-cache"});
     if(!response.ok)throw Error("Worldwide archive not available");
     const dataset=await response.json();
     const sourceCases=Array.isArray(dataset.cases)?dataset.cases:[];
