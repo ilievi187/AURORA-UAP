@@ -2,11 +2,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 import { resolve, join, sep, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
+// Legacy globe/navigation suites intentionally use the 15 curated editorial fixtures.
+// The full licensed multi-provider archive is verified in archive-directory tests.
+const curatedArchive=(()=>{const {cases,...meta}=JSON.parse(readFileSync(new URL('../data/cases.json',import.meta.url)));return JSON.stringify({...meta,cases:cases.filter(c=>!c.provenance?.automated)});})();
 const types = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.js': 'application/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8',
@@ -30,6 +34,7 @@ let statsIncludesDemo = false;
 const caseOffsets = [];
 const server = createServer(async (request, response) => {
   const url = new URL(request.url || '/', 'http://127.0.0.1');
+  if(url.pathname==='/data/cases.json'){response.writeHead(200,{'content-type':'application/json'}).end(curatedArchive);return;}
   if (url.pathname === '/api/stats') {
     if (statsFailure) {
       response.writeHead(503, { 'content-type': 'application/json' }).end(JSON.stringify({ error: 'database_unavailable' }));
