@@ -169,6 +169,21 @@ test('one source-safe Play control per playable card, no stacked or modal launch
  }finally{await context.close()}
 });
 
+test('clicking anywhere in a playable thumbnail activates the embedded player',async()=>{
+ const {context,page,errors}=await openMediaPage();
+ try{
+  const card=page.locator('#mediaGallery article').filter({hasText:'YouTube fixture case'});
+  const poster=card.locator('.media-entry-image'),button=card.locator('.media-inline-play');
+  const rect=await poster.boundingBox(),hit=await button.boundingBox();
+  assert.ok(rect&&hit);
+  assert.ok(Math.abs(rect.width-hit.width)<3,'the Play target covers the thumbnail');
+  await button.click({position:{x:12,y:12}});
+  assert.equal(await card.locator('iframe').count(),1,'clicking the thumbnail corner starts one embedded player');
+  assert.equal(await page.locator('#mediaGallery iframe').count(),1);
+  assert.deepEqual(errors,[]);
+ }finally{await context.close()}
+});
+
 test('Vimeo opens in the thumbnail with publisher source fallback and close unloads it', async()=>{
  const {context,page,errors}=await openMediaPage();
  try{
