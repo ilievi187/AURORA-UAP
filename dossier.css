@@ -192,7 +192,7 @@ body[data-aurora-page="dossier"] #caseDocumentClose{
  font:10px/1.4 ui-monospace,monospace;
 }
 body[data-aurora-page="dossier"] #caseDocumentClose:hover{background:#204154}
-body[data-aurora-page="dossier"] #caseDocumentFrame{
+body[data-aurora-page="dossier"] .case-document-frame{
  display:block!important;max-width:100%;width:100%;height:clamp(420px,70vh,780px);
  background:#f5f6f6;border:0;
 }
@@ -208,7 +208,7 @@ body[data-aurora-page="dossier"] .case-document-caption a{
  background:#10202b;padding:10px 13px;color:#cfecfa;
 }
 @media(max-width:650px){
- body[data-aurora-page="dossier"] #caseDocumentFrame{height:min(72vh,620px)}
+ body[data-aurora-page="dossier"] .case-document-frame{height:min(72vh,620px)}
  body[data-aurora-page="dossier"] .case-document-toolbar{align-items:flex-start}
  body[data-aurora-page="dossier"] #caseDocumentClose{font-size:9px}
 }
