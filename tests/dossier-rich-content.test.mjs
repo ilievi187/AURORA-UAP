@@ -55,3 +55,16 @@ test("DVIDS exception remains narrowly scoped; players load only on deliberate c
  assert.match(page,/id="caseMediaGrid"/);
  assert.match(read("dossier.css"),/case-video-frame/);
 });
+
+
+test("official DVIDS Al Taqaddum recording is real in-page source media, not a fake badge",()=>{
+ const c=cases.find(x=>x.id==="al-taqaddum-2017");
+ assert.ok(c);
+ const m=c.media.find(x=>x.type==="video");
+ const playback=resolveMediaPlayback(m);
+ assert.equal(playback?.kind,"iframe");
+ assert.equal(playback?.provider,"dvids");
+ assert.equal(playback?.embedUrl,"https://www.dvidshub.net/video/embed/960331");
+ assert.equal(playback?.originalUrl,"https://www.dvidshub.net/video/960331/al-taqaddum-object");
+ assert.equal(resolveMediaPlayback({type:"video",url:"https://www.dvidshub.net/video/12345/other"}),null);
+});
