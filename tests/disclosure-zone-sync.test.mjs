@@ -111,3 +111,22 @@ test("archived reviewed records remain untouched in repository",()=>{
   assert.deepEqual(original,c,c.id+" should not change");
  }
 });
+
+
+test("published official DVIDS source links become in-page playable video references, not copied footage",()=>{
+ const url="https://www.dvidshub.net/video/1023397/dow-uap-pr135-unresolved-uap-report-middle-east-2025";
+ const item=normalizeCase(row("six-spheres-2025",{sources:[
+  {tier:"T1",url,label:{en:"Official AARO six spheres footage"}},
+  {tier:"T1",url:"https://publisher.example/article",label:{en:"Separate article"}},
+  {tier:"T2",url:"https://www.dvidshub.net/video/invalid",label:{en:"Invalid player URL"}}
+ ]}));
+ const video=item.media.find(m=>m.type==="video");
+ assert.ok(video,"official video must be exposed in the case");
+ assert.equal(video.url,url);
+ assert.equal(video.playback.mode,"provider_embed");
+ assert.equal(video.playback.provider,"dvids");
+ assert.equal(video.playback.permission,"public_embed");
+ assert.equal(video.playback.source_url,url);
+ assert.equal(item.media.length,1,"articles are not falsely labeled playable video");
+ assert.equal(item.sources.length,3,"all original public sources remain cited");
+});
