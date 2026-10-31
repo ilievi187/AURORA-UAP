@@ -86,6 +86,34 @@ try{
    assert.deepEqual(errors,[]);
   }finally{await ctx.close()}
  });
+ await test("real Play on an archive thumbnail mounts inline video without leaving the page",async()=>{
+  const ctx=await browser.newContext({viewport:{width:1180,height:850},reducedMotion:"reduce"});
+  const page=await ctx.newPage(),errors=[];
+  page.on("pageerror",e=>errors.push(e.message));
+  try{
+   await page.addInitScript(()=>localStorage.setItem("aurora-lang","bg"));
+   await page.route("https://upload.wikimedia.org/**",route=>route.abort("failed"));
+   await page.goto("http://127.0.0.1:"+server.address().port+"/archive.html");
+   await page.waitForFunction(()=>document.querySelector("#archiveCount")?.textContent==="105");
+   await page.locator("#archiveMedia").selectOption("playable");
+   assert.equal(await page.locator(".archive-card").count(),1);
+   const card=page.locator(".archive-card").first();
+   assert.equal(await card.locator(".archive-video-play").count(),1);
+   assert.equal(await card.locator(".archive-video-thumb").count(),1);
+   assert.equal(await page.locator("video,iframe").count(),0,"never load video before click");
+   const before=page.url();
+   await card.locator(".archive-video-play").click();
+   assert.equal(await card.locator("video").count(),1);
+   assert.match(await card.locator("video").getAttribute("src"),/FLIR1_Official_UAP_Footage/);
+   assert.equal(await card.locator("video").getAttribute("controls"),"");
+   assert.equal(await card.locator("video").getAttribute("autoplay"),null);
+   assert.equal(page.url(),before,"watch in AURORA instead of redirecting");
+   await card.locator(".archive-video-close").click();
+   assert.equal(await card.locator("video").count(),0,"closing unloads the actual media stream");
+   assert.equal(await card.locator(".archive-video-thumb").isVisible(),true);
+   assert.deepEqual(errors,[]);
+  }finally{await ctx.close()}
+ });
  await test("mobile case pages remain responsive, include no fake video controls and preserve 18 languages",async()=>{
   const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:"reduce"});
   const page=await ctx.newPage(),errors=[];

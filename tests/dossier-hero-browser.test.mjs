@@ -42,7 +42,7 @@ test("FLIR1 hero replaces misleading stock screenshot with real source-verified 
   assert.match(await page.locator("#caseHeroSource").getAttribute("href"),/^https:\/\/www\.defense\.gov\//);
   await page.locator("#caseHeroPlay").click();
   const video=page.locator("#caseHeroStage video");
-  assert.match(await video.getAttribute("src"),/^https:\/\/upload\.wikimedia\.org\/.*\.webm$/);
+  assert.match(await video.getAttribute("src"),/^https:\/\/(?:upload\.wikimedia\.org\/.*\.webm|www\.navair\.navy\.mil\/foia\/.*FLIR\.mp4)$/,"must use verified public-domain original or authorized official backup");
   assert.equal(await video.getAttribute("controls"),"");
   assert.equal(await video.getAttribute("preload"),"metadata");
   assert.equal(await video.getAttribute("autoplay"),null);
@@ -107,6 +107,36 @@ test("mobile hero fits, close unloads video and restores real Play",async()=>{
   assert.equal(await page.locator("#caseHeroPlay").evaluate(node=>document.activeElement===node),true);
   const widths=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth}));
   assert.ok(widths.scroll<=widths.client+1,"horizontal overflow: "+JSON.stringify(widths));
+  assert.deepEqual(errors,[]);
+ }finally{await ctx.close()}
+});
+
+
+test("three official PURSUE recordings share a SINGLE hero player with selectable thumbnails",async()=>{
+ const {page,ctx,errors}=await pageFor("uap-archive-northeastern-orb-sightings",{width:390,height:844});
+ try{
+  await page.locator("#caseHeroPlay").waitFor({state:"visible"});
+  assert.equal(await page.locator("#caseHeroPlaylist .case-hero-clip").count(),3);
+  assert.equal(await page.locator("#caseHeroPlaylist .case-hero-clip[aria-pressed='true']").count(),1);
+  assert.equal(await page.locator("#caseHeroPoster").isVisible(),true);
+  const poster=await page.locator("#caseHeroPoster").getAttribute("src");
+  assert.equal(poster,"/assets/video-poster.svg","must not fabricate incident photo");
+  const before=page.url();
+  await page.locator("#caseHeroPlay").click();
+  const first=await page.locator("#caseHeroStage video").getAttribute("src");
+  assert.match(first,/DOD_111764142\.mp4$/);
+  assert.equal(await page.locator("video,iframe").count(),1);
+  await page.locator("#caseHeroPlaylist .case-hero-clip").nth(1).click();
+  assert.equal(await page.locator("#caseHeroStage video").count(),0,"switching clip unloads original");
+  await page.locator("#caseHeroPlay").click();
+  const second=await page.locator("#caseHeroStage video").getAttribute("src");
+  assert.match(second,/DOD_111764148\.mp4$/);
+  assert.equal(await page.locator("video,iframe").count(),1);
+  assert.equal(page.url(),before,"AURORA playback never redirects to video host");
+  await page.locator("#caseHeroClose").click();
+  assert.equal(await page.locator("video,iframe").count(),0);
+  const widths=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth}));
+  assert.ok(widths.scroll<=widths.client+1,"playlist creates mobile overflow "+JSON.stringify(widths));
   assert.deepEqual(errors,[]);
  }finally{await ctx.close()}
 });

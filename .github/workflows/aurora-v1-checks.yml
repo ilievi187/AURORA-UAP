@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: '22'
       - name: HTML, JavaScript and accessibility smoke
-        run: node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs tests/retired-aircraft-radar.test.mjs tests/archive-pagination-playable.test.mjs tests/archive-cache-freshness.test.mjs
+        run: node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs tests/retired-aircraft-radar.test.mjs tests/archive-pagination-playable.test.mjs tests/archive-cache-freshness.test.mjs tests/inline-video-thumbnails.test.mjs
   live-public-data:
     runs-on: ubuntu-latest
     steps:

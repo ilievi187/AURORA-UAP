@@ -1,0 +1,22 @@
+name: AURORA approved video source health (read-only)
+on:
+  pull_request:
+    paths:
+      - 'scripts/check-verified-media-availability.mjs'
+      - '.github/workflows/approved-media-source-health.yml'
+      - 'data/cases.json'
+      - 'media-player.js'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-reachability:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Inspect only 1 KB of original public video source, no download
+        run: node scripts/check-verified-media-availability.mjs

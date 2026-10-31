@@ -77,13 +77,37 @@ function directPlayback(media, original) {
   const mimeType = String(playback.mime_type || '').toLowerCase();
   const extension = asset?.pathname.toLowerCase().split('.').at(-1);
   if (!asset || !DIRECT_TYPES[mimeType]?.includes(extension)) return null;
-  return {
+  const resolved = {
     kind: 'html5',
     provider: 'direct',
     mediaUrl: asset.href,
     mimeType,
-    originalUrl: original.href
+    originalUrl: original.href,
+    alternatives:(Array.isArray(playback.fallback_urls)?playback.fallback_urls:[])
+     .slice(0,3).filter(v=>{
+      const u=safeHttpsUrl(v?.url);
+      return u&&["www.navair.navy.mil","upload.wikimedia.org"].includes(u.hostname)&&
+       DIRECT_TYPES[String(v.mime_type||"").toLowerCase()]?.includes(u.pathname.toLowerCase().split(".").at(-1));
+     }).map(v=>({url:safeHttpsUrl(v.url).href,mimeType:String(v.mime_type).toLowerCase()}))
   };
+  if(!resolved.alternatives.length)delete resolved.alternatives;
+  return resolved;
+}
+
+// Stream only verified and approved sources. If a public-domain video CDN
+// rate-limits the client, switch to the authorized government original.
+export function loadVerifiedVideo(video,playback,onStatus=()=>{}){
+ if(!video||playback?.kind!=="html5")return false;
+ const queue=[playback.mediaUrl,...(playback.alternatives||[]).map(v=>v.url)];
+ let index=0;
+ video.addEventListener("error",()=>{
+  if(!video.isConnected)return;
+  if(index<queue.length-1){
+   index++;onStatus("fallback");video.src=queue[index];
+  }else onStatus("failed");
+ });
+ video.src=queue[0];
+ return true;
 }
 
 export function resolveMediaPlayback(media) {
@@ -109,6 +133,27 @@ export function resolveMediaPlayback(media) {
     return { kind: 'iframe', provider: 'dvids', embedUrl: 'https://www.dvidshub.net/video/embed/960331', originalUrl: original.href };
   }
   return directPlayback(media, original);
+}
+
+
+/**
+ * Source-safe thumbnail resolver. Returns a real provider preview only where the
+ * video platform publishes one or a separate rights-verified poster is supplied.
+ * Callers must label their own AURORA artwork as an illustration otherwise.
+ */
+export function resolveVideoPoster(media){
+ if(!media||media.type!=="video")return null;
+ const original=safeHttpsUrl(media.url);
+ if(!original)return null;
+ const youtube=youtubeId(original);
+ if(youtube)return "https://i.ytimg.com/vi/"+youtube+"/hqdefault.jpg";
+ const p=media.playback;
+ if(p?.poster_rights_status==="verified"&&p.poster_hosting_permission===true&&
+   (p.poster_rights_evidence_url&&safeHttpsUrl(p.poster_rights_evidence_url))){
+  const url=safeHttpsUrl(p.poster_url);
+  if(url&&/\.(?:jpe?g|png|webp|avif)$/i.test(url.pathname))return url.href;
+ }
+ return null;
 }
 
 const COPY = {
@@ -474,7 +519,7 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
       player.addEventListener("loadedmetadata",()=>{status.textContent=words.videoReady},{once:true});
       player.addEventListener("error",()=>{status.textContent=words.videoError},{once:true});
       stage.append(player);
-      player.src=playback.mediaUrl;
+      loadVerifiedVideo(player,playback,state=>{status.textContent=state==="fallback"?"Trying official backup video…":words.videoError});
     }
     activeInline={card,picture,stage,trigger,img,badge,close,player,status};
     close.focus();
@@ -640,7 +685,7 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
     });
     activeNode = video;
     playerHost.append(video);
-    video.setAttribute('src', playback.mediaUrl);
+    loadVerifiedVideo(video,playback,state=>{playerStatus.textContent=state==='fallback'?'Trying official backup video…':words.videoError});
   }
 
   function recordForCard(card, sourceLink) {
@@ -696,6 +741,17 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
       sourceLink.after(button);
       const picture=card.querySelector(".media-entry-image");
       if(picture){
+        const thumb=resolveVideoPoster(media),img=picture.querySelector("img");
+        if(img){
+          img.src=thumb||"/assets/video-poster.svg";
+          img.alt=thumb?
+            ("Published video thumbnail: "+title):
+            ("Decorative AURORA preview, not an original incident frame");
+        }
+        const credit=card.querySelector(".media-caption");
+        if(credit)credit.textContent=thumb?
+          "Preview from the credited video provider.":
+          "AURORA preview artwork · not an original frame from the incident.";
         const inline=documentRef.createElement("button");
         inline.type="button";inline.className="media-inline-play";
         inline.dataset.inlinePlayerAction="play";

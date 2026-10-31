@@ -58,3 +58,24 @@ footer{border-top:1px solid #255060;padding:27px 0 42px;color:#86abb6;font:11px 
 @media(max-width:850px){.archive-results{grid-template-columns:1fr}.archive-toolbar{grid-template-columns:1fr 1fr}.archive-toolbar label:first-child{grid-column:1/-1}.archive-hero{padding-top:60px}.orbit{opacity:.45}}
 @media(max-width:500px){.archive-shell{padding:0 16px}.archive-head{gap:14px}.archive-head nav{width:100%;order:3}.archive-language{margin-left:auto}.archive-toolbar{grid-template-columns:1fr}.archive-toolbar label:first-child{grid-column:auto}.hero-meta{gap:24px}.archive-hero{padding:56px 2px 38px}.archive-page-btn{min-width:38px;padding:7px}.archive-card{padding:18px}.card-foot{align-items:stretch}.case-open{flex:1}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
+
+/* Real, first-party controlled video experience on archive case cards. */
+.archive-video-box{position:relative;display:grid;gap:7px;margin:5px 0 2px;min-width:0;background:#071c26;
+ border:1px solid #397486;border-radius:7px;overflow:hidden;isolation:isolate}
+.archive-video-thumb{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;max-height:260px;background:#041018}
+.archive-video-thumb[hidden],.archive-video-play[hidden],.archive-video-close[hidden],.archive-video-frame[hidden]{display:none!important}
+.archive-video-play{position:absolute;z-index:2;left:50%;top:calc(43% - 16px);transform:translate(-50%,-50%);
+ min-width:155px;min-height:58px;padding:10px 17px;border:2px solid #d6fff3;border-radius:40px;
+ background:#072e3ddf;color:#f1fffc;font:bold 12px/1.5 Consolas,monospace;
+ box-shadow:0 0 0 12px #39d6be24;cursor:pointer;text-shadow:0 2px 3px #031019}
+.archive-video-play:hover{background:#15566a}
+.archive-video-play:focus-visible,.archive-video-close:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.archive-video-frame{width:100%;aspect-ratio:16/9;background:#000}
+.archive-video-media{display:block;width:100%;height:100%;object-fit:contain;border:0;background:#000}
+.archive-video-close{position:absolute;z-index:3;right:8px;top:8px;min-width:38px;min-height:36px;background:#082330;
+ border:1px solid #aadbd7;color:#fff;cursor:pointer;font-size:24px;border-radius:5px}
+.archive-video-status{margin:0 9px;color:#ccf4f1;font:11px/1.5 Consolas,monospace}
+.archive-video-status:empty{display:none}
+.archive-video-credit,.archive-video-original{margin:0 10px;color:#b7d4d7;font:10px/1.6 Consolas,monospace}
+.archive-video-original{margin-bottom:10px;color:#a5fff3}

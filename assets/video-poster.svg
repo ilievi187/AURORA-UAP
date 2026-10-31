@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="t d">
+<title id="t">AURORA source video preview</title><desc id="d">Decorative video artwork, not an image from the reported event.</desc>
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#031821"/><stop offset=".58" stop-color="#123949"/><stop offset="1" stop-color="#01070d"/></linearGradient><radialGradient id="r"><stop stop-color="#2ed6c1" stop-opacity=".29"/><stop offset="1" stop-color="#2ed6c1" stop-opacity="0"/></radialGradient><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M50 0H0V50" fill="none" stroke="#64cbd0" stroke-opacity=".13"/></pattern></defs>
+<rect width="960" height="540" fill="url(#bg)"/><rect width="960" height="540" fill="url(#grid)"/>
+<circle cx="483" cy="258" r="260" fill="url(#r)"/><circle cx="483" cy="258" r="146" fill="none" stroke="#58ecdb" stroke-opacity=".30"/><circle cx="483" cy="258" r="204" fill="none" stroke="#58ecdb" stroke-opacity=".19"/><path d="M483 89V427M310 258H656" fill="none" stroke="#7ad8d1" stroke-opacity=".23"/>
+<g fill="none" stroke="#b3fff0" stroke-width="3" opacity=".58"><path d="M49 96V49H96M864 49H911V96M49 445V491H96M864 491H911V445"/></g>
+<text x="70" y="82" fill="#9ce9dd" font-family="monospace" font-size="17" letter-spacing="8">A U R O R A / M E D I A</text>
+<rect x="352" y="195" width="262" height="126" rx="19" fill="#022331" fill-opacity=".65" stroke="#97eddf" stroke-opacity=".5"/>
+<path d="M407 229H552M407 258H522M407 287H535" stroke="#a5fff0" stroke-width="8" stroke-linecap="round" opacity=".8"/>
+<text x="480" y="375" text-anchor="middle" fill="#ddfff7" font-family="monospace" font-size="23" letter-spacing="5">SOURCE FOOTAGE</text>
+<text x="480" y="413" text-anchor="middle" fill="#87b7b5" font-family="monospace" font-size="13" letter-spacing="3">PREVIEW ARTWORK • NOT AN ORIGINAL FRAME</text></svg>

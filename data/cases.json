@@ -644,7 +644,19 @@
             "en": "FBI-UAP-PR001, \"Triangle Orbs,\" Northeastern United States, 2021 — Release 03 (2026-06-12)",
             "bg": "Публикуван материал от източника"
           },
-          "url": "https://media.uap-archive.org/pursue/DOD_111764142.mp4"
+          "url": "https://media.uap-archive.org/pursue/DOD_111764142.mp4",
+          "source_name": "U.S. Department of Defense / PURSUE public release; UAP Records Archive mirror",
+          "playback": {
+            "mode": "html5",
+            "url": "https://media.uap-archive.org/pursue/DOD_111764142.mp4",
+            "mime_type": "video/mp4",
+            "rights_status": "verified",
+            "hosting_permission": true,
+            "authorization_type": "public_domain",
+            "rights_checked_at": "2026-10-31",
+            "rights_evidence_url": "https://www.uap-archive.org/uap/records/pursue-uap-imagery/",
+            "rights_evidence_ref": "USGov-PURSUE-Public-Domain-Video-2026"
+          }
         },
         {
           "type": "video",
@@ -652,7 +664,19 @@
             "en": "FBI-UAP-PR002, \"Red Orb Rotation,\" Northeastern United States, 2022 — Release 03 (2026-06-12)",
             "bg": "Публикуван материал от източника"
           },
-          "url": "https://media.uap-archive.org/pursue/DOD_111764148.mp4"
+          "url": "https://media.uap-archive.org/pursue/DOD_111764148.mp4",
+          "source_name": "U.S. Department of Defense / PURSUE public release; UAP Records Archive mirror",
+          "playback": {
+            "mode": "html5",
+            "url": "https://media.uap-archive.org/pursue/DOD_111764148.mp4",
+            "mime_type": "video/mp4",
+            "rights_status": "verified",
+            "hosting_permission": true,
+            "authorization_type": "public_domain",
+            "rights_checked_at": "2026-10-31",
+            "rights_evidence_url": "https://www.uap-archive.org/uap/records/pursue-uap-imagery/",
+            "rights_evidence_ref": "USGov-PURSUE-Public-Domain-Video-2026"
+          }
         },
         {
           "type": "video",
@@ -660,7 +684,19 @@
             "en": "FBI-UAP-PR004, \"Northeastern Orb Sighting,\" 2025 — Release 03 (2026-06-12)",
             "bg": "Публикуван материал от източника"
           },
-          "url": "https://media.uap-archive.org/pursue/DOD_111764177.mp4"
+          "url": "https://media.uap-archive.org/pursue/DOD_111764177.mp4",
+          "source_name": "U.S. Department of Defense / PURSUE public release; UAP Records Archive mirror",
+          "playback": {
+            "mode": "html5",
+            "url": "https://media.uap-archive.org/pursue/DOD_111764177.mp4",
+            "mime_type": "video/mp4",
+            "rights_status": "verified",
+            "hosting_permission": true,
+            "authorization_type": "public_domain",
+            "rights_checked_at": "2026-10-31",
+            "rights_evidence_url": "https://www.uap-archive.org/uap/records/pursue-uap-imagery/",
+            "rights_evidence_ref": "USGov-PURSUE-Public-Domain-Video-2026"
+          }
         }
       ],
       "dedup_key": "uap-records-archive:northeastern-orb-sightings",
@@ -2735,7 +2771,11 @@
             "authorization_type": "public_domain",
             "rights_checked_at": "2026-10-30",
             "rights_evidence_url": "https://commons.wikimedia.org/wiki/File:Gimbal_The_First_Official_UAP_Footage_from_the_USG_for_Public_Release.webm",
-            "rights_evidence_ref": "PD-USGov-Military-Navy-GIMBAL-2020"
+            "rights_evidence_ref": "PD-USGov-Military-Navy-GIMBAL-2020",
+            "poster_url": "https://uap-archive.org/_astro/NAVAIR_GIMBAL_video_poster.NFpek7hk_Z20MnCL.webp",
+            "poster_rights_status": "verified",
+            "poster_hosting_permission": true,
+            "poster_rights_evidence_url": "https://uap-archive.org/uap/imagery/"
           }
         }
       ],
@@ -2806,7 +2846,11 @@
             "authorization_type": "public_domain",
             "rights_checked_at": "2026-10-30",
             "rights_evidence_url": "https://commons.wikimedia.org/wiki/File:Go_Fast_Official_USG_Footage_of_UAP_for_Public_Release.webm",
-            "rights_evidence_ref": "PD-USGov-Military-Navy-GOFAST-2020"
+            "rights_evidence_ref": "PD-USGov-Military-Navy-GOFAST-2020",
+            "poster_url": "https://uap-archive.org/_astro/NAVAIR_GOFAST_video_poster.C0qP2R7j_KuikB.webp",
+            "poster_rights_status": "verified",
+            "poster_hosting_permission": true,
+            "poster_rights_evidence_url": "https://uap-archive.org/uap/imagery/"
           }
         }
       ],
@@ -3673,7 +3717,17 @@
             "authorization_type": "public_domain",
             "rights_checked_at": "2026-10-30",
             "rights_evidence_url": "https://commons.wikimedia.org/wiki/File:FLIR1_Official_UAP_Footage_from_the_USG_for_Public_Release.webm",
-            "rights_evidence_ref": "PD-USGov-Military-Navy-FLIR1-2020"
+            "rights_evidence_ref": "PD-USGov-Military-Navy-FLIR1-2020",
+            "fallback_urls": [
+              {
+                "url": "https://www.navair.navy.mil/foia/sites/g/files/jejdrs566/files/2020-04/1%20-%20FLIR.mp4",
+                "mime_type": "video/mp4"
+              }
+            ],
+            "poster_url": "https://uap-archive.org/_astro/NAVAIR_FOIA_FLIR_video_poster.B49FQurn_ZNHpcv.webp",
+            "poster_rights_status": "verified",
+            "poster_hosting_permission": true,
+            "poster_rights_evidence_url": "https://uap-archive.org/uap/imagery/"
           }
         }
       ],
