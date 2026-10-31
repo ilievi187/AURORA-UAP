@@ -43,7 +43,11 @@ export function isFullTranslation(record,language,detail=false){
  if(!detail)return true;
  const translated=record.story?.[language];
  const source=Array.isArray(record.story?.en)?record.story.en:[];
- return Array.isArray(translated)&&translated.length===source.length&&
+ // Curated Bulgarian paragraphs are authored separately and do not need to
+ // mirror the English author's paragraph boundaries. Machine output does.
+ const authoredBg=language==="bg"&&!record.translationStatus;
+ return Array.isArray(translated)&&
+  (authoredBg?translated.length>=3:translated.length===source.length)&&
   translated.every(p=>typeof p==="string"&&p.trim().length>=2&&p.length<=6000);
 }
 export async function translatePublicCase(record,language,{detail=false}={}){
