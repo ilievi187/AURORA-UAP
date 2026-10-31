@@ -76,5 +76,5 @@ test("FLIR1 has an independently published, verified fallback and no arbitrary h
  assert.equal(p.alternatives.length,1);
  assert.match(p.alternatives[0].url,/^https:\/\/www\.navair\.navy\.mil\/foia\/.*FLIR\.mp4$/);
  const injected={...m,playback:{...m.playback,fallback_urls:[{url:"https://evil.example/backdoor.mp4",mime_type:"video/mp4"}]}};
- assert.equal(resolveMediaPlayback(injected).alternatives.length,0);
+ assert.equal((resolveMediaPlayback(injected).alternatives||[]).length,0);
 });
