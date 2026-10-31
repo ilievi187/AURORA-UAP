@@ -769,7 +769,7 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
       if(picture){
         const thumb=resolveVideoPoster(media),img=picture.querySelector("img");
         if(img){
-          img.src=thumb||"/assets/hero-ufo.webp";
+          img.src=thumb||"/assets/media-ufo-earth-preview.svg";
           img.alt=thumb?
             ("Published video thumbnail: "+title):
             ("AURORA UFO artwork, not an original incident frame");
