@@ -140,7 +140,7 @@ try {
     await page.waitForSelector("#matchList a");
     assert.equal(await page.locator("#matchList a").textContent(), "Senate schedules UAP hearing");
     assert.equal(await page.locator("#matchList a").getAttribute("href"), "https://www.bbc.com/news/uap-hearing");
-    assert.match(await page.locator("#matchStatus").textContent(), /не потвърдени случаи/);
+    assert.match(await page.locator("#matchStatus").textContent(), /Отвори оригиналните публикации/);
     assert.match(await page.locator("#matchStatus").textContent(), /Не отговориха: Should Not Link/);
     await page.locator("#sourceRegion").selectOption("americas");
     await page.waitForFunction(() => document.querySelector("#matchStatus")?.textContent?.includes("Няма съвпадения"));
