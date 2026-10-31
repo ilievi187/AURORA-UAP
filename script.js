@@ -67,6 +67,28 @@ const donationNav = {
 };
 for(const [code, keys] of Object.entries(donationNav)) Object.assign(translations[code],keys);
 
+const premiumNavLabels={
+ bg:{navArchive:"Архив",navMedia:"Видео",heroArchiveCTA:"Разгледай случаите"},
+ en:{navArchive:"Archive",navMedia:"Videos",heroArchiveCTA:"Explore the cases"},
+ de:{navArchive:"Archiv",navMedia:"Videos",heroArchiveCTA:"Fälle entdecken"},
+ ru:{navArchive:"Архив",navMedia:"Видео",heroArchiveCTA:"Изучить случаи"},
+ "zh-CN":{navArchive:"档案",navMedia:"视频",heroArchiveCTA:"探索案例"},
+ fr:{navArchive:"Archives",navMedia:"Vidéos",heroArchiveCTA:"Explorer les dossiers"},
+ es:{navArchive:"Archivo",navMedia:"Vídeos",heroArchiveCTA:"Explorar los casos"},
+ it:{navArchive:"Archivio",navMedia:"Video",heroArchiveCTA:"Esplora i casi"},
+ pt:{navArchive:"Arquivo",navMedia:"Vídeos",heroArchiveCTA:"Explorar os casos"},
+ tr:{navArchive:"Arşiv",navMedia:"Videolar",heroArchiveCTA:"Vakaları keşfet"},
+ ro:{navArchive:"Arhivă",navMedia:"Video",heroArchiveCTA:"Explorează cazurile"},
+ el:{navArchive:"Αρχείο",navMedia:"Βίντεο",heroArchiveCTA:"Εξερεύνηση περιστατικών"},
+ sr:{navArchive:"Архива",navMedia:"Видео",heroArchiveCTA:"Истражи случајеве"},
+ uk:{navArchive:"Архів",navMedia:"Відео",heroArchiveCTA:"Переглянути випадки"},
+ pl:{navArchive:"Archiwum",navMedia:"Wideo",heroArchiveCTA:"Poznaj przypadki"},
+ ar:{navArchive:"الأرشيف",navMedia:"الفيديو",heroArchiveCTA:"استكشف الحالات"},
+ ja:{navArchive:"アーカイブ",navMedia:"動画",heroArchiveCTA:"事例を見る"},
+ ko:{navArchive:"아카이브",navMedia:"영상",heroArchiveCTA:"사례 살펴보기"}
+};
+for(const [locale,labels] of Object.entries(premiumNavLabels))Object.assign(translations[locale],labels);
+
 const cases = [
   {id:'m1',city:{bg:'Монтана, САЩ',en:'Montana, USA'},title:{bg:'Три светлини над гора',en:'Three lights above a forest'},description:{bg:'Илюстрация на сигнал за три синхронно движещи се светлини. Методика: проверка за дронове, самолети и перспективни ефекти.',en:'Illustrative report of three lights moving together. Research path: check drones, aircraft, and perspective effects.'},date:'2026-10-19',type:'light',video:false,px:20,py:30,img:'assets/report-triangle.webp'},
   {id:'m2',city:{bg:'Япония',en:'Japan'},title:{bg:'Дискообразен силует над море',en:'Disc-like silhouette above the sea'},description:{bg:'Примерен случай за анализ на снимка: оригинален файл, фокусно разстояние, атмосферни условия и възможни оптични ефекти.',en:'Sample image-analysis case: original file, focal length, weather conditions, and potential optical artifacts.'},date:'2026-10-17',type:'object',video:false,px:84,py:39,img:'assets/report-ocean.webp'},
@@ -149,7 +171,9 @@ function filterCases() {
   return cases.filter(c=>type==='all'||(type==='video'?c.video:c.type===type));
 }
 function renderMap(){
-  const list=filterCases(), container=$('#mapPins'); container.replaceChildren();
+  const container=$('#mapPins');
+  if(!container)return; // Sourced world atlas replaces fictional legacy demo.
+  const list=filterCases();container.replaceChildren();
   $('#visibleCount').textContent=list.length;
   if (!list.some(c=>c.id===selectedId)) {selectedId=null;$('#mapTooltip').hidden=true;}
   list.forEach(c=>{
@@ -291,7 +315,7 @@ function setup(){
   $('#reportForm').addEventListener('submit',saveReport);$('#clearDraft').addEventListener('click',clearDraft);
   $('#reportSearch').addEventListener('input',()=>{reportPageSize=24;renderReports()});
   document.querySelectorAll('input[name="mapFilter"]').forEach(x=>x.addEventListener('change',renderMap));
-  $('#tooltipRead').addEventListener('click',()=>{const c=cases.find(x=>x.id===selectedId);if(c)openCase(c);});
+  $('#tooltipRead')?.addEventListener('click',()=>{const c=cases.find(x=>x.id===selectedId);if(c)openCase(c);});
   // Leave the selected language and drafts private to the current browser.
   translate();
   loadEditorialCases();

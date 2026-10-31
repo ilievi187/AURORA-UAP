@@ -38,7 +38,8 @@ test('Javascript syntax parses without external toolchain',()=>{
 });
 
 test('visitors are never misled into thinking example cases are verified',()=>{
-  assert.match(html,/Демонстрационни локации/);
+  assert.doesNotMatch(html,/id="historicDemoMap"/,'the retired fictional map is removed');
+  assert.match(html,/id="worldAtlas"/,'sourced world atlas remains');
   assert.match(html,/нищо не се изпраща към сървър/);
   assert.match(read('payment-config.js'),/AURORA_PAYMENT_LINK\s*=\s*null/);
 });

@@ -25,6 +25,7 @@
 <link rel="stylesheet" href="/live-tools.css">
 <link rel="stylesheet" href="/world-atlas.css">
 <script defer src="/ui-locales.js"></script><script type="module" src="/world-atlas.js"></script><script defer src="/home-news.js"></script>
+<link rel="stylesheet" href="/aurora-design-refresh.css">
 </head>
 <body class="gate-open">
 <noscript><style>#languageGate{display:none!important}body.gate-open{overflow:auto}.site-shell{pointer-events:auto!important}</style></noscript>
@@ -76,11 +77,22 @@
       <span class="brand-text"><b>A U R O R A</b><small>UAP BULGARIA · RESEARCH INITIATIVE</small></span>
     </a>
     <nav class="desktop-nav" aria-label="Основна навигация">
-      <a class="active" href="#home" data-i18n="navHome">Начало</a><a href="#mission" data-i18n="navMission">Мисия</a><a href="#control" data-control-nav>Център</a><a href="#research" data-i18n="navResearch">Изследвания</a><a href="#worldAtlas" data-i18n="navMap">Карта</a><a href="/news.html" data-i18n="navNews">Новини</a><a href="#reports" data-i18n="navReports">Сигнали</a><a href="#join" data-i18n="navJoin">Участвай</a><a class="nav-donate" href="donate.html" data-i18n="navDonate">❤️ ДАРИ</a>
+      <a class="active" href="#home" data-i18n="navHome">Начало</a>
+      <a href="/archive.html" data-i18n="navArchive">Архив</a>
+      <a href="#worldAtlas" data-i18n="navMap">Карта</a>
+      <a href="/news.html" data-i18n="navNews">Новини</a>
+      <a href="/media.html" data-i18n="navMedia">Видео</a>
+      <a href="#control" data-control-nav>Център</a>
+      <a class="nav-donate" href="/donate.html" data-i18n="navDonate">Дари</a>
     </nav>
-    <div class="header-actions"><button type="button" class="gate-trigger" id="openLanguageGate" aria-label="Промени езика / Change language">LANGUAGE</button><label class="sr-only" for="langToggle">Language / Език</label><select class="lang-button lang-select" id="langToggle" aria-label="Language / Език"><option value="bg">Български</option><option value="en">English</option><option value="de">Deutsch</option><option value="ru">Русский</option><option value="zh-CN">中文</option></select><a class="join-top" href="#join"><svg class="icon"><use href="#i-users"/></svg><span data-i18n="joinButton">Включи се</span></a><button type="button" class="menu-button" id="menuToggle" aria-label="Меню / Menu" aria-expanded="false"><svg class="icon"><use href="#i-menu"/></svg></button></div>
+    <div class="header-actions"><button type="button" class="gate-trigger" id="openLanguageGate" aria-label="Промени езика / Change language">LANGUAGE</button><label class="sr-only" for="langToggle">Language / Език</label><select class="lang-button lang-select" id="langToggle" aria-label="Language / Език"><option value="bg">Български</option><option value="en">English</option><option value="de">Deutsch</option><option value="ru">Русский</option><option value="zh-CN">中文</option></select><button type="button" class="menu-button" id="menuToggle" aria-label="Меню / Menu" aria-expanded="false"><svg class="icon"><use href="#i-menu"/></svg></button></div>
   </header>
-  <nav class="mobile-nav" id="mobileNav" aria-label="Мобилна навигация" hidden><a href="#home" data-i18n="navHome">Начало</a><a href="#mission" data-i18n="navMission">Мисия</a><a href="#control" data-control-nav>Център</a><a href="#research" data-i18n="navResearch">Изследвания</a><a href="#worldAtlas" data-i18n="navMap">Карта</a><a href="/news.html" data-i18n="navNews">Новини</a><a href="#reports" data-i18n="navReports">Сигнали</a><a href="#join" data-i18n="navJoin">Участвай</a><a class="nav-donate" href="donate.html" data-i18n="navDonate">❤️ ДАРИ</a></nav>
+  <nav class="mobile-nav" id="mobileNav" aria-label="Мобилна навигация" hidden>
+    <a href="#home" data-i18n="navHome">Начало</a><a href="/archive.html" data-i18n="navArchive">Архив</a>
+    <a href="#worldAtlas" data-i18n="navMap">Карта</a><a href="/news.html" data-i18n="navNews">Новини</a>
+    <a href="/media.html" data-i18n="navMedia">Видео</a><a href="#control" data-control-nav>Център</a>
+    <a class="nav-donate" href="/donate.html" data-i18n="navDonate">Дари</a>
+  </nav>
 
   <main id="main">
   <section class="hero" aria-labelledby="hero-title">
@@ -95,8 +107,11 @@
       <div class="eyebrow" data-i18n="heroKicker">ОТВОРЕНИ ДАННИ. КРИТИЧНО МИСЛЕНЕ. НЕПОЗНАТОТО НИ ОЧАКВА.</div>
       <h1 id="hero-title"><span data-i18n="heroTitle1">ДА ИЗСЛЕДВАМЕ</span><strong data-i18n="heroTitle2">НЕОБЯСНИМОТО</strong></h1>
       <p class="hero-copy" data-i18n="heroBody">AURORA е проект на UAP Bulgaria за независимо документиране и анализ на необяснени въздушни явления — чрез факти, технологии и общност.</p>
-      <div class="hero-buttons"><a href="/report.html" class="button button-primary"><svg class="icon"><use href="#i-eye"/></svg><span data-i18n="reportButton">Подай сигнал</span><svg class="icon icon-arrow"><use href="#i-arrow"/></svg></a><a href="donate.html" class="button button-donate">❤️ <span data-i18n="navDonate">ДАРИ</span></a><a href="#research" class="button button-secondary"><svg class="icon"><use href="#i-folder"/></svg><span data-i18n="exploreButton">Виж изследванията</span></a></div>
-      <div class="tiny-rule"><span></span><small data-i18n="heroTag">ЕДНО НЕБЕ. МНОГО ВЪПРОСИ.</small></div><p style="margin:15px 0 0;font-size:13px"><a href="/news.html" style="color:#b5fffb">🌍 СВЕТОВНИ НОВИНИ ↗</a> &nbsp; · &nbsp; <a href="/archive.html" style="color:#b5fffb">🛸 100+ ДОСИЕТА / АРХИВ ↗</a></p>
+      <div class="hero-buttons">
+        <a href="/archive.html" class="button button-primary"><svg class="icon"><use href="#i-folder"/></svg><span data-i18n="heroArchiveCTA">Разгледай случаите</span><svg class="icon icon-arrow"><use href="#i-arrow"/></svg></a>
+        <a href="/news.html" class="button button-secondary"><span data-i18n="navNews">Новини</span><svg class="icon icon-arrow"><use href="#i-arrow"/></svg></a>
+      </div>
+      <div class="tiny-rule"><span></span><small data-i18n="heroTag">ЕДНО НЕБЕ. МНОГО ВЪПРОСИ.</small></div>
     </div>
     <div class="hero-side-label" aria-hidden="true">SAME<br>SKIES.<br>DIFFERENT<br>QUESTIONS.</div>
     <div class="hero-meta" aria-hidden="true"><span><i class="live-dot"></i> SCIENCE FIRST / OPEN SKIES</span><span>INDEPENDENT INITIATIVE — BULGARIA</span><strong>SCROLL TO EXPLORE ↓</strong></div>
@@ -136,7 +151,7 @@
     </section>
     <p id="worldMapState" class="home-news-state" role="status" aria-live="polite"></p>
   </section>
-  <div class="signal-ribbon" aria-hidden="true"><span>01 / THE INITIATIVE</span><span class="ribbon-line"></span><b>WE DOCUMENT. WE VERIFY. WE QUESTION.</b><span>OPEN SOURCE MINDSET · 2026</span></div>
+
 
   <section class="global-register" id="globalRegister" aria-label="Global registered UAP sightings" hidden>
     <div class="register-heading"><span>◉ / AURORA GLOBAL REGISTER</span><span id="registerHealth" role="status">D1 CONNECTION: CHECKING</span></div>
@@ -238,64 +253,19 @@
   </div>
 </section>
 
-    <section class="data-hub" id="liveData" aria-labelledby="liveDataTitle">
-    <div class="eyebrow">◉ / AURORA DATA ACCESS · REAL EXTERNAL SOURCES</div>
-    <h2 id="liveDataTitle">ИСТИНСКИ ИЗТОЧНИЦИ. РЕАЛНИ ИНСТРУМЕНТИ.</h2>
-    <p>Отвори световния архив с документирани UAP случаи, прочети актуалните новини или подготви свидетелски сигнал. Не смесваме демонстрационни случаи с реални наблюдения.</p>
-    <div class="data-hub-cards">
-      <a href="/news.html"><strong>🌍 Световни UAP новини ↗</strong><span>Динамичен поток с търсене, няколко географски източника и още резултати, а не фиксирани 10 статии. Външните публикации не са доказателство.</span></a>
-      <a href="/archive.html"><strong>🛸 Световен архив на случаите ↗</strong><span>Разгледай публичните UAP досиета по държави, с описания, видеа и проверими оригинални източници.</span></a>
-      <a href="/report.html"><strong>📝 Подготви наблюдение ↗</strong><span>Попълни, запази и експортирай сигнал. Онлайн подаването е заключено, докато реалните защити и личните данни не бъдат проверени.</span></a>
+    <section class="section mission-intro" id="mission">
+    <div class="section-heading two-col" id="research">
+      <div><div class="eyebrow" data-i18n="whatDo">КАКВО ПРАВИМ</div><h2 data-i18n="researchTitle">НАБЛЮДАВАМЕ. ПРОВЕРЯВАМЕ. ИЗСЛЕДВАМЕ.</h2></div>
+      <p data-i18n="researchIntro">За да разберем непознатото, първо изключваме познатото. Всеки сигнал заслужава уважение и внимателна проверка.</p>
     </div>
   </section>
-  <section class="section" id="mission">
-    <div class="section-heading two-col"><div><div class="eyebrow" data-i18n="whatDo">КАКВО ПРАВИМ</div><h2 data-i18n="researchTitle">НАБЛЮДАВАМЕ. ПРОВЕРЯВАМЕ. ИЗСЛЕДВАМЕ.</h2></div><p data-i18n="researchIntro">За да разберем непознатото, първо изключваме познатото. Всеки сигнал заслужава уважение и внимателна проверка.</p></div>
-    <div class="feature-grid" id="research">
-      <a href="#worldAtlas" class="feature-card"><img src="assets/feature-map.webp" alt="Карта на нощната Земя" loading="lazy"><div class="feature-content"><span class="round-icon"><svg class="icon"><use href="#i-globe"/></svg></span><div><h3 data-i18n="feature1">Карта на наблюденията</h3><p data-i18n="feature1desc">Географски преглед на постъпилите сигнали и тяхната проверка.</p></div><span class="circle-arrow"><svg class="icon"><use href="#i-arrow"/></svg></span></div></a>
-      <a href="#reports" class="feature-card"><img src="assets/feature-cases.webp" alt="Архив от изследователски папки" loading="lazy"><div class="feature-content"><span class="round-icon"><svg class="icon"><use href="#i-folder"/></svg></span><div><h3 data-i18n="feature2">Архив на случаите</h3><p data-i18n="feature2desc">Свидетелства, материали, ход на проверката и ясни заключения.</p></div><span class="circle-arrow"><svg class="icon"><use href="#i-arrow"/></svg></span></div></a>
-      <a href="#methodology" class="feature-card"><img src="assets/feature-lab.webp" alt="Изследовател анализира екран" loading="lazy"><div class="feature-content"><span class="round-icon"><svg class="icon"><use href="#i-lab"/></svg></span><div><h3 data-i18n="feature3">Изследователска лаборатория</h3><p data-i18n="feature3desc">Методика, проверки за самолети, сателити, дронове и метеори.</p></div><span class="circle-arrow"><svg class="icon"><use href="#i-arrow"/></svg></span></div></a>
-      <a href="/media.html" class="feature-card"><img src="assets/feature-media.webp" alt="Архивен запис на непознат обект" loading="lazy"><div class="feature-content"><span class="round-icon"><svg class="icon"><use href="#i-image"/></svg></span><div><h3 data-i18n="feature4">Медиен архив</h3><p data-i18n="feature4desc">Фото, видео и аудио материали с проследим произход.</p></div><span class="circle-arrow"><svg class="icon"><use href="#i-arrow"/></svg></span></div></a>
-    </div>
-  </section>
-
-  <details class="demo-archive" id="historicDemoMap"><summary>ПОКАЖИ СТАРИЯ ДЕМОНСТРАЦИОНЕН АТЛАС · учебни илюстрации, не текущи сигнали</summary>
-  <section class="map-panel" id="map">
-    <div class="map-top"><div><div class="eyebrow" data-i18n="mapKicker">ГЛОБАЛЕН МОНИТОРИНГ · ПРОТОТИП</div><h2 data-i18n="mapTitle">КАРТА НА НАБЛЮДЕНИЯТА</h2><p class="demo-disclaimer"><span class="status-dot"></span><span data-i18n="mapDisclaimer">Демонстрационни локации — НЕ са реални текущи сигнали</span></p></div><div class="map-number"><b id="visibleCount">8</b><small data-i18n="mapFiltered">показани демо случая</small></div></div>
-    <div class="map-layout">
-      <div class="map-area" id="mapArea" role="group" aria-label="Интерактивна демонстрационна карта на случаи">
-        <svg class="world-map" viewBox="0 0 1000 435" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
-          <defs><pattern id="mapGrid" width="51" height="51" patternUnits="userSpaceOnUse"><path d="M51 0H0V51" fill="none" stroke="#1b4b66" stroke-opacity=".28" stroke-width="1"/></pattern><linearGradient id="land" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0f496c"/><stop offset="1" stop-color="#07304a"/></linearGradient></defs>
-          <rect width="1000" height="435" fill="url(#mapGrid)"/>
-          <g stroke="#236b8b" stroke-width="1.1" fill="url(#land)" opacity=".79">
-            <path d="m85 80 58-31 70 9 43 14 42-5 30 23-24 30-31 5-17 39-40 14-17 34-24-14-15-44-42-16-17-27-31-5z"/>
-            <path d="m203 205 52 11 39 42 21 35-13 46-19 42-26 37-22-27 9-41-28-41-16-63z"/>
-            <path d="m310 55 60-16 31 16-8 29-32 17-31-6z"/>
-            <path d="m462 100 36-35 62 0 35-20 79 13 57-12 82 29 62 15 40 28-13 29-47 0-32 20-45-5-23 38-54-5-18 25-28-9-44 8-20-39-41-10-21-35-31 10-30-23z"/>
-            <path d="m494 215 53-16 49 26 34 36-19 71-31 49-39-12-10-42-28-42z"/>
-            <path d="m734 286 53-10 44 21 47 5 26 34-13 32-63 3-50-20-36-31z"/>
-            <path d="m914 119 23-10 15 18-12 31-19-14z"/>
-            <path d="m641 245 16-8 13 26-9 30-16-19z"/>
-          </g>
-          <g stroke="#1a6587" stroke-opacity=".3" fill="none"><ellipse cx="500" cy="220" rx="450" ry="178"/><ellipse cx="500" cy="220" rx="290" ry="178"/><path d="M0 144H1000M0 290H1000"/><path d="M500 0V435"/></g>
-          <path class="orbit-line" d="M162 135 Q 440 18 741 177 T 905 338"/><path class="orbit-line faint" d="M256 318 Q 486 112 798 302"/>
-        </svg>
-        <div id="mapPins" class="map-pins"></div>
-        <div class="map-tooltip" id="mapTooltip" hidden><span class="tooltip-tag">DEMO SIGHTING</span><strong id="tooltipName"></strong><span id="tooltipDate"></span><button type="button" id="tooltipRead"><span data-i18n="detailButton">Виж детайли</span> →</button></div>
-      </div>
-      <div class="map-filter"><div class="filter-head"><h3 data-i18n="filterTitle">ФИЛТРИ</h3><svg class="icon"><use href="#i-target"/></svg></div><label class="filter-option"><input type="radio" name="mapFilter" value="all" checked><span data-i18n="filterAll">Всички сигнали</span></label><label class="filter-option"><input type="radio" name="mapFilter" value="light"><span data-i18n="filterLights">Светлини</span></label><label class="filter-option"><input type="radio" name="mapFilter" value="object"><span data-i18n="filterObjects">Обекти</span></label><label class="filter-option"><input type="radio" name="mapFilter" value="video"><span data-i18n="filterVideo">С видео</span></label><div class="filter-sep"></div><p data-i18n="filterNote">Точките са измислени и служат само за тестване на интерфейса.</p></div>
-    </div>
-  </section>
-  </details>
-
   <section class="section reports-section" id="reports"><div class="section-heading report-heading"><div><div class="eyebrow" >СВЕТОВЕН АРХИВ</div><h2 >СЛУЧАИ ОТ СВЕТА</h2></div><div class="report-search"><svg class="icon"><use href="#i-search"/></svg><label for="reportSearch" class="sr-only">Търси случаи</label><input id="reportSearch" type="search" data-i18n-placeholder="searchPlaceholder" placeholder="Търси по град или описание..."></div></div><div class="report-grid" id="reportGrid"></div><div class="results-note" id="reportResultsNote" aria-live="polite"></div></section>
 
   <section class="methodology" id="methodology"><div><div class="eyebrow" data-i18n="methodKicker">НАШИЯТ ПОДХОД</div><h2 data-i18n="methodTitle">ЛЮБОПИТСТВО БЕЗ ПРИБЪРЗАНИ ЗАКЛЮЧЕНИЯ.</h2><p data-i18n="methodBody">Не приемаме автоматично, че необяснен обект е извънземен. Проверяваме първо конвенционални обяснения и описваме какво знаем, какво не знаем и защо.</p></div><div class="method-steps"><div><b>01</b><span data-i18n="method1">Документиране на източника</span></div><div><b>02</b><span data-i18n="method2">Проверка на обстоятелствата</span></div><div><b>03</b><span data-i18n="method3">Технически анализ</span></div><div><b>04</b><span data-i18n="method4">Публично, честно заключение</span></div></div></section>
 
-  <section class="join-section" id="join"><div class="join-scene"></div><div class="join-copy"><div class="eyebrow" data-i18n="joinKicker">СТАНИ ЧАСТ ОТ МИСИЯТА</div><h2 data-i18n="joinTitle">ОБЩНОСТ, КОЯТО ТЪРСИ ОТГОВОРИ</h2><p data-i18n="joinBody">Наблюдавай, задавай въпроси и участвай в изграждането на отворена, независима изследователска общност в България.</p></div><div class="join-actions"><div class="join-action-items"><div><svg class="icon"><use href="#i-eye"/></svg><b data-i18n="joinAct1">Подай сигнал</b><small data-i18n="joinAct1sub">Запази чернова локално</small></div><div><svg class="icon"><use href="#i-users"/></svg><b data-i18n="joinAct2">Доброволчество</b><small data-i18n="joinAct2sub">Предстояща програма</small></div><div><svg class="icon"><use href="#i-book"/></svg><b data-i18n="joinAct3">Изследвания</b><small data-i18n="joinAct3sub">Отворена методика</small></div></div><a href="/report.html" class="button button-primary button-join"><span data-i18n="joinCTA">Подготви своя сигнал</span><svg class="icon"><use href="#i-arrow"/></svg></a></div></section>
   <section class="donate-banner" id="support"><div><div class="eyebrow" data-i18n="donateKicker">ПОДКРЕПИ НЕЗАВИСИМИТЕ ИЗСЛЕДВАНИЯ</div><h2 data-i18n="donateTitle">ПОМОГНИ НИ ДА ИЗГРАДИМ AURORA.</h2><p data-i18n="donateSummary">Подкрепата ще бъде използвана за оборудване, разследвания, пътувания, софтуер, хостинг и прозрачни разходи по проекта.</p></div><a class="button button-donate donate-giant" href="donate.html"><span>❤️</span> <span data-i18n="navDonate">ДАРИ</span> <span aria-hidden="true">↗</span></a></section>
-  <div class="prototype-notice" role="status"><span class="status-dot"></span><strong data-i18n="protoLabel">ПРОТОТИП:</strong> <span data-i18n="protoNote">Организацията и платформата са в процес на подготовка. Картата и случаите са демонстрационни; няма публично подаване на данни или регистрации. Онлайн даренията ще бъдат активирани след проверка на платежния оператор.</span></div>
   </main>
-  <footer class="footer"><div class="footer-identity"><div class="brand-icon small" aria-hidden="true"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="currentColor"/><path d="M28 8 31 25 41 29 31 32 28 48 25 32 15 29 25 25z" fill="currentColor"/></svg></div><div><b>A U R O R A</b><small>UAP BULGARIA INITIATIVE</small><p data-i18n="footerSub">Да изследваме небето заедно.</p></div></div><div class="footer-links"><a href="#home" data-i18n="navHome">Начало</a><a href="#mission" data-i18n="navMission">Мисия</a><a href="#control" data-control-nav>Център</a><a href="#worldAtlas" data-i18n="navMap">Карта</a><a href="#reports" data-i18n="navReports">Сигнали</a><a href="#methodology" data-i18n="methodNav">Методика</a><a href="/countries.html">Държави / Countries</a><a href="/news.html" data-i18n="navNews">Новини</a><a href="/report.html" data-i18n="reportButton">Подай сигнал</a><a href="donate.html" data-i18n="navDonate">❤️ ДАРИ</a><button type="button" id="footerLanguageGate" class="gate-trigger gate-trigger-in-footer">LANGUAGE</button></div><small class="footer-quote">SCIENCE. TRANSPARENCY. OPEN SKIES.<span>© <span id="year">2026</span> AURORA / UAP Bulgaria · Demo</span></small></footer>
+  <footer class="footer"><div class="footer-identity"><div class="brand-icon small" aria-hidden="true"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="currentColor"/><path d="M28 8 31 25 41 29 31 32 28 48 25 32 15 29 25 25z" fill="currentColor"/></svg></div><div><b>A U R O R A</b><small>UAP BULGARIA INITIATIVE</small><p data-i18n="footerSub">Да изследваме небето заедно.</p></div></div><div class="footer-links"><a href="#home" data-i18n="navHome">Начало</a><a href="#mission" data-i18n="navMission">Мисия</a><a href="#control" data-control-nav>Център</a><a href="#worldAtlas" data-i18n="navMap">Карта</a><a href="/archive.html" data-i18n="navArchive">Архив</a><a href="#methodology" data-i18n="methodNav">Методика</a><a href="/countries.html">Държави / Countries</a><a href="/news.html" data-i18n="navNews">Новини</a><a href="/report.html" data-i18n="reportButton">Подай сигнал</a><a href="donate.html" data-i18n="navDonate">❤️ ДАРИ</a><button type="button" id="footerLanguageGate" class="gate-trigger gate-trigger-in-footer">LANGUAGE</button></div><small class="footer-quote">SCIENCE. TRANSPARENCY. OPEN SKIES.<span>© <span id="year">2026</span> AURORA / UAP Bulgaria</span></small></footer>
 </div>
 
 <dialog id="reportDialog" aria-labelledby="reportDialogTitle" class="site-dialog"><div class="dialog-inner"><div class="dialog-heading"><div><div class="eyebrow" data-i18n="dialogKicker">ДЕМОНСТРАЦИОННА ФОРМА</div><h2 id="reportDialogTitle" data-i18n="dialogTitle">Опиши наблюдението си</h2></div><button type="button" class="dialog-close" id="closeDialog" aria-label="Затвори"><svg class="icon"><use href="#i-x"/></svg></button></div><p class="dialog-explainer" data-i18n="dialogExplain">Това е демо форма. Записва черновата само в този браузър, на твоето устройство — нищо не се изпраща към сървър.</p><form id="reportForm"><div class="form-row"><label><span data-i18n="formPlace">Място / град</span><input id="fPlace" name="place" maxlength="100" autocomplete="off" required placeholder="напр. Шумен"></label><label><span data-i18n="formDate">Дата и час</span><input id="fDate" name="date" type="datetime-local" required></label></div><label><span>Държава / Country (локална чернова / local draft)</span><input id="fCountry" name="country" maxlength="2" pattern="[A-Za-z]{2}" placeholder="BG" autocomplete="off"></label><label><span data-i18n="formType">Тип наблюдение</span><select id="fType" name="type"><option value="light" data-i18n="typeLight">Светлини</option><option value="object" data-i18n="typeObject">Обект</option><option value="other" data-i18n="typeOther">Друго / не знам</option></select></label><label><span data-i18n="formDesc">Какво видя?</span><textarea id="fDescription" name="description" rows="5" minlength="15" maxlength="2500" required placeholder="Опиши посоката, времетраенето, движението и условията..."></textarea></label><div class="form-actions"><button type="button" id="clearDraft" class="button button-secondary" data-i18n="deleteDraft">Изтрий черновата</button><button type="submit" class="button button-primary"><span data-i18n="saveDraft">Запази чернова</span><svg class="icon"><use href="#i-arrow"/></svg></button></div><p class="form-response" id="formResponse" role="status" aria-live="polite"></p><p class="form-response"><a href="/report.html" id="openIntakeCenter">ЦЕНТЪР ЗА НАБЛЮДЕНИЯ / OBSERVATION CENTER ↗</a> · Реалното подаване остава изключено до завършване на проверките.</p></form></div></dialog>
