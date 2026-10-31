@@ -39,7 +39,8 @@ export function translationDisclosure(language){
 }
 export function isFullTranslation(record,language,detail=false){
  if(!accepted.has(language))return false;
- if(isLegacyPlaceholder(record,language)||!record?.title?.[language]||!record?.summary?.[language])return false;
+ if(!record?.title?.[language]||!record?.summary?.[language])return false;
+ if(isLegacyPlaceholder(record,language)&&!(record.translationSummaryReady&&!detail))return false;
  if(!detail)return true;
  const translated=record.story?.[language];
  const source=Array.isArray(record.story?.en)?record.story.en:[];
@@ -70,6 +71,7 @@ export async function translatePublicCase(record,language,{detail=false}={}){
   // The API is untrusted input: never copy HTML, media, statuses or URLs.
   record.title??={};record.summary??={};
   record.title[language]=data.title;record.summary[language]=data.summary;
+  record.translationSummaryReady=true;
   const source=Array.isArray(record.story?.en)?record.story.en:[];
   const fullStory=detail&&Array.isArray(data.story)&&data.story.length===source.length&&
    data.story.every(p=>valid(p,6000));
