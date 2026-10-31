@@ -240,9 +240,10 @@ try{
     assert.equal(await page.locator('#caseDialog').evaluate(el=>el.open),true,'demo case dialog is opened');
     await page.locator('#caseClose').click();
 
-    await page.locator('#historicDemoMap > summary').click();
-    await page.locator('input[name="mapFilter"][value="light"]').check();
-    assert.equal(await page.locator('#visibleCount').textContent(),'4');
+    assert.equal(await page.locator('#historicDemoMap').count(),0);
+    assert.equal(await page.locator('.prototype-notice').count(),0);
+    assert.equal(await page.locator('#worldMapCanvas').count(),1,'sourced atlas stays visible');
+    assert.equal(await page.locator('a[href="/archive.html"].button-primary').count(),1);
     assert.deepEqual(errors,[]);
     await context.close();
   });
@@ -592,8 +593,8 @@ try{
     await page.locator('button[data-language="bg"]').click();
     await page.locator('#gateContinue').click();
     await page.locator('#languageGate').waitFor({state:'hidden',timeout:2500});
-    assert.equal(await page.locator('.button-join[href="/report.html"]').count(),1);
-    await page.locator('.hero-buttons a[href="/report.html"]').click();
+    assert.equal(await page.locator('.footer a[href="/report.html"]').count(),1);
+    await page.locator('.footer a[href="/report.html"]').click();
     await page.waitForURL('**/report.html');
     assert.equal(await page.locator('#observationForm').isVisible(),true);
     assert.equal(await page.locator('#sendReport').isDisabled(),true);

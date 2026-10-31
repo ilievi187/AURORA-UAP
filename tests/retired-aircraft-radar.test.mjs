@@ -21,7 +21,7 @@ test("no public UI links to retired plane tracking and all surviving case/news l
   assert.doesNotMatch(source,/Авиационен радар|AIRCRAFT RADAR|OpenSky Network|adsb\.lol/i,path+" promotes retired radar");
  }
  const homepage=read("index.html");
- assert.match(homepage,/href="\/archive\.html"[^>]*><strong>🛸 Световен архив на случаите/);
+ assert.match(homepage,/href="\/archive\.html" data-i18n="navArchive"/);
  assert.match(homepage,/id="worldAtlas"/);
  assert.match(homepage,/href="\/news\.html"/);
  const translation=read("subpage-i18n.js");
