@@ -32,8 +32,13 @@ const server=createServer(async(req,res)=>{
  const file=resolve(root,"."+u.pathname);
  if(!file.startsWith(root+sep)){res.writeHead(403).end();return}
  try{
-  res.writeHead(200,{"Content-Type":mime[extname(file)]||"application/octet-stream"}).end(await read(file))
- }catch{res.writeHead(404).end()}
+  const bytes=await read(file);
+  if(!res.headersSent)res.writeHead(200,{"Content-Type":mime[extname(file)]||"application/octet-stream"});
+  if(!res.writableEnded)res.end(bytes);
+ }catch{
+  if(!res.headersSent)res.writeHead(404);
+  if(!res.writableEnded)res.end();
+ }
 });
 await new Promise(resolve=>server.listen(0,"127.0.0.1",resolve));
 let browser;
@@ -111,6 +116,29 @@ try{
    await card.locator(".archive-video-close").click();
    assert.equal(await card.locator("video").count(),0,"closing unloads the actual media stream");
    assert.equal(await card.locator(".archive-video-thumb").isVisible(),true);
+   assert.deepEqual(errors,[]);
+  }finally{await ctx.close()}
+ });
+ await test("the in-card video player follows every selected archive language",async()=>{
+  const ctx=await browser.newContext({viewport:{width:1180,height:850},reducedMotion:"reduce"});
+  const page=await ctx.newPage(),errors=[];
+  page.on("pageerror",e=>errors.push(e.message));
+  try{
+   await page.addInitScript(()=>localStorage.setItem("aurora-lang","en"));
+   await page.goto("http://127.0.0.1:"+server.address().port+"/archive.html");
+   await page.waitForFunction(()=>document.querySelector("#archiveCount")?.textContent==="105");
+   await page.locator("#archiveMedia").selectOption("playable");
+   for(const language of ["en","de","ru","zh-CN","ja","ar","bg"]){
+    await page.locator("#archiveLanguage").selectOption(language);
+    const current=await page.evaluate(lang=>globalThis.AURORA_VIDEO_UI[lang],language);
+    const card=page.locator(".archive-card").first();
+    assert.equal(await card.locator(".archive-video-play").textContent(),current.watchHere,language);
+    assert.equal(await card.locator(".archive-video-close").getAttribute("aria-label"),current.close,language);
+    assert.equal(await card.locator(".archive-video-original").textContent(),current.original,language);
+    assert.equal(await card.locator(".archive-video-credit").textContent(),current.sourceThumb,language);
+    assert.ok((await card.locator(".archive-video-play").getAttribute("aria-label")).startsWith(current.watchHere+" · "),language);
+   }
+   assert.equal(await page.locator("video,iframe").count(),0,"language switching must not stream video");
    assert.deepEqual(errors,[]);
   }finally{await ctx.close()}
  });

@@ -35,6 +35,7 @@
   error:copy.videoError
  }:base;
  };
+ const videoUI=lang=>root.AURORA_VIDEO_UI?.[lang]||root.AURORA_VIDEO_UI?.en||{};
  const safeUrl=u=>{try{const x=new URL(u);return x.protocol==="https:"&&!x.username&&!x.password&&!x.port?x.href:null}catch{return null}};
  const title=(value,lang)=>typeof value==="string"?value:typeof value==="object"?value?.[lang]||value?.en||value?.bg||"":""; 
  function stop(){
@@ -66,7 +67,7 @@
   $("caseHeroKicker").textContent=w.available;
   status.textContent=w.check;
   const first=videos[0],source=safeUrl(first.url);
-  link.href=source;link.textContent=w.original;link.hidden=false;
+  link.href=source;link.textContent=videoUI(lang).original;link.hidden=false;
   try{
    mediaImport??=import("/media-player.js");
    const module=await mediaImport;
@@ -75,7 +76,7 @@
    w=words(lang);
    $("caseHeroKicker").textContent=w.available;
    close.textContent=w.close+" ×";close.setAttribute("aria-label",w.close);
-   link.textContent=w.original;status.textContent=w.check;
+   link.textContent=videoUI(lang).original;status.textContent=w.check;
    const candidates=videos.map(media=>({media,playback:module.resolveMediaPlayback(media)})).filter(x=>x.playback);
    if(!candidates.length){
     status.textContent=w.notSupported;
@@ -90,15 +91,14 @@
     const thumbnail=module.resolveVideoPoster(item.media);
     poster.src=thumbnail||"/assets/media-ufo-earth-preview.svg";
     poster.dataset.actualFrame=thumbnail?"true":"false";
-    poster.alt=thumbnail?("Published video thumbnail · "+title(item.media.title,lang)):
-      (lang==="bg"?"Тематичен преглед, не кадър от наблюдението":"Decorative preview, not an incident frame");
+    poster.alt=thumbnail?(videoUI(lang).sourceThumb+" · "+title(item.media.title,lang)):videoUI(lang).preview;
     for(const {control,entry} of controls)control.setAttribute("aria-pressed",String(entry===item));
     if(chosen)button.focus();
    }
    if(candidates.length>1){
     playlist.hidden=false;
     const intro=document.createElement("p");
-    intro.textContent=lang==="bg"?"ИЗБЕРИ ЗАПИС · ЕДИН ПЛЕЙЪР":"CHOOSE RECORDING · ONE PLAYER";
+    intro.textContent=videoUI(lang).choose;
     playlist.append(intro);
     for(const [idx,item] of candidates.entries()){
      const control=document.createElement("button");control.type="button";
@@ -106,9 +106,9 @@
      const thumb=module.resolveVideoPoster(item.media);
      const img=document.createElement("img");
      img.src=thumb||"/assets/media-ufo-earth-preview.svg";img.loading="lazy";
-     img.alt=thumb?"Video thumbnail":"Decorative source video preview";
+     img.alt=thumb?videoUI(lang).sourceThumb:videoUI(lang).preview;
      const label=document.createElement("span");
-     label.textContent=String(idx+1).padStart(2,"0")+" · "+(title(item.media.title,lang)||"Official recording");
+     label.textContent=String(idx+1).padStart(2,"0")+" · "+(title(item.media.title,lang)||videoUI(lang).available);
      control.append(img,label);
      control.addEventListener("click",()=>select(item,true));
      controls.push({control,entry:item});playlist.append(control);
@@ -137,7 +137,7 @@
     v.addEventListener("loadedmetadata",()=>{if(player===v)status.textContent=w.ready},{once:true});
     v.addEventListener("error",()=>{if(player===v)status.textContent=w.error});
     stage.append(v);player=v;
-    playerModule?.loadVerifiedVideo(v,playback,state=>{if(player===v)status.textContent=state==="fallback"?(document.documentElement.lang==="bg"?"Зарежда се официалното резервно видео…":"Trying official video backup…"):w.error;});
+    playerModule?.loadVerifiedVideo(v,playback,state=>{if(player===v)status.textContent=state==="fallback"?w.loading:w.error;});
    }else if(playback.kind==="iframe"){
     const frame=document.createElement("iframe");
     frame.className="case-hero-media";frame.title=title(media.title,document.documentElement.lang)||"Original source video";

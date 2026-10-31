@@ -142,6 +142,24 @@ test("three official PURSUE recordings share a SINGLE hero player with selectabl
 });
 
 
+test("multi-record dossier video playlist is translated and remains one click-to-load player",async()=>{
+ const {page,ctx,errors}=await pageFor("uap-archive-northeastern-orb-sightings");
+ try{
+  await page.locator("#caseHeroPlay").waitFor({state:"visible"});
+  for(const lang of ["ja","ar","de","bg"]){
+   await page.evaluate(language=>window.dispatchEvent(new CustomEvent("aurora:language-changed",{detail:{language}})),lang);
+   await page.locator("#caseHeroPlay").waitFor({state:"visible"});
+   const ui=await page.evaluate(language=>window.AURORA_VIDEO_UI[language],lang);
+   assert.equal(await page.locator("#caseHeroPlaylist p").first().textContent(),ui.choose,lang);
+   assert.equal(await page.locator("#caseHeroPoster").getAttribute("alt"),ui.preview,lang);
+   assert.equal(await page.locator("#caseHeroPlaylist img").first().getAttribute("alt"),ui.preview,lang);
+   assert.equal(await page.locator("#caseHeroSource").textContent(),ui.original,lang);
+   assert.equal(await page.locator("video,iframe").count(),0,"changing language must not start a stream");
+  }
+  assert.deepEqual(errors,[]);
+ }finally{await ctx.close()}
+});
+
 test("two official DVIDS clips reuse ONE mobile hero iframe without redirect",async()=>{
  const {page,ctx,errors}=await pageFor("disclosure-eastern-mediterranean-2024",{width:390,height:844});
  try{
