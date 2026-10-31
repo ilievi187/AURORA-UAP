@@ -1,0 +1,38 @@
+name: AURORA rich dossiers and verified playback
+on:
+  pull_request:
+    paths:
+      - 'dossier.js'
+      - 'dossier.html'
+      - 'dossier.css'
+      - 'data/cases.json'
+      - 'media-player.js'
+      - 'tests/dossier-rich-content.test.mjs'
+      - '.github/workflows/dossier-quality.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'dossier.js'
+      - 'dossier.html'
+      - 'dossier.css'
+      - 'data/cases.json'
+      - 'media-player.js'
+      - 'tests/dossier-rich-content.test.mjs'
+      - '.github/workflows/dossier-quality.yml'
+permissions:
+  contents: read
+jobs:
+  rich-dossier-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate dossier descriptions and media rights
+        run: node --test tests/dossier-rich-content.test.mjs
+      - name: Validate baseline archive and media contracts
+        run: |
+          node --test tests/archive-records.test.mjs tests/aurora-v1.test.mjs tests/media-player.test.mjs
+          git diff --check
