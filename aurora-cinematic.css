@@ -1,7 +1,7 @@
 
 /* AURORA / WORLD V3: original glacial art direction.
    One continuous cinematic scene, not a conventional neon dashboard. */
-body:has(#odyssey){background:#151c23;color:#e7ecf0;overflow-x:clip;}
+body:has(#odyssey){background:#030610;color:#e7ecf0;overflow-x:clip;}
 body:not(.gate-open):has(#odyssey){overflow-x:clip;}
 body:has(#odyssey)::before{display:none;}
 body:has(#odyssey) .site-shell{
@@ -34,30 +34,41 @@ body:has(#odyssey) .mobile-nav{z-index:52;margin:82px 16px 0;border:1px solid #f
 body:has(#odyssey) .aurora-odyssey{
   --odyssey-progress:0;
   display:block;position:relative;min-height:1800px;height:365svh;
-  margin:0;padding:0;overflow:visible;background:#737e89;border:0;
+  margin:0;padding:0;overflow:visible;background:#030712;border:0;
 }
 body:has(#odyssey) .aurora-odyssey::before,
 body:has(#odyssey) .aurora-odyssey::after{display:none!important;}
 .aurora-odyssey .odyssey-sticky{
   position:sticky;inset:0 auto auto 0;width:100%;height:100svh;min-height:580px;
   overflow:hidden;isolation:isolate;
-  background:radial-gradient(ellipse at 50% 44%,#aeb6c1 0%,#697684 42%,#303b4a 78%,#1c2532 100%);
+  background:radial-gradient(ellipse at 51% 42%,#0d1c35 0%,#040a17 49%,#01030b 100%);
 }
+/* Graceful no-WebGL illustration: atmosphere, the Earth and a moon remain visible. */
 .aurora-odyssey .odyssey-fallback{
-  position:absolute;inset:0;width:100%;height:100%;z-index:0;
-  opacity:1!important;background:none!important;filter:none!important;mask-image:none!important;animation:none!important;
+  position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:1!important;
+  background:
+   radial-gradient(1px 1px at 13% 32%,#e7f5ff 50%,transparent 100%),
+   radial-gradient(2px 2px at 76% 17%,#ffffff 50%,transparent 100%),
+   radial-gradient(1px 1px at 81% 68%,#9bb8e8 50%,transparent 100%),
+   radial-gradient(2px 2px at 22% 75%,#d2ecff 50%,transparent 100%),
+   radial-gradient(ellipse at 52% 45%,#102b48,#030713 70%)!important;
+  filter:none!important;mask-image:none!important;animation:none!important;
 }
 .aurora-odyssey .odyssey-fallback::before{
-  content:"";position:absolute;top:16%;left:43%;width:28vw;height:49vh;min-width:200px;
-  background:linear-gradient(105deg,#242e3e 2%,#6b7d90 29%,#bbc8d4 48%,#647286 73%,#252f3f 100%);
-  clip-path:polygon(49% 0%,81% 23%,98% 70%,66% 100%,18% 84%,2% 42%);
-  transform:rotate(-17deg);filter:drop-shadow(0 35px 30px #10182580);
+  content:"";position:absolute;left:50%;top:50%;width:min(76vh,69vw);height:min(76vh,69vw);
+  border-radius:50%;transform:translate(-50%,-50%);
+  background:
+   radial-gradient(ellipse at 34% 32%,#a3dbe6 0%,transparent 29%),
+   radial-gradient(ellipse at 62% 65%,#467b63 0%,transparent 25%),
+   radial-gradient(ellipse at 41% 43%,#759276 0%,transparent 20%),
+   radial-gradient(ellipse at 65% 38%,#345c4c 0%,transparent 18%),
+   radial-gradient(circle at 32% 25%,#4e91b8 0%,#16426d 36%,#082040 64%,#010816 100%);
+  box-shadow:0 0 15px #99dbef,0 0 85px #226ca995,0 0 170px #18578a52,inset -44px -30px 80px #010613;
 }
 .aurora-odyssey .odyssey-fallback::after{
-  content:"";position:absolute;top:24%;left:36%;width:46vw;height:36vh;
-  border:15px solid #d8e0e790;border-left-color:#333e4e;border-bottom-color:#425467;
-  border-radius:50%;transform:rotate(-28deg) skewY(-19deg);
-  box-shadow:0 0 66px #ced8e244;
+  content:"";position:absolute;left:17%;top:23%;width:clamp(55px,8vw,125px);aspect-ratio:1;
+  border-radius:50%;background:radial-gradient(circle at 28% 27%,#e3e4de,#8c979e 48%,#353d4b 73%,#101926 100%);
+  box-shadow:0 0 15px #ffffff26;
 }
 .aurora-odyssey[data-renderer="webgl"] .odyssey-fallback{opacity:0!important;}
 .aurora-odyssey .odyssey-webgl{
@@ -67,8 +78,8 @@ body:has(#odyssey) .aurora-odyssey::after{display:none!important;}
 .aurora-odyssey[data-renderer="webgl"] .odyssey-webgl{opacity:1;}
 .aurora-odyssey .odyssey-vignette{
   position:absolute;inset:0;z-index:2;pointer-events:none;
-  background:linear-gradient(90deg,#141c274d 0%,transparent 38%,transparent 66%,#141f2d24 100%),
-             linear-gradient(0deg,#131c28b0 0%,transparent 24%,transparent 69%,#28354480 100%);
+  background:linear-gradient(90deg,#02061252 0%,transparent 38%,transparent 66%,#03071120 100%),
+             linear-gradient(0deg,#030611c4 0%,transparent 26%,transparent 72%,#03071363 100%);
 }
 .aurora-odyssey .odyssey-scene{
   position:absolute;inset:0;z-index:3;transition:opacity .7s ease,transform .9s cubic-bezier(.17,.84,.23,1);
@@ -209,10 +220,10 @@ body:has(#odyssey) .footer{padding-inline:clamp(24px,5vw,96px);}
   .aurora-odyssey .odyssey-sticky{height:100svh;min-height:540px;}
   .aurora-odyssey .odyssey-topline{top:95px;left:22px;right:22px;font-size:9px;}
   .aurora-odyssey .odyssey-topline span:last-child{display:none;}
-  .aurora-odyssey .odyssey-fallback::before{width:59vw;left:22%;height:42vh;top:18%;}
-  .aurora-odyssey .odyssey-fallback::after{width:68vw;left:14%;top:29%;height:20vh;border-width:9px;}
+  .aurora-odyssey .odyssey-fallback::before{width:min(76vw,68vh);height:min(76vw,68vh);left:50%;top:43%;}
+  .aurora-odyssey .odyssey-fallback::after{width:55px;left:11%;top:22%;height:auto;border-width:0;}
   .aurora-odyssey .odyssey-vignette{
-    background:linear-gradient(0deg,#121b2cbb,transparent 48%,#121b2c76);
+    background:linear-gradient(0deg,#020818c4,transparent 48%,#02081866);
   }
   .aurora-odyssey .odyssey-first-line{left:24px;bottom:122px;width:260px;}
   .aurora-odyssey .odyssey-line-lead{font-size:17px;}
