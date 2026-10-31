@@ -3,6 +3,12 @@
 Multilingual static website for the independent AURORA UAP initiative.
 Domain: **aurorauap.org** on Cloudflare Pages. Current release: public design preview.
 
+## Project scope: UAP archives, not aircraft tracking (2026-10-31)
+
+By owner decision the separate live aircraft radar has been **retired**, including the `/sky.html` page and `/api/air-traffic` API. Former radar bookmarks redirect to the real UAP country archive; the historical UAP world map, rotating globe, dossiers and evidence source links remain unchanged. Do not reintroduce OpenSky/ADS-B polling or a flight-tracker UI without a new explicit owner decision.
+
+**Current priorities:** automatically ingest *licensed* and source-attributed global UAP case catalogs; expand descriptive bilingual dossiers with original documents, approved photos and one verified embedded player; stabilize multilingual news; complete privacy-safe intake after its safeguards are verified. No fabricated sighting locations or unverifiable video.
+
 ## V1.7 — Real submission visitor journey (production activation still gated)
 
 The primary homepage and Join calls to action now open the real [Observation Center](/report.html), instead of a legacy demo modal. The text-only quarantined backend is independent from public registry discovery and produces an opaque receipt on accepted reports. It still **fails closed** without a verified production database migration, genuine reviewed privacy notice, WAF protections, Turnstile keys and explicit enablement. [Production activation checklist](docs/V1.7-LIVE-SUBMISSION-ACTIVATION.md). Until those checks are satisfied the form intentionally allows local drafts only.
