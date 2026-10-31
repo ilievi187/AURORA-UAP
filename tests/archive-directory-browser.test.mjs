@@ -32,8 +32,13 @@ const server=createServer(async(req,res)=>{
  const file=resolve(root,"."+u.pathname);
  if(!file.startsWith(root+sep)){res.writeHead(403).end();return}
  try{
-  res.writeHead(200,{"Content-Type":mime[extname(file)]||"application/octet-stream"}).end(await read(file))
- }catch{res.writeHead(404).end()}
+  const bytes=await read(file);
+  if(!res.headersSent)res.writeHead(200,{"Content-Type":mime[extname(file)]||"application/octet-stream"});
+  if(!res.writableEnded)res.end(bytes);
+ }catch{
+  if(!res.headersSent)res.writeHead(404);
+  if(!res.writableEnded)res.end();
+ }
 });
 await new Promise(resolve=>server.listen(0,"127.0.0.1",resolve));
 let browser;
