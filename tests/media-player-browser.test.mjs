@@ -154,7 +154,7 @@ test('media previews stay dark, cards share balanced 16:9 proportions, Play over
    ctx.drawImage(image,0,0,20,20);
    const pixel=ctx.getImageData(2,2,1,1).data;
    return {
-    columns:getComputedStyle(gallery).gridTemplateColumns.split(/\\s+/).length,
+    columns:getComputedStyle(gallery).gridTemplateColumns.split(/\s+/).length,
     cardDisplay:getComputedStyle(card).display,
     cardWidth:card.getBoundingClientRect().width,
     galleryWidth:gallery.getBoundingClientRect().width,
@@ -175,7 +175,7 @@ test('media previews stay dark, cards share balanced 16:9 proportions, Play over
   await page.locator('#mediaGallery').screenshot({path:'artifacts/media-sleek-gallery-desktop.png',animations:'disabled'});
   await page.setViewportSize({width:390,height:844});
   const mobile=await page.evaluate(()=>({
-   columns:getComputedStyle(document.querySelector('#mediaGallery')).gridTemplateColumns.split(/\\s+/).length,
+   columns:getComputedStyle(document.querySelector('#mediaGallery')).gridTemplateColumns.split(/\s+/).length,
    overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
    picture:document.querySelector('.media-entry-image').getBoundingClientRect().width
   }));
