@@ -883,7 +883,7 @@
         }
       ],
       "visual": null,
-      "content_depth": "editorial",
+      "content_depth": "sourced-feature",
       "editorial_review": "source-attributed bilingual editorial; historical records and official footage",
       "dedup_key": "disclosure-zone:six-spheres-2025",
       "publisher_assessment": "insufficient",
@@ -1190,7 +1190,7 @@
         }
       ],
       "visual": null,
-      "content_depth": "editorial",
+      "content_depth": "sourced-feature",
       "editorial_review": "source-attributed bilingual editorial; historical records and official footage",
       "dedup_key": "disclosure-zone:eastern-mediterranean-2024",
       "publisher_assessment": "insufficient",
@@ -1353,7 +1353,7 @@
         }
       ],
       "visual": null,
-      "content_depth": "editorial",
+      "content_depth": "sourced-feature",
       "editorial_review": "source-attributed bilingual editorial; historical records and official footage",
       "dedup_key": "disclosure-zone:north-aegean-2023",
       "publisher_assessment": "insufficient",
@@ -2140,7 +2140,7 @@
         }
       ],
       "visual": null,
-      "content_depth": "editorial",
+      "content_depth": "sourced-feature",
       "editorial_review": "source-attributed bilingual editorial; historical records and official footage",
       "dedup_key": "disclosure-zone:iraq-2022",
       "publisher_assessment": "insufficient",
@@ -2209,11 +2209,11 @@
       },
       "title": {
         "en": "The Object over Cheyenne Mountain",
-        "bg": "The Object over Cheyenne Mountain"
+        "bg": "Белият обект над Шайен Маунтин"
       },
       "summary": {
         "en": "In February 2022 five U.S. Army soldiers from one unit saw a white object hold still over Cheyenne Mountain, Colorado, and then vanish. The file holds two FBI interviews taken two and three years later and an undated analysis that attributes the sighting, with low confidence, to sunlight reflected off snow onto low cloud. No photograph was taken, the five drawings and the FBI artist's sketch are not in the file, and the accounts disagree on the time of day, the duration and what the object looked like.",
-        "bg": "„The Object over Cheyenne Mountain“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2022-02-15 и район Over Cheyenne Mountain, Colorado, seen from Fort Carson according to the FBI interview of March 2025 and the analysis; the map pin marks the mountain and is approximate. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект."
+        "bg": "През февруари 2022 г. петима американски военнослужещи съобщават, че са видели неподвижен бял обект над планината Шайен в Колорадо, който изчезнал от поглед. Досието съдържа два разпита на ФБР, проведени години след наблюдението, и отделен аналитичен доклад. В него се предлага възможно отражение на слънчева светлина от сняг към ниски облаци, но с ниска увереност. Свидетелските разкази се различават по време, продължителност и вид на обекта; липсват оригинална снимка и пълният набор рисунки."
       },
       "story": {
         "en": [
@@ -2226,14 +2226,13 @@
           "Reported alternative 3: An unidentified object. The accounts describe a stationary white object with a surface of lines or shifting panels that vanished in the time it took to look away. They rest on eyesight alone, written down two and three years later, with no image and no instrument."
         ],
         "bg": [
-          "„The Object over Cheyenne Mountain“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2022-02-15 и район Over Cheyenne Mountain, Colorado, seen from Fort Carson according to the FBI interview of March 2025 and the analysis; the map pin marks the mountain and is approximate. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект.",
-          "Следва оригиналното описание на английски от лицензиран източник. То представя свидетелства и оценки на източника, а не доказателство за извънземен произход или независимо заключение на AURORA.",
-          "EN · Five soldiers, accounts written down years later, and an explanation that depends on which time of day you believe",
-          "EN · In February 2022 five U.S. Army soldiers from one unit saw a white object hold still over Cheyenne Mountain, Colorado, and then vanish. The file holds two FBI interviews taken two and three years later and an undated analysis that attributes the sighting, with low confidence, to sunlight reflected off snow onto low cloud. No photograph was taken, the five drawings and the FBI artist's sketch are not in the file, and the accounts disagree on the time of day, the duration and what the object looked like.",
-          "EN · The only assessment in the file is an analysis whose author, addressee and date are redacted. It judges that the object \"was possibly backscattering of sunlight\" reflected off snow-covered ground onto low-level cloud, states that \"no anomalous data or characteristics were recorded or assessed, and the event did not represent an unknown adversarial capability\", and holds the assessment with low confidence because of uncertainty in each witness's field of view, the snow cover, and the elevation and amount of cloud. It adds that no aircraft or balloons were noted active in or around Cheyenne Mountain at the time.",
-          "EN · Sunlight reflected off snow onto low cloud. The analysis's own hypothesis, held with low confidence. It rests on a mid-morning sun in the south-east, which fits the analysis's 09:35 and not the early afternoon given in the FBI interview of March 2025, and it needs cloud the witnesses say was not there.",
-          "EN · A balloon or a blimp. The soldiers considered both at the time and set drift aside because the object held its place against the saddle of the mountain for minutes. The analysis says no aircraft or balloons were noted active at the time.",
-          "EN · An unidentified object. The accounts describe a stationary white object with a surface of lines or shifting panels that vanished in the time it took to look away. They rest on eyesight alone, written down two and three years later, with no image and no instrument."
+          "Февруари 2022 г. От района на Форт Карсън в Колорадо петима войници от едно подразделение наблюдават нещо необичайно над планината Шайен. Според разказите им бял обект се задържал почти неподвижно на фона на склона, а след това изчезнал. Случаят не е съхранен с видео, а с човешки спомени, записани впоследствие в официални документи.",
+          "В публикуваната преписка има два материала от ФБР: интервю, проведено през март 2025 г., и документ от юни 2024 г., свързан с описание за скица. Това означава, че разказите са записани приблизително две и три години след самото събитие. Времевата дистанция е важна, защото свидетелите не съвпадат напълно по часа, продължителността и външния вид.",
+          "Един общ детайл обаче преминава през историите: светъл обект, който стои срещу планината и изглежда неподвижен. В някои описания се споменават линии по повърхността или променящи се панели. Свидетели обсъждали дали не става дума за балон или дирижабъл, но по думите им не виждали характерното постепенно отнасяне от вятъра.",
+          "Отделен аналитичен документ ICA-UAP-D001 разглежда възможността за т.нар. обратно разсейване на слънчева светлина — лъчи, отразени от заснежена земна повърхност върху ниска облачност. Авторът оценява тази версия с ниска увереност, като изрично посочва неясноти за зрителните направления, снежната покривка и облаците.",
+          "В този анализ има съществено напрежение между времевите версии. Описаното сутрешно положение на слънцето съответства на около 09:35, докато интервю от март 2025 г. поставя наблюдението в ранния следобед. В свидетелските разкази също има несъответствия относно облачността. Това са конкретни въпроси, които не могат да се изгладят само чрез красиво преразказване.",
+          "Документите сочат, че по онова време не са отчетени активни самолети или балони непосредствено около планината. Това е част от анализа, но не представлява независимо доказателство за всички възможни обекти в небето. Самият публикуван пакет не съдържа снимка от момента, а споменатите рисунки на войниците и скицата на ФБР липсват от предоставените файлове.",
+          "За да се ориентираш, AURORA маркира района на Шайен Маунтин — не предполагаемата точка на обекта. Под разказа можеш да отвориш както интервютата на ФБР, така и аналитичния документ. Прочети ги един след друг: това е случай, в който разликите между източниците са почти толкова интересни, колкото самото наблюдение."
         ]
       },
       "source": {
@@ -2290,8 +2289,8 @@
         }
       ],
       "visual": null,
-      "content_depth": "source-linked",
-      "editorial_review": "licensed-secondary-summary; independent fact-check pending",
+      "content_depth": "sourced-feature",
+      "editorial_review": "source-attributed bilingual editorial; historical primary records",
       "dedup_key": "disclosure-zone:colorado-springs-2022",
       "publisher_assessment": "insufficient",
       "provenance": {
@@ -2303,7 +2302,45 @@
         "automated": true,
         "coordinates_policy": "publisher-locality-anchor",
         "verification": "source-attributed; not independently confirmed"
-      }
+      },
+      "timeline": [
+        {
+          "date": "2022-02",
+          "title": {
+            "bg": "Наблюдение над Шайен Маунтин",
+            "en": "Cheyenne Mountain sighting"
+          },
+          "description": {
+            "bg": "Петима военнослужещи съобщават за неподвижен бял обект; датата е отбелязана по месец.",
+            "en": "Five soldiers report a stationary white object; only the month is established."
+          },
+          "source_url": "https://www.war.gov/medialink/ufo/061226/release_03/documents/ICA-UAP-D001_Analysis_Colorado-Springs-UAP-Incident.pdf"
+        },
+        {
+          "date": "2024-06",
+          "title": {
+            "bg": "Документ на ФБР за скица",
+            "en": "FBI forensic-sketch material"
+          },
+          "description": {
+            "bg": "Документ FD-1057 описва последващо събиране на свидетелски сведения.",
+            "en": "FD-1057 documents a later witness and sketch-related review."
+          },
+          "source_url": "https://www.war.gov/medialink/ufo/061226/release_03/documents/FBI-UAP-D002_FD-1057_Unresolved-UAP-Report_ColoradoSprings_2022.pdf"
+        },
+        {
+          "date": "2025-03",
+          "title": {
+            "bg": "Интервю на ФБР",
+            "en": "FBI witness interview"
+          },
+          "description": {
+            "bg": "В интервюто FD-302 са записани спомени от наблюдението години по-късно.",
+            "en": "FD-302 records witness memories several years after the event."
+          },
+          "source_url": "https://www.war.gov/medialink/ufo/061226/release_03/documents/FBI-UAP-D001_FD-302_Unresolved-UAP-Report_ColoradoSprings_2022.pdf"
+        }
+      ]
     },
     {
       "id": "uap-archive-colorado-springs-2022",
@@ -2411,11 +2448,11 @@
       },
       "title": {
         "en": "Ten Sightings over the Gulf",
-        "bg": "Ten Sightings over the Gulf"
+        "bg": "Десет сигнала над Персийския залив"
       },
       "summary": {
         "en": "Between 16 July and 2 November 2020 the 482nd Attack Squadron, flying intelligence missions over the Persian Gulf from Ali Al Salem air base in Kuwait, logged ten sightings of unidentified objects in six mission reports and one debrief form. For most of them the reports give a time, a partly blacked-out grid reference and the word “UAP”, and nothing else: no size, shape, colour or speed, and no assessment. Four recordings released separately carry the dates of two of the sightings in titles given by whoever uploaded them; the office that released them says such material lacks a substantiated chain of custody.",
-        "bg": "„Ten Sightings over the Gulf“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2020-07-16 и район Persian Gulf. The pin stands on the only grid reference the reports give in full (16 July, 23:45Z), in open water about 70 km west of Kharg Island. The other positions are scattered across the Gulf, all over the sea except the for. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект."
+        "bg": "От 16 юли до 2 ноември 2020 г. 482-а ударна ескадрила регистрира десет наблюдения по време на разузнавателни полети над Персийския залив. Шест мисийни доклада и един формуляр за разбори пазят часове и частично заличени координати, но често почти никакви данни за форма, размер или скорост. Отделно публикуваните видеозаписи са ценна възможност за сравнение, въпреки че източникът предупреждава за непълна проследимост на произхода на част от материалите."
       },
       "story": {
         "en": [
@@ -2428,14 +2465,13 @@
           "Reported alternative 4: Surface craft. By our viewing, the first “area of contrast” in the recording of 31 August looks like a boat and its wake on the water, and the squadron's reports log small naval craft throughout, for example “1X PROB NASER WAP BESIDES AN M\\T VESSEL … BOTH VESSELS WERE DEAD IN WATER” (DOW-UAP-D61). None of the reports connects a vessel with a sighting."
         ],
         "bg": [
-          "„Ten Sightings over the Gulf“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2020-07-16 и район Persian Gulf. The pin stands on the only grid reference the reports give in full (16 July, 23:45Z), in open water about 70 km west of Kharg Island. The other positions are scattered across the Gulf, all over the sea except the for. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект.",
-          "Следва оригиналното описание на английски от лицензиран източник. То представя свидетелства и оценки на източника, а не доказателство за извънземен произход или независимо заключение на AURORA.",
-          "EN · One attack squadron logged ten sightings in four months of 2020; its reports give a time and a grid, and almost nothing else",
-          "EN · Between 16 July and 2 November 2020 the 482nd Attack Squadron, flying intelligence missions over the Persian Gulf from Ali Al Salem air base in Kuwait, logged ten sightings of unidentified objects in six mission reports and one debrief form. For most of them the reports give a time, a partly blacked-out grid reference and the word “UAP”, and nothing else: no size, shape, colour or speed, and no assessment. Four recordings released separately carry the dates of two of the sightings in titles given by whoever uploaded them; the office that released them says such material lacks a substantiated chain of custody.",
-          "EN · Birds. A report from another mission in the same release, whose unit is blacked out, sorts four of the five objects on its video with the words “ALL 4X REMAINING UAP FIT CLOSER TO THE PROFILE OF POSSIBLE BIRDS” (DOW-UAP-D10). By our viewing, the recording of 31 August shows small points crossing the sea, two of them at a time; nothing on the recording measures them, and none of the squadron's reports mentions birds.",
-          "EN · Balloons. Other crews in the release report them: “LOOKS LIKE A BALLOON, SIMILAR TO PREVIOUSLY REPORTED UAP FROM 48FW” and “TRAVELING WITH THE WINDS” (DOW-UAP-D7), “OBS 1X POSS BALLOON” (DOW-UAP-D19). Apart from the debrief of 31 August (18,000 feet, “150/230”) and the second object of 2 November (“TRAVELING NW”), none of the squadron's reports gives a height or a direction that could be set against the wind.",
-          "EN · Drones. The missions were tasked, in the reports' own words, “TO CHARACTERIZE IRIN\\IRGCN VESSELS, UAS ACTIVITY, ACTIVITY OUTSIDE OF PORTS”, and a report by the same squadron two years later logs “1X POSSIBLE UAP/UAV” (DOW-UAP-D18). The reports of 2020 do not say whether any sighting was taken for an unmanned aircraft.",
-          "EN · Surface craft. By our viewing, the first “area of contrast” in the recording of 31 August looks like a boat and its wake on the water, and the squadron's reports log small naval craft throughout, for example “1X PROB NASER WAP BESIDES AN M\\T VESSEL … BOTH VESSELS WERE DEAD IN WATER” (DOW-UAP-D61). None of the reports connects a vessel with a sighting."
+          "В продължение на почти четири месеца през 2020 г. 482-а ударна ескадрила изпълнява разузнавателни задачи над Персийския залив, излитайки от базата Али ал-Салем в Кувейт. Между 16 юли и 2 ноември в архивните ѝ материали се появяват десет отделни съобщения за неидентифицирани обекти. Историята е не за една драматична среща, а за поредица от кратки записи в оперативния дневник.",
+          "За повечето наблюдения съществуват само час, мрежова координата — често частично заличена — и обозначението UAP. Няма пълно описание на цвят, размер, форма, траектория или достоверно измерена скорост. Шестте мисийни отчета и допълнителният формуляр за разбори показват колко малко информация понякога достига до публичния архив.",
+          "Публикувани са и четири видеозаписа, чиито заглавия от качващия ги свързват с две от датите. Тези записи са интересни именно защото позволяват човек да види контрастните точки над морето, вместо да разчита само на думата „UAP“ в документ. Но службата, предоставила материалите, предупреждава за непълно доказана верига на съхранение и произход на част от качените файлове.",
+          "В кадрите от 31 август се виждат малки точки, преминаващи над водната повърхност, понякога по две. От изображението не може да се извлече размер без надеждна информация за разстоянието. В сродни, но отделни мисийни доклади от публикувания набор други екипажи са описвали подобни точки като вероятни птици. Такова сравнение не решава автоматично десетте случая.",
+          "Друга възможност за разглеждане са балони, носени от ветровете. Отделни екипажи в същия архив изрично описват балони. За серията над Персийския залив обаче липсват достатъчно височини и направления, които да позволят сравнение с вятъра, с изключение на няколко отделни бележки.",
+          "Полётите на ескадрилата са свързани с наблюдение на кораби, пристанища и безпилотна активност. В по-късен документ от същото подразделение се среща обозначението „възможен UAP/UAV“. Но през 2020 г. записите не посочват ясно, че конкретна от десетте точки е била идентифицирана като дрон. Някои контрасти над водата могат да наподобяват и плавателни съдове със следи от движение.",
+          "Картографският ориентир на AURORA е точка западно от остров Харг, избрана от единствената по-пълно запазена мрежова координата в отчетите; останалите записи обхващат широк морски район. Това не е траектория, по която са се движили всички десет обекта. В досието са подредени първичните мисийни отчети и публикуваните клипове, за да се изследва разликата между кратката оперативна бележка и видимото във видеото."
         ]
       },
       "source": {
@@ -2636,8 +2672,8 @@
         }
       ],
       "visual": null,
-      "content_depth": "source-linked",
-      "editorial_review": "licensed-secondary-summary; independent fact-check pending",
+      "content_depth": "sourced-feature",
+      "editorial_review": "source-attributed bilingual editorial; historical primary records",
       "dedup_key": "disclosure-zone:persian-gulf-2020",
       "publisher_assessment": "insufficient",
       "provenance": {
@@ -2649,7 +2685,45 @@
         "automated": true,
         "coordinates_policy": "publisher-locality-anchor",
         "verification": "source-attributed; not independently confirmed"
-      }
+      },
+      "timeline": [
+        {
+          "date": "2020-07-16",
+          "title": {
+            "bg": "Начало на документираната серия",
+            "en": "First documented report in the series"
+          },
+          "description": {
+            "bg": "Мисийният доклад DOW-UAP-D65 описва наблюдения над залива.",
+            "en": "Mission report D65 documents sightings over the Gulf."
+          },
+          "source_url": "https://www.war.gov/medialink/ufo/release_1/dow-uap-d65-mission-report-persian-gulf-july-2020.pdf"
+        },
+        {
+          "date": "2020-08-31",
+          "title": {
+            "bg": "Разбори и видеосравнение",
+            "en": "Debrief and associated footage"
+          },
+          "description": {
+            "bg": "Документ DOW-UAP-D42 е сред публикациите, свързани със серията.",
+            "en": "A debrief entry forms part of the published record set."
+          },
+          "source_url": "https://www.war.gov/medialink/ufo/release_1/dow-uap-d42-range-fouler-debrief-japan-2023.pdf"
+        },
+        {
+          "date": "2020-11-02",
+          "title": {
+            "bg": "Последни записи в набора",
+            "en": "Final reports in the set"
+          },
+          "description": {
+            "bg": "Към датата са свързани отделно публикувани видеоклипове, обозначени като наблюдение и проследяване.",
+            "en": "Separately published videos are titled as tracking sessions associated with this date."
+          },
+          "source_url": "https://www.dvidshub.net/video/1007809/dow-uap-pr077-2-november-2020-callsign-callsign-observes-and-tracks-uap-1-2"
+        }
+      ]
     },
     {
       "id": "disclosure-colorado-drones-2019",
@@ -2740,11 +2814,11 @@
       },
       "title": {
         "en": "Off San Diego, July 2019: the Ships' Logs",
-        "bg": "Off San Diego, July 2019: the Ships' Logs"
+        "bg": "Нощните дронове край Сан Диего: корабните дневници"
       },
       "summary": {
         "en": "In July 2019 the logs and reports of US Navy ships off San Diego recorded drones around them. The CIC log of USS Rafael Peralta has on 15 July at 20:57 “DRONE 1 SPOTTED”, then “BRIDGE VISUALLY SITED [sic] AN EXCESS OF 4 DRONES”, and on 16 July at 01:33 “BRIDGE HOLDS 6 DRONES OFF OF STBD BOW”. A brief of USS Paul Hamilton of 17 July is titled “Interaction with UAS”, and the Navy’s incident database records four drones around the same ship in an incident dated 29 July, three of them “identified visually as quadcopters”. The documents call the objects drones and UAS; none says who flew them: “Point of origin of all UASs is unknown.”",
-        "bg": "„Off San Diego, July 2019: the Ships' Logs“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2019-07-15 и район Pacific Ocean off San Diego, in waters the documents call “SOCAL OPAREA” (USS Rafael Peralta’s log) and “San Diego OPAREA” (the incident database). The pin is the position printed above the locator map of USS Paul Hamilton’s brief. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект."
+        "bg": "През юли 2019 г. няколко кораба на Военноморските сили на САЩ отбелязват дронове край брега на Сан Диего. Дневникът на USS Rafael Peralta съдържа записи за един, после за повече от четири, а на следващата нощ — за шест дрона близо до десния нос. Документи за USS Paul Hamilton описват отделни срещи, включително визуално разпознати квадрокоптери. Публикуваните архиви използват понятията „дрон“, UAV и UAS, но не посочват установен оператор или място на излитане."
       },
       "story": {
         "en": [
@@ -2755,12 +2829,13 @@
           "Reported alternative 1: Drones of an unknown operator, as the documents themselves read the events. The logs write “DRONE” and “UAV”, the brief “UAS”, and the database says three were “identified visually as quadcopters”. None names an operator or a place of launch."
         ],
         "bg": [
-          "„Off San Diego, July 2019: the Ships' Logs“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2019-07-15 и район Pacific Ocean off San Diego, in waters the documents call “SOCAL OPAREA” (USS Rafael Peralta’s log) and “San Diego OPAREA” (the incident database). The pin is the position printed above the locator map of USS Paul Hamilton’s brief. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект.",
-          "Следва оригиналното описание на английски от лицензиран източник. То представя свидетелства и оценки на източника, а не доказателство за извънземен произход или независимо заключение на AURORA.",
-          "EN · The logs and reports of US Navy ships off San Diego record drones around them on several nights of July 2019. The documents call the objects drones, UAVs and UAS, and none says who flew them: “Point of origin of all UASs is unknown.”",
-          "EN · In July 2019 the logs and reports of US Navy ships off San Diego recorded drones around them. The CIC log of USS Rafael Peralta has on 15 July at 20:57 “DRONE 1 SPOTTED”, then “BRIDGE VISUALLY SITED [sic] AN EXCESS OF 4 DRONES”, and on 16 July at 01:33 “BRIDGE HOLDS 6 DRONES OFF OF STBD BOW”. A brief of USS Paul Hamilton of 17 July is titled “Interaction with UAS”, and the Navy’s incident database records four drones around the same ship in an incident dated 29 July, three of them “identified visually as quadcopters”. The documents call the objects drones and UAS; none says who flew them: “Point of origin of all UASs is unknown.”",
-          "EN · The incident database, entry 19-095 on USS Paul Hamilton: “Point of origin of all UASs is unknown.” The Navy’s public-affairs card of July 2020: “Imagery (including stills/videos obtained by SNOOPIE Teams) of any UAP observation is considered classified and should be handled and protected accordingly.”",
-          "EN · Drones of an unknown operator, as the documents themselves read the events. The logs write “DRONE” and “UAV”, the brief “UAS”, and the database says three were “identified visually as quadcopters”. None names an operator or a place of launch."
+          "В средата на юли 2019 г. американски военни кораби плават в Тихия океан край Сан Диего. През няколко последователни нощи в оперативните им дневници се появяват наблюдения на малки летателни апарати. Този случай е особено интересен, защото разполагаме не само с по-късни разкази, а с кратки записи от самите корабни документи.",
+          "В дневника на бойния информационен център на USS Rafael Peralta на 15 юли в 20:57 е отбелязано наблюдение на един дрон. Следва запис, че мостикът визуално е видял повече от четири дрона. На 16 юли в 01:33 UTC е отбелязано, че шест дрона се намират пред десния нос. Това са конкретни часове и количества, записани от екипажа.",
+          "Отделен доклад от USS Paul Hamilton, датиран на 17 юли, е озаглавен като взаимодействие с безпилотни авиационни системи — UAS. В инцидентната база на флота има и запис за събитие на 29 юли около същия кораб, където са описани четири дрона, като три са определени визуално като квадрокоптери.",
+          "Корабните документи използват директни технически думи — DRONE, UAV и UAS. Те не представляват обобщена диагноза за всички публикувани UAP кадри в Тихия океан. Тук става дума за конкретни записи, които екипажите са класифицирали като дронове, но без да знаят откъде са излетели и кой ги управлява.",
+          "В инцидентната база за USS Paul Hamilton е написано, че произходът на всички UAS е неизвестен. Това оставя отворен практическия въпрос за оператора и мястото на старта, без да превръща апаратите автоматично в нещо необичайно по конструкция. Хронологията на различните кораби помага да се прецени кои срещи съвпадат и кои са отделни.",
+          "Отделна публична информационна карта на флота от юли 2020 г. говори за режима на съхраняване на изображения, включително неподвижни кадри и видеозаписи от корабни екипи. Тя е важна за това защо част от визуалните материали отсъстват от свободно достъпните документи. Наличието на запис в дневник не означава, че видеото към него е публично.",
+          "Маркeрът на AURORA стои в приблизителен морски район край Сан Диего, свързан с публикуван картографски ориентир, а не на измерената позиция на всеки отделен дрон. Отвори корабните дневници на USS Rafael Peralta, справката за USS Paul Hamilton и инцидентната база: така ще видиш пълната последователност, а не само един изрязан клип."
         ]
       },
       "source": {
@@ -2868,8 +2943,8 @@
         }
       ],
       "visual": null,
-      "content_depth": "source-linked",
-      "editorial_review": "licensed-secondary-summary; independent fact-check pending",
+      "content_depth": "sourced-feature",
+      "editorial_review": "source-attributed bilingual editorial; historical primary records",
       "dedup_key": "disclosure-zone:san-diego-drones-2019",
       "publisher_assessment": "unresolved",
       "provenance": {
@@ -2881,7 +2956,57 @@
         "automated": true,
         "coordinates_policy": "publisher-locality-anchor",
         "verification": "source-attributed; not independently confirmed"
-      }
+      },
+      "timeline": [
+        {
+          "date": "2019-07-15",
+          "title": {
+            "bg": "Първи запис в дневника на USS Rafael Peralta",
+            "en": "First USS Rafael Peralta log entry"
+          },
+          "description": {
+            "bg": "В 20:57 е записано наблюдение на дрон, последвано от повече от четири апарата.",
+            "en": "At 20:57 a drone is logged, followed by a report of more than four."
+          },
+          "source_url": "https://www.secnav.navy.mil/foia/readingroom/CaseFiles/UAP%20INFO/UAP%20DOCUMENTS/RPR%20CIC%20Log%2014-16JUL19%20PROP%20REDS_Redacted.pdf"
+        },
+        {
+          "date": "2019-07-16",
+          "title": {
+            "bg": "Шест дрона пред десния нос",
+            "en": "Six drones near starboard bow"
+          },
+          "description": {
+            "bg": "Дневникът на кораба регистрира шест дрона около 01:33.",
+            "en": "The ship's log records six drones at approximately 01:33."
+          },
+          "source_url": "https://www.secnav.navy.mil/foia/readingroom/CaseFiles/UAP%20INFO/UAP%20DOCUMENTS/RPR%20CIC%20Log%2014-16JUL19%20PROP%20REDS_Redacted.pdf"
+        },
+        {
+          "date": "2019-07-17",
+          "title": {
+            "bg": "Доклад за USS Paul Hamilton",
+            "en": "USS Paul Hamilton UAS brief"
+          },
+          "description": {
+            "bg": "Корабен материал е озаглавен като взаимодействие с безпилотни авиационни системи.",
+            "en": "A shipboard brief documents an interaction with unmanned aircraft systems."
+          },
+          "source_url": "https://www.secnav.navy.mil/foia/readingroom/CaseFiles/UAP%20INFO/UAP%20DOCUMENTS/FLIR%20PHOTO_Brief_Redacted.pdf"
+        },
+        {
+          "date": "2019-07-29",
+          "title": {
+            "bg": "Отделен инцидент с квадрокоптери",
+            "en": "Separate quadcopter incident"
+          },
+          "description": {
+            "bg": "Базата данни описва четири дрона, три от които са разпознати визуално като квадрокоптери.",
+            "en": "Incident database describes four drones, three visually recognized as quadcopters."
+          },
+          "source_url": "https://www.secnav.navy.mil/foia/readingroom/CaseFiles/UAP%20INFO/UAP%20DOCUMENTS/Incident%20databas%202017-2021.pdf"
+        }
+      ]
     },
     {
       "id": "etna-2018",
