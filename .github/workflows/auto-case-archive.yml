@@ -4,10 +4,14 @@ on:
     branches: [main]
     paths:
       - 'scripts/sync-open-case-archive.mjs'
+      - 'scripts/sync-disclosure-zone.mjs'
+      - 'tests/disclosure-zone-sync.test.mjs'
       - '.github/workflows/auto-case-archive.yml'
   pull_request:
     paths:
       - 'scripts/sync-open-case-archive.mjs'
+      - 'scripts/sync-disclosure-zone.mjs'
+      - 'tests/disclosure-zone-sync.test.mjs'
       - '.github/workflows/auto-case-archive.yml'
   schedule:
     - cron: '17 2,14 * * *'
@@ -30,20 +34,22 @@ jobs:
       - name: Test archive workflow publication safety
         run: node --test tests/archive-workflow-safety.test.mjs
       - name: Test archive importer using deterministic offline fixtures
-        run: node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs
+        run: node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs tests/disclosure-zone-sync.test.mjs
       - name: Validate live import in an isolated temporary copy without publication
         run: |
           tmp="$(mktemp -d)"
           trap 'rm -rf "$tmp"' EXIT
           mkdir -p "$tmp/scripts" "$tmp/data"
           cp scripts/sync-open-case-archive.mjs "$tmp/scripts/"
+          cp scripts/sync-disclosure-zone.mjs "$tmp/scripts/"
           cp data/cases.json "$tmp/data/"
           node "$tmp/scripts/sync-open-case-archive.mjs"
-          node -e 'const a=JSON.parse(require("node:fs").readFileSync(process.argv[1])); const m=JSON.parse(require("node:fs").readFileSync(process.argv[2])); if(a.cases.length!==m.total||m.status!=="ok") process.exit(1); console.log(JSON.stringify(m))' "$tmp/data/cases.json" "$tmp/data/archive-sync-status.json"
+          node "$tmp/scripts/sync-disclosure-zone.mjs"
+          node -e 'const a=JSON.parse(require("node:fs").readFileSync(process.argv[1])); const m=JSON.parse(require("node:fs").readFileSync(process.argv[2])); const d=JSON.parse(require("node:fs").readFileSync(process.argv[3])); if(a.cases.length!==d.total||m.status!=="ok"||d.status!=="ok"||d.generated<1) process.exit(1); console.log(JSON.stringify({first:m,second:d}))' "$tmp/data/cases.json" "$tmp/data/archive-sync-status.json" "$tmp/data/disclosure-zone-sync-status.json"
           test ! -e "$tmp/.git"
       - name: Validate updated archive and static site contracts
         run: |
-          node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs
+          node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs tests/disclosure-zone-sync.test.mjs
           git diff --check
 
   publish-scheduled-main-archive:
@@ -63,16 +69,18 @@ jobs:
         with:
           node-version: '22'
       - name: Test archive importer using deterministic offline fixtures
-        run: node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs
-      - name: Fetch only approved, attributed case dataset
+        run: node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs tests/disclosure-zone-sync.test.mjs
+      - name: Fetch approved, attributed first case dataset
         run: node scripts/sync-open-case-archive.mjs
+      - name: Fetch CC BY worldwide case metadata without publishing private reports
+        run: node scripts/sync-disclosure-zone.mjs
       - name: Validate updated archive and static site contracts
         run: |
-          node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs
+          node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs tests/disclosure-zone-sync.test.mjs tests/auto-archive-sync.test.mjs
           git diff --check
       - name: Commit verified archive snapshot
         run: |
-          git add data/cases.json data/archive-sync-status.json
+          git add data/cases.json data/archive-sync-status.json data/disclosure-zone-sync-status.json
           if git diff --cached --quiet; then
             echo "No source changes; no archive update PR needed"
             exit 0
