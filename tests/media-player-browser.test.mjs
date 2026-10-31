@@ -144,8 +144,8 @@ test('media previews stay dark, cards share balanced 16:9 proportions, Play over
   const result=await page.evaluate(async()=>{
    const gallery=document.querySelector('#mediaGallery');
    const card=gallery.querySelector('.media-entry');
-   const picture=card.querySelector('.media-entry-image');
-   const play=card.querySelector('.media-inline-play');
+   const picture=gallery.querySelector('[data-case-id="authorized-direct-fixture"] .media-entry-image');
+   const play=picture.querySelector('.media-inline-play');
    const image=picture.querySelector('img');
    await image.decode();
    const canvas=document.createElement('canvas');
