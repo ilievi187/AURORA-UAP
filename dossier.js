@@ -165,11 +165,63 @@
    }
   }
   const mediaBox=$("caseMediaSection"),mediaGrid=$("caseMediaGrid");
-  const existingIframe=mediaGrid.querySelector("iframe");
   mediaGrid.replaceChildren();
   $("caseMediaTitle").textContent=window.AURORA_UI?.label("mediaTitle")||(language==="bg"?"СНИМКИ, ВИДЕО И ДОКУМЕНТИ":"PHOTOS, VIDEO & SOURCE DOCUMENTS");
   const approvedTypes=new Set(["video","documents","archive","photo"]);
-  for(const m of (Array.isArray(c.media)?c.media:[]).slice(0,12)){
+  const isBg=language==="bg";
+  const availableMedia=(Array.isArray(c.media)?c.media:[]).slice(0,20);
+  const playLabel=isBg?"▶ ГЛЕДАЙ ВИДЕО В AURORA":"▶ WATCH VIDEO IN AURORA";
+  const errorLabel=isBg?"Видеото не може да се възпроизведе тук. Използвай оригиналния източник.":"Video playback unavailable here. Open the original source.";
+  const addPlayer=(media,existingUrl)=>{
+   const original=sourceUrl(media.url);if(!original)return;
+   const host=new URL(original).hostname.toLowerCase();
+   const allowedHost=["youtube.com","www.youtube.com","m.youtube.com","youtu.be","vimeo.com","www.vimeo.com","player.vimeo.com"].includes(host);
+   const rightsCleared=media.playback?.rights_status==="verified"&&media.playback?.hosting_permission===true;
+   const dvidsPublished=legacy&&c.id==="al-taqaddum-2017"&&host==="www.aaro.mil";
+   if(!allowedHost&&!rightsCleared&&!dvidsPublished)return;
+   const watch=document.createElement("button");
+   watch.type="button";watch.className="case-watch-button";
+   watch.textContent=playLabel+" · "+(local(media.title)||c.id);
+   const state=document.createElement("p");state.className="case-video-status";state.setAttribute("role","status");
+   watch.addEventListener("click",async()=>{
+    if(watch.disabled)return;
+    watch.disabled=true;
+    state.textContent=isBg?"Зареждане на плейъра…":"Loading player…";
+    try{
+     let playback=null;
+     if(dvidsPublished)playback={kind:"iframe",provider:"dvids",embedUrl:"https://www.dvidshub.net/video/embed/960331"};
+     else{
+      const module=await import("/media-player.js");
+      playback=module.resolveMediaPlayback(media);
+     }
+     if(!playback)throw Error("not_playable");
+     if(playback.kind==="html5"){
+      const video=document.createElement("video");
+      video.className="case-video-frame";video.controls=true;video.preload="metadata";video.playsInline=true;
+      video.setAttribute("aria-label",local(media.title)||title);
+      video.addEventListener("loadedmetadata",()=>{state.textContent="";},{once:true});
+      video.addEventListener("error",()=>{state.textContent=errorLabel;watch.disabled=false;video.remove();},{once:true});
+      mediaGrid.append(video);
+      video.src=playback.mediaUrl;
+     }else if(playback.kind==="iframe"){
+      const frame=document.createElement("iframe");
+      frame.src=playback.embedUrl;
+      frame.title=local(media.title)||title;
+      frame.className="case-video-frame";
+      frame.loading="lazy";frame.allowFullscreen=true;
+      frame.referrerPolicy="strict-origin-when-cross-origin";
+      frame.setAttribute("sandbox","allow-scripts allow-same-origin allow-presentation");
+      frame.addEventListener("load",()=>{state.textContent="";},{once:true});
+      mediaGrid.append(frame);
+     }else throw Error("not_playable");
+    }catch{
+     state.textContent=errorLabel;
+     watch.disabled=false;
+    }
+   });
+   mediaGrid.append(watch,state);
+  };
+  for(const m of availableMedia){
    if(!approvedTypes.has(m.type))continue;
    const safe=sourceUrl(m.url);if(!safe)continue;
    const anchor=document.createElement("a");anchor.href=safe;anchor.target="_blank";anchor.rel="noopener noreferrer";
@@ -177,33 +229,11 @@
    const icon=document.createElement("span");
    icon.className="case-media-icon";icon.setAttribute("aria-hidden","true");
    icon.textContent=m.type==="video"?"▶":m.type==="photo"?"▧":"▤";
-   const text=document.createElement("strong");
-   text.textContent=local(m.title)||m.type;
+   const text=document.createElement("strong");text.textContent=local(m.title)||m.type;
    const type=document.createElement("small");
    type.textContent=({video:"VIDEO",photo:"PHOTO",documents:"DOCUMENTS",archive:"ARCHIVE"})[m.type];
    anchor.append(icon,text,type);mediaGrid.append(anchor);
-  }
-  // Native viewing for the one verified public-domain DVIDS video. The player
-  // is intentionally created only after an explicit user click (no third-party
-  // cookie or media request on initial page load).
-  if(c.id==="al-taqaddum-2017"&&legacy){
-   const watch=document.createElement("button");
-   watch.type="button";watch.className="case-watch-button";
-   watch.textContent=window.AURORA_UI?.label("watch")||(language==="bg"?"▶ ГЛЕДАЙ ОРИГИНАЛНИЯ ЗАПИС":"▶ WATCH THE ORIGINAL FOOTAGE");
-   watch.addEventListener("click",()=>{
-    if(mediaGrid.querySelector("iframe"))return;
-    const frame=document.createElement("iframe");
-    frame.src="https://www.dvidshub.net/video/embed/960331";
-    frame.title="DVIDS — Al Taqaddum original AARO video";
-    frame.className="case-video-frame";
-    frame.loading="lazy";frame.allowFullscreen=true;
-    frame.referrerPolicy="strict-origin-when-cross-origin";
-    frame.setAttribute("sandbox","allow-scripts allow-same-origin allow-presentation");
-    mediaGrid.append(frame);
-    watch.disabled=true;
-   });
-   mediaGrid.prepend(watch);
-   if(existingIframe){mediaGrid.append(existingIframe);watch.disabled=true}
+   if(m.type==="video")addPlayer(m,safe);
   }
   mediaBox.hidden=mediaGrid.childElementCount===0;
 
