@@ -3,7 +3,7 @@
 (function(root){
  "use strict";
  const $=id=>document.getElementById(id);
- let revision=0,player=null,mediaImport=null,selectedMedia=null,selectedPlayback=null;
+ let revision=0,player=null,mediaImport=null,playerModule=null,selectedMedia=null,selectedPlayback=null;
  const words=lang=>lang==="bg"?{
   available:"ПУБЛИКУВАН ВИДЕОЗАПИС",check:"Проверка на наличния плейър…",
   play:"▶ ГЛЕДАЙ ОРИГИНАЛНОТО ВИДЕО",close:"Затвори видеото",
@@ -55,6 +55,7 @@
    mediaImport??=import("/media-player.js");
    const module=await mediaImport;
    if(token!==revision)return;
+   playerModule=module;
    const candidates=videos.map(media=>({media,playback:module.resolveMediaPlayback(media)})).filter(x=>x.playback);
    if(!candidates.length){
     status.textContent=w.notSupported;
@@ -115,7 +116,8 @@
     v.setAttribute("aria-label",title(media.title,document.documentElement.lang)||"Source video");
     v.addEventListener("loadedmetadata",()=>{if(player===v)status.textContent=w.ready},{once:true});
     v.addEventListener("error",()=>{if(player===v)status.textContent=w.error});
-    stage.append(v);player=v;v.src=playback.mediaUrl;
+    stage.append(v);player=v;
+    playerModule?.loadVerifiedVideo(v,playback,state=>{if(player===v)status.textContent=state==="fallback"?(document.documentElement.lang==="bg"?"Зарежда се официалното резервно видео…":"Trying official video backup…"):w.error;});
    }else if(playback.kind==="iframe"){
     const frame=document.createElement("iframe");
     frame.className="case-hero-media";frame.title=title(media.title,document.documentElement.lang)||"Original source video";
