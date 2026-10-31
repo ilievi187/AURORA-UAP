@@ -51,7 +51,7 @@ function filtered(){
   if(mediaType==="playable"&&!playable(r))return false;
   if(mediaType==="video"&&!(r.media||[]).some(m=>m.type==="video"))return false;
   if(mediaType==="documents"&&!(r.media||[]).some(m=>["documents","archive"].includes(m.type)))return false;
-  const searchable=[caseText(r,"title"),caseText(r,"summary"),local(r.city),r.date,r.country,
+  const searchable=[r.id,caseText(r,"title"),caseText(r,"summary"),local(r.city),r.date,r.country,
    ...(r.story?.en||[]),...(r.sources||[]).map(s=>s.name||"")].join(" ").toLocaleLowerCase();
   return !search||searchable.includes(search);
  });
