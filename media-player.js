@@ -103,10 +103,19 @@ export function resolveMediaPlayback(media) {
   if (embedUrl) {
     return { kind: 'iframe', provider: 'vimeo', embedUrl, originalUrl: original.href };
   }
-  // Verified DVIDS public embed for the official Al Taqaddum case only.
-  if (original.hostname.toLowerCase() === 'www.dvidshub.net' &&
-      /^\/video\/960331(?:\/|$)/.test(original.pathname)) {
-    return { kind: 'iframe', provider: 'dvids', embedUrl: 'https://www.dvidshub.net/video/embed/960331', originalUrl: original.href };
+  // DVIDS publishes its own iframe Embed Example for source video pages.
+  // Accept the original Al Taqaddum case plus metadata explicitly marked
+  // as a provider-provided embed by our allowlisted case importer.
+  const dvidsId = original.hostname.toLowerCase() === 'www.dvidshub.net' &&
+    original.pathname.match(/^\/video\/([1-9][0-9]{5,8})(?:\/[a-z0-9-]+)?\/?$/);
+  const publishedEmbed = media.playback?.mode === 'provider_embed' &&
+    media.playback?.provider === 'dvids' &&
+    media.playback?.permission === 'public_embed' &&
+    media.playback?.source_url === original.href;
+  if (dvidsId && (dvidsId[1] === '960331' || publishedEmbed)) {
+    return { kind: 'iframe', provider: 'dvids',
+      embedUrl: 'https://www.dvidshub.net/video/embed/' + dvidsId[1],
+      originalUrl: original.href };
   }
   return directPlayback(media, original);
 }
