@@ -31,10 +31,14 @@
       },
       "story": {
         "bg": [
-          "Сведенията обхващат няколко района на Аризона и различни часове на вечерта. NUFORC записва множество индивидуални съобщения. Голямата V-образна формация и отделни групи светлини трябва да се разглеждат като различни свидетелски описания, а не като един установен обект."
+          "Сведенията обхващат няколко района на Аризона и различни часове на вечерта. NUFORC записва множество индивидуални съобщения. Голямата V-образна формация и отделни групи светлини трябва да се разглеждат като различни свидетелски описания, а не като един установен обект.",
+          "За да се разбере този случай, е важно да се разграничат няколко отделни наблюдения, а не всички светлини да се описват като един-единствен обект. Записите на NUFORC събират съобщения от различни хора и райони на Аризона. Те са ценни като исторически свидетелства, но не са единна измервателна система: свидетелите могат да оценяват по различен начин времето, височината, скоростта и разстоянието.",
+          "Когато разглеждаш първичните сведения, сравнявай часа, географския район и формата на светлините във всяко отделно съобщение. Самото съвпадение на описания не доказва общ произход. За конкретно обяснение са необходими независими данни — например синхронизирани видео или фотографски записи с известна посока на заснемане. В публикуваното резюме такива измервания не са представени като окончателно доказателство."
         ],
         "en": [
-          "The reports cover multiple Arizona locations and different times that evening. NUFORC logged numerous individual accounts. The widely described V-shaped formation and other groups of lights should be read as separate witness descriptions rather than a single established object."
+          "The reports cover multiple Arizona locations and different times that evening. NUFORC logged numerous individual accounts. The widely described V-shaped formation and other groups of lights should be read as separate witness descriptions rather than a single established object.",
+          "The first question is whether the reported lights should be treated as one event or several distinct observations. NUFORC's record collects accounts from different witnesses and locations across Arizona. These are valuable historical statements, but they are not a synchronized measurement system: observers may estimate distance, altitude, speed and timing differently.",
+          "When reading the primary accounts, compare each report's time, geographic setting and described light pattern. Similar descriptions alone do not establish a shared cause. A definitive reconstruction would need independent material such as time-synchronized recordings and reliable camera orientation. The source-linked summary does not claim that those measurements conclusively establish what every witness saw."
         ]
       },
       "media": [
@@ -54,7 +58,9 @@
           "bg": "Тематична илюстрация, не оригинална снимка от случая.",
           "en": "Thematic illustration, not original incident photography."
         }
-      }
+      },
+      "content_depth": "editorial",
+      "editorial_review": "source-linked-context"
     },
     {
       "id": "rendlesham-1980",
@@ -84,10 +90,14 @@
       },
       "story": {
         "bg": [
-          "Американски военнослужещи от RAF Woodbridge съобщават за светлини край Рендълшъм през декември 1980 г. Меморандумът на полк. Чарлз Холт е съхранен в британския Национален архив. По-късна кореспонденция и интервюта предлагат допълнителни, понякога различаващи се версии."
+          "Американски военнослужещи от RAF Woodbridge съобщават за светлини край Рендълшъм през декември 1980 г. Меморандумът на полк. Чарлз Холт е съхранен в британския Национален архив. По-късна кореспонденция и интервюта предлагат допълнителни, понякога различаващи се версии.",
+          "Случаят е свързан с разкази на американски военнослужещи край британските бази RAF Woodbridge и Bentwaters. Той е особено интересен заради наличието на съвременна на събитията служебна кореспонденция, включително известния меморандум на Чарлз Холт. Архивният документ показва, че съобщенията са били записани, но не е равнозначен на независимо потвърждение на всички по-късни детайли в свидетелските истории.",
+          "През годините около случая се появяват различни реконструкции и допълнителни интервюта. За надеждно изследване е важно да се отдели казаното непосредствено след случката от по-късните спомени и интерпретации. Сравнявай датите на документите, обстановката в района и възможните обичайни източници на светлина. Оставяме оценката отворена там, където източниците не са достатъчни."
         ],
         "en": [
-          "US personnel from RAF Woodbridge reported lights near Rendlesham in December 1980. Lieutenant Colonel Charles Halt's memorandum is held by the UK National Archives. Later correspondence and interviews provide additional, sometimes differing accounts."
+          "US personnel from RAF Woodbridge reported lights near Rendlesham in December 1980. Lieutenant Colonel Charles Halt's memorandum is held by the UK National Archives. Later correspondence and interviews provide additional, sometimes differing accounts.",
+          "The accounts concern American service personnel near the RAF Woodbridge and Bentwaters installations in the United Kingdom. This case is notable for contemporary official correspondence, including Charles Halt's memorandum. That archival document demonstrates that reports were recorded; it does not by itself independently confirm every detail added in later witness accounts.",
+          "Several reconstructions and further interviews have appeared over the years. A careful investigation separates statements made close to the event from memories and interpretations recorded much later. Document dates, local conditions and potential ordinary light sources are central to comparing the competing explanations. Where the archival record does not settle a question, the dossier leaves it unresolved."
         ]
       },
       "media": [
@@ -107,7 +117,9 @@
           "bg": "Тематична илюстрация, не оригинална снимка от случая.",
           "en": "Thematic illustration, not original incident photography."
         }
-      }
+      },
+      "content_depth": "editorial",
+      "editorial_review": "source-linked-context"
     },
     {
       "id": "westall-1966",
@@ -137,10 +149,14 @@
       },
       "story": {
         "bg": [
-          "На 6 април 1966 г. ученици и преподаватели описват необичаен обект над училището в Уестол, край Мелбърн. През 2026 г. Australian Story събира нови интервюта с очевидци. Оригиналните телевизионни кадри от 1966 г. не са открити, затова съвременният филм представя спомени и журналистическо проучване."
+          "На 6 април 1966 г. ученици и преподаватели описват необичаен обект над училището в Уестол, край Мелбърн. През 2026 г. Australian Story събира нови интервюта с очевидци. Оригиналните телевизионни кадри от 1966 г. не са открити, затова съвременният филм представя спомени и журналистическо проучване.",
+          "Уестол е случай на групови спомени от училищна среда, които продължават да се обсъждат десетилетия след 6 април 1966 г. Разказите за наблюдаван обект са важна част от местната история, но всеки свидетел описва събитията през своя гледна точка. По-късните интервюта помагат да бъдат запазени тези спомени, без автоматично да потвърждават физическите характеристики или произхода на обекта.",
+          "Публикациите на ABC представят съвременна журналистическа работа и разговори със свидетели. Това е и причината да ги обозначим като документални материали, а не като оригинални видеокадри от самото наблюдение. Когато гледаш филма или интервютата, различавай реконструкциите, разказите на очевидци и архивните факти. Наличието на видео на страницата на издателя не означава автоматично, че можем законно да го вградим в AURORA."
         ],
         "en": [
-          "On April 6, 1966, students and teachers described an unusual object above Westall High School near Melbourne. In 2026, Australian Story collected new eyewitness interviews. The original 1966 television footage has not been found, so the modern documentary presents recollections and journalism."
+          "On April 6, 1966, students and teachers described an unusual object above Westall High School near Melbourne. In 2026, Australian Story collected new eyewitness interviews. The original 1966 television footage has not been found, so the modern documentary presents recollections and journalism.",
+          "Westall is a case of collective school-community memories still discussed decades after April 6, 1966. The accounts of an observed object form part of local history, but each witness recalls the event from a distinct viewpoint. Later interviews preserve those memories without independently verifying all claimed physical characteristics or the object's origin.",
+          "ABC's later reports present journalism and witness interviews, not recovered original footage of the 1966 observation. The dossier therefore distinguishes documentary material from video taken during the reported event. When viewing the interviews, separate reconstructions, recollections and archival facts. A video published on the broadcaster's website is not automatically licensed for embedding on another site."
         ]
       },
       "media": [
@@ -168,7 +184,9 @@
           "bg": "Тематична илюстрация, не оригинална снимка от случая.",
           "en": "Thematic illustration, not original incident photography."
         }
-      }
+      },
+      "content_depth": "editorial",
+      "editorial_review": "source-linked-context"
     },
     {
       "id": "jal-1628-1986",
@@ -198,10 +216,14 @@
       },
       "story": {
         "bg": [
-          "Екипажът на товарния полет на Japan Airlines съобщава за светлини над Аляска на 17 ноември 1986 г. FAA събира записи от разговори, интервюта с екипажа и материали за радарните проверки. Историческите файлове позволяват да се сравнят първоначалните твърдения и официалният анализ."
+          "Екипажът на товарния полет на Japan Airlines съобщава за светлини над Аляска на 17 ноември 1986 г. FAA събира записи от разговори, интервюта с екипажа и материали за радарните проверки. Историческите файлове позволяват да се сравнят първоначалните твърдения и официалният анализ.",
+          "Екипажът на товарния полет JAL 1628 описва необичайни светлини по време на полет над Аляска. Тъй като историята се отнася до гражданска авиация, важно място заемат материалите на FAA: разговори със службите за контрол, интервюта и оценки на съответните радарни данни. Тези записи позволяват да се сравни какво са съобщили пилотите в момента на събитието и как е интерпретирано по-късно.",
+          "Официалната кореспонденция не потвърждава категорично друг летателен апарат или неизвестен обект. Оттук не следва, че свидетелите непременно са се заблудили; означава, че наличните независими данни не са достатъчни за окончателно заключение. За читателя най-полезни са времевите последователности, формулировките на екипажа и разликата между установено радарно наблюдение и предполагаема причина."
         ],
         "en": [
-          "The Japan Airlines cargo crew reported lights over Alaska on November 17, 1986. FAA files include communications, interviews and radar-related investigation records. The historical documents let readers compare the original accounts with the official analysis."
+          "The Japan Airlines cargo crew reported lights over Alaska on November 17, 1986. FAA files include communications, interviews and radar-related investigation records. The historical documents let readers compare the original accounts with the official analysis.",
+          "The Japan Airlines cargo crew described unusual lights during a flight over Alaska. Because the report arose in civil aviation, the FAA records are particularly important: communications with air-traffic services, interviews and reviews of relevant radar information. These records help distinguish what the crew reported at the time from interpretations published afterward.",
+          "The official correspondence does not conclusively confirm another aircraft or unknown object. That is not proof that the crew fabricated or misperceived its experience; it means the independent evidence available in the documents is insufficient for a final identification. The most useful reading method is to compare the timeline, the crew's own wording and the difference between a recorded radar return and an inferred explanation."
         ]
       },
       "media": [
@@ -221,7 +243,9 @@
           "bg": "Тематична илюстрация, не оригинална снимка от случая.",
           "en": "Thematic illustration, not original incident photography."
         }
-      }
+      },
+      "content_depth": "editorial",
+      "editorial_review": "source-linked-context"
     },
     {
       "id": "nimitz-2004",
@@ -251,10 +275,14 @@
       },
       "story": {
         "bg": [
-          "Видеото FLIR1 идва от военноморска авиационна система и е заснето през ноември 2004 г. по време на операции край Калифорния. Министерството на отбраната публикува официално клипа през април 2020 г. заедно с GIMBAL и GOFAST. Публикацията удостоверява произхода на кадрите."
+          "Видеото FLIR1 идва от военноморска авиационна система и е заснето през ноември 2004 г. по време на операции край Калифорния. Министерството на отбраната публикува официално клипа през април 2020 г. заедно с GIMBAL и GOFAST. Публикацията удостоверява произхода на кадрите.",
+          "FLIR1 е инфрачервен запис от система на военноморски самолет по време на операции край Калифорния през ноември 2004 г. Публикацията на Министерството на отбраната през 2020 г. потвърждава институционалния произход на видеоматериала. Тя не е удостоверяване на конкретна теория за природата на заснетия обект. Видеото трябва да се гледа като ограничена картина през прибор с определено зрително поле и настройки.",
+          "При анализа на инфрачервен кадър визуалната форма, видимото движение и относителните размери могат да бъдат повлияни от сензора, гледната точка и липсата на независими измервания. Затова различаваме потвърдената автентичност на файла от твърденията за скорост, размер или произход. Вграденият плейър използва публикувано копие с проверени права; оригиналното съобщение на Пентагона остава достъпно чрез връзката към източника."
         ],
         "en": [
-          "The FLIR1 video comes from a Navy aircraft infrared system and was recorded in November 2004 during operations near California. The Department of Defense officially released it in April 2020 together with GIMBAL and GOFAST. That announcement authenticates the footage's source."
+          "The FLIR1 video comes from a Navy aircraft infrared system and was recorded in November 2004 during operations near California. The Department of Defense officially released it in April 2020 together with GIMBAL and GOFAST. That announcement authenticates the footage's source.",
+          "FLIR1 is infrared footage captured by a Navy aircraft system during operations off California in November 2004. The Department of Defense's 2020 release establishes the institutional provenance of the recording. It does not certify a particular theory about what the sensor captured. The video must be interpreted as a limited view through an instrument with its own field of view and operating conditions.",
+          "Apparent shape, movement and scale in infrared imagery can depend on the sensor, viewing angle and missing independent measurements. The file's authenticated provenance is therefore distinct from claims about speed, dimensions or origin. The in-page player uses a rights-reviewed published copy, while the Pentagon's original announcement remains linked for primary-source verification."
         ]
       },
       "media": [
@@ -286,7 +314,9 @@
           "bg": "Тематична илюстрация, не оригинална снимка от случая.",
           "en": "Thematic illustration, not original incident photography."
         }
-      }
+      },
+      "content_depth": "editorial",
+      "editorial_review": "source-linked-context"
     },
     {
       "id": "gimbal-2015",
@@ -316,10 +346,14 @@
       },
       "story": {
         "bg": [
-          "GIMBAL е един от инфрачервените видеозаписи, заснети през януари 2015 г. от военноморски самолет. Пентагонът официално го публикува през април 2020 г. Разглеждането на видеото изисква внимание към движението на самата камера и към ограниченията на краткия откъс."
+          "GIMBAL е един от инфрачервените видеозаписи, заснети през януари 2015 г. от военноморски самолет. Пентагонът официално го публикува през април 2020 г. Разглеждането на видеото изисква внимание към движението на самата камера и към ограниченията на краткия откъс.",
+          "GIMBAL е един от официално разпространените записи от военноморска авиация от януари 2015 г. Кадрите са интересни, защото показват обект през електрооптична или инфрачервена система, а не през обикновена камера. Потвърждението от Министерството на отбраната се отнася до автентичността и произхода на записа, но не решава автоматично какво представлява наблюдаваният образ.",
+          "Особено важно е да не се извеждат скорост, дистанция, въртене или размер само от визуалното впечатление. Движението на платформата, поведението на оптичния сензор и достъпните контекстни данни трябва да се разглеждат отделно. Тук запазваме оригиналния издателски източник и вграденото разрешено копие, така че читателят да може да сравнява самия кадър с интерпретациите."
         ],
         "en": [
-          "GIMBAL is among the infrared clips recorded in January 2015 by a Navy aircraft. The Pentagon formally released it in April 2020. Interpretation of the footage depends in part on the camera's motion and the limits of the short excerpt."
+          "GIMBAL is among the infrared clips recorded in January 2015 by a Navy aircraft. The Pentagon formally released it in April 2020. Interpretation of the footage depends in part on the camera's motion and the limits of the short excerpt.",
+          "GIMBAL is one of the officially released Navy aviation recordings from January 2015. Its significance lies partly in the sensor view: it presents an image through an electro-optical or infrared system rather than an ordinary camera. Department of Defense authentication concerns the recording's source, not an automatic identification of the depicted phenomenon.",
+          "Speed, distance, apparent rotation and size cannot be established from visual impression alone. Platform motion, sensor behavior and available contextual measurements need to be considered separately. The dossier preserves a link to the original institutional release alongside the authorized embedded video, allowing readers to compare the imagery with later interpretations."
         ]
       },
       "media": [
@@ -351,7 +385,9 @@
           "bg": "Тематична илюстрация, не оригинална снимка от случая.",
           "en": "Thematic illustration, not original incident photography."
         }
-      }
+      },
+      "content_depth": "editorial",
+      "editorial_review": "source-linked-context"
     },
     {
       "id": "gofast-2015",
@@ -381,10 +417,14 @@
       },
       "story": {
         "bg": [
-          "GOFAST е официално публикуван военноморски инфрачервен запис от януари 2015 г. Видимото движение на обекта зависи от геометрията, височината и относителното движение на самолета. Оригиналният запис е достъпен чрез официалното съобщение и архива на ВМС."
+          "GOFAST е официално публикуван военноморски инфрачервен запис от януари 2015 г. Видимото движение на обекта зависи от геометрията, височината и относителното движение на самолета. Оригиналният запис е достъпен чрез официалното съобщение и архива на ВМС.",
+          "GOFAST е кратък приборен запис, заснет от военноморска въздушна платформа през януари 2015 г. и официално публикуван през 2020 г. Случаят често се цитира заради впечатлението за много бързо движение. Самият видеокадър обаче не измерва пряко скоростта спрямо земята, ако не се отчетат геометрията на наблюдението, движението на самолета и показанията на сензора.",
+          "Паралаксът е особено важен: когато наблюдаващата платформа се движи, обект на различно разстояние може да изглежда много по-бърз на фона. Това не е автоматична идентификация, а предупреждение срещу прибързани количествени заключения. Читателят може да разгледа оригиналния публикуван кадър, да провери признатия му произход и да отдели потвърдените данни от спорните интерпретации."
         ],
         "en": [
-          "GOFAST is an officially released Navy infrared clip from January 2015. Apparent motion depends on viewing geometry, altitude and aircraft motion. The original record is available through the official Navy and Defense Department releases."
+          "GOFAST is an officially released Navy infrared clip from January 2015. Apparent motion depends on viewing geometry, altitude and aircraft motion. The original record is available through the official Navy and Defense Department releases.",
+          "GOFAST is a short Navy sensor recording made in January 2015 and officially released in 2020. The clip is frequently discussed because the tracked object appears to move rapidly against the background. However, the image alone does not directly establish ground speed without accounting for viewing geometry, aircraft motion and instrument readouts.",
+          "Parallax matters here: a moving observer can make an object at an uncertain distance appear much faster against the scenery. This is not itself an identification, but a warning against premature numerical conclusions. Readers can inspect the released imagery, verify its institutional origin and distinguish recorded observations from disputed estimates."
         ]
       },
       "media": [
@@ -416,7 +456,9 @@
           "bg": "Тематична илюстрация, не оригинална снимка от случая.",
           "en": "Thematic illustration, not original incident photography."
         }
-      }
+      },
+      "content_depth": "editorial",
+      "editorial_review": "source-linked-context"
     },
     {
       "id": "roswell-1947",
@@ -446,10 +488,14 @@
       },
       "story": {
         "bg": [
-          "Историята започва с намерени останки край Розуел през юли 1947 г. В следващите десетилетия тя става център на обществени спорове, книги и филми. Докладите на американските ВВС свързват откритите материали с височинна балонна програма, което е важно за историческата документация."
+          "Историята започва с намерени останки край Розуел през юли 1947 г. В следващите десетилетия тя става център на обществени спорове, книги и филми. Докладите на американските ВВС свързват откритите материали с височинна балонна програма, което е важно за историческата документация.",
+          "През юли 1947 г. сведенията за намерени отломки край Розуел стават част от ранната история на публичните разкази за летящи чинии. По-късно случаят придобива множество версии, често с взаимно противоречащи си твърдения. За изследователски архив е съществено да се отделят публикациите и документите, близки по време до събитието, от разказите, появили се години по-късно.",
+          "Официални американски проверки свързват материалите с балонни изследователски програми, като не установяват доказателства за извънземен апарат. В досието този извод е представен като оценката на цитирания източник, а не като основание да се заличават историческите свидетелства. Полезният въпрос е кои твърдения са подкрепени от документи и кои принадлежат на по-късния фолклор около случая."
         ],
         "en": [
-          "The story began with recovered debris near Roswell in July 1947. Over subsequent decades it became the subject of books, films and public debate. U.S. Air Force investigations linked the recovered material to a high-altitude balloon program, an important part of the historical record."
+          "The story began with recovered debris near Roswell in July 1947. Over subsequent decades it became the subject of books, films and public debate. U.S. Air Force investigations linked the recovered material to a high-altitude balloon program, an important part of the historical record.",
+          "Reports about debris recovered near Roswell in July 1947 became part of the early public history of flying saucers. In later decades the incident accumulated many versions, often featuring conflicting claims. A research archive should separate contemporary publications and documents from accounts first circulated years after the event.",
+          "Subsequent US government investigations linked the material to balloon research programs and found no substantiation for an alien vehicle. The dossier attributes that conclusion to the cited source without erasing the historical importance of witness accounts. A productive approach is to ask which specific claims are documentary and which belong to later reinterpretation and folklore."
         ]
       },
       "media": [
@@ -469,7 +515,9 @@
           "bg": "Тематична илюстрация, не оригинална снимка от случая.",
           "en": "Thematic illustration, not original incident photography."
         }
-      }
+      },
+      "content_depth": "editorial",
+      "editorial_review": "source-linked-context"
     },
     {
       "id": "washington-1952",
@@ -500,11 +548,15 @@
       "story": {
         "bg": [
           "Летищни диспечери и пилоти съобщават за необичайни радарни сигнали и светлини над Вашингтон през юли 1952 г. Историческата документация е запазена в Project Blue Book.",
-          "Разгледай оригиналните документи и свидетелства чрез връзките по-долу; там са събрани детайлите, снимките и видеоматериалите, когато са публикувани."
+          "Разгледай оригиналните документи и свидетелства чрез връзките по-долу; там са събрани детайлите, снимките и видеоматериалите, когато са публикувани.",
+          "Съобщенията от юли 1952 г. включват необичайни радарни отражения и наблюдавани светлини във въздушното пространство около Вашингтон. Тъй като в случая участват както диспечери, така и пилоти, историческата документация е по-сложна от единичен разказ на очевидец. Това не означава, че всички съобщения непременно описват един и същ обект или имат обща причина.",
+          "Когато се сравняват радарни и визуални сигнали, трябва да се проверят точните часове, позициите на наблюдателите и обстановката за всеки отделен запис. Архивните файлове на Project Blue Book са подходящо начало за такава проверка. Тук не превръщаме наличието на институционално разследване в доказателство за определена хипотеза."
         ],
         "en": [
           "Air traffic controllers and pilots reported unusual radar returns and lights over Washington during July 1952. Historical documents are held in Project Blue Book.",
-          "Explore the original documents and testimony through the links below, including recordings and images where the publisher has released them."
+          "Explore the original documents and testimony through the links below, including recordings and images where the publisher has released them.",
+          "The July 1952 reports involved unusual radar returns and observed lights around Washington airspace. Because controllers and pilots were among the people involved, the historical paper trail is more complex than a single eyewitness account. That does not mean every reported return or light represented the same object or shared a cause.",
+          "Comparing radar and visual observations requires attention to exact timing, observer location and the conditions of each report. Project Blue Book files provide a historical starting point for this work. The existence of an official investigation is not treated as proof of any particular proposed explanation."
         ]
       },
       "visual": {
@@ -524,7 +576,9 @@
           },
           "url": "https://prologue.blogs.archives.gov/2019/12/19/saucers-over-washington-the-history-of-project-blue-book/"
         }
-      ]
+      ],
+      "content_depth": "editorial",
+      "editorial_review": "source-linked-context"
     },
     {
       "id": "arnold-1947",
@@ -555,11 +609,15 @@
       "story": {
         "bg": [
           "На 24 юни 1947 г. пилотът Кенет Арнолд съобщава за група бързо движещи се обекти близо до Рейниър. Запазени са първоначални документи, отразяващи началото на интереса към „летящите чинии“.",
-          "Разгледай оригиналните документи и свидетелства чрез връзките по-долу; там са събрани детайлите, снимките и видеоматериалите, когато са публикувани."
+          "Разгледай оригиналните документи и свидетелства чрез връзките по-долу; там са събрани детайлите, снимките и видеоматериалите, когато са публикувани.",
+          "Пилотът Кенет Арнолд съобщава за група бързо движещи се обекти край планината Рейниър на 24 юни 1947 г. Разказът има особено място в публичната история, защото е сред наблюденията, привлекли мащабно медийно внимание към темата за летящите чинии. В тази историческа значимост не бива да се смесват популярността на публикацията и независимата проверка на физическите характеристики на обектите.",
+          "За да се реконструира наблюдението, трябва да се разграничат оригиналните формулировки на пилота, интерпретациите в пресата и изчисленията, направени въз основа на субективно оценени дистанции. Архивите на Project Blue Book помагат да се разбере как подобни съобщения са били документирани и разглеждани от американските институции през следващите години."
         ],
         "en": [
           "On June 24, 1947, pilot Kenneth Arnold described fast-moving objects near Mount Rainier. Early records preserve one of the accounts that brought widespread attention to flying saucers.",
-          "Explore the original documents and testimony through the links below, including recordings and images where the publisher has released them."
+          "Explore the original documents and testimony through the links below, including recordings and images where the publisher has released them.",
+          "Pilot Kenneth Arnold reported fast-moving objects near Mount Rainier on June 24, 1947. The account occupies an important place in public history because it helped bring widespread media attention to flying-saucer reports. That historical significance should not be confused with independent confirmation of the reported objects' physical properties.",
+          "Reconstructing the observation requires separating Arnold's original statements, press interpretations and speed estimates based on uncertain perceived distances. Project Blue Book collections provide historical context for how such reports were later documented and assessed by US institutions. The dossier preserves the account without presenting a disputed estimate as a measured fact."
         ]
       },
       "visual": {
@@ -579,7 +637,9 @@
           },
           "url": "https://www.archives.gov/news/articles/project-blue-book-50th-anniversary"
         }
-      ]
+      ],
+      "content_depth": "editorial",
+      "editorial_review": "source-linked-context"
     },
     {
       "id": "tehran-1976",
@@ -610,11 +670,15 @@
       "story": {
         "bg": [
           "Разсекретен документ описва граждански обаждания и действия на ирански военни самолети през септември 1976 г., включително съобщения за необичайна светлина и прекъснати комуникации.",
-          "Разгледай оригиналните документи и свидетелства чрез връзките по-долу; там са събрани детайлите, снимките и видеоматериалите, когато са публикувани."
+          "Разгледай оригиналните документи и свидетелства чрез връзките по-долу; там са събрани детайлите, снимките и видеоматериалите, когато са публикувани.",
+          "Разсекретен американски документ обобщава сигнали на граждани и наблюдения от ирански военни самолети през септември 1976 г. В него се описват ярка светлина и твърдения за прекъсвания на комуникационни или приборни системи. За да се тълкуват подобни съобщения, е важно да се проследи коя информация е пряко регистрирана, коя е предадена от свидетели и коя е изложена в служебно резюме.",
+          "Един разсекретен документ е силен източник за това как институциите са записали информацията, но не решава самостоятелно всички физически въпроси около събитието. Сравняването на различните участници, времевите интервали и описаните условия е по-полезно от заключение само въз основа на един цитат. Публикуваме оригиналния PDF, за да може читателят да проверява твърденията."
         ],
         "en": [
           "A declassified U.S. document recounts civilian calls and Iranian military aircraft observations in September 1976, including reports of a bright light and interrupted communications.",
-          "Explore the original documents and testimony through the links below, including recordings and images where the publisher has released them."
+          "Explore the original documents and testimony through the links below, including recordings and images where the publisher has released them.",
+          "A declassified US document summarizes civilian reports and Iranian military aircraft observations in September 1976. It describes a bright light and reported communication or instrument interruptions. Interpreting such statements requires distinguishing directly recorded information, witness testimony and wording introduced by an official summary.",
+          "A declassified document is strong evidence for how institutions recorded the reports, but it cannot alone settle every physical question about the event. Comparing participants, timelines and the reported circumstances is more useful than drawing conclusions from a single passage. The original PDF remains linked so readers can inspect the wording for themselves."
         ]
       },
       "visual": {
@@ -634,7 +698,9 @@
           },
           "url": "https://www.nsa.gov/portals/75/documents/news-features/declassified-documents/ufo/us_gov_iran_case.pdf"
         }
-      ]
+      ],
+      "content_depth": "editorial",
+      "editorial_review": "source-linked-context"
     },
     {
       "id": "colares-1977",
@@ -665,11 +731,15 @@
       "story": {
         "bg": [
           "През 1977–1978 г. бразилски военни събират свидетелства, снимки и скици за наблюдавани светлини в щата Пара. Достъпни са протоколи от операцията с дати, места и описания.",
-          "Разгледай оригиналните документи и свидетелства чрез връзките по-долу; там са събрани детайлите, снимките и видеоматериалите, когато са публикувани."
+          "Разгледай оригиналните документи и свидетелства чрез връзките по-долу; там са събрани детайлите, снимките и видеоматериалите, когато са публикувани.",
+          "Операция „Плато“ включва военен интерес към сведения за светлини и необичайни преживявания в щата Пара, Бразилия, през 1977–1978 г. Събраните материали съдържат различни видове сведения — описания, фотографски материали и скици. Степента на надеждност не е еднаква за всяко от тях, затова досието не обединява всички разкази в едно потвърдено физическо събитие.",
+          "При преглед на архива е полезно да се проверят мястото, датата, авторът и обстоятелствата около всеки документ. Един архивен набор може да бъде голям, без това да означава, че всяка страница потвърждава отделно наблюдение. В AURORA разграничаваме свидетелски сведения, оригинални архивни документи и заключения, направени по-късно от изследователи."
         ],
         "en": [
           "In 1977–78 Brazilian military investigators collected testimony, photographs and sketches of lights in Pará. Surviving operation records include locations, times and descriptions.",
-          "Explore the original documents and testimony through the links below, including recordings and images where the publisher has released them."
+          "Explore the original documents and testimony through the links below, including recordings and images where the publisher has released them.",
+          "Operation Saucer, or Operação Prato, involved military interest in reports of lights and unusual experiences in the Brazilian state of Pará during 1977–1978. The surviving material includes different kinds of sources: descriptions, photographs and sketches. These do not all carry equal evidential weight, so the dossier does not combine every account into a single confirmed physical event.",
+          "When reviewing the archival collection, readers should look for the location, date, author and circumstances of each document. A large document collection does not mean that every page verifies a separate sighting. AURORA distinguishes witness accounts, original archived records and interpretations offered by researchers afterward."
         ]
       },
       "visual": {
@@ -697,7 +767,9 @@
           },
           "url": "https://brazilianufoarchives.com/operacao-prato-operation-saucer-para-1977-1978/"
         }
-      ]
+      ],
+      "content_depth": "editorial",
+      "editorial_review": "source-linked-context"
     },
     {
       "id": "puerto-rico-2013",
@@ -728,11 +800,15 @@
       "story": {
         "bg": [
           "През 2013 г. инфрачервен сензор на самолет на граничните служби записва два обекта край Агуадая. AARO публикува анализ на кадрите и разглежда небесни фенери като вероятно обяснение.",
-          "Разгледай оригиналните документи и свидетелства чрез връзките по-долу; там са събрани детайлите, снимките и видеоматериалите, когато са публикувани."
+          "Разгледай оригиналните документи и свидетелства чрез връзките по-долу; там са събрани детайлите, снимките и видеоматериалите, когато са публикувани.",
+          "Инфрачервеното видео от района на Агуадая е заснето през април 2013 г. от въздушна платформа на американските гранични служби. Кадрите стават предмет на различни анализи, които предлагат несъвпадащи тълкувания на движението и природата на обектите. Приборният запис предоставя визуална информация, но без пълни независими измервания някои параметри могат да бъдат разчетени по повече от един начин.",
+          "AARO публикува оценка, че небесни фенери са правдоподобно обяснение на записа. Това е атрибутировано заключение на конкретна институция, а не наша собствена констатация, направена само от гледане на клипа. Препоръчваме читателят да сравни кадрите, описаната методика и евентуалните ограничения в доклада. За този материал към момента не е потвърдено разрешено самостоятелно вграждане."
         ],
         "en": [
           "In 2013 a U.S. border patrol aircraft recorded two objects near Aguadilla. AARO analyzed the footage and assessed sky lanterns as a plausible explanation.",
-          "Explore the original documents and testimony through the links below, including recordings and images where the publisher has released them."
+          "Explore the original documents and testimony through the links below, including recordings and images where the publisher has released them.",
+          "The infrared footage near Aguadilla was recorded in April 2013 from an aircraft operated by US border authorities. The recording has been interpreted in different ways, with competing claims about the objects' movement and nature. Instrument imagery contains useful visual information, but not every parameter can be derived unambiguously without independent measurements.",
+          "AARO published an assessment that sky lanterns were a plausible explanation. The dossier attributes that conclusion to the named institution rather than presenting it as a finding made solely by watching the video. Readers can compare the footage, methodology and limitations described in the report. An independently embeddable video file has not been rights-verified for this record."
         ]
       },
       "visual": {
@@ -760,7 +836,9 @@
           },
           "url": "https://www.aaro.mil/Portals/136/PDFs/case_resolution_reports/AARO_Puerto_Rico_UAP_Case_Resolution.pdf"
         }
-      ]
+      ],
+      "content_depth": "editorial",
+      "editorial_review": "source-linked-context"
     },
     {
       "id": "al-taqaddum-2017",
@@ -791,11 +869,15 @@
       "story": {
         "bg": [
           "През октомври 2017 г. инфрачервен сензор от военна въздушна платформа заснема обект над Ал Таккадум. Официалният анализ на AARO го свързва с група балони.",
-          "Разгледай оригиналните документи и свидетелства чрез връзките по-долу; там са събрани детайлите, снимките и видеоматериалите, когато са публикувани."
+          "Разгледай оригиналните документи и свидетелства чрез връзките по-долу; там са събрани детайлите, снимките и видеоматериалите, когато са публикувани.",
+          "Записът от 23 октомври 2017 г. е направен с инфрачервен сензор на военна въздушна платформа над Ал Таккадум, Ирак. Видеоматериалът показва как приборът проследява неясен обект, но самото изображение не определя неговия материал или произход. Затова хронологията на заснемането и особеностите на сензора са също толкова важни, колкото визуалното впечатление.",
+          "В публикувания анализ AARO заключава, че група балони е съвместима с наблюдаваното. Досието цитира тази институционална оценка и оставя читателя да я сравни с оригиналния запис, без да я представя като независимо наше измерване. Видеото може да се гледа в AURORA чрез официално публикувания DVIDS плейър; оригиналният линк остава достъпен."
         ],
         "en": [
           "In October 2017 an infrared sensor aboard a military aerostat filmed an object above Al Taqaddum. AARO's published assessment found a cluster of balloons was consistent with the footage.",
-          "Explore the original documents and testimony through the links below, including recordings and images where the publisher has released them."
+          "Explore the original documents and testimony through the links below, including recordings and images where the publisher has released them.",
+          "The October 23, 2017 recording came from an infrared sensor on a military airborne platform over Al Taqaddum, Iraq. The footage shows a sensor tracking a poorly resolved object, but the image alone does not establish its composition or origin. The timeline of the recording and characteristics of the sensor matter as much as the initial visual impression.",
+          "In its published analysis, AARO assessed a cluster of balloons as consistent with the observation. The dossier attributes that assessment to the institution and lets readers compare it with the original footage, without presenting it as an independent AURORA measurement. The video can be viewed here using the officially published DVIDS player, and the original link remains available."
         ]
       },
       "visual": {
@@ -823,7 +905,9 @@
           },
           "url": "https://www.aaro.mil/Portals/136/PDFs/case_resolution_reports/AARO_Al_Taqaddam_Case_Resolution_Final.pdf"
         }
-      ]
+      ],
+      "content_depth": "editorial",
+      "editorial_review": "source-linked-context"
     },
     {
       "id": "etna-2018",
@@ -854,11 +938,15 @@
       "story": {
         "bg": [
           "Военен инфрачервен сензор заснема обект близо до вулкана Етна през 2018 г. AARO публикува анализ на оптичните ефекти от горещия вулканичен облак.",
-          "Разгледай оригиналните документи и свидетелства чрез връзките по-долу; там са събрани детайлите, снимките и видеоматериалите, когато са публикувани."
+          "Разгледай оригиналните документи и свидетелства чрез връзките по-долу; там са събрани детайлите, снимките и видеоматериалите, когато са публикувани.",
+          "През декември 2018 г. военна инфрачервена система заснема обект в района на вулкана Етна. Подобна сцена е сложна за интерпретация, защото горещата вулканична среда и оптичните особености на сензора могат да влияят на видимия контраст и контури. За коректна оценка трябва да се отделят действителните измервания от това, което зрителят предполага за размера или формата по изображението.",
+          "AARO публикува анализ на оптични ефекти в близост до горещия вулканичен облак. Това е публикувана институционална интерпретация, а не автоматичен отговор на всички възможни въпроси по записа. Документалният линк остава основен източник за оценката. При липса на проверено за вграждане видео читателят се насочва към оригиналния официален архив."
         ],
         "en": [
           "A military infrared sensor recorded an object near Mt. Etna in 2018. AARO later published an analysis of optical effects near the hot volcanic plume.",
-          "Explore the original documents and testimony through the links below, including recordings and images where the publisher has released them."
+          "Explore the original documents and testimony through the links below, including recordings and images where the publisher has released them.",
+          "In December 2018 a military infrared system recorded an object near Mount Etna. This setting can be difficult to interpret because the hot volcanic environment and optical characteristics of the sensor may affect apparent contrast and outlines. A sound assessment must separate actual instrument measurements from visual assumptions about shape or size.",
+          "AARO published an analysis involving optical effects near a hot volcanic plume. The dossier attributes that interpretation to the issuing institution rather than treating it as an automatic answer to every possible question. The linked documents remain the primary source for evaluating the explanation. Without a separately rights-cleared video, readers are directed to the official source archive."
         ]
       },
       "visual": {
@@ -886,7 +974,9 @@
           },
           "url": "https://www.aaro.mil/Next-AARO-Home-redesign/Next-Parent/AARO-UAP-Case-DT/"
         }
-      ]
+      ],
+      "content_depth": "editorial",
+      "editorial_review": "source-linked-context"
     }
   ]
 }
