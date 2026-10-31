@@ -55,8 +55,19 @@ test("every archive card and source-player uses a real click handler instead of 
  const helper=read("archive-inline-player.js");
  assert.match(helper,/play\.addEventListener\("click"/);
  assert.match(helper,/frame\.replaceChildren\(media\)/);
- assert.match(helper,/if\(playback\.kind==="html5"\)media\.src=playback\.mediaUrl/);
+ assert.match(helper,/loadVerifiedVideo\(media,playback/);
  assert.match(helper,/else media\.src=playback\.embedUrl/);
  assert.match(read("archive-directory.css"),/\.archive-video-play/);
  assert.match(read("dossier.css"),/\.case-hero-poster/);
+});
+
+
+test("FLIR1 has an independently published, verified fallback and no arbitrary host can be injected",()=>{
+ const m=cases.find(x=>x.id==="nimitz-2004").media.find(x=>x.type==="video");
+ const p=resolveMediaPlayback(m);
+ assert.equal(p.kind,"html5");
+ assert.equal(p.alternatives.length,1);
+ assert.match(p.alternatives[0].url,/^https:\/\/www\.navair\.navy\.mil\/foia\/.*FLIR\.mp4$/);
+ const injected={...m,playback:{...m.playback,fallback_urls:[{url:"https://evil.example/backdoor.mp4",mime_type:"video/mp4"}]}};
+ assert.equal(resolveMediaPlayback(injected).alternatives.length,0);
 });
