@@ -51,7 +51,9 @@ test("public-only case translations preserve evidence and translate title, summa
 });
 test("embedded player respects publisher permissions and fallback labels stay honest",()=>{
  const media=read("media.js"),dossier=read("dossier.js"),archive=read("archive-directory.js");
- assert.match(media,/import\("\/archive-inline-player\.js"\)/);
+ assert.doesNotMatch(media,/archive-inline-player/,"media uses one dedicated source player");
+ assert.doesNotMatch(media,/addArchivePlayback/,"no second video player per media card");
+ assert.match(read("media-player.js"),/initializeMediaPlayer\(document, \{ inlineOnly: true \}\)/);
  assert.match(media,/addArchivePlayback\(card,m/);
  assert.match(archive,/translatePublicCase/);
  assert.match(dossier,/requestNarrativeTranslation/);
