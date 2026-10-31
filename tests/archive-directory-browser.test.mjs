@@ -114,6 +114,29 @@ try{
    assert.deepEqual(errors,[]);
   }finally{await ctx.close()}
  });
+ await test("the in-card video player follows every selected archive language",async()=>{
+  const ctx=await browser.newContext({viewport:{width:1180,height:850},reducedMotion:"reduce"});
+  const page=await ctx.newPage(),errors=[];
+  page.on("pageerror",e=>errors.push(e.message));
+  try{
+   await page.addInitScript(()=>localStorage.setItem("aurora-lang","en"));
+   await page.goto("http://127.0.0.1:"+server.address().port+"/archive.html");
+   await page.waitForFunction(()=>document.querySelector("#archiveCount")?.textContent==="105");
+   await page.locator("#archiveMedia").selectOption("playable");
+   for(const language of ["en","de","ru","zh-CN","ja","ar","bg"]){
+    await page.locator("#archiveLanguage").selectOption(language);
+    const current=await page.evaluate(lang=>globalThis.AURORA_VIDEO_UI[lang],language);
+    const card=page.locator(".archive-card").first();
+    assert.equal(await card.locator(".archive-video-play").textContent(),current.watchHere,language);
+    assert.equal(await card.locator(".archive-video-close").getAttribute("aria-label"),current.close,language);
+    assert.equal(await card.locator(".archive-video-original").textContent(),current.original,language);
+    assert.equal(await card.locator(".archive-video-credit").textContent(),current.sourceThumb,language);
+    assert.ok((await card.locator(".archive-video-play").getAttribute("aria-label")).startsWith(current.watchHere+" · "),language);
+   }
+   assert.equal(await page.locator("video,iframe").count(),0,"language switching must not stream video");
+   assert.deepEqual(errors,[]);
+  }finally{await ctx.close()}
+ });
  await test("mobile case pages remain responsive, include no fake video controls and preserve 18 languages",async()=>{
   const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:"reduce"});
   const page=await ctx.newPage(),errors=[];
