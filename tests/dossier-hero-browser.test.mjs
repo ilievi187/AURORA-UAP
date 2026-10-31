@@ -85,7 +85,7 @@ for(const [caseId,expectedKind] of [["gimbal-2015","video"],["gofast-2015","vide
 test("two AARO DVIDS clips share ONE top embedded player with selectable original videos",async()=>{
  const{page,ctx,errors}=await pageFor("disclosure-eastern-mediterranean-2024",{width:390,height:844});
  try{
-  await page.route("https://www.dvidshub.net/**",route=>route.abort());
+  await page.route("https://www.dvidshub.net/**",route=>route.fulfill({status:200,contentType:"text/html",body:"<!doctype html><title>DVIDS embed fixture</title>"}));
   await page.locator("#caseHeroPlay").waitFor({state:"visible"});
   const choose=page.locator("#caseHeroVideoSelect");
   assert.equal(await choose.locator("option").count(),2);
