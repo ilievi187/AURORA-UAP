@@ -145,7 +145,7 @@ async function start(){
  $("archiveCountry").addEventListener("change",filterChanged);
  $("archiveMedia").addEventListener("change",filterChanged);
  try{
-  const response=await fetch("/data/cases.json",{cache:"force-cache"});
+  const response=await fetch("/data/cases.json",{cache:"no-cache"});
   if(!response.ok)throw Error("Archive HTTP "+response.status);
   const data=await response.json();if(!Array.isArray(data.cases))throw Error("Invalid cases payload");
   records=globalThis.AURORA_ARCHIVE?.prepareArchiveCases(data.cases)||data.cases;

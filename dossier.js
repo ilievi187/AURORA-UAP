@@ -304,7 +304,7 @@
   try{
    let c;
    if(legacy){
-    const res=await fetch("/data/cases.json",{cache:"force-cache"});
+    const res=await fetch("/data/cases.json",{cache:"no-cache"});
     if(!res.ok)throw Error("archive");
     const data=await res.json();
     archiveCases=globalThis.AURORA_ARCHIVE?.prepareArchiveCases(data.cases)??(Array.isArray(data.cases)?data.cases:[]);
@@ -317,7 +317,7 @@
     c=await res.json();
     if(c.review_status!=="approved"||c.record_kind==="demo"){feedback("missing",true);return}
     try{
-     const archRes=await fetch("/data/cases.json",{cache:"force-cache"});
+     const archRes=await fetch("/data/cases.json",{cache:"no-cache"});
      if(archRes.ok){const archData=await archRes.json();archiveCases=globalThis.AURORA_ARCHIVE?.prepareArchiveCases(archData.cases)??(Array.isArray(archData.cases)?archData.cases:[]);}
     }catch{}
    }
