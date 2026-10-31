@@ -54,7 +54,7 @@ test("embedded player respects publisher permissions and fallback labels stay ho
  assert.doesNotMatch(media,/archive-inline-player/,"media uses one dedicated source player");
  assert.doesNotMatch(media,/addArchivePlayback/,"no second video player per media card");
  assert.match(read("media-player.js"),/initializeMediaPlayer\(document, \{ inlineOnly: true \}\)/);
- assert.match(media,/addArchivePlayback\(card,m/);
+ assert.match(read("media-player.js"),/inlinePlayerAction/);
  assert.match(archive,/translatePublicCase/);
  assert.match(dossier,/requestNarrativeTranslation/);
  assert.match(read("dossier-hero.js"),/resolveMediaPlayback/);
