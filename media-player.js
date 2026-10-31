@@ -517,7 +517,7 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
       player.addEventListener("loadedmetadata",()=>{status.textContent=words.videoReady},{once:true});
       player.addEventListener("error",()=>{status.textContent=words.videoError},{once:true});
       stage.append(player);
-      player.src=playback.mediaUrl;
+      loadVerifiedVideo(player,playback,state=>{status.textContent=state==="fallback"?"Trying official backup video…":words.videoError});
     }
     activeInline={card,picture,stage,trigger,img,badge,close,player,status};
     close.focus();
@@ -683,7 +683,7 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
     });
     activeNode = video;
     playerHost.append(video);
-    video.setAttribute('src', playback.mediaUrl);
+    loadVerifiedVideo(video,playback,state=>{playerStatus.textContent=state==='fallback'?'Trying official backup video…':words.videoError});
   }
 
   function recordForCard(card, sourceLink) {
