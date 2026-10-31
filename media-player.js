@@ -77,7 +77,7 @@ function directPlayback(media, original) {
   const mimeType = String(playback.mime_type || '').toLowerCase();
   const extension = asset?.pathname.toLowerCase().split('.').at(-1);
   if (!asset || !DIRECT_TYPES[mimeType]?.includes(extension)) return null;
-  return {
+  const resolved = {
     kind: 'html5',
     provider: 'direct',
     mediaUrl: asset.href,
@@ -90,6 +90,8 @@ function directPlayback(media, original) {
        DIRECT_TYPES[String(v.mime_type||"").toLowerCase()]?.includes(u.pathname.toLowerCase().split(".").at(-1));
      }).map(v=>({url:safeHttpsUrl(v.url).href,mimeType:String(v.mime_type).toLowerCase()}))
   };
+  if(!resolved.alternatives.length)delete resolved.alternatives;
+  return resolved;
 }
 
 // Stream only verified and approved sources. If a public-domain video CDN
