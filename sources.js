@@ -170,7 +170,7 @@ function renderMatches(payload) {
     setStatus(matchStatus, "ready", message(`Няма съвпадения по UAP, UFO, OVNI, AARO или НЛО. Проверени: ${checked}${failedNote}`,`No UAP/UFO/AARO keyword matches. Checked: ${checked}`));
     return;
   }
-  setStatus(matchStatus, "ready", message(`${payload.items.length} съвпадения. Това са заглавия от издателите, не потвърдени случаи. Проверени: ${checked}${failedNote}`,`${payload.items.length} headline matches, not confirmed events. Checked: ${checked}`));
+  setStatus(matchStatus, "ready", message(`${payload.items.length} съвпадения. Отвори оригиналните публикации. Проверени: ${checked}${failedNote}`,`${payload.items.length} headlines from publishers. Feeds checked: ${checked}`));
   for (const item of payload.items) {
     const href = safeHttps(item.url);
     if (!href) continue;
