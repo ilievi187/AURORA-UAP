@@ -197,7 +197,7 @@
   mediaGrid.replaceChildren();
   $("caseMediaTitle").textContent=language==="bg"?"СНИМКИ И ДОКУМЕНТИ":"PHOTOS AND DOCUMENTS";
   const approvedTypes=new Set(["documents","archive","photo"]);
-  const availableMedia=globalThis.AURORA_DOSSIER_CONTENT?.media(c)||[];
+  const availableMedia=contentHelper?.media(c)||[];
   const photoGallery=$("casePhotoGallery");photoGallery.replaceChildren();
   for(const m of availableMedia){
    if(!approvedTypes.has(m.type))continue;
