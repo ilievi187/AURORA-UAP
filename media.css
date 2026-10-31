@@ -55,3 +55,26 @@
  .media-entry .media-inline-play{width:65px;height:65px;font-size:25px}
  .media-entry[data-media-kind="video"][data-playable="false"] .media-entry-image::after{font-size:9px}
 }
+
+/* The entire verified video poster is one accessible click target; the circle is visual. */
+.media-entry[data-playable="true"] .media-inline-play{
+ inset:0!important;margin:0!important;width:100%!important;height:100%!important;
+ border:0!important;border-radius:0!important;box-shadow:none!important;
+ background:transparent!important;color:transparent!important;font-size:0!important;
+ display:grid;place-items:center;backdrop-filter:none;
+}
+.media-entry[data-playable="true"] .media-inline-play::after{
+ content:"▶";width:clamp(65px,7vw,82px);height:clamp(65px,7vw,82px);
+ display:grid;place-items:center;border:1.5px solid #d3edfc;border-radius:50%;
+ color:#ecf7ff;background:#081723df;font:500 30px/1 system-ui,sans-serif;
+ box-shadow:0 0 0 7px #c8e6f418,0 0 43px #9bcce444;
+ transition:transform .16s ease,background .16s ease;
+}
+.media-entry[data-playable="true"] .media-inline-play:hover{background:transparent!important;transform:none!important}
+.media-entry[data-playable="true"] .media-inline-play:hover::after{background:#183b53;transform:scale(1.07)}
+.media-entry[data-playable="true"] .media-inline-play:focus-visible{outline:3px solid #fff;outline-offset:-5px}
+.media-entry[data-playable="true"] .media-inline-play[hidden]{display:none!important}
+@media(max-width:650px){
+ .media-entry[data-playable="true"] .media-inline-play::after{width:65px;height:65px;font-size:26px}
+}
+@media(prefers-reduced-motion:reduce){.media-entry[data-playable="true"] .media-inline-play::after{transition:none}}
