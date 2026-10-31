@@ -213,36 +213,66 @@
   const warn=document.querySelector(".live-warning");
   if(warn)warn.textContent=words.warning;
  }
+ // The catalog can have several PDF translations and mirror links for one case.
+ // Those are sources within one dossier, not separate video thumbnails.
+ // Real videos remain individually playable and are shown first.
+ let playbackFor=()=>null;
+ const titleFor=value=>typeof value==="string"?value:(value?.[locale]||value?.en||value?.bg||"");
+ const rank=entry=>entry.m.type==="video"?(entry.playable?0:1):entry.m.type==="photo"?2:3;
  function render(){
   applyChrome();
   const words=PACKS[locale]||PACKS.en;
   const root=$("mediaGallery"),kind=$("mediaType").value,search=$("mediaSearch").value.trim().toLocaleLowerCase();
-  const matches=items.filter(({c,m})=>{
+  const matches=items.filter(({c,m,sources})=>{
    if(kind==="video"&&m.type!=="video")return false;
    if(kind==="photo"&&m.type!=="photo")return false;
    if(kind==="documents"&&!["documents","archive"].includes(m.type))return false;
-   const hay=[c.title?.bg,c.title?.en,c.summary?.bg,c.summary?.en,m.title?.bg,m.title?.en,c.source?.name,c.country,c.date].filter(Boolean).join(" ").toLocaleLowerCase();
+   const hay=[c.title?.bg,c.title?.en,c.summary?.bg,c.summary?.en,
+    ...sources.flatMap(x=>[x.title?.bg,x.title?.en]),c.source?.name,c.country,c.date]
+    .filter(Boolean).join(" ").toLocaleLowerCase();
    return !search||hay.includes(search);
   });
   root.replaceChildren();
-  for(const {c,m} of matches){
+  for(const {c,m,sources,playable} of matches){
+   const video=m.type==="video",documents=["documents","archive"].includes(m.type);
    const card=document.createElement("article");card.className="media-entry";
+   card.dataset.caseId=c.id;card.dataset.mediaKind=video?"video":documents?"documents":"photo";
+   card.dataset.playable=String(Boolean(playable));
    const picture=document.createElement("div");picture.className="media-entry-image";
    const img=document.createElement("img");img.loading="lazy";img.decoding="async";
-   img.src=m.type==="video"?"/assets/video-poster.svg":(/^\/assets\/[a-z0-9-]+\.webp$/.test(c.visual?.src||"")?c.visual.src:"/assets/feature-media.webp");
-   img.alt=words.illustration;
-   const badge=document.createElement("span");badge.textContent=m.type==="video"?words.video:m.type==="photo"?words.photo:words.documents;
+   img.src=video?"/assets/media-video-preview.svg":documents?"/assets/media-document-preview.svg":
+    (/^\/assets\/[a-z0-9-]+\.webp$/.test(c.visual?.src||"")?c.visual.src:"/assets/media-document-preview.svg");
+   img.alt=video?"AURORA video preview illustration":documents?"AURORA archive documents illustration":words.illustration;
+   const badge=document.createElement("span");badge.textContent=video?words.video:documents?words.documents:words.photo;
    picture.append(img,badge);
    const body=document.createElement("div");body.className="media-entry-body";
    const meta=document.createElement("small");meta.textContent=c.date+" · "+c.country+" · "+(c.source?.name||"");
-   const heading=document.createElement("h2");heading.textContent=c.title?.[locale]||c.title?.en||"";
-   const summary=document.createElement("p");summary.textContent=c.summary?.[locale]||c.summary?.en||"";
+   const heading=document.createElement("h2");
+   // Distinguish individual recordings from the same case; archives use the case title.
+   heading.textContent=video?(titleFor(m.title)||titleFor(c.title)):titleFor(c.title);
+   const summary=document.createElement("p");summary.textContent=titleFor(c.summary);
    const links=document.createElement("div");links.className="media-entry-links";
-   const original=document.createElement("a");original.href=m.url;original.target="_blank";original.rel="noopener noreferrer";
-   original.textContent=m.type==="video"?words.view:(m.title?.[locale]||m.title?.en||words.view).replace(/\s*↗\s*$/,"")+" ↗";
+   for(const [i,sourceItem] of sources.entries()){
+    const original=document.createElement("a");original.href=sourceItem.url;original.target="_blank";original.rel="noopener noreferrer";
+    original.textContent=video?words.view:(titleFor(sourceItem.title)||words.view).replace(/\s*↗\s*$/,"")+" ↗";
+    if(documents&&i>1){
+     let more=links.querySelector(".media-more-sources");
+     if(!more){
+      more=document.createElement("details");more.className="media-more-sources";
+      const prompt=document.createElement("summary");
+      prompt.textContent=locale==="bg"?"Още документи и източници":"More documents & sources";
+      more.append(prompt);links.append(more);
+     }
+     more.append(original);
+    }else links.append(original);
+   }
    const dossier=document.createElement("a");dossier.href="/archive/"+encodeURIComponent(c.id);dossier.textContent=words.case;
-   links.append(original,dossier);
-   const caution=document.createElement("small");caution.className="media-caption";caution.textContent=words.illustration;
+   links.append(dossier);
+   const caution=document.createElement("small");caution.className="media-caption";
+   caution.textContent=video?
+    (playable?(locale==="bg"?"Натисни ▶, за да гледаш видеото тук.":"Press ▶ to watch in AURORA."):
+     (locale==="bg"?"Видео при издателя · отвори оригиналния материал.":"Publisher-hosted video · open the original source.")):
+    (documents?(locale==="bg"?"Оригинални документи и архивни връзки — няма вградено видео.":"Original documents and archive links — not a video.") : words.illustration);
    body.append(meta,heading,summary,links,caution);card.append(picture,body);
    root.append(card);
    requestMediaTranslation(c,heading,summary,locale,card);
@@ -252,11 +282,28 @@
  async function load(){
   applyChrome();
   try{
-   const r=await fetch("/data/cases.json",{cache:"no-cache"});if(!r.ok)throw Error("source");
+   const [r,playerModule]=await Promise.all([
+    fetch("/data/cases.json",{cache:"no-cache"}),
+    import("/media-player.js").catch(()=>null)
+   ]);
+   if(!r.ok)throw Error("source");
    const data=await r.json();if(!Array.isArray(data.cases))throw Error("archive");
-   items=data.cases.flatMap(c=>(Array.isArray(c.media)?c.media:[])
+   if(typeof playerModule?.resolveMediaPlayback==="function")playbackFor=playerModule.resolveMediaPlayback;
+   const entries=data.cases.flatMap(c=>(Array.isArray(c.media)?c.media:[])
     .filter(m=>m&&["video","documents","archive","photo"].includes(m.type)&&valid(m.url)&&/^[a-z0-9-]{3,90}$/.test(c.id))
-    .map(m=>({c,m}))).sort((a,b)=>String(b.c.date).localeCompare(String(a.c.date)));
+    .map(m=>({c,m,sources:[m],playable:m.type==="video"&&Boolean(playbackFor(m))})));
+   const grouped=new Map(),deduped=[];
+   for(const entry of entries){
+    if(!["documents","archive"].includes(entry.m.type)){deduped.push(entry);continue;}
+    const key=entry.c.id;
+    const parent=grouped.get(key);
+    if(parent){
+     if(!parent.sources.some(other=>other.url===entry.m.url))parent.sources.push(entry.m);
+    }else{grouped.set(key,entry);deduped.push(entry);}
+   }
+   items=deduped.sort((a,b)=>rank(a)-rank(b)||
+    String(b.c.date).localeCompare(String(a.c.date))||
+    String(a.c.id).localeCompare(String(b.c.id)));
    loadedOk=true;
    render();
   }catch{$("mediaStatus").textContent=(PACKS[locale]||PACKS.en).offline}
