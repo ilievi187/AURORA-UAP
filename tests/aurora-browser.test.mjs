@@ -218,7 +218,7 @@ try{
     await page.locator('#gateContinue').click();
     await page.locator('#languageGate').waitFor({state:'hidden',timeout:1500});
 
-    assert.equal(await page.locator('a[href="#control"]').count(),3,'desktop, mobile and footer navigation');
+    assert.equal(await page.locator('a[href="#control"]').count(),2,'mobile and footer retain Mission Control navigation; cinematic desktop header is deliberately minimal');
     assert.equal(await page.locator('#controlHeading').textContent(),'MISSION CONTROL');
     assert.equal(await page.locator('#controlTabs [role="tab"]').count(),4);
     assert.equal(await page.locator('#controlTab0').getAttribute('aria-selected'),'true');
