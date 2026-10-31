@@ -2771,7 +2771,11 @@
             "authorization_type": "public_domain",
             "rights_checked_at": "2026-10-30",
             "rights_evidence_url": "https://commons.wikimedia.org/wiki/File:Gimbal_The_First_Official_UAP_Footage_from_the_USG_for_Public_Release.webm",
-            "rights_evidence_ref": "PD-USGov-Military-Navy-GIMBAL-2020"
+            "rights_evidence_ref": "PD-USGov-Military-Navy-GIMBAL-2020",
+            "poster_url": "https://uap-archive.org/_astro/NAVAIR_GIMBAL_video_poster.NFpek7hk_Z20MnCL.webp",
+            "poster_rights_status": "verified",
+            "poster_hosting_permission": true,
+            "poster_rights_evidence_url": "https://uap-archive.org/uap/imagery/"
           }
         }
       ],
@@ -2842,7 +2846,11 @@
             "authorization_type": "public_domain",
             "rights_checked_at": "2026-10-30",
             "rights_evidence_url": "https://commons.wikimedia.org/wiki/File:Go_Fast_Official_USG_Footage_of_UAP_for_Public_Release.webm",
-            "rights_evidence_ref": "PD-USGov-Military-Navy-GOFAST-2020"
+            "rights_evidence_ref": "PD-USGov-Military-Navy-GOFAST-2020",
+            "poster_url": "https://uap-archive.org/_astro/NAVAIR_GOFAST_video_poster.C0qP2R7j_KuikB.webp",
+            "poster_rights_status": "verified",
+            "poster_hosting_permission": true,
+            "poster_rights_evidence_url": "https://uap-archive.org/uap/imagery/"
           }
         }
       ],
@@ -3715,7 +3723,11 @@
                 "url": "https://www.navair.navy.mil/foia/sites/g/files/jejdrs566/files/2020-04/1%20-%20FLIR.mp4",
                 "mime_type": "video/mp4"
               }
-            ]
+            ],
+            "poster_url": "https://uap-archive.org/_astro/NAVAIR_FOIA_FLIR_video_poster.B49FQurn_ZNHpcv.webp",
+            "poster_rights_status": "verified",
+            "poster_hosting_permission": true,
+            "poster_rights_evidence_url": "https://uap-archive.org/uap/imagery/"
           }
         }
       ],
