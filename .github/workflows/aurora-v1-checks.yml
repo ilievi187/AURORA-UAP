@@ -93,6 +93,14 @@ jobs:
           path: artifacts/aurora-silence-*.png
           if-no-files-found: ignore
           retention-days: 7
+      - name: Save cinematic orbital atlas screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aurora-orbital-atlas-visual
+          path: artifacts/aurora-orbital-atlas.png
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Save internal Black Edition screenshots
         if: always()
         uses: actions/upload-artifact@v4

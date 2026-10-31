@@ -1,0 +1,222 @@
+/* AURORA / ORBITAL ATLAS
+   Satellite Earth at night, cold moonlight and quiet spacecraft instrumentation.
+   Real coordinates, same accessible controls, no fake live tracking.
+   Load before aurora-silence.css; specificity is intentionally higher. */
+body:has(.silence-hero) main>.world-atlas{
+  isolation:isolate;
+  position:relative;
+  overflow:visible;
+  background:#010305!important;
+  padding-block:clamp(55px,7vw,115px)!important;
+  border-color:#99b3c326!important;
+}
+body:has(.silence-hero) .world-atlas-head{
+  align-items:end;gap:28px;margin-bottom:clamp(28px,3.4vw,55px);
+}
+body:has(.silence-hero) .world-atlas-head .console-kicker{
+  font:600 10px/1.6 ui-monospace,Consolas,monospace;
+  letter-spacing:.21em;color:#9eb1c0;
+}
+body:has(.silence-hero) .world-atlas-head h2{
+  color:#edf2f7;
+  font-size:clamp(35px,4.4vw,69px)!important;
+  font-weight:480!important;
+  line-height:1.02!important;
+  letter-spacing:-.063em!important;
+  max-width:920px;
+}
+body:has(.silence-hero) .world-atlas-head p:not(.console-kicker){
+  max-width:760px;color:#a4b3bf;line-height:1.8;font-size:14px;
+}
+body:has(.silence-hero) .world-atlas-count-block{
+  align-items:flex-end;gap:4px;margin-bottom:12px;
+}
+body:has(.silence-hero) .world-atlas-count{font:450 clamp(34px,4vw,64px)/1 Inter,system-ui,sans-serif;color:#e7f2fa}
+body:has(.silence-hero) .world-atlas-count-block>span{letter-spacing:.08em;color:#889bab}
+body:has(.silence-hero) .world-atlas-filters{
+  background:transparent!important;
+  margin:0 0 24px!important;
+  padding:0!important;
+  gap:clamp(8px,1.5vw,19px)!important;
+}
+body:has(.silence-hero) .world-atlas-filters label{
+  font:550 10px/1.6 ui-monospace,Consolas,monospace;
+  letter-spacing:.13em;color:#94a9b7;
+}
+body:has(.silence-hero) .world-atlas-filters input,
+body:has(.silence-hero) .world-atlas-filters select{
+  background:#060b11!important;color:#e6eef3!important;
+  border:1px solid #7e9cae55!important;border-radius:3px!important;
+  min-height:49px;box-shadow:none!important;
+  font-size:13px;transition:border-color .2s,background .2s;
+}
+body:has(.silence-hero) .world-atlas-filters :is(input,select):focus-visible{
+  outline:2px solid #c8e7f7;outline-offset:3px;border-color:#c8e7f7!important;
+}
+body:has(.silence-hero) .world-map-layout{
+  grid-template-columns:minmax(0,1.9fr) minmax(275px,.8fr);
+  gap:clamp(13px,1.6vw,26px);
+  margin-top:0;
+}
+body:has(.silence-hero) .world-map-surface{
+  position:relative;isolation:isolate;
+  border:1px solid #718da043!important;border-radius:6px!important;
+  background:#010307!important;
+  box-shadow:0 25px 80px #0008,inset 0 0 75px #01030594!important;
+  overflow:hidden;
+}
+body:has(.silence-hero) .world-map-surface:focus-visible{outline:2px solid #d4e8f8;outline-offset:4px}
+body:has(.silence-hero) .world-map-surface::before{
+  content:"";position:absolute;z-index:1;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 50% 40%,transparent 55%,#0007 96%),
+    linear-gradient(180deg,#01050b4a 0%,transparent 22%,transparent 78%,#01050b75 100%),
+    repeating-linear-gradient(0deg,transparent 0,transparent 3px,#9bc2df06 4px);
+}
+body:has(.silence-hero) .world-map-surface::after{
+  content:"";position:absolute;inset:9px;z-index:2;pointer-events:none;
+  opacity:.65;
+  background:
+    linear-gradient(#a0c7dd88,#a0c7dd88) left top/18px 1px no-repeat,
+    linear-gradient(#a0c7dd88,#a0c7dd88) left top/1px 18px no-repeat,
+    linear-gradient(#a0c7dd88,#a0c7dd88) right top/18px 1px no-repeat,
+    linear-gradient(#a0c7dd88,#a0c7dd88) right top/1px 18px no-repeat,
+    linear-gradient(#a0c7dd88,#a0c7dd88) left bottom/18px 1px no-repeat,
+    linear-gradient(#a0c7dd88,#a0c7dd88) left bottom/1px 18px no-repeat,
+    linear-gradient(#a0c7dd88,#a0c7dd88) right bottom/18px 1px no-repeat,
+    linear-gradient(#a0c7dd88,#a0c7dd88) right bottom/1px 18px no-repeat;
+}
+body:has(.silence-hero) .world-map-viewport{z-index:0;transform-origin:center center}
+body:has(.silence-hero) .world-map-surface canvas{filter:brightness(.96) contrast(1.06)}
+body:has(.silence-hero) .world-map-pins{z-index:4}
+body:has(.silence-hero) .world-map-marker{
+  border:1px solid #dceaf2!important;
+  background:#ebf4ff!important;color:#0b1723!important;
+  width:11px;height:11px;min-width:11px;
+  box-shadow:0 0 0 4px #d7edff1f,0 0 17px #b4ddfdaa,0 0 36px #8bbde960!important;
+  font:650 10px/1 Inter,system-ui,sans-serif;
+  transition:box-shadow .18s,scale .18s,background .18s;
+}
+body:has(.silence-hero) .world-map-marker.is-cluster{
+  width:31px;height:31px;
+  border:1px solid #c7e0ec!important;
+  background:#081823e8!important;color:#f5f9fc!important;
+  box-shadow:0 0 0 3px #b4d9ed2c,0 0 0 7px #b4d9ed14,0 0 28px #7caacc72!important;
+}
+body:has(.silence-hero) .world-map-marker.is-approximate{
+  width:20px;height:20px;border:1px dashed #dec29d!important;
+  background:#1b1716ee!important;color:#f0d7ad!important;
+  box-shadow:0 0 0 3px #e7bf8140,0 0 16px #e6c28a77!important;
+}
+body:has(.silence-hero) .world-map-marker:is(:hover,:focus-visible,[aria-pressed="true"]){
+  background:#fff!important;color:#010305!important;
+  box-shadow:0 0 0 5px #a2def54d,0 0 0 11px #a2def517,0 0 30px #c6eeff!important;
+  scale:1.2;z-index:9;
+}
+body:has(.silence-hero) .world-map-controls{
+  z-index:7;bottom:12px;right:12px;
+  border:1px solid #b1d1e454!important;
+  background:#02060ce8!important;border-radius:4px;
+  backdrop-filter:blur(18px);
+  box-shadow:0 10px 28px #0009;
+}
+body:has(.silence-hero) .world-map-controls button{
+  color:#d7e8f3;background:#0a141deb!important;
+  border:1px solid #7e9fb15d!important;border-radius:3px!important;
+}
+body:has(.silence-hero) .world-map-controls button:hover:not(:disabled){
+  background:#1c3446!important;color:white!important;
+}
+body:has(.silence-hero) .world-map-controls span{color:#b9cad6}
+body:has(.silence-hero) .world-map-caption{color:#849aab;letter-spacing:.03em;margin-top:13px}
+body:has(.silence-hero) .world-case-detail{
+  background:
+    radial-gradient(ellipse at 90% 6%,#203a4a4a,transparent 63%),
+    linear-gradient(165deg,#09121b,#03070d 89%)!important;
+  border:1px solid #7893a33d!important;border-radius:6px!important;
+  box-shadow:none!important;
+  padding:clamp(22px,2.5vw,40px);
+  gap:clamp(11px,1.5vw,20px);
+}
+body:has(.silence-hero) .world-case-detail .world-tag{
+  font:650 10px/1.6 ui-monospace,Consolas,monospace;
+  letter-spacing:.18em;color:#a3c6d7;
+}
+body:has(.silence-hero) .world-case-detail h3{
+  font-size:clamp(26px,2.8vw,39px);font-weight:490!important;
+  letter-spacing:-.045em;line-height:1.17;
+  color:#edf4f9;margin:8px 0;
+}
+body:has(.silence-hero) .world-case-detail p{font-size:13px;line-height:1.9;color:#aebeca}
+body:has(.silence-hero) .world-case-detail .world-case-place{color:#99afc0;font-size:11px;letter-spacing:.03em}
+body:has(.silence-hero) .world-case-detail a{
+  font:600 11px/1.65 ui-monospace,Consolas,monospace;
+  letter-spacing:.035em;color:#c3dbe8!important;
+  border-top:1px solid #8ba7b640!important;
+  padding-top:16px!important;overflow-wrap:anywhere;
+}
+body:has(.silence-hero) .world-case-detail a:hover{color:#fff!important}
+body:has(.silence-hero) .world-media-links a{
+  background:#070d13!important;border:1px solid #7c9bad36!important;
+  padding:12px!important;
+}
+body:has(.silence-hero) .world-results{
+  border-top:1px solid #819bab32!important;padding-top:clamp(24px,3vw,45px);
+  margin-top:clamp(28px,4vw,65px);
+}
+body:has(.silence-hero) .world-results-head h3{
+  font-size:clamp(23px,2.4vw,35px);font-weight:480;letter-spacing:-.045em;color:#e5edf3;
+}
+body:has(.silence-hero) .world-map-results{gap:clamp(10px,1.5vw,20px)!important}
+body:has(.silence-hero) .world-result{
+  background:#060b11!important;border:1px solid #7c99aa32!important;
+  border-radius:4px!important;min-height:125px;
+  padding:clamp(16px,2vw,26px);
+}
+body:has(.silence-hero) .world-result strong{font-size:clamp(14px,1.1vw,18px);font-weight:520;line-height:1.42;color:#e6eff4}
+body:has(.silence-hero) .world-result-meta{color:#8fa9b8}
+body:has(.silence-hero) .world-result:is(:hover,:focus-visible,[aria-current="true"]){
+  background:#0d1822!important;border-color:#b1d1e086!important;
+}
+body:has(.silence-hero) .world-result[aria-current="true"]{box-shadow:inset 2px 0 #c5e6f6!important}
+body:has(.silence-hero) .world-page-button{border:1px solid #7592a74f!important;background:#0b1520!important;color:#c8dce9!important}
+body:has(.silence-hero) .world-page-number[aria-current="page"]{background:#d4e5f0!important;color:#07121c!important}
+body:has(.silence-hero) .world-atlas .world-map-orbital-label{
+  position:absolute;z-index:6;top:24px;left:24px;pointer-events:none;
+  font:650 10px/1.75 ui-monospace,Consolas,monospace;
+  letter-spacing:.2em;text-shadow:0 2px 10px #000;color:#cadfeb;
+}
+body:has(.silence-hero) .world-atlas .world-map-orbital-label span{display:block;font-size:9px;color:#8ea9bc;letter-spacing:.13em}
+body:has(.silence-hero) .world-atlas .world-map-orbital-legend{
+  position:absolute;z-index:6;left:24px;bottom:24px;pointer-events:none;
+  display:flex;flex-wrap:wrap;gap:14px;
+  color:#a3bdcb;text-shadow:0 1px 9px #000;
+  font:550 9px/1.5 ui-monospace,Consolas,monospace;letter-spacing:.075em;
+}
+body:has(.silence-hero) .world-map-orbital-legend span{display:inline-flex;align-items:center;gap:7px}
+body:has(.silence-hero) .world-map-orbital-legend span::before{
+  content:"";width:6px;height:6px;flex:none;border:1px solid #d8edf6;border-radius:50%;background:#edf7fd;box-shadow:0 0 12px #bfdef9;
+}
+body:has(.silence-hero) .world-map-orbital-legend span:last-child::before{
+  width:8px;height:8px;background:transparent;border:1px dashed #e9cda7;box-shadow:none;
+}
+@media(max-width:1000px){
+ body:has(.silence-hero) .world-map-layout{grid-template-columns:1fr}
+ body:has(.silence-hero) .world-case-detail{padding:24px}
+ body:has(.silence-hero) .world-map-orbital-legend{max-width:57%}
+}
+@media(max-width:650px){
+ body:has(.silence-hero) .world-map-surface{aspect-ratio:1.35 / 1}
+ body:has(.silence-hero) .world-atlas-head h2{font-size:clamp(31px,8vw,47px)!important}
+ body:has(.silence-hero) .world-atlas-count-block{align-items:flex-start}
+ body:has(.silence-hero) .world-map-orbital-label{top:15px!important;left:15px!important;font-size:8px!important}
+ body:has(.silence-hero) .world-map-orbital-label span{font-size:8px!important}
+ body:has(.silence-hero) .world-map-orbital-legend{left:14px!important;bottom:12px!important;font-size:8px!important;max-width:55%;gap:7px!important}
+ body:has(.silence-hero) .world-map-controls{right:7px;bottom:8px}
+ body:has(.silence-hero) .world-map-controls button{width:39px;height:39px}
+ body:has(.silence-hero) .world-map-controls span{min-width:40px}
+ body:has(.silence-hero) .world-atlas-filters{gap:10px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body:has(.silence-hero) .world-map-marker{transition:none!important}
+}

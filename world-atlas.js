@@ -82,42 +82,103 @@ function categoryName(category) {
   return category || '';
 }
 
+/* Photographic, locally hosted equirectangular Earth textures. The pins keep their
+ * existing geographic projection; this is visual imagery, not a realtime scan.
+ * Any texture failure falls back to honest land outlines, never a blank map. */
+const satellite = { night: null, day: null, clouds: null };
+const SATELLITE_TEXTURES = [
+  ['night', '/assets/earth/earth-night-4096.jpg'],
+  ['day', '/assets/earth/earth-day-4096.jpg'],
+  ['clouds', '/assets/earth/earth-clouds-1024.png']
+];
+for (const [name, src] of SATELLITE_TEXTURES) {
+  const image = new Image();
+  image.decoding = 'async';
+  image.onload = () => { satellite[name] = image; paint(land); };
+  image.onerror = () => { console.warn('AURORA atlas: optional satellite texture unavailable', name); };
+  image.src = src;
+}
+
 function paint(polygons) {
-  const gradient = context.createLinearGradient(0, 0, 0, MAP_HEIGHT);
-  gradient.addColorStop(0, '#092d40');
-  gradient.addColorStop(.5, '#0c3948');
-  gradient.addColorStop(1, '#072332');
-  context.fillStyle = gradient;
+  context.save();
+  // The black-space background is deliberately quiet: no neon cartographic fill.
+  const backdrop = context.createLinearGradient(0, 0, MAP_WIDTH, MAP_HEIGHT);
+  backdrop.addColorStop(0, '#010408');
+  backdrop.addColorStop(.48, '#06111b');
+  backdrop.addColorStop(1, '#010307');
+  context.fillStyle = backdrop;
   context.fillRect(0, 0, MAP_WIDTH, MAP_HEIGHT);
-  context.strokeStyle = '#47798b66';
-  context.lineWidth = .7;
+
+  if (satellite.night) {
+    // Geographic texture first, then night lights as additive luminance.
+    // Use the same -180..180 equirectangular projection as the real case pins.
+    // This deliberately brightens geography without turning the sea cyan.
+    if (satellite.day) {
+      context.globalAlpha = .84;
+      context.filter = 'brightness(.65) contrast(1.15) saturate(.48)';
+      context.drawImage(satellite.day, 0, 0, MAP_WIDTH, MAP_HEIGHT);
+    }
+    context.globalCompositeOperation = 'screen';
+    context.globalAlpha = .98;
+    context.filter = 'brightness(1.55) contrast(1.1) saturate(.78)';
+    context.drawImage(satellite.night, 0, 0, MAP_WIDTH, MAP_HEIGHT);
+    context.globalCompositeOperation = 'source-over';
+    if (satellite.clouds) {
+      context.globalAlpha = .13;
+      context.filter = 'brightness(.88) contrast(1.08)';
+      context.drawImage(satellite.clouds, 0, 0, MAP_WIDTH, MAP_HEIGHT);
+    }
+    context.globalAlpha = 1;
+    context.filter = 'none';
+  } else {
+    // Offline image fallback: country/land contours remain usable but understated.
+    context.fillStyle = '#09141f';
+    context.strokeStyle = '#5c7d934a';
+    context.lineWidth = .65;
+    for (const polygon of polygons) {
+      if (!Array.isArray(polygon) || polygon.length < 3) continue;
+      let previousX = null;
+      let started = false;
+      context.beginPath();
+      for (const point of polygon) {
+        if (!Array.isArray(point) || point.length < 2 || !Number.isFinite(point[0]) || !Number.isFinite(point[1])) continue;
+        const x = (point[0] + 180) / 360 * MAP_WIDTH;
+        const y = (90 - point[1]) / 180 * MAP_HEIGHT;
+        if (previousX !== null && Math.abs(x - previousX) > MAP_WIDTH / 2) {
+          context.closePath(); context.fill(); context.stroke(); context.beginPath(); started = false;
+        }
+        if (!started) { context.moveTo(x, y); started = true; }
+        else context.lineTo(x, y);
+        previousX = x;
+      }
+      if (started) { context.closePath(); context.fill(); context.stroke(); }
+    }
+  }
+
+  // Subtle orbital instrumentation. It follows the same projection as the image.
+  context.lineWidth = .55;
   for (let x = 0; x <= MAP_WIDTH; x += 100) {
+    context.strokeStyle = x === MAP_WIDTH / 2 ? '#b2d3e32c' : '#84b6d718';
     context.beginPath(); context.moveTo(x, 0); context.lineTo(x, MAP_HEIGHT); context.stroke();
   }
   for (let y = 0; y <= MAP_HEIGHT; y += 50) {
+    context.strokeStyle = y === MAP_HEIGHT / 2 ? '#b2d3e32c' : '#84b6d718';
     context.beginPath(); context.moveTo(0, y); context.lineTo(MAP_WIDTH, y); context.stroke();
   }
-  context.fillStyle = '#1d6c6c';
-  context.strokeStyle = '#8cdbc186';
-  context.lineWidth = .65;
-  for (const polygon of polygons) {
-    if (!Array.isArray(polygon) || polygon.length < 3) continue;
-    let previousX = null;
-    let started = false;
-    context.beginPath();
-    for (const point of polygon) {
-      if (!Array.isArray(point) || point.length < 2 || !Number.isFinite(point[0]) || !Number.isFinite(point[1])) continue;
-      const x = (point[0] + 180) / 360 * MAP_WIDTH;
-      const y = (90 - point[1]) / 180 * MAP_HEIGHT;
-      if (previousX !== null && Math.abs(x - previousX) > MAP_WIDTH / 2) {
-        context.closePath(); context.fill(); context.stroke(); context.beginPath(); started = false;
-      }
-      if (!started) { context.moveTo(x, y); started = true; }
-      else context.lineTo(x, y);
-      previousX = x;
-    }
-    if (started) { context.closePath(); context.fill(); context.stroke(); }
-  }
+  const atmosphere = context.createRadialGradient(500, 225, 60, 500, 225, 620);
+  atmosphere.addColorStop(0, '#203e4b00');
+  atmosphere.addColorStop(.58, '#07131e1c');
+  atmosphere.addColorStop(1, '#01030566');
+  context.fillStyle = atmosphere;
+  context.fillRect(0, 0, MAP_WIDTH, MAP_HEIGHT);
+  const horizon = context.createLinearGradient(0, 0, 0, MAP_HEIGHT);
+  horizon.addColorStop(0, '#01030739');
+  horizon.addColorStop(.14, '#01030710');
+  horizon.addColorStop(.8, '#01030710');
+  horizon.addColorStop(1, '#01030758');
+  context.fillStyle = horizon;
+  context.fillRect(0, 0, MAP_WIDTH, MAP_HEIGHT);
+  context.restore();
 }
 
 function clampPan() {
