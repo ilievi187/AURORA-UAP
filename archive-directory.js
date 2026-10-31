@@ -1,6 +1,7 @@
 import {resolveMediaPlayback} from "./media-player.js";
 import {addArchivePlayback,resetArchivePlayback} from "./archive-inline-player.js";
 import {translatePublicCase,translationDisclosure,isFullTranslation} from "./archive-localization.js";
+import {ARCHIVE_PACKS} from "./archive-ui-packs.js";
 // 10 records per page; 101 published dossiers provide 11 navigable pages.
 const PAGE_SIZE=10,$=id=>document.getElementById(id),storageKey="aurora-lang";
 const supported=new Set(["bg","en","de","ru","zh-CN","fr","es","it","pt","tr","ro","el","sr","uk","pl","ar","ja","ko"]);
@@ -29,6 +30,7 @@ const packs={
  disclaimer:"Published reports are not proof of extraterrestrial origin. Map positions may be approximate locality anchors, not measured flight paths.",
  undated:"Undated",unknown:"Location not specified",count:"Total",go:"Go to page"}
 };
+Object.assign(packs,ARCHIVE_PACKS);
 const T=()=>packs[language]||packs.en;
 const local=v=>typeof v==="string"?v:typeof v==="object"&&v?String(v[language]||v.en||v.bg||""):"";
 const safeUrl=v=>{try{const u=new URL(v);return u.protocol==="https:"&&!u.username&&!u.password?u.href:null}catch{return null}};
@@ -78,7 +80,9 @@ function card(r){
  }
  const paragraphs=Array.isArray(r.story?.[language])?r.story[language]:Array.isArray(r.story?.en)?r.story.en:[];
  const detail=paragraphs.find(p=>typeof p==="string"&&p!==local(r.summary)&&p.length>95);
- if(detail)article.append(el("p","card-context",detail.slice(0,350)+(detail.length>350?"…":"")));
+ // Keep previews linguistically consistent: only show extra story excerpts
+ // when the source has a real translation for the selected language.
+ if(detail&&(language==="en"||Array.isArray(r.story?.[language])))article.append(el("p","card-context",detail.slice(0,350)+(detail.length>350?"…":"")));
  // Play directly on the archive card instead of redirecting to a publisher.
  const clip=(r.media||[]).find(m=>m.type==="video"&&resolveMediaPlayback(m));
  if(clip)addArchivePlayback(article,clip,language,local(clip.title)||local(r.title));
