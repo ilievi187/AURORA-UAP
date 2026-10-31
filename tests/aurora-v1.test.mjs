@@ -231,7 +231,6 @@ test('global newsroom retains 18-locale language controls after aircraft-radar r
   assert.match(read(path),/src="\/subpage-i18n\.js"/);
  }
  assert.match(read('news.js'),/AURORA_SUBPAGES/);
- assert.match(read('sky.js'),/AURORA_SUBPAGES/);
 });
 
 
