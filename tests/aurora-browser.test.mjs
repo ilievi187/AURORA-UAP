@@ -508,8 +508,8 @@ try{
     await page.goto('http://127.0.0.1:'+port+'/archive/phoenix-1997');
     await page.waitForFunction(()=>document.querySelector('#dossierContent')?.hidden===false);
     assert.equal(await page.locator('#dossierTitle').textContent(),'Светлините над Финикс');
-    assert.match(await page.locator('#dossierKind').textContent(),/REFERENCE/);
-    assert.match(await page.locator('#factPublication').textContent(),/извън D1|Не е потребителски сигнал/);
+    assert.match(await page.locator('#dossierKind').textContent(),/HISTORICAL CASE FILE/);
+    assert.match(await page.locator('#factPublication').textContent(),/ИСТОРИЧЕСКИ АРХИВ/);
     assert.equal(await page.locator('#dossierCountry').isVisible(),false);
     assert.ok((await page.locator('#dossierStory p').count())>=1);
     assert.equal(await page.locator('#caseVisualImage').isVisible(),false,'stock artwork with baked-in fake Play must not impersonate a video');
@@ -546,8 +546,8 @@ try{
     await page.goto('http://127.0.0.1:'+port+'/cases/aaro-pr-2013');
     await page.waitForFunction(()=>document.querySelector('#dossierContent')?.hidden===false);
     assert.equal(await page.locator('#dossierTitle').textContent(),'Инфрачервени обекти над Пуерто Рико');
-    assert.match(await page.locator('#dossierKind').textContent(),/GLOBAL REGISTER/);
-    assert.match(await page.locator('#factPublication').textContent(),/Одобрено за публично показване/);
+    assert.match(await page.locator('#dossierKind').textContent(),/PUBLIC CASE FILE/);
+    assert.match(await page.locator('#factPublication').textContent(),/ПУБЛИКУВАНО СЛЕД РЕДАКЦИОНЕН ПРЕГЛЕД/);
     assert.match(await page.locator('#factAssessment').textContent(),/Обяснено според/);
     assert.equal(await page.locator('#factIdentifier').textContent(),'aaro-pr-2013');
     assert.match(await page.locator('#dossierAssessmentAuthority').textContent(),/AARO/);
