@@ -2,20 +2,33 @@
 
 This pipeline **automatically imports licensed public case metadata** into the historical editorial archive. It never imports user submissions from D1 and never treats a public sighting report as proof of its explanation.
 
-## Running
+## Running — review-gated automation
 
-- On release of this workflow to `main`, GitHub Actions runs the first sync automatically.
-- Then it runs at 02:17 and 14:17 UTC daily (and via `workflow_dispatch`).
-- The importer reads a fixed allowlisted source, validates its CC BY 4.0 license, merges into `data/cases.json`, writes `data/archive-sync-status.json` and runs tests.
-- GitHub Actions commits changed public **data files only** to `main`; Cloudflare Pages' existing integration publishes that commit.
-- To run a read-only diagnostic: `node scripts/sync-open-case-archive.mjs --check`.
-- To test offline: `node --test tests/auto-archive-sync.test.mjs tests/archive-records.test.mjs`.
+- GitHub Actions validates both licensed upstream sources in an **isolated temporary folder** on source-code PRs, pushes and manual validation runs. Validation does **not** publish public cases.
+- A twice-daily schedule runs at 02:17 and 14:17 UTC. The update job is enabled **only** when the GitHub Actions repository variable `AURORA_ARCHIVE_PR_AUTOMATION_ENABLED` is exactly `true`. This variable is intentionally not changed by the importer itself.
+- When enabled, the schedule imports both approved sources into one candidate snapshot, checks data safety/tests, and pushes **only a draft PR** on `automation/archive-sync`. It does **not** merge itself or publish to `main`. A human or approved owner-directed review/release is still necessary.
+- The source reader validates expected license, payload count and HTTPS provenance, rejects shrinking datasets and never replaces manually curated dossiers.
+- `data/archive-sync-status.json` and `data/disclosure-zone-sync-status.json` are produced only for real candidate snapshots; no status is fabricated when disabled.
+- Offline tests: `node --test tests/auto-archive-sync.test.mjs tests/disclosure-zone-sync.test.mjs tests/archive-records.test.mjs`.
+- Read-only diagnostics: `node scripts/sync-open-case-archive.mjs --check` and `node scripts/sync-disclosure-zone.mjs --check`.
 
 ## First allowed provider
 
 `https://www.uap-archive.org/uap/data/cases.json` — **UAP Records Archive** (independent archive, not an official authority). Source metadata is released as **Creative Commons Attribution 4.0**. Official U.S. government document links remain links to their original or preservation URLs, not rehosted assets.
 
 The provider currently describes individual **official case designations**, not all government documents in its broader records catalog. A record catalog listing 80 documents is **not** 80 independently validated sightings. Future integrations must explicitly differentiate cases, documents, news and unreviewed witness reports.
+
+## Second allowed worldwide provider
+
+`https://disclosure.zone/api/cases.json` — **disclosure.zone**, an independent research collection published under **CC BY 4.0** with attribution. The public dataset currently declares 87 case entries (source count may change). It provides English narrative descriptions, reported explanations and source links. A separate adapter `scripts/sync-disclosure-zone.mjs` keeps metadata separate from government findings and does not import any private contact fields or source-derived scoring as if it were an AURORA measurement.
+
+- Its coordinates, if supplied, are **publisher-supplied approximate map anchors**, not instrument-measured positions. The dossier and globe precision note must remain visible. Unknown coordinates remain `null`, and unknown country `XX` becomes unset.
+- Its `explained`, `disputed`, `unresolved`, and `insufficient` flags are **publisher assessments**, not proof of an event's cause.
+- Descriptions remain attributed **English source text**, not fictional machine-generated Bulgarian translations. The Bulgarian view explicitly identifies text shown in the original language.
+- Public HTTPS sources are copied as links, not as scraped articles or hosted images/videos. No new autoplay or implied video permissions.
+- Alias/title/date checks preserve existing curated canonical dossiers and prevent duplicate pins where recognized.
+- No mass republication of witness contact details or private reports; legal and factual review is still expected for each new provider.
+- A case catalog contains a mixture of resolved, disputed and insufficiently documented reports. No new entry is presented as confirmed nonhuman technology.
 
 ## Non-negotiable data rules
 
