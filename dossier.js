@@ -206,8 +206,16 @@
   const story=$("dossierStory");story.replaceChildren();
   const narrative=c.story?.[language]||c.story?.en;
   if(Array.isArray(narrative)){
-   for(const passage of narrative.slice(0,10)){
+   // Skip repeated catalog boilerplate and verbatim copies of the synopsis.
+   // Their source attribution is visible in the separate provenance panel.
+   const compact=value=>String(value||"").replace(/\s+/g," ").trim().toLocaleLowerCase();
+   const opening=compact(summary),seen=new Set();
+   for(const passage of narrative.slice(0,18)){
     if(typeof passage!=="string"||passage.length<15)continue;
+    const normalized=compact(passage);
+    if(/^source-linked case dossier[ ·]/i.test(passage)||/^EN\s*[·:]/.test(passage))continue;
+    if(normalized===opening||seen.has(normalized))continue;
+    seen.add(normalized);
     const paragraph=document.createElement("p");
     paragraph.textContent=passage;story.append(paragraph);
    }
