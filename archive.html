@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#06121b">
+<meta name="description" content="AURORA worldwide source-linked UAP case archives with detailed dossiers, original documents and videos when available.">
+<meta name="robots" content="index,follow">
+<title>AURORA · Световен архив на UAP случаи</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/archive-directory.css">
+<script defer src="/archive-records.js"></script>
+<script type="module" src="/archive-directory.js"></script>
+</head>
+<body>
+<a class="skip" href="#archiveMain">Към случаите / Skip to cases</a>
+<div class="archive-shell">
+ <header class="archive-head">
+  <a class="archive-brand" href="/" aria-label="AURORA Home">✦ <span>A U R O R A</span></a>
+  <nav aria-label="Archive navigation">
+   <a href="/">⌂ <span data-archive-label="home">Начало</span></a>
+   <a href="/countries.html"><span data-archive-label="countries">Държави</span></a>
+   <a href="/news.html"><span data-archive-label="news">Новини</span></a>
+  </nav>
+  <label class="archive-language"><span data-archive-label="language">Език</span>
+   <select id="archiveLanguage" aria-label="Archive language">
+    <option value="bg">Български</option><option value="en">English</option><option value="de">Deutsch</option>
+    <option value="ru">Русский</option><option value="zh-CN">中文</option><option value="fr">Français</option>
+    <option value="es">Español</option><option value="it">Italiano</option><option value="pt">Português</option>
+    <option value="tr">Türkçe</option><option value="ro">Română</option><option value="el">Ελληνικά</option>
+    <option value="sr">Српски</option><option value="uk">Українська</option><option value="pl">Polski</option>
+    <option value="ar">العربية</option><option value="ja">日本語</option><option value="ko">한국어</option>
+   </select>
+  </label>
+ </header>
+ <main id="archiveMain">
+  <section class="archive-hero">
+   <div class="orbit orbit-one" aria-hidden="true"></div><div class="orbit orbit-two" aria-hidden="true"></div>
+   <p class="eyebrow"><span class="indicator"></span> AURORA / EARTH ARCHIVE / ORIGINAL SOURCES</p>
+   <h1 data-archive-label="heading">СВЕТОВЕН АРХИВ <em>UAP</em></h1>
+   <p class="intro" data-archive-label="intro">Реални публикувани сведения и архивни документи. Отвори всяко досие за подробни описания, източници, снимки и вградени видеозаписи, когато има такива.</p>
+   <div class="hero-meta"><div><strong id="archiveCount">—</strong><span data-archive-label="caseCount">ДОСИЕТА</span></div><div><strong id="archivePageCount">—</strong><span data-archive-label="pageCount">СТРАНИЦИ</span></div><div><strong id="archiveCountryCount">—</strong><span data-archive-label="countryCount">ДЪРЖАВИ</span></div></div>
+  </section>
+  <section class="archive-content" aria-labelledby="archiveListTitle">
+   <div class="section-heading"><div><p class="eyebrow">DATA / SOURCED CASE FILES</p><h2 id="archiveListTitle" data-archive-label="browse">РАЗГЛЕДАЙ СЛУЧАИТЕ</h2></div><p id="archiveStatus" role="status" aria-live="polite">Зареждане на архива…</p></div>
+   <div class="archive-toolbar">
+    <label><span data-archive-label="search">ТЪРСИ</span><input id="archiveSearch" type="search" maxlength="100" placeholder="Nimitz, Phoenix, 1947…" autocomplete="off"></label>
+    <label><span data-archive-label="filterCountry">ДЪРЖАВА</span><select id="archiveCountry"><option value="" data-archive-label="allCountries">Всички държави</option></select></label>
+    <label><span data-archive-label="filterMedia">МАТЕРИАЛИ</span><select id="archiveMedia"><option value="" data-archive-label="allMedia">Всички</option><option value="video" data-archive-label="hasVideo">С видеоизточник</option><option value="documents" data-archive-label="hasDocuments">С документи</option></select></label>
+   </div>
+   <div class="archive-results" id="archiveResults" aria-live="off"></div>
+   <nav class="archive-pages" id="archivePagination" aria-label="Case archive pages"></nav>
+  </section>
+  <p class="archive-disclaimer" data-archive-label="disclaimer">Публикувано свидетелство не е доказателство за извънземен произход. Географските маркери могат да са приблизителни; не са измерени траектории.</p>
+ </main>
+ <footer>✦ AURORA UAP · PUBLIC ARCHIVE · OPEN SOURCES</footer>
+</div>
+</body>
+</html>
