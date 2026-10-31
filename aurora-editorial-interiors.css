@@ -178,6 +178,12 @@ body[data-aurora-page="media"] .media-entry-image img{
  display:block;width:100%;height:100%;object-fit:cover;
  opacity:1;filter:none!important;
 }
+/* Preserve native hidden state when the thumbnail turns into an inline player.
+   The stronger editorial img display rule must not cover a playing iframe. */
+body[data-aurora-page="media"] .media-entry-image img[hidden],
+body[data-aurora-page="media"] .media-entry-image span[hidden]{
+ display:none!important;
+}
 body[data-aurora-page="media"] .media-entry-body{
  padding:clamp(18px,2.2vw,29px)!important;
  gap:clamp(11px,1.5vw,17px)!important;
