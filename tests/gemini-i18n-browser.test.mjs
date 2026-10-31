@@ -56,7 +56,6 @@ const server=createServer(async(req,res)=>{
     res.writeHead(response.status,Object.fromEntries(response.headers));res.end(await response.text());return;
   }
   const resolved=/^\/news\/?$/.test(decoded)?'/news.html':
-    /^\/sky\/?$/.test(decoded)?'/sky.html':
     /^\/countries\/?$/.test(decoded)?'/countries.html':
     /^\/report\/?$/.test(decoded)?'/report.html':
     /^\/donate\/?$/.test(decoded)?'/donate.html':
