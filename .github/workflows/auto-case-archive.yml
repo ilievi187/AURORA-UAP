@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - 'scripts/sync-open-case-archive.mjs'
+      - 'scripts/source-case-annotations.mjs'
+      - 'data/source-case-annotations.json'
       - 'scripts/sync-disclosure-zone.mjs'
       - 'scripts/approximate-case-geography.mjs'
       - 'tests/approximate-case-geography.test.mjs'
@@ -12,6 +14,8 @@ on:
   pull_request:
     paths:
       - 'scripts/sync-open-case-archive.mjs'
+      - 'scripts/source-case-annotations.mjs'
+      - 'data/source-case-annotations.json'
       - 'scripts/sync-disclosure-zone.mjs'
       - 'tests/disclosure-zone-sync.test.mjs'
       - '.github/workflows/auto-case-archive.yml'
@@ -45,6 +49,9 @@ jobs:
           cp scripts/sync-open-case-archive.mjs "$tmp/scripts/"
           cp scripts/sync-disclosure-zone.mjs "$tmp/scripts/"
           cp scripts/approximate-case-geography.mjs "$tmp/scripts/"
+          cp scripts/source-case-annotations.mjs "$tmp/scripts/"
+          cp data/source-case-annotations.json "$tmp/data/"
+          cp media-player.js package.json "$tmp/"
           cp data/cases.json "$tmp/data/"
           node "$tmp/scripts/sync-open-case-archive.mjs"
           node "$tmp/scripts/sync-disclosure-zone.mjs"
