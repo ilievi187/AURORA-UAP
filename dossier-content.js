@@ -24,8 +24,8 @@
    candidates.push({url:item.url,name:localized(item.title,lang)||localized(item.name,lang)||text(item.publisher,180),type:text(item.type,35)||"reference",date:text(item.date,45)});
   }
   for(const item of Array.isArray(c?.media)?c.media:[]){
-   if(!isPublicResource(item)||!["documents","archive"].includes(item.type))continue;
-   candidates.push({url:item.url,name:localized(item.title,lang)||"Published document",type:item.type});
+   if(!isPublicResource(item)||!["documents","archive","video"].includes(item.type))continue;
+   candidates.push({url:item.url,name:localized(item.title,lang)||(item.type==="video"?"Published video":"Published document"),type:item.type});
   }
   const seen=new Set(),out=[];
   for(const item of candidates){
