@@ -30,15 +30,15 @@ const provider=(options={})=>{
  return {ai,calls,get maxConcurrent(){return maxConcurrent}};
 };
 test("the dossier translation is complete, sourced and bounded to three simultaneous model calls",async()=>{
- const record=baseCase(),{ai,calls,maxConcurrent}=provider();
- const result=await translatePublishedCase(record,"de",ai,{detail:true});
+ const record=baseCase(),p=provider();
+ const result=await translatePublishedCase(record,"de",p.ai,{detail:true});
  assert.equal(result.status,"translated");
  assert.equal(result.source_language,"en");
  assert.equal(result.target_language,"de");
  assert.equal(result.story.length,record.story.en.length);
  assert.ok(result.story.every(x=>x.startsWith("TR: ")));
- assert.equal(calls.length,record.story.en.length+2);
- assert.ok(maxConcurrent<=3,"bounded in-flight Workers AI calls");
+ assert.equal(p.calls.length,record.story.en.length+2);
+ assert.ok(p.maxConcurrent>1&&p.maxConcurrent<=3,"bounded parallel Workers AI calls");
  assert.deepEqual(record.story.en,baseCase().story.en,"source narrative is unchanged");
 });
 test("a single failed paragraph yields partial rather than a false fully-translated dossier",async()=>{
