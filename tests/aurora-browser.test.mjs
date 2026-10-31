@@ -794,7 +794,10 @@ try{
     assert.equal(await page.locator("#dossierTitle").textContent(),"Witness-recorded sighting");
     assert.ok(await page.locator("#dossierTranslationDisclosure").isVisible());
     await page.locator("#caseHeroPlay").waitFor({state:"visible"});
+    assert.match(await page.locator("#caseHeroPlay").textContent(),/AURORA ANSEHEN/i,"German video controls must honor the selected language");
+    assert.match(await page.locator("#caseHeroSource").textContent(),/Originalquelle/i);
     await page.locator("#caseHeroPlay").click();
+    assert.match(await page.locator("#caseHeroClose").textContent(),/Player schließen/i);
     const frame=page.locator("#caseHeroStage iframe.case-hero-media");
     await frame.waitFor({state:"attached"});
     assert.match(await frame.getAttribute("src"),/youtube-nocookie\.com\/embed\/aqz-KE-bpKQ/);
