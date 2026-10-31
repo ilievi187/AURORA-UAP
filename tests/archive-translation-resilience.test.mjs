@@ -136,7 +136,7 @@ test("partial detail is never edge-cached; private or missing case identifiers a
   assert.equal(response.headers.get("cache-control"),"no-store");
   assert.equal(saved.size,0);
   assert.equal(waiting.length,0);
-  const invalid=await onRequestGet({request:new Request("https://aurorauap.org/api/archive-translation?id=bad&lang=de"),env,ctx});
+  const invalid=await onRequestGet({request:new Request("https://aurorauap.org/api/archive-translation?id=b&lang=de"),env,ctx});
   assert.equal(invalid.status,400);
   const denied=await onRequestGet({request,env:{...env,ASSETS:{async fetch(){return Response.json({cases:[{...record,private:true}]})}}},ctx});
   assert.equal(denied.status,404);
