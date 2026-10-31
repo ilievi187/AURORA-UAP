@@ -49,3 +49,24 @@ test("Native scene respects accessibility, performance, fallback and reduced mot
   for(const regex of [/webglcontextlost/,/webglcontextrestored/,/document\.hidden/,/IntersectionObserver/,/reduce\.matches/,/requestAnimationFrame/,/dataset\.renderer="fallback"/])assert.match(render,regex);
   assert.doesNotMatch(html,/igloo\.inc|igloo\.glb|three\.min\.js/);
 });
+
+test("photo Earth resources are genuine locally hosted images with compliant credits",()=>{
+ const assets=["earth-day-4096.jpg","earth-night-4096.jpg","earth-clouds-1024.png","earth-specular-2048.jpg","earth-normal-2048.jpg"];
+ for(const name of assets){
+   const bytes=readFileSync(new URL("../assets/earth/"+name,import.meta.url));
+   assert.ok(bytes.length>100000,"binary texture must not be placeholder: "+name);
+   if(name.endsWith(".jpg"))assert.equal(bytes[0],0xff,"JPEG signature: "+name);
+   if(name.endsWith(".png"))assert.equal(bytes.toString("ascii",1,4),"PNG","PNG signature: "+name);
+   assert.ok(render.includes("/assets/earth/"+name),"render fetches "+name);
+ }
+ assert.match(render,/uHasPhotos/);
+ assert.match(render,/uDay/);
+ assert.match(render,/uNight/);
+ assert.match(render,/uClouds/);
+ assert.match(render,/uSpecular/);
+ assert.match(render,/uNormal/);
+ assert.match(render,/root\.dataset\.earthImagery="photographic"/);
+ assert.match(html,/Solar System Scope/);
+ assert.match(html,/creativecommons\.org\/licenses\/by\/4\.0/);
+ assert.match(read("docs/EARTH-IMAGERY-ATTRIBUTION.md"),/CC BY 4\.0/);
+});
