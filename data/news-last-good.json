@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "checked_on": "2026-10-30",
+  "provenance": "Existing source-linked articles observed in the AURORA production newsroom on 2026-10-30; not a live feed",
+  "notice": "Historic source-linked fallback. Do not represent it as newly published news.",
+  "editions": {
+    "global": [
+      {
+        "title": "Mysterious ‘black triangles’ spotted over sensitive US site, new Pentagon UFO files reveal",
+        "source": "The Guardian",
+        "url": "https://www.theguardian.com/world/2026/oct/23/ufo-pentagon-files",
+        "published": "2026-10-23",
+        "language": "en"
+      },
+      {
+        "title": "Strange triangular craft reported in new U.S. government UFO release",
+        "source": "Scientific American",
+        "url": "https://www.scientificamerican.com/article/strange-triangular-craft-reported-in-new-u-s-government-ufo-release/",
+        "published": "2026-10-23",
+        "language": "en"
+      },
+      {
+        "title": "Pentagon Opens New Pathway for Government Insiders to Disclose UAP Information",
+        "source": "The Debrief",
+        "url": "https://thedebrief.org/pentagon-opens-new-pathway-for-government-insiders-to-disclose-uap-information/",
+        "published": "2026-09-16",
+        "language": "en"
+      },
+      {
+        "title": "Democratic Allies Must Join Forces in the Race for UAP Disclosure",
+        "source": "The Debrief",
+        "url": "https://thedebrief.org/democratic-allies-must-join-forces-in-the-race-for-uap-disclosure/",
+        "published": "2026-09-16",
+        "language": "en"
+      },
+      {
+        "title": "New Survey Suggests Gen Z Are More Likely to Believe in Aliens",
+        "source": "The Debrief",
+        "url": "https://thedebrief.org/new-survey-suggests-gen-z-are-more-likely-to-believe-in-aliens-how-ufo-media-may-be-shaping-a-generation/",
+        "published": "2026-08-29",
+        "language": "en"
+      },
+      {
+        "title": "Scientists Just Analyzed More Than 100 UAP Videos Released by the Pentagon’s ‘PURSUE’ Program",
+        "source": "The Debrief",
+        "url": "https://thedebrief.org/scientists-just-analyzed-more-than-100-uap-videos-released-by-the-pentagons-pursue-program-this-is-what-they-learned/",
+        "published": "2026-08-20",
+        "language": "en"
+      },
+      {
+        "title": "Pentagon Releases New Batch of UAP Videos and Historical Files, But Clarity Remains Elusive",
+        "source": "The Debrief",
+        "url": "https://thedebrief.org/pentagon-releases-new-batch-of-uap-videos-and-historical-files-but-clarity-remains-elusive/",
+        "published": "2026-07-10",
+        "language": "en"
+      }
+    ],
+    "official": [
+      {
+        "title": "Mysterious ‘black triangles’ spotted over sensitive US site, new Pentagon UFO files reveal",
+        "source": "The Guardian",
+        "url": "https://www.theguardian.com/world/2026/oct/23/ufo-pentagon-files",
+        "published": "2026-10-23",
+        "language": "en"
+      },
+      {
+        "title": "Strange triangular craft reported in new U.S. government UFO release",
+        "source": "Scientific American",
+        "url": "https://www.scientificamerican.com/article/strange-triangular-craft-reported-in-new-u-s-government-ufo-release/",
+        "published": "2026-10-23",
+        "language": "en"
+      },
+      {
+        "title": "Pentagon Opens New Pathway for Government Insiders to Disclose UAP Information",
+        "source": "The Debrief",
+        "url": "https://thedebrief.org/pentagon-opens-new-pathway-for-government-insiders-to-disclose-uap-information/",
+        "published": "2026-09-16",
+        "language": "en"
+      },
+      {
+        "title": "Scientists Just Analyzed More Than 100 UAP Videos Released by the Pentagon’s ‘PURSUE’ Program",
+        "source": "The Debrief",
+        "url": "https://thedebrief.org/scientists-just-analyzed-more-than-100-uap-videos-released-by-the-pentagons-pursue-program-this-is-what-they-learned/",
+        "published": "2026-08-20",
+        "language": "en"
+      },
+      {
+        "title": "Pentagon Releases New Batch of UAP Videos and Historical Files, But Clarity Remains Elusive",
+        "source": "The Debrief",
+        "url": "https://thedebrief.org/pentagon-releases-new-batch-of-uap-videos-and-historical-files-but-clarity-remains-elusive/",
+        "published": "2026-07-10",
+        "language": "en"
+      }
+    ]
+  }
+}
