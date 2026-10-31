@@ -1,0 +1,13 @@
+{
+  "source": "https://disclosure.zone/api/cases.json",
+  "license": "CC BY 4.0",
+  "upstream": 87,
+  "generated": 76,
+  "existing_curated": 25,
+  "total": 101,
+  "skipped_duplicates": 11,
+  "skipped_invalid": 0,
+  "previous": 0,
+  "coordinates_policy": "publisher approximate locality, never measured object position",
+  "status": "ok"
+}
