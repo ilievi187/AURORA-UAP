@@ -716,7 +716,11 @@ try{
     assert.equal(columns.split(" ").length,2,"mobile displays two metric columns");
     const statGeometry=await page.locator(".silence-stat").evaluateAll(items=>items.map(el=>({left:el.getBoundingClientRect().left,right:el.getBoundingClientRect().right,width:el.getBoundingClientRect().width})));
     assert.equal(statGeometry.length,4);
-    assert.ok(statGeometry.every(x=>x.left>=-1&&x.right<=391),"stat cards must fit mobile viewport "+JSON.stringify(statGeometry));
+    const layout=await page.evaluate(()=>{
+      const get=selector=>{const el=document.querySelector(selector);const r=el.getBoundingClientRect(),style=getComputedStyle(el);return {x:r.left,y:r.top,width:r.width,height:r.height,position:style.position,display:style.display,columns:style.gridTemplateColumns,transform:style.transform,overflow:style.overflow};};
+      return {hero:get("#silenceHero"),copy:get(".silence-copy"),bottom:get(".silence-bottom"),grid:get(".silence-stats"),cards:[...document.querySelectorAll(".silence-stat")].map((e,i)=>({index:i,x:e.getBoundingClientRect().left,y:e.getBoundingClientRect().top,w:e.getBoundingClientRect().width,h:e.getBoundingClientRect().height}))};
+    });
+    assert.ok(layout.cards.every(x=>x.w>=120&&x.x>=10&&x.x+x.w<=391),"stats must have usable widths: "+JSON.stringify(layout));
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
     assert.ok(overflow<=1,"homepage overflow: "+overflow);
     const heroWidth=await page.locator("#silenceHero").evaluate(el=>el.getBoundingClientRect().width);
