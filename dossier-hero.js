@@ -20,7 +20,8 @@
   iframe:"Player loaded. If the publisher blocks playback, open the original source.",
   error:"Video cannot load here. Open the original source."
  };
- const copy=playerModule?.mediaWordsFor?.(lang);
+ // Preserve the established Bulgarian/English labels while extending the other locales.
+ const copy=(lang==="bg"||lang==="en")?null:playerModule?.mediaWordsFor?.(lang);
  return copy?{...base,
   available:copy.fallbackTitle.toUpperCase(),
   check:copy.iframeLoading,
