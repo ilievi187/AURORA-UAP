@@ -110,19 +110,22 @@ function paint(polygons) {
   context.fillRect(0, 0, MAP_WIDTH, MAP_HEIGHT);
 
   if (satellite.night) {
-    // NASA-style night-light texture is aligned to the same -180..180 coordinates
-    // as the source-linked cases, without moving or approximating any markers.
-    context.globalAlpha = 1;
-    context.filter = 'brightness(.85) contrast(1.28) saturate(.53)';
-    context.drawImage(satellite.night, 0, 0, MAP_WIDTH, MAP_HEIGHT);
+    // Geographic texture first, then night lights as additive luminance.
+    // Use the same -180..180 equirectangular projection as the real case pins.
+    // This deliberately brightens geography without turning the sea cyan.
     if (satellite.day) {
-      context.globalAlpha = .12;
-      context.filter = 'brightness(.50) contrast(1.24) saturate(.32)';
+      context.globalAlpha = .84;
+      context.filter = 'brightness(.65) contrast(1.15) saturate(.48)';
       context.drawImage(satellite.day, 0, 0, MAP_WIDTH, MAP_HEIGHT);
     }
+    context.globalCompositeOperation = 'screen';
+    context.globalAlpha = .98;
+    context.filter = 'brightness(1.55) contrast(1.1) saturate(.78)';
+    context.drawImage(satellite.night, 0, 0, MAP_WIDTH, MAP_HEIGHT);
+    context.globalCompositeOperation = 'source-over';
     if (satellite.clouds) {
-      context.globalAlpha = .11;
-      context.filter = 'brightness(.68) contrast(1.15)';
+      context.globalAlpha = .13;
+      context.filter = 'brightness(.88) contrast(1.08)';
       context.drawImage(satellite.clouds, 0, 0, MAP_WIDTH, MAP_HEIGHT);
     }
     context.globalAlpha = 1;
@@ -165,14 +168,14 @@ function paint(polygons) {
   const atmosphere = context.createRadialGradient(500, 225, 60, 500, 225, 620);
   atmosphere.addColorStop(0, '#203e4b00');
   atmosphere.addColorStop(.58, '#07131e1c');
-  atmosphere.addColorStop(1, '#010305ad');
+  atmosphere.addColorStop(1, '#01030566');
   context.fillStyle = atmosphere;
   context.fillRect(0, 0, MAP_WIDTH, MAP_HEIGHT);
   const horizon = context.createLinearGradient(0, 0, 0, MAP_HEIGHT);
-  horizon.addColorStop(0, '#01030788');
+  horizon.addColorStop(0, '#01030739');
   horizon.addColorStop(.14, '#01030710');
   horizon.addColorStop(.8, '#01030710');
-  horizon.addColorStop(1, '#01030799');
+  horizon.addColorStop(1, '#01030758');
   context.fillStyle = horizon;
   context.fillRect(0, 0, MAP_WIDTH, MAP_HEIGHT);
   context.restore();
