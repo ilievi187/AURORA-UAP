@@ -1,6 +1,6 @@
 import {resolveMediaPlayback} from "./media-player.js";
 import {addArchivePlayback,resetArchivePlayback} from "./archive-inline-player.js";
-import {translatePublicCase,translationDisclosure,isFullTranslation} from "./archive-localization.js";
+import {translatePublicCase,translationDisclosure,isFullTranslation,isLegacyPlaceholder} from "./archive-localization.js";
 import {ARCHIVE_PACKS} from "./archive-ui-packs.js";
 // 10 records per page; 101 published dossiers provide 11 navigable pages.
 const PAGE_SIZE=10,$=id=>document.getElementById(id),storageKey="aurora-lang";
@@ -33,6 +33,9 @@ const packs={
 Object.assign(packs,ARCHIVE_PACKS);
 const T=()=>packs[language]||packs.en;
 const local=v=>typeof v==="string"?v:typeof v==="object"&&v?String(v[language]||v.en||v.bg||""):"";
+// Legacy catalog boilerplate must never masquerade as original Bulgarian text.
+const caseText=(r,field)=>language==="bg"&&isLegacyPlaceholder(r,"bg")&&!r.translationSummaryReady?
+  String(r[field]?.en||r[field]?.bg||""):local(r[field]);
 const safeUrl=v=>{try{const u=new URL(v);return u.protocol==="https:"&&!u.username&&!u.password?u.href:null}catch{return null}};
 const num=n=>new Intl.NumberFormat(language).format(n);
 function countryOptions(){
@@ -48,7 +51,7 @@ function filtered(){
   if(mediaType==="playable"&&!playable(r))return false;
   if(mediaType==="video"&&!(r.media||[]).some(m=>m.type==="video"))return false;
   if(mediaType==="documents"&&!(r.media||[]).some(m=>["documents","archive"].includes(m.type)))return false;
-  const searchable=[local(r.title),local(r.summary),local(r.city),r.date,r.country,
+  const searchable=[caseText(r,"title"),caseText(r,"summary"),local(r.city),r.date,r.country,
    ...(r.story?.en||[]),...(r.sources||[]).map(s=>s.name||"")].join(" ").toLocaleLowerCase();
   return !search||searchable.includes(search);
  });
@@ -62,8 +65,8 @@ function card(r){
  const top=el("div","card-top");
  top.append(el("span","card-meta",(r.date&&r.date!=="undated"?r.date:T().undated)+" · "+(local(r.city)||r.country||T().unknown)));
  top.append(el("span","card-status",r.publisher_assessment||r.status||"reported"));
- const title=el("h3","card-title",local(r.title));
- const summary=el("p","card-description",local(r.summary));
+ const title=el("h3","card-title",caseText(r,"title"));
+ const summary=el("p","card-description",caseText(r,"summary"));
  article.append(top,title,summary);
  // An English source fallback is never misrepresented as translated content.
  if(language!=="en"&&!isFullTranslation(r,language)){
@@ -73,16 +76,17 @@ function card(r){
    const renderedLang=language;
    void translatePublicCase(r,renderedLang).then(result=>{
      if(!result||!article.isConnected||language!==renderedLang)return;
-     title.textContent=local(r.title);
-     summary.textContent=local(r.summary);
+     title.textContent=caseText(r,"title");
+     summary.textContent=caseText(r,"summary");
      if(isFullTranslation(r,renderedLang))disclosure.remove();
    });
  }
- const paragraphs=Array.isArray(r.story?.[language])?r.story[language]:Array.isArray(r.story?.en)?r.story.en:[];
+ const nativeStory=language==="en"||!isLegacyPlaceholder(r,language);
+ const paragraphs=nativeStory&&Array.isArray(r.story?.[language])?r.story[language]:Array.isArray(r.story?.en)?r.story.en:[];
  const detail=paragraphs.find(p=>typeof p==="string"&&p!==local(r.summary)&&p.length>95);
  // Keep previews linguistically consistent: only show extra story excerpts
  // when the source has a real translation for the selected language.
- if(detail&&(language==="en"||Array.isArray(r.story?.[language])))article.append(el("p","card-context",detail.slice(0,350)+(detail.length>350?"…":"")));
+ if(detail&&nativeStory&&(language==="en"||Array.isArray(r.story?.[language])))article.append(el("p","card-context",detail.slice(0,350)+(detail.length>350?"…":"")));
  // Play directly on the archive card instead of redirecting to a publisher.
  const clip=(r.media||[]).find(m=>m.type==="video"&&resolveMediaPlayback(m));
  if(clip)addArchivePlayback(article,clip,language,local(clip.title)||local(r.title));
