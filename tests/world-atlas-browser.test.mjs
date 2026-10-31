@@ -10,7 +10,7 @@ import { chromium } from 'playwright';
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 // Legacy globe/navigation suites intentionally use the 15 curated editorial fixtures.
 // The full licensed multi-provider archive is verified in archive-directory tests.
-const curatedArchive=(()=>{const {cases,...meta}=JSON.parse(readFileSync(new URL('../data/cases.json',import.meta.url)));return JSON.stringify({...meta,cases:cases.filter(c=>!c.provenance?.automated)});})();
+const curatedArchive=(()=>{const {cases,...meta}=JSON.parse(readFileSync(new URL('../data/cases.json',import.meta.url)));return JSON.stringify({...meta,cases:cases.filter(c=>!c.provenance?.automated).sort((a,b)=>a.id==='phoenix-1997'?-1:b.id==='phoenix-1997'?1:0)});})();
 const types = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.js': 'application/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8',
