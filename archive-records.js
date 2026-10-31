@@ -93,6 +93,18 @@
     return {...item,city:{en:region,bg:region},location_context:original};
   }
 
+  function cleanLegacyLanguage(item){
+    const bg=String(item?.summary?.bg||"");
+    const paragraphs=Array.isArray(item?.story?.bg)?item.story.bg:[];
+    const template=/(?:е случай, описан в публичния каталог|Публикуваните сведения се отнасят|Маркерът, ако има такъв)/i.test(bg)||
+     paragraphs.some(p=>/^EN\s*[·:]/.test(String(p))||/Следва оригиналното описание на английски/.test(String(p)));
+    if(!template)return item;
+    // Keep source English and source identifiers intact; never render a
+    // paragraph labelled BG when the content is really EN.
+    const summary={...item.summary},story={...item.story};
+    delete summary.bg;delete story.bg;
+    return {...item,summary,story,translation_status:"needs_full_translation"};
+  }
   function prepareArchiveCases(records) {
     const keys = new Set(), ids = new Set(), result = [];
     for (const item of Array.isArray(records) ? records : []) {
@@ -100,9 +112,9 @@
       const key = identity(item), id = text(item.id);
       if (keys.has(key) || ids.has(id)) continue;
       keys.add(key); ids.add(id);
-      if (hasCoordinates(item)) result.push(displayPlace({...item}));
-      else result.push(displayPlace({...item, lat: null, lng: null,
-        location_precision: text(item.location_precision) || "Coordinates not published"}));
+      if (hasCoordinates(item)) result.push(cleanLegacyLanguage(displayPlace({...item})));
+      else result.push(cleanLegacyLanguage(displayPlace({...item, lat: null, lng: null,
+        location_precision: text(item.location_precision) || "Coordinates not published"})));
     }
     return result;
   }
