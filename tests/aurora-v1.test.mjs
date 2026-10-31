@@ -221,17 +221,16 @@ test('global editorial UI labels have complete keys in all eighteen advertised l
 });
 
 
-test('global newsroom and airspace pages load 18-locale language controls',()=>{
+test('global newsroom retains 18-locale language controls after aircraft-radar removal',()=>{
  const script=read('subpage-i18n.js');
  assert.doesNotThrow(()=>new Script(script),'subpage i18n syntax');
  for(const locale of ['bg','en','de','ru','zh-CN','fr','es','it','pt','tr','ro','el','sr','uk','pl','ar','ja','ko']){
   assert.ok(script.includes('"'+locale+'"'),'missing subpage locale '+locale);
  }
- for(const path of ['news.html','sky.html']){
+ for(const path of ['news.html','countries.html']){
   assert.match(read(path),/src="\/subpage-i18n\.js"/);
  }
  assert.match(read('news.js'),/AURORA_SUBPAGES/);
- assert.match(read('sky.js'),/AURORA_SUBPAGES/);
 });
 
 
