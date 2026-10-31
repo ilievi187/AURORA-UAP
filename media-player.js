@@ -399,6 +399,12 @@ const COPY = {
   }
 };
 
+// Shared 18-language player controls used by dossier and archival video UI.
+export function mediaWordsFor(lang){
+  const raw=String(lang||"en").trim();
+  return COPY[raw]||COPY[raw.toLowerCase().split("-")[0]]||COPY.en;
+}
+
 function localeFor(documentRef) {
   let stored = '';
   try { stored = documentRef.defaultView?.localStorage?.getItem('aurora-lang') || ''; } catch { /* storage may be restricted */ }
@@ -475,6 +481,7 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
   let iframeTimer = null;
   let activeNode = null;
   let activeInline = null;
+  const inlineOnly = options.inlineOnly === true;
   function resetInline({restoreFocus=false}={}) {
     if(!activeInline)return;
     const current=activeInline;activeInline=null;
@@ -716,7 +723,7 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
     if (!catalogReady) return;
     syncLocale();
     for (const card of gallery.querySelectorAll('.media-entry')) {
-      if (card.querySelector('.aurora-player-button') || card.querySelector('video.archive-video')) continue;
+      if (card.querySelector('.aurora-player-button') || card.querySelector('.media-inline-play') || card.querySelector('video.archive-video')) continue;
       const sourceLink = card.querySelector('.media-entry-links a[target="_blank"]');
       if (!sourceLink) continue;
       const record = recordForCard(card, sourceLink);
@@ -734,6 +741,7 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
       const sourceHost = hostnameLabel(playback.originalUrl);
       const providerLabel = playback.provider === 'youtube' ? 'YouTube' : playback.provider === 'vimeo' ? 'Vimeo' : sourceHost;
       const attribution = String(media.source_name || media.publisher || providerLabel || sourceHost).trim();
+      if (!inlineOnly) {
       const button = documentRef.createElement('button');
       button.type = 'button';
       button.className = 'aurora-player-button';
@@ -748,6 +756,7 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
         sourceName: attribution || sourceHost || providerLabel
       }, button));
       sourceLink.after(button);
+      }
       const picture=card.querySelector(".media-entry-image");
       if(picture){
         const thumb=resolveVideoPoster(media),img=picture.querySelector("img");
@@ -800,5 +809,6 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
 }
 
 if (typeof document !== 'undefined' && document.querySelector('#mediaGallery')) {
-  initializeMediaPlayer(document);
+  // The public media gallery has one in-thumbnail player, never two competing launchers.
+  initializeMediaPlayer(document, { inlineOnly: true });
 }

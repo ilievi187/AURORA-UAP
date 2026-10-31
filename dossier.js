@@ -75,6 +75,39 @@
   return {...base.en,...o,categoryName:{...base.en.categoryName,...(o.categoryName||{})},statusName:{...base.en.statusName,...(o.statusName||{})},confidence:{...base.en.confidence,...(o.confidence||{})}};
  };
  const local=x=>x?.[language]||x?.en||"";
+ const translationRequested=new Set();
+ function narrativeDisclosure(record){
+  const el=$("dossierTranslationDisclosure")||(()=>{
+   const tag=document.createElement("p");tag.id="dossierTranslationDisclosure";
+   tag.className="archive-translation-disclosure";
+   tag.setAttribute("role","note");
+   $("dossierSubtitle")?.after(tag);return tag;
+  })();
+  const currentIsNative=Boolean(record?.title?.[language]&&record?.summary?.[language]&&
+    Array.isArray(record?.story?.[language]));
+  if(language==="en"||currentIsNative){el.hidden=true;return}
+  const labels={
+   bg:"Оригиналният разказ е на английски. Преводът не е наличен или е частичен.",
+   de:"Originalbericht auf Englisch; die Übersetzung ist nicht verfügbar oder unvollständig.",
+   ru:"Оригинальный рассказ на английском; перевод недоступен или неполон.",
+   fr:"Récit original en anglais ; traduction absente ou partielle.",
+   es:"Relato original en inglés; traducción no disponible o parcial."
+  };
+  el.textContent=labels[language]||"Original English narrative · Translation unavailable or partial";
+  el.hidden=false;
+ }
+ function requestNarrativeTranslation(record){
+  if(!legacy||language==="en"||!record?.id)return;
+  const lang=language,key=record.id+"/"+lang;
+  if(translationRequested.has(key))return;
+  translationRequested.add(key);
+  void import("/archive-localization.js").then(module=>module.translatePublicCase(record,lang,{detail:true}))
+   .then(reply=>{
+    if(!reply||currentCase!==record||language!==lang)return;
+    // Keep source provenance, event assessments and multimedia unchanged.
+    render(record);
+   }).catch(()=>{});
+ }
  let currentCase=null,archiveCases=[],feedbackState="loading";
  function feedback(stateKey,error=false){
   feedbackState=stateKey;
@@ -273,6 +306,8 @@
    label("dossierLocationCaveat",t.noCoords+" "+(c.location_precision||""));
   }
   renderRelatedCases(c,t);
+  narrativeDisclosure(c);
+  requestNarrativeTranslation(c);
   const countryLink=$("dossierCountry");
   countryLink.hidden=legacy||!/^[A-Z]{2}$/.test(country);
   if(!countryLink.hidden){countryLink.href="/countries/"+country;countryLink.textContent=t.country}
@@ -282,7 +317,7 @@
  }
  function translateStatic(){
   const t=getPack();
-  const ids={dossierBack:"home",factsHeading:"facts",labelIdentifier:"id",labelDate:"date",
+  const ids={dossierBack:"home",dossierSubtitle:"subtitle",factsHeading:"facts",labelIdentifier:"id",labelDate:"date",
    labelLocation:"location",labelCategory:"category",labelPublication:"publication",labelAssessment:"assessment",
    labelPrecision:"precision",summaryHeading:"summary",sourceHeading:"source",locationHeading:"geography",relatedHeading:"related"};
   for(const [id,key] of Object.entries(ids))label(id,t[key]);

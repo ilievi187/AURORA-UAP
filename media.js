@@ -179,6 +179,24 @@
  document.documentElement.lang=locale;
  const valid=u=>{try{const x=new URL(u);return x.protocol==="https:"&&!x.username&&!x.password}catch{return false}};
  let items=[],loadedOk=false;
+ function requestMediaTranslation(record,heading,summary,language,card){
+  if(language==="en"||record.title?.[language]&&record.summary?.[language])return;
+  const note=document.createElement("small");note.className="archive-translation-disclosure";
+  note.textContent=language==="bg"?"Оригинален английски текст · преводът не е наличен":
+    "Original English · automatic translation pending or unavailable";
+  summary.after(note);
+  void import("/archive-localization.js").then(m=>{
+    note.textContent=m.translationDisclosure(language);
+    return m.translatePublicCase(record,language);
+  })
+   .then(result=>{
+    if(!result||!card.isConnected||locale!==language)return;
+    heading.textContent=record.title?.[language]||record.title?.en||"";
+    summary.textContent=record.summary?.[language]||record.summary?.en||"";
+    note.remove();
+   }).catch(()=>{});
+ }
+
  function applyChrome(){
   locale=getLocale();
   document.documentElement.lang=locale;
@@ -213,7 +231,7 @@
    const img=document.createElement("img");img.loading="lazy";img.decoding="async";
    img.src=m.type==="video"?"/assets/video-poster.svg":(/^\/assets\/[a-z0-9-]+\.webp$/.test(c.visual?.src||"")?c.visual.src:"/assets/feature-media.webp");
    img.alt=words.illustration;
-   const badge=document.createElement("span");badge.textContent=m.type==="video"?"VIDEO":m.type==="photo"?"▧ PHOTO":"▤ ARCHIVE";
+   const badge=document.createElement("span");badge.textContent=m.type==="video"?words.video:m.type==="photo"?words.photo:words.documents;
    picture.append(img,badge);
    const body=document.createElement("div");body.className="media-entry-body";
    const meta=document.createElement("small");meta.textContent=c.date+" · "+c.country+" · "+(c.source?.name||"");
@@ -221,11 +239,13 @@
    const summary=document.createElement("p");summary.textContent=c.summary?.[locale]||c.summary?.en||"";
    const links=document.createElement("div");links.className="media-entry-links";
    const original=document.createElement("a");original.href=m.url;original.target="_blank";original.rel="noopener noreferrer";
-   original.textContent=m.type==="video"?(locale==="bg"?"ОРИГИНАЛНА ПУБЛИКАЦИЯ ↗":"ORIGINAL VIDEO SOURCE ↗"):(m.title?.[locale]||m.title?.en||words.view)+" ↗";
+   original.textContent=m.type==="video"?words.view:(m.title?.[locale]||m.title?.en||words.view).replace(/\s*↗\s*$/,"")+" ↗";
    const dossier=document.createElement("a");dossier.href="/archive/"+encodeURIComponent(c.id);dossier.textContent=words.case;
    links.append(original,dossier);
    const caution=document.createElement("small");caution.className="media-caption";caution.textContent=words.illustration;
-   body.append(meta,heading,summary,links,caution);card.append(picture,body);root.append(card);
+   body.append(meta,heading,summary,links,caution);card.append(picture,body);
+   root.append(card);
+   requestMediaTranslation(c,heading,summary,locale,card);
   }
   if(loadedOk)$("mediaStatus").textContent=matches.length?words.count(matches.length):words.empty;
  }

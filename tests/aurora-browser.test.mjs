@@ -730,6 +730,106 @@ try{
     assert.deepEqual(errors,[]);
     await context.close();
   });
+  await test("all nine inner pages use the same real black skin, not old cyan layouts",async()=>{
+    const context=await browser.newContext({viewport:{width:1280,height:900}});
+    const page=await context.newPage();
+    await page.addInitScript(()=>localStorage.setItem("aurora-lang","de"));
+    mkdirSync("artifacts",{recursive:true});
+    for(const uri of ["/archive.html","/countries.html","/country.html","/dossier.html","/media.html","/news.html","/report.html","/sources.html","/donate.html"]){
+      await page.goto("http://127.0.0.1:"+port+uri);
+      const results=await page.evaluate(()=>{
+        const bodyStyle=getComputedStyle(document.body);
+        return {
+          bg:bodyStyle.backgroundColor,
+          css:[...document.styleSheets].some(s=>s.href?.endsWith("/aurora-black-pages.css")),
+          height:document.body.scrollHeight,
+          width:document.documentElement.scrollWidth-document.documentElement.clientWidth
+        };
+      });
+      assert.equal(results.css,true,uri+" must load shared black visual system");
+      assert.match(results.bg,/rgb\(1, 3, 5\)/,uri+" body should be true near-black");
+      assert.ok(results.width<=1,uri+" should have no horizontal overflow");
+      if(uri==="/archive.html")await page.screenshot({path:"artifacts/aurora-black-archive.png",animations:"disabled"});
+      if(uri==="/media.html")await page.screenshot({path:"artifacts/aurora-black-media.png",animations:"disabled"});
+      if(uri==="/dossier.html")await page.screenshot({path:"artifacts/aurora-black-dossier.png",animations:"disabled"});
+    }
+    await context.close();
+  });
+  await test("Black Edition mobile pages preserve French and never overflow",async()=>{
+    const ctx=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:"reduce"});
+    const page=await ctx.newPage();
+    await page.addInitScript(()=>localStorage.setItem("aurora-lang","fr"));
+    for(const uri of ["/archive.html","/countries.html","/country.html","/media.html","/news.html","/report.html","/sources.html","/donate.html"]){
+      await page.goto("http://127.0.0.1:"+port+uri);
+      const result=await page.evaluate(()=>({
+        delta:document.documentElement.scrollWidth-document.documentElement.clientWidth,
+        width:document.body.getBoundingClientRect().width,
+        lang:document.documentElement.lang
+      }));
+      assert.ok(result.delta<=1,uri+" horizontal overflow "+JSON.stringify(result));
+      assert.ok(result.width<=391,uri+" body exceeds viewport");
+      assert.equal(result.lang,"fr",uri+" must persist chosen locale");
+      if(uri==="/archive.html")
+        assert.match(await page.locator(".archive-hero h1").textContent(),/ARCHIVES UAP MONDIALES/);
+      if(uri==="/sources.html")
+        assert.match(await page.locator(".live-hero h1").textContent(),/SOURCES INTERNATIONALES/);
+    }
+    await ctx.close();
+  });
+  await test("Translated dossier retains one original verified embedded player",async()=>{
+    const ctx=await browser.newContext({viewport:{width:1280,height:850}});
+    const page=await ctx.newPage(),errors=[];
+    page.on("pageerror",error=>errors.push(error.message));
+    await page.addInitScript(()=>localStorage.setItem("aurora-lang","de"));
+    await page.route("**/data/cases.json",route=>route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({cases:[{
+      id:"mock-case-video",date:"2026-10-05",country:"US",category:"lights",status:"undetermined",
+      title:{en:"Witness-recorded sighting",bg:"Свидетелски запис"},
+      summary:{en:"A sourced report with an original video.",bg:"Сигнал с оригинално видео."},
+      story:{en:["Several witnesses saw lights above the city."]},
+      source:{name:"Public Publisher",url:"https://example.org/record"},
+      media:[{type:"video",url:"https://www.youtube.com/watch?v=aqz-KE-bpKQ",title:{en:"Original footage",bg:"Оригинален запис"}}]
+    }]})}));
+    await page.goto("http://127.0.0.1:"+port+"/archive/mock-case-video");
+    await page.waitForFunction(()=>document.querySelector("#dossierContent")?.hidden===false);
+    assert.equal(await page.locator("#dossierTitle").textContent(),"Witness-recorded sighting");
+    assert.ok(await page.locator("#dossierTranslationDisclosure").isVisible());
+    await page.locator("#caseHeroPlay").waitFor({state:"visible"});
+    assert.match(await page.locator("#caseHeroPlay").textContent(),/AURORA ANSEHEN/i,"German video controls must honor the selected language");
+    assert.match(await page.locator("#caseHeroSource").textContent(),/Originalquelle/i);
+    await page.locator("#caseHeroPlay").click();
+    assert.match(await page.locator("#caseHeroClose").textContent(),/Player schließen/i);
+    const frame=page.locator("#caseHeroStage iframe.case-hero-media");
+    await frame.waitFor({state:"attached"});
+    assert.match(await frame.getAttribute("src"),/youtube-nocookie\.com\/embed\/aqz-KE-bpKQ/);
+    assert.equal(await page.locator("#caseHeroStage iframe").count(),1);
+    await page.screenshot({path:"artifacts/aurora-black-real-dossier.png",animations:"disabled"});
+    assert.deepEqual(errors,[]);
+    await ctx.close();
+  });
+  await test("Media page offers one playable embedded source recording without redirecting away",async()=>{
+    const ctx=await browser.newContext({viewport:{width:1240,height:800}});
+    const page=await ctx.newPage(),errors=[];
+    page.on("pageerror",e=>errors.push(e.message));
+    await page.route("**/data/cases.json",route=>route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({cases:[{
+      id:"test-media-case",date:"2026-10-05",country:"US",city:{en:"Arizona",bg:"Аризона"},
+      title:{en:"Source-linked video test",bg:"Тестово видео"},
+      summary:{en:"An original published recording for the case.",bg:"Оригинално публикувано видео."},
+      source:{name:"Original Publisher",url:"https://example.org/case"},
+      media:[{type:"video",url:"https://www.youtube.com/watch?v=aqz-KE-bpKQ",title:{en:"Published recording",bg:"Публикувано видео"}}]
+    }]})}));
+    await page.goto("http://127.0.0.1:"+port+"/media.html");
+    await page.waitForFunction(()=>document.querySelectorAll("#mediaGallery .media-entry").length===1&&!!document.querySelector(".media-inline-play"));
+    const button=page.locator(".media-inline-play");
+    assert.equal(await button.isVisible(),true);
+    await button.click();
+    const player=page.locator("#mediaGallery .media-inline-player-stage iframe");
+    await player.waitFor({state:"attached"});
+    assert.match(await player.getAttribute("src"),/youtube-nocookie\.com\/embed\/aqz-KE-bpKQ/);
+    assert.equal(await page.locator("#mediaGallery .media-entry-links a[target=\"_blank\"]").count(),1);
+    assert.equal(await page.locator("#mediaGallery .archive-video-box, #mediaGallery .aurora-player-button").count(),0);
+    assert.deepEqual(errors,[]);
+    await ctx.close();
+  });
   await test('news API outage is shown as an explicit offline state, not a blank loading feed',async()=>{
     const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});
     const page=await context.newPage(),errors=[];

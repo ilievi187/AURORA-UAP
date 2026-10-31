@@ -122,153 +122,52 @@ async function openMediaPage(viewport = { width: 1280, height: 860 }, options = 
   }
   await page.goto(`http://127.0.0.1:${port}/media.html`);
   await page.waitForFunction(() => document.querySelectorAll('#mediaGallery .media-entry').length === 5);
-  await page.waitForFunction(() => document.querySelectorAll('#mediaGallery [data-player-action]').length === 3);
+  await page.waitForFunction(() => document.querySelectorAll('#mediaGallery [data-inline-player-action="play"]').length === 3);
   return { context, page, errors };
 }
 
-test('only supported providers and rights-cleared direct assets get an in-site play action', async () => {
-  const { context, page, errors } = await openMediaPage();
-  try {
-    assert.equal(await page.locator('[data-player-action]').count(), 3);
-    assert.equal(await page.locator('#mediaGallery article').filter({ hasText: 'Unapproved direct fixture' }).locator('[data-player-action]').count(), 0);
-    assert.equal(await page.locator('#mediaGallery article').filter({ hasText: 'Unsupported fixture case' }).locator('[data-player-action]').count(), 0);
-    assert.deepEqual(errors, []);
-  } finally {
-    await context.close();
-  }
+test('one source-safe Play control per playable card, no stacked or modal launchers', async () => {
+ const {context,page,errors}=await openMediaPage();
+ try{
+  assert.equal(await page.locator('[data-inline-player-action="play"]').count(),3);
+  assert.equal(await page.locator('#mediaGallery .archive-video-box').count(),0);
+  assert.equal(await page.locator('#mediaGallery .aurora-player-button').count(),0);
+  assert.equal(await page.locator('#mediaGallery .media-inline-play').count(),3);
+  assert.equal(await page.locator('#mediaGallery article').filter({hasText:'Unapproved direct fixture'}).locator('.media-inline-play').count(),0);
+  assert.equal(await page.locator('#mediaGallery article').filter({hasText:'Unsupported fixture case'}).locator('.media-inline-play').count(),0);
+  assert.deepEqual(errors,[]);
+ }finally{await context.close()}
 });
 
-test('YouTube opens lazily in an accessible modal and Escape restores focus', async () => {
-  const { context, page, errors } = await openMediaPage();
-  try {
-    const button = page.locator('[data-player-provider="youtube"]');
-    await button.click();
-    const dialog = page.locator('dialog.aurora-player-dialog');
-    assert.equal(await dialog.evaluate(element => element.open), true);
-    assert.equal(await dialog.locator('.aurora-player-title').textContent(), 'YouTube sample');
-    assert.equal(await dialog.locator('.aurora-player-context').textContent(), 'YouTube fixture case');
-    assert.equal(await dialog.locator('.aurora-player-source-name').textContent(), 'Fixture Channel');
-    const frame = dialog.locator('iframe');
-    const src = await frame.getAttribute('src');
-    assert.equal(src, 'https://www.youtube-nocookie.com/embed/aqz-KE-bpKQ?rel=0&playsinline=1');
-    assert.doesNotMatch(src, /autoplay=1/i);
-    assert.equal(await frame.getAttribute('loading'), 'lazy');
-    assert.ok((await frame.getAttribute('allow')).includes('fullscreen'));
-    assert.equal(await dialog.locator('.aurora-player-original').getAttribute('href'), 'https://www.youtube.com/watch?v=aqz-KE-bpKQ');
-    assert.match(await dialog.locator('.aurora-player-status').textContent(), /if.*blocked|unavailable/i);
-    if (process.env.AURORA_PLAYER_SCREENSHOT_PATH) await page.screenshot({ path: process.env.AURORA_PLAYER_SCREENSHOT_PATH, fullPage: true });
-    await page.keyboard.press('Escape');
-    assert.equal(await dialog.evaluate(element => element.open), false);
-    assert.equal(await page.evaluate(() => document.activeElement?.dataset.playerProvider), 'youtube');
-    await page.waitForFunction(() => document.querySelector('dialog.aurora-player-dialog iframe') === null);
-    assert.equal(await dialog.locator('iframe').count(), 0, 'closing must unload the expensive embed');
-    assert.deepEqual(errors, []);
-  } finally {
-    await context.close();
-  }
+test('Vimeo opens in the thumbnail with publisher source fallback and close unloads it', async()=>{
+ const {context,page,errors}=await openMediaPage();
+ try{
+  const card=page.locator('#mediaGallery article').filter({hasText:'Vimeo fixture case'});
+  await card.locator('.media-inline-play').click();
+  assert.equal(await card.locator('.media-entry-image iframe').getAttribute('src'),'https://player.vimeo.com/video/76979871?dnt=1');
+  assert.equal(await card.locator('.media-entry-links a[target="_blank"]').getAttribute('href'),'https://vimeo.com/76979871');
+  assert.equal(await page.locator('dialog.aurora-player-dialog[open]').count(),0);
+  await card.locator('.media-inline-close').click();
+  assert.equal(await card.locator('iframe').count(),0);
+  assert.deepEqual(errors,[]);
+ }finally{await context.close()}
 });
 
-test('Vimeo opens its official player and direct HTML5 requires controls without autoplay', async () => {
-  const { context, page, errors } = await openMediaPage();
-  try {
-    await page.locator('[data-player-provider="vimeo"]').click();
-    let dialog = page.locator('dialog.aurora-player-dialog');
-    assert.equal(await dialog.locator('iframe').getAttribute('src'), 'https://player.vimeo.com/video/76979871?dnt=1');
-    await page.locator('.aurora-player-close').click();
-    assert.equal(await dialog.evaluate(element => element.open), false);
-
-    await page.route('https://cdn.publisher.example/**', route => route.abort());
-    await page.locator('[data-player-provider="direct"]').click();
-    dialog = page.locator('dialog.aurora-player-dialog');
-    const video = dialog.locator('video');
-    assert.equal(await video.getAttribute('src'), 'https://cdn.publisher.example/footage.mp4');
-    assert.equal(await video.getAttribute('preload'), 'metadata');
-    assert.equal(await video.getAttribute('controls'), '');
-    assert.equal(await video.getAttribute('autoplay'), null);
-    assert.equal(await dialog.locator('.aurora-player-original').getAttribute('href'), 'https://publisher.example/story');
-    await video.evaluate(element => element.dispatchEvent(new Event('error')));
-    assert.match(await dialog.locator('.aurora-player-status').textContent(), /could not be loaded|original source/i);
-    assert.deepEqual(errors, []);
-  } finally {
-    await context.close();
-  }
+test('opening a second thumbnail stops the first, even at mobile width',async()=>{
+ const {context,page,errors}=await openMediaPage({width:390,height:844});
+ try{
+  const youtube=page.locator('#mediaGallery article').filter({hasText:'YouTube fixture case'});
+  const vimeo=page.locator('#mediaGallery article').filter({hasText:'Vimeo fixture case'});
+  await youtube.locator('.media-inline-play').click();
+  assert.equal(await youtube.locator('iframe').count(),1);
+  await vimeo.locator('.media-inline-play').click();
+  assert.equal(await youtube.locator('iframe').count(),0,'previous embed must be unloaded');
+  assert.equal(await vimeo.locator('iframe').count(),1);
+  const widths=await page.evaluate(()=>({client:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth}));
+  assert.ok(widths.scroll<=widths.client+1,'inline video must not overflow mobile viewport');
+  assert.deepEqual(errors,[]);
+ }finally{await context.close()}
 });
-
-test('mobile player fits the viewport and provider errors keep an original-source fallback', async () => {
-  const { context, page, errors } = await openMediaPage({ width: 390, height: 844 });
-  try {
-    await page.locator('[data-player-provider="vimeo"]').click();
-    const dialog = page.locator('dialog.aurora-player-dialog');
-    const dimensions = await page.evaluate(() => ({
-      viewport: document.documentElement.clientWidth,
-      page: document.documentElement.scrollWidth,
-      dialog: document.querySelector('dialog.aurora-player-dialog').getBoundingClientRect().width
-    }));
-    assert.ok(dimensions.page <= dimensions.viewport + 1, `page overflow: ${JSON.stringify(dimensions)}`);
-    assert.ok(dimensions.dialog <= dimensions.viewport, `dialog overflow: ${JSON.stringify(dimensions)}`);
-    await dialog.locator('iframe').evaluate(frame => frame.dispatchEvent(new Event('error')));
-    assert.match(await dialog.locator('.aurora-player-status').textContent(), /could not load|blocked|unavailable/i);
-    assert.equal(await dialog.locator('.aurora-player-original').getAttribute('href'), 'https://vimeo.com/76979871');
-    assert.deepEqual(errors, []);
-  } finally {
-    await context.close();
-  }
-});
-
-if (process.env.AURORA_LIVE_EMBED_TEST === '1') {
-  test('LIVE only: a real YouTube sample can reach playback inside the in-site modal', async t => {
-    const { context, page, errors } = await openMediaPage({ width: 1280, height: 860 }, { live: true, stubEmbeds: false });
-    const providerEvents = [];
-    const framePredicate = candidate => candidate.url().includes('youtube-nocookie.com/embed/aqz-KE-bpKQ');
-    page.on('requestfailed', request => {
-      if (/youtube-nocookie\.com/i.test(request.url())) providerEvents.push({ kind: 'requestfailed', url: request.url(), error: request.failure()?.errorText });
-    });
-    page.on('response', response => {
-      if (/youtube-nocookie\.com/i.test(response.url())) providerEvents.push({ kind: 'response', url: response.url(), status: response.status() });
-    });
-    page.on('framenavigated', frame => {
-      if (/youtube-nocookie|chrome-error/i.test(frame.url())) providerEvents.push({ kind: 'framenavigated', url: frame.url() });
-    });
-    try {
-      const navigation = page.waitForEvent('framenavigated', { predicate: framePredicate, timeout: 30000 });
-      await page.locator('[data-player-provider="youtube"]').click();
-      await page.locator('iframe.aurora-player-frame').waitFor();
-      await page.waitForFunction(() => document.querySelector('iframe.aurora-player-frame')?.src.includes('youtube-nocookie.com/embed/aqz-KE-bpKQ'));
-      let frame = page.frames().find(framePredicate);
-      if (!frame) frame = await navigation;
-      await frame.waitForLoadState('domcontentloaded', { timeout: 30000 });
-      const video = frame.locator('video').first();
-      try { await video.waitFor({ state: 'attached', timeout: 20000 }); }
-      catch {
-        t.skip('The live YouTube player did not expose its video element; live playback remains unverified.');
-        return;
-      }
-      const playButton = frame.locator('.ytp-large-play-button');
-      try { await playButton.waitFor({ state: 'visible', timeout: 15000 }); }
-      catch {
-        const diagnostic = {
-          url: frame.url(), title: await frame.title().catch(() => ''),
-          text: (await frame.locator('body').innerText().catch(() => '')).slice(0, 800),
-          playerStatus: await page.locator('.aurora-player-status').textContent(), providerEvents
-        };
-        t.skip(`The live embed loaded but exposed no Play control; playback remains unverified: ${JSON.stringify(diagnostic)}`);
-        return;
-      }
-      const beforePlay = await video.evaluate(element => ({ paused: element.paused, time: element.currentTime }));
-      if (beforePlay.paused) await playButton.click({ timeout: 15000 });
-      await frame.waitForFunction(() => {
-        const playerVideo = document.querySelector('video');
-        return Boolean(playerVideo && !playerVideo.paused && playerVideo.currentTime >= 0.25);
-      }, null, { timeout: 30000 });
-      const playback = await video.evaluate(element => ({ paused: element.paused, time: element.currentTime }));
-      assert.equal(playback.paused, false);
-      assert.ok(playback.time >= 0.25);
-      assert.deepEqual(errors, []);
-    } finally {
-      await context.close();
-    }
-  });
-}
 
 
 test('Play over the actual video card reveals a real inline iframe, not an outbound website',async()=>{
