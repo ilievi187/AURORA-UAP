@@ -18,6 +18,7 @@
   <script defer src="script.js"></script>
   <script defer src="aurora-v1.js"></script>
   <script defer src="jarvis-hud.js"></script>
+<script defer src="/aurora-experience.js"></script>
   <script defer src="mission-control.js"></script>
   <script defer src="/archive-records.js"></script>
   <script defer src="globe.js"></script>
@@ -95,26 +96,40 @@
   </nav>
 
   <main id="main">
-  <section class="hero" aria-labelledby="hero-title">
-    <div class="hero-lines" aria-hidden="true"></div>
-    <div class="orbital-stage" aria-hidden="true"><div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="orbit orbit-c"></div><div class="orbit-mark"></div></div>
-    <canvas id="heroHudCanvas" class="system-canvas hero-hud-canvas" aria-hidden="true"></canvas>
-    <div class="hud-reticle" aria-hidden="true"><div class="reticle-inner"></div><span class="reticle-cross">✧</span></div>
-    <div class="hud-telemetry hud-telemetry-top" aria-hidden="true"><b>SYS // AURORA</b><span>SCAN MODE: ACTIVE</span><span>WORLD ARCHIVE / SOURCE LINKED</span></div>
-    <div class="hud-telemetry hud-telemetry-bottom" aria-hidden="true"><b>UNIDENTIFIED ≠ EXTRATERRESTRIAL</b><span>WORLD ATLAS / CASE FILES</span><span class="telemetry-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
-    <div class="hero-image" role="img" aria-label="Художествена илюстрация на неидентифициран летящ обект над планински пейзаж"></div>
-    <div class="hero-content">
-      <div class="eyebrow" data-i18n="heroKicker">ОТВОРЕНИ ДАННИ. КРИТИЧНО МИСЛЕНЕ. НЕПОЗНАТОТО НИ ОЧАКВА.</div>
-      <h1 id="hero-title"><span data-i18n="heroTitle1">ДА ИЗСЛЕДВАМЕ</span><strong data-i18n="heroTitle2">НЕОБЯСНИМОТО</strong></h1>
-      <p class="hero-copy" data-i18n="heroBody">AURORA е проект на UAP Bulgaria за независимо документиране и анализ на необяснени въздушни явления — чрез факти, технологии и общност.</p>
-      <div class="hero-buttons">
-        <a href="/archive.html" class="button button-primary"><svg class="icon"><use href="#i-folder"/></svg><span data-i18n="heroArchiveCTA">Разгледай случаите</span><svg class="icon icon-arrow"><use href="#i-arrow"/></svg></a>
-        <a href="/news.html" class="button button-secondary"><span data-i18n="navNews">Новини</span><svg class="icon icon-arrow"><use href="#i-arrow"/></svg></a>
+  <section class="hero aurora-odyssey" id="odyssey" aria-labelledby="hero-title" data-chapter="0">
+    <div class="odyssey-sticky">
+      <div class="hero-image odyssey-fallback" role="img" aria-label="Художествена сцена с неизвестен небесен обект над студен каменист пейзаж"></div>
+      <canvas id="auroraSceneCanvas" class="odyssey-webgl" aria-hidden="true"></canvas>
+      <div class="odyssey-vignette" aria-hidden="true"></div>
+      <div class="orbital-stage" aria-hidden="true"></div>
+      <canvas id="heroHudCanvas" class="system-canvas hero-hud-canvas" aria-hidden="true" hidden></canvas>
+      <div class="odyssey-scene odyssey-intro">
+        <div class="odyssey-topline" aria-hidden="true"><span>AURORA / THE SIGNAL</span><span>AN OPEN SKY. AN OPEN QUESTION.</span></div>
+        <div class="hero-content">
+          <p class="eyebrow" data-i18n="heroKicker">ОТВОРЕНИ ДАННИ. КРИТИЧНО МИСЛЕНЕ. НЕПОЗНАТОТО НИ ОЧАКВА.</p>
+          <h1 id="hero-title"><span data-i18n="heroTitle1">ДА ИЗСЛЕДВАМЕ</span><strong data-i18n="heroTitle2">НЕОБЯСНИМОТО</strong></h1>
+          <p class="hero-copy" data-i18n="heroBody">AURORA е проект на UAP Bulgaria за независимо документиране и анализ на необяснени въздушни явления — чрез факти, технологии и общност.</p>
+          <div class="hero-buttons">
+            <a href="/archive.html" class="button button-primary"><svg class="icon"><use href="#i-folder"/></svg><span data-i18n="heroArchiveCTA">Разгледай случаите</span><svg class="icon icon-arrow"><use href="#i-arrow"/></svg></a>
+            <a href="/news.html" class="button button-secondary"><span data-i18n="navNews">Новини</span><svg class="icon icon-arrow"><use href="#i-arrow"/></svg></a>
+          </div>
+        </div>
+        <div class="odyssey-intro-foot" aria-hidden="true"><span>AURORA UAP — INDEPENDENT ARCHIVE</span><span class="odyssey-scroll-symbol">SCROLL TO DISCOVER <b>↓</b></span></div>
       </div>
-      <div class="tiny-rule"><span></span><small data-i18n="heroTag">ЕДНО НЕБЕ. МНОГО ВЪПРОСИ.</small></div>
+      <div class="odyssey-scene odyssey-chapter" aria-hidden="true" inert>
+        <div class="odyssey-topline" aria-hidden="true"><span>02 / BEYOND THE VEIL</span><span>AURORA — SOURCE-LINKED RESEARCH</span></div>
+        <div class="odyssey-chapter-copy">
+          <p class="eyebrow" data-i18n="methodKicker">НАШИЯТ ПОДХОД</p>
+          <h2 data-i18n="methodTitle">ЛЮБОПИТСТВО БЕЗ ПРИБЪРЗАНИ ЗАКЛЮЧЕНИЯ.</h2>
+          <p data-i18n="methodBody">Не приемаме автоматично, че необяснен обект е извънземен. Проверяваме първо конвенционални обяснения и описваме какво знаем, какво не знаем и защо.</p>
+          <a href="#worldAtlas" class="odyssey-link"><span data-i18n="navMap">Карта</span><span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+      <div class="odyssey-chapter-rail" aria-hidden="true">
+        <span>01</span><div class="odyssey-rail-track"><i></i></div><span>02</span>
+      </div>
+      <a href="#worldAtlas" class="odyssey-skip" aria-label="Към картата на документираните случаи">↓ <span data-i18n="navMap">Карта</span></a>
     </div>
-    <div class="hero-side-label" aria-hidden="true">SAME<br>SKIES.<br>DIFFERENT<br>QUESTIONS.</div>
-    <div class="hero-meta" aria-hidden="true"><span><i class="live-dot"></i> SCIENCE FIRST / OPEN SKIES</span><span>INDEPENDENT INITIATIVE — BULGARIA</span><strong>SCROLL TO EXPLORE ↓</strong></div>
   </section>
   <section class="world-atlas" id="worldAtlas" aria-labelledby="worldAtlasHeading">
     <div class="world-atlas-head">

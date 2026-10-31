@@ -665,6 +665,50 @@ try{
     assert.deepEqual(errors,[]);
     await context.close();
   });
+  await test("AURORA THE SIGNAL scroll narrative responds on desktop and keeps source archive",async()=>{
+    const context=await browser.newContext({viewport:{width:1365,height:900},reducedMotion:"no-preference"});
+    const page=await context.newPage(),errors=[];
+    page.on("pageerror",e=>errors.push(e.message));
+    await page.goto("http://127.0.0.1:"+port+"/");
+    await page.locator('#gateLanguageGrid button[data-language="en"]').click();
+    await page.locator("#gateContinue").click();
+    await page.locator("#languageGate").waitFor({state:"hidden"});
+    const scene=page.locator("#odyssey");
+    assert.equal(await page.locator("#auroraSceneCanvas").count(),1);
+    await page.waitForFunction(()=>["webgl","fallback"].includes(document.querySelector("#odyssey")?.dataset.renderer),{timeout:7000});
+    const mode=await scene.getAttribute("data-renderer");
+    assert.ok(["webgl","fallback"].includes(mode));
+    if(mode==="webgl"){
+      const canvas=page.locator("#auroraSceneCanvas");
+      assert.ok(await canvas.evaluate(el=>el.width>100&&el.height>100));
+    }
+    await page.evaluate(()=>{
+      const el=document.querySelector("#odyssey"),r=el.getBoundingClientRect();
+      window.scrollTo({top:window.scrollY+r.top+(r.height-window.innerHeight)*.76,behavior:"instant"});
+    });
+    await page.waitForFunction(()=>document.querySelector("#odyssey")?.dataset.chapter==="1",{timeout:7000});
+    assert.equal(await page.locator(".odyssey-intro").getAttribute("aria-hidden"),"true");
+    assert.equal(await page.locator(".odyssey-chapter").getAttribute("aria-hidden"),"false");
+    assert.equal(await page.locator("#worldMapCanvas").count(),1);
+    assert.deepEqual(errors,[]);
+    await context.close();
+  });
+  await test("AURORA reduced-motion fallback remains navigable on a mobile viewport",async()=>{
+    const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:"reduce"});
+    const page=await context.newPage(),errors=[];
+    page.on("pageerror",e=>errors.push(e.message));
+    await page.goto("http://127.0.0.1:"+port+"/");
+    await page.locator('#gateLanguageGrid button[data-language="bg"]').click();
+    await page.locator("#gateContinue").click();
+    await page.locator("#languageGate").waitFor({state:"hidden"});
+    assert.equal(await page.locator("#odyssey").getAttribute("data-chapter"),"0");
+    assert.equal(await page.locator(".odyssey-chapter").isVisible(),false);
+    assert.equal(await page.locator('.hero-buttons a[href="/archive.html"]').count(),1);
+    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+    assert.ok(overflow<=1,"responsive viewport must not overflow: "+overflow);
+    assert.deepEqual(errors,[]);
+    await context.close();
+  });
   await test('news API outage is shown as an explicit offline state, not a blank loading feed',async()=>{
     const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});
     const page=await context.newPage(),errors=[];

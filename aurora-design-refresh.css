@@ -273,3 +273,179 @@ body,body.live-page,body.donate-v1 {
 .language-gate .gate-continue:not(:disabled):hover{background:#e6fbff;box-shadow:none;}
 .language-gate .gate-hud-side,.language-gate .gate-corner,.language-gate .gate-scanner-beam{display:none!important;}
 .language-gate .gate-symbol-ring{opacity:.25;}
+
+/* ===========================================================================
+   AURORA / THE SIGNAL — original immersive scroll composition
+   Native GPU render with a CSS-only accessible fallback, no external packages
+   =========================================================================== */
+.site-shell .aurora-odyssey{
+  --odyssey-frost:#d4e1e7;
+  --odyssey-mist:#8799aa;
+  position:relative;
+  height:235svh;
+  min-height:1100px;
+  margin:0 calc(-1 * clamp(20px,4.1vw,76px));
+  padding:0;
+  isolation:isolate;
+  overflow:visible;
+  background:#141a23;
+  border:none;
+}
+.site-shell .aurora-odyssey::before,
+.site-shell .aurora-odyssey::after{display:none!important;}
+.aurora-odyssey .odyssey-sticky{
+  position:sticky;top:0;left:0;width:100%;height:100svh;min-height:550px;
+  overflow:hidden;isolation:isolate;
+  background:radial-gradient(ellipse at 67% 43%,#586776 0%,#353f4e 29%,#151c28 65%,#0e141d 100%);
+}
+.aurora-odyssey .odyssey-fallback{
+  position:absolute;inset:0;width:100%;height:100%;opacity:.49;z-index:0;
+  background-position:center 38%;
+  background-size:cover;
+  filter:grayscale(1) saturate(0) contrast(.8);
+  mask-image:none;animation:none!important;
+  transition:opacity .7s ease;
+}
+.aurora-odyssey[data-renderer="webgl"] .odyssey-fallback{opacity:0;}
+.aurora-odyssey .odyssey-webgl{
+  position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;
+  pointer-events:none;opacity:0;transition:opacity .65s ease;
+}
+.aurora-odyssey[data-renderer="webgl"] .odyssey-webgl{opacity:1;}
+.aurora-odyssey .odyssey-vignette{
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(90deg,rgba(9,13,21,.81) 0%,rgba(12,17,25,.59) 27%,rgba(12,17,25,.08) 59%,rgba(11,17,24,.15) 100%),
+             linear-gradient(0deg,rgba(8,12,19,.63) 0%,transparent 23%,transparent 75%,rgba(11,14,23,.39) 100%);
+}
+.aurora-odyssey .odyssey-scene{
+  position:absolute;inset:0;z-index:3;
+  transition:opacity .66s ease,transform .95s cubic-bezier(.2,.8,.2,1);
+}
+.aurora-odyssey .odyssey-intro{opacity:1;transform:translateY(0);}
+.aurora-odyssey .odyssey-chapter{opacity:0;transform:translateY(36px);pointer-events:none;}
+.aurora-odyssey[data-chapter="1"] .odyssey-intro{opacity:0;transform:translateY(-35px);pointer-events:none;}
+.aurora-odyssey[data-chapter="1"] .odyssey-chapter{opacity:1;transform:translateY(0);pointer-events:auto;}
+.aurora-odyssey .odyssey-topline,
+.aurora-odyssey .odyssey-intro-foot{
+  position:absolute;left:clamp(24px,5vw,88px);right:clamp(24px,5vw,88px);
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  color:#d0dfe6;font:650 10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;
+  letter-spacing:.14em;text-transform:uppercase;
+}
+.aurora-odyssey .odyssey-topline{top:clamp(105px,13vh,160px);}
+.aurora-odyssey .odyssey-intro-foot{bottom:clamp(28px,4.2vh,56px);font-size:10px;color:#bcccd5;}
+.aurora-odyssey .odyssey-scroll-symbol{display:inline-flex;align-items:center;gap:17px;}
+.aurora-odyssey .odyssey-scroll-symbol b{font-size:22px;font-weight:400;animation:odyssey-nudge 2.4s ease-in-out infinite;}
+.aurora-odyssey .hero-content{
+  position:absolute;top:48%;left:clamp(24px,5vw,88px);
+  transform:translateY(-44%);
+  width:min(740px,57vw);margin:0;z-index:4;
+}
+.aurora-odyssey .hero-content .eyebrow{
+  font:650 11px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;
+  letter-spacing:.14em;color:#d3e0e7;margin-bottom:26px;
+  max-width:590px;animation:none;
+}
+.aurora-odyssey .hero-content .eyebrow::before{background:#b6d8df;box-shadow:none;}
+.aurora-odyssey .hero h1,
+.aurora-odyssey h1{
+  font-size:clamp(58px,8.5vw,142px);line-height:.91;letter-spacing:-.078em;
+  color:#e7eff4;max-width:890px;font-weight:760;
+  margin:0 0 clamp(20px,3.8vh,40px);
+  text-transform:uppercase;text-shadow:none;animation:none;
+  text-wrap:balance;
+}
+.aurora-odyssey h1 span{display:block;color:#eaf1f6;font-weight:450;letter-spacing:-.078em;}
+.aurora-odyssey h1 strong{display:block;color:#d2e1eb;font-weight:810;letter-spacing:-.078em;text-shadow:none;}
+.aurora-odyssey .hero-copy{
+  color:#c6d3dc;font-size:clamp(14px,1.28vw,18px);line-height:1.75;
+  max-width:540px;margin-bottom:30px;text-shadow:0 1px 20px #0007;animation:none;
+}
+.aurora-odyssey .hero-buttons{animation:none;}
+.aurora-odyssey .hero-buttons .button{
+  display:inline-flex;align-items:center;justify-content:center;gap:11px;
+  min-height:51px;font-size:13px;letter-spacing:.01em;font-weight:690;
+  border-radius:100px;
+}
+.aurora-odyssey .hero-buttons .button-primary{
+  color:#101b25;background:#e6edf0;border-color:#e6edf0;
+}
+.aurora-odyssey .hero-buttons .button-primary:hover{background:white;}
+.aurora-odyssey .hero-buttons .button-secondary{
+  background:transparent;color:#f3f8fc;border:1px solid #e6edf083;
+}
+.aurora-odyssey .orbital-stage,
+.aurora-odyssey #heroHudCanvas{display:none!important;}
+.aurora-odyssey .odyssey-chapter-copy{
+  position:absolute;bottom:clamp(100px,14vh,190px);right:clamp(29px,8vw,140px);
+  width:min(580px,44vw);text-align:left;
+}
+.aurora-odyssey .odyssey-chapter-copy .eyebrow{font:650 11px/1.6 ui-monospace,Consolas,monospace;letter-spacing:.14em;color:#d5e5ed;}
+.aurora-odyssey .odyssey-chapter-copy h2{
+  color:#f1f5f7;font-size:clamp(43px,5.7vw,91px);line-height:.97;
+  letter-spacing:-.065em;font-weight:750;text-wrap:balance;margin:19px 0 30px;
+}
+.aurora-odyssey .odyssey-chapter-copy p:not(.eyebrow){
+  max-width:470px;color:#d4e0e7;font-size:clamp(15px,1.3vw,18px);line-height:1.74;margin-bottom:29px;
+}
+.aurora-odyssey .odyssey-link{
+  display:inline-flex;align-items:center;gap:35px;
+  font-size:14px;font-weight:690;color:#fff;
+  padding:12px 4px;border-bottom:1px solid #e9f3f7ba;text-decoration:none;
+}
+.aurora-odyssey .odyssey-link:hover{gap:49px;}
+.aurora-odyssey .odyssey-chapter-rail{
+  position:absolute;z-index:6;right:clamp(24px,4vw,65px);top:42%;
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+  color:#e2edf2;font:600 10px/1.5 ui-monospace,Consolas,monospace;letter-spacing:.08em;
+}
+.aurora-odyssey .odyssey-rail-track{width:1px;height:105px;background:#ffffff52;position:relative;}
+.aurora-odyssey .odyssey-rail-track i{
+  display:block;position:absolute;top:0;left:-1px;width:3px;height:calc(var(--odyssey-progress,0) * 100%);
+  background:#e1eff5;box-shadow:0 0 14px #b7ddf4;
+}
+.aurora-odyssey .odyssey-skip{
+  position:absolute;z-index:7;right:clamp(24px,4vw,65px);bottom:clamp(28px,4.2vh,56px);
+  display:flex;gap:9px;align-items:center;
+  font:650 11px/1.5 ui-monospace,Consolas,monospace;
+  letter-spacing:.1em;color:#e7f0f5;text-transform:uppercase;text-decoration:none;
+}
+.aurora-odyssey .odyssey-skip:hover{color:white;}
+@keyframes odyssey-nudge{0%,100%{transform:translateY(-2px)}50%{transform:translateY(5px)}}
+/* Chapter two intentionally changes the camera language, not the site's data. */
+@media(max-width:1020px){
+  .site-shell .aurora-odyssey{margin-inline:calc(-1 * clamp(20px,4.1vw,76px));}
+  .aurora-odyssey .hero-content{width:min(650px,70vw);}
+  .aurora-odyssey h1{font-size:clamp(57px,8.3vw,101px);}
+  .aurora-odyssey .odyssey-chapter-copy{width:min(560px,62vw);}
+}
+@media(max-width:680px){
+  .site-shell .aurora-odyssey{height:175svh;min-height:950px;margin-inline:-18px;}
+  .aurora-odyssey .odyssey-sticky{min-height:550px;}
+  .aurora-odyssey .odyssey-topline{top:90px;left:23px;right:23px;font-size:9px;}
+  .aurora-odyssey .odyssey-topline span:last-child{display:none;}
+  .aurora-odyssey .odyssey-vignette{
+    background:linear-gradient(0deg,#0c1219ed 0%,#1018249e 29%,#171d27a8 71%,#0a101bc2 100%);
+  }
+  .aurora-odyssey .hero-content{top:auto;bottom:105px;left:24px;width:calc(100% - 48px);transform:none;}
+  .aurora-odyssey .hero-content .eyebrow{font-size:9px;letter-spacing:.09em;margin-bottom:14px;}
+  .aurora-odyssey .hero-content .eyebrow:before{width:15px;}
+  .aurora-odyssey h1{font-size:clamp(45px,11.9vw,74px);line-height:.94;margin-bottom:18px;max-width:560px;}
+  .aurora-odyssey .hero-copy{font-size:13px;line-height:1.62;max-width:470px;margin:0 0 19px;}
+  .aurora-odyssey .hero-buttons .button{min-height:45px;padding:11px 15px;font-size:11px;}
+  .aurora-odyssey .odyssey-intro-foot{bottom:25px;left:24px;right:24px;font-size:8px;}
+  .aurora-odyssey .odyssey-intro-foot span:first-child{display:none;}
+  .aurora-odyssey .odyssey-chapter-copy{left:24px;right:35px;bottom:110px;width:auto;}
+  .aurora-odyssey .odyssey-chapter-copy h2{font-size:clamp(40px,10vw,62px);}
+  .aurora-odyssey .odyssey-chapter-copy p:not(.eyebrow){font-size:13px;line-height:1.65;}
+  .aurora-odyssey .odyssey-chapter-rail{right:19px;top:30%;gap:8px;}
+  .aurora-odyssey .odyssey-rail-track{height:67px;}
+  .aurora-odyssey .odyssey-skip{right:23px;bottom:25px;font-size:9px;}
+}
+@media(prefers-reduced-motion:reduce){
+ .site-shell .aurora-odyssey{height:auto;min-height:0;}
+ .aurora-odyssey .odyssey-sticky{position:relative;height:min(850px,100svh);min-height:620px;}
+ .aurora-odyssey .odyssey-scene,.aurora-odyssey .odyssey-webgl{transition:none!important;}
+ .aurora-odyssey .odyssey-chapter,.aurora-odyssey .odyssey-chapter-rail{display:none!important;}
+ .aurora-odyssey .odyssey-scroll-symbol b{animation:none!important;}
+}
