@@ -1,0 +1,50 @@
+name: AURORA world case archive pagination
+on:
+  pull_request:
+    paths:
+      - 'archive.html'
+      - 'archive-directory.js'
+      - 'archive-directory.css'
+      - 'world-atlas.js'
+      - 'world-atlas.css'
+      - 'index.html'
+      - 'countries.html'
+      - 'tests/archive-directory-browser.test.mjs'
+      - 'tests/world-atlas-browser.test.mjs'
+      - '.github/workflows/archive-directory-quality.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'archive.html'
+      - 'archive-directory.js'
+      - 'archive-directory.css'
+      - 'world-atlas.js'
+      - 'world-atlas.css'
+      - 'index.html'
+      - 'countries.html'
+      - 'tests/archive-directory-browser.test.mjs'
+      - 'tests/world-atlas-browser.test.mjs'
+      - '.github/workflows/archive-directory-quality.yml'
+permissions:
+  contents: read
+jobs:
+  archive-pages:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned isolated Chromium tooling
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --only-shell chromium
+      - name: Verify 11-page archive with 105 sourced fixture cases on mobile and desktop
+        run: node --test tests/archive-directory-browser.test.mjs
+      - name: Verify original UAP map pagination with existing fixture suite
+        run: node --test tests/world-atlas-model.test.mjs tests/world-atlas-browser.test.mjs
+      - name: Validate browser source and working tree
+        run: |
+          node --check archive-directory.js
+          git diff --check

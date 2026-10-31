@@ -35,7 +35,7 @@ const MAP_WIDTH = 1000;
 const MAP_HEIGHT = 500;
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 6;
-const RESULTS_PAGE_SIZE = 60;
+const RESULTS_PAGE_SIZE = 10;
 const deg = Math.PI / 180;
 ui.canvas.width = MAP_WIDTH;
 ui.canvas.height = MAP_HEIGHT;
@@ -288,6 +288,27 @@ function renderResults() {
     range.className = 'world-results-range';
     range.textContent = `${resultsStart + 1}–${Math.min(resultsStart + RESULTS_PAGE_SIZE, filtered.length)} / ${filtered.length}`;
     pager.append(range);
+    // Jump directly between numbered pages instead of requiring 10+ Next clicks.
+    const pages = Math.ceil(filtered.length / RESULTS_PAGE_SIZE);
+    const active = Math.floor(resultsStart / RESULTS_PAGE_SIZE);
+    const first = Math.max(0, Math.min(active - 3, pages - 7));
+    for (let page = first; page < Math.min(pages, first + 7); page++) {
+      const jump = document.createElement('button');
+      jump.type = 'button';
+      jump.className = 'world-page-button world-page-number';
+      jump.dataset.page = String(page + 1);
+      jump.textContent = String(page + 1);
+      jump.setAttribute('aria-label', 'Page ' + (page + 1) + ' of ' + pages);
+      jump.setAttribute('aria-current', page === active ? 'page' : 'false');
+      jump.setAttribute('aria-controls', 'worldMapResults');
+      jump.addEventListener('click', () => {
+        resultsStart = page * RESULTS_PAGE_SIZE;
+        renderResults();
+        renderResultsSelection();
+        ui.results.querySelector('[data-page="' + (page + 1) + '"]')?.focus();
+      });
+      pager.append(jump);
+    }
     if (resultsStart + RESULTS_PAGE_SIZE < filtered.length) {
       const next = document.createElement('button');
       next.id = 'worldResultsNext';

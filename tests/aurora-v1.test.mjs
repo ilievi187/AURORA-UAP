@@ -177,7 +177,7 @@ test("V1.5 intake keeps public submission disabled and links only to an honest l
 test('country directory is discoverable and never invents live registry statistics',()=>{
  const page=read('countries.html'),script=read('countries.js'),style=read('countries.css');
  assert.match(html,/href="\/countries\.html" class="register-link"/);
- assert.match(html,/href="\/countries\.html" class="console-archive-link"/);
+ assert.match(html,/href="\/archive\.html" class="console-archive-link"/);
  assert.doesNotMatch(html,/href="\/countries\/DE"/);
  assert.match(page,/id="countryGrid"/);
  assert.match(page,/id="countryDirectoryStatus"[^>]*role="status"/);
