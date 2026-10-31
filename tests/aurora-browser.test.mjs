@@ -525,11 +525,12 @@ try{
     await page.route('https://www.dvidshub.net/**',route=>route.fulfill({status:200,contentType:'text/html',body:'<html><body>Video source</body></html>'}));
     await page.goto('http://127.0.0.1:'+port+'/archive/al-taqaddum-2017');
     await page.waitForFunction(()=>document.querySelector('#dossierContent')?.hidden===false);
-    assert.equal(await page.locator('#caseMediaGrid a').count()>=2,true);
-    assert.equal(await page.locator('#caseMediaGrid iframe').count(),0);
-    await page.locator('.case-watch-button').click();
-    assert.equal(await page.locator('#caseMediaGrid iframe').getAttribute('src'),'https://www.dvidshub.net/video/embed/960331');
-    assert.equal(await page.locator('#caseMediaGrid iframe').count(),1);
+    assert.equal(await page.locator('#caseMediaGrid video,#caseMediaGrid iframe,.case-watch-button').count(),0);
+    assert.ok((await page.locator('#dossierSourcesList a[href*="dvidshub.net/video/960331"]').count())>=1);
+    await page.locator('#caseHeroPlay').waitFor({state:'visible'});
+    await page.locator('#caseHeroPlay').click();
+    assert.equal(await page.locator('#caseHeroStage iframe').getAttribute('src'),'https://www.dvidshub.net/video/embed/960331');
+    assert.equal(await page.locator('iframe,video').count(),1,'only the hero embeds video');
     assert.deepEqual(errors,[]);
     await ctx.close();
   });

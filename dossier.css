@@ -62,15 +62,9 @@ a:hover{text-decoration:underline;text-underline-offset:5px}
 .related-case-meta{font:10px Consolas,monospace;letter-spacing:.08em;color:#82d9d4}
 .case-media-icon{font-size:25px;color:#90ffe7}
 
-.case-watch-button{padding:16px 20px;background:#16485a;color:#e6fffa;border:1px solid #77e8d3;cursor:pointer;font:13px/1.6 Consolas,monospace}
-.case-watch-button:hover{background:#246077}
-.case-watch-button:disabled{opacity:.5;cursor:default}
-.case-video-frame{display:block;grid-column:1/-1;width:100%;aspect-ratio:16/9;border:1px solid #4d94a4;background:#000}
-.case-watch-button{grid-column:1/-1;min-height:50px;text-align:left;white-space:normal}
-.case-video-status{grid-column:1/-1;font-size:12px;line-height:1.5;color:#b0e4e4;margin:0}
 .dossier-depth{display:inline-block;padding:6px 10px;border:1px solid #3e7a87;background:#102c37;font:11px/1.5 Consolas,monospace;color:#a9e9e5}
 .dossier-story p{max-width:85ch}
-@media(max-width:570px){.case-video-frame{aspect-ratio:16/10}.case-watch-button{font-size:12px}}
+
 
 
 
