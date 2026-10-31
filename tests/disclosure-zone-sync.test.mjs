@@ -102,14 +102,19 @@ test("source fetch uses fixed endpoint with byte guard and schema integrity",asy
  await assert.rejects(fetchSource(async()=>new Response("[]",{headers:{"content-length":"9000000"}})),/size limit/);
  await assert.rejects(fetchSource(async()=>Response.json({license:"CC BY 4.0",count:20,cases:[row()]})),/count mismatch/);
 });
-test("archived reviewed records remain untouched in repository",()=>{
+test("archived reviewed records remain untouched while truncated imports fail closed",()=>{
  const current=JSON.parse(readFileSync(new URL("../data/cases.json",import.meta.url),"utf8"));
- const result=buildArchive(current,source([row("nuremberg-1561")]));
- assert.ok(result.archive.cases.length>=current.cases.length);
- for(const c of current.cases){
+ // A single fixture is valid only against a baseline without already-imported
+ // disclosure.zone records. Keep the real 76-record shrink safeguard intact.
+ const curated={...current,cases:current.cases.filter(c=>c.provenance?.source_url!==SOURCE_URL)};
+ const result=buildArchive(curated,source([row("nuremberg-1561")]));
+ assert.ok(result.archive.cases.length>=curated.cases.length);
+ for(const c of curated.cases){
   const original=result.archive.cases.find(x=>x.id===c.id);
   assert.deepEqual(original,c,c.id+" should not change");
  }
+ if(current.cases.length-curated.cases.length>=10)
+  assert.throws(()=>buildArchive(current,source([row("nuremberg-1561")])),/Source shrank unexpectedly/);
 });
 
 
