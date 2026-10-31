@@ -1,3 +1,4 @@
+const message=(bg,en)=>document.documentElement.lang==="bg"?bg:en;
 const REGIONS = ["all", "europe", "americas", "asia-pacific", "middle-east-africa", "global"];
 const ROLE_LABELS = {
   "official-institution": "Официална институция / Official",
@@ -57,7 +58,7 @@ function renderCatalog() {
   const visible = catalog.filter((entry) => region === "all" || entry.region === region);
   sourceList.replaceChildren();
   if (!visible.length) {
-    sourceList.append(el("p", "source-note", "Няма източници за този регион."));
+    sourceList.append(el("p", "source-note", message("Няма източници за този регион.","No publishers are listed for this region.")));
     return;
   }
   for (const entry of visible) {
@@ -75,14 +76,14 @@ function renderCatalog() {
     const home = safeHttps(entry.homepage);
     const feed = safeHttps(entry.feed_url);
     if (home) {
-      const link = el("a", "", "Сайт на издателя");
+      const link = el("a", "", message("Сайт на издателя","Publisher website"));
       link.href = home;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
       actions.append(link);
     }
     if (feed) {
-      const link = el("a", "", "Официален фийд");
+      const link = el("a", "", message("Официален фийд","Official feed"));
       link.href = feed;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
@@ -96,20 +97,20 @@ function renderCatalog() {
 function resetHealth() {
   healthRequestId += 1;
   healthList.replaceChildren();
-  setStatus(healthStatus, "ready", "Още не е правена проверка на състоянието.");
+  setStatus(healthStatus, "ready", message("Още не е правена проверка на състоянието.","Publisher health has not been checked yet."));
 }
 
 function renderHealth(payload) {
   healthList.replaceChildren();
   if (payload.status === "empty_region") {
-    setStatus(healthStatus, "ready", "Няма източници за този регион.");
+    setStatus(healthStatus, "ready", message("Няма източници за този регион.","No publishers are listed for this region."));
     return;
   }
   if (payload.status === "unavailable") {
-    setStatus(healthStatus, "error", "Избраните източници не върнаха валиден фийд.");
+    setStatus(healthStatus, "error", message("Избраните източници не върнаха валиден фийд.","Selected publishers returned no valid feeds."));
   } else {
     const live = (payload.sources || []).filter((row) => row.availability === "live").length;
-    setStatus(healthStatus, "ready", `${live} от ${(payload.sources || []).length} отговориха с RSS, Atom или RDF. Това не е брой наблюдения.`);
+    setStatus(healthStatus, "ready", message(`${live} от ${(payload.sources || []).length} отговориха с RSS, Atom или RDF. Това не е брой наблюдения.`,`${live} of ${(payload.sources || []).length} returned RSS, Atom or RDF. This is not a sighting count.`));
   }
   for (const row of payload.sources || []) {
     const card = el("article", "live-card");
@@ -130,7 +131,7 @@ function renderHealth(payload) {
 async function loadHealth() {
   const token = ++healthRequestId;
   const region = REGIONS.includes(regionSelect.value) ? regionSelect.value : "all";
-  setStatus(healthStatus, "loading", "Проверка на достъпността…");
+  setStatus(healthStatus, "loading", message("Проверка на достъпността…","Checking publisher availability…"));
   healthList.replaceChildren();
   healthButton.disabled = true;
   healthButton.setAttribute("aria-busy", "true");
@@ -142,7 +143,7 @@ async function loadHealth() {
     renderHealth(payload);
   } catch {
     if (token !== healthRequestId) return;
-    setStatus(healthStatus, "error", "Проверката на състоянието не успя. Няма добавени заглавия.");
+    setStatus(healthStatus, "error", message("Проверката на състоянието не успя. Няма добавени заглавия.","Source health check failed. No headlines were added."));
   } finally {
     if (token === healthRequestId) {
       healthButton.disabled = false;
@@ -156,25 +157,25 @@ function renderMatches(payload) {
   const names = new Map(catalog.map((entry) => [entry.id, entry.publisher]));
   const checked = (payload.checked || []).map((id) => names.get(id) || id).join(", ");
   if (payload.status === "unavailable") {
-    setStatus(matchStatus, "error", "Източниците не отговориха. Каталогът остава достъпен, без добавени заглавия.");
+    setStatus(matchStatus, "error", message("Източниците не отговориха. Каталогът остава достъпен, без добавени заглавия.","Sources did not respond. The directory remains available without new headlines."));
     return;
   }
   if (payload.status === "empty_region") {
-    setStatus(matchStatus, "ready", "Няма източници за този регион. Няма добавени заглавия.");
+    setStatus(matchStatus, "ready", message("Няма източници за този регион. Няма добавени заглавия.","No sources for this region; no headlines were added."));
     return;
   }
   const failedNames = (payload.failed || []).map((row) => names.get(row.id) || row.id).filter(Boolean);
   const failedNote = failedNames.length ? ` Не отговориха: ${failedNames.join(", ")}.` : "";
   if (!payload.items?.length) {
-    setStatus(matchStatus, "ready", `Няма съвпадения по UAP, UFO, OVNI, AARO или НЛО. Проверени: ${checked}${failedNote}`);
+    setStatus(matchStatus, "ready", message(`Няма съвпадения по UAP, UFO, OVNI, AARO или НЛО. Проверени: ${checked}${failedNote}`,`No UAP/UFO/AARO keyword matches. Checked: ${checked}`));
     return;
   }
-  setStatus(matchStatus, "ready", `${payload.items.length} съвпадения. Това са заглавия от издателите, не потвърдени случаи. Проверени: ${checked}${failedNote}`);
+  setStatus(matchStatus, "ready", message(`${payload.items.length} съвпадения. Това са заглавия от издателите, не потвърдени случаи. Проверени: ${checked}${failedNote}`,`${payload.items.length} headline matches, not confirmed events. Checked: ${checked}`));
   for (const item of payload.items) {
     const href = safeHttps(item.url);
     if (!href) continue;
     const card = el("article", "live-card");
-    const when = Number.isFinite(Date.parse(item.published)) ? new Date(item.published).toLocaleString("bg") : "";
+    const when = Number.isFinite(Date.parse(item.published)) ? new Date(item.published).toLocaleString(document.documentElement.lang||"en") : "";
     card.append(el("p", "live-meta", [item.source, item.feed_host, when].filter(Boolean).join(" · ")));
     const heading = el("h3");
     const link = el("a", "", item.title);
@@ -190,7 +191,7 @@ function renderMatches(payload) {
 async function loadMatches() {
   const token = ++requestId;
   const region = REGIONS.includes(regionSelect.value) ? regionSelect.value : "all";
-  setStatus(matchStatus, "loading", "Проверка на официалните фийдове…");
+  setStatus(matchStatus, "loading", message("Проверка на официалните фийдове…","Checking official publisher feeds…"));
   matchList.replaceChildren();
   reloadButton.disabled = true;
   reloadButton.setAttribute("aria-busy", "true");
@@ -202,7 +203,7 @@ async function loadMatches() {
     renderMatches(payload);
   } catch {
     if (token !== requestId) return;
-    setStatus(matchStatus, "error", "Проверката не успя. Няма добавени заглавия.");
+    setStatus(matchStatus, "error", message("Проверката не успя. Няма добавени заглавия.","The feed check failed. No headlines were added."));
   } finally {
     if (token === requestId) {
       reloadButton.disabled = false;
@@ -218,12 +219,12 @@ async function loadCatalog() {
     const payload = await response.json();
     catalog = Array.isArray(payload.sources) ? payload.sources : [];
     if (!catalog.length) throw new Error("empty");
-    setStatus(sourceStatus, "ready", `${catalog.length} проверени източника · ${payload.checked_on || ""}`);
+    setStatus(sourceStatus, "ready", message(`${catalog.length} проверени източника · ${payload.checked_on || ""}`,`${catalog.length} attributed publisher feeds · ${payload.checked_on || ""}`));
     renderCatalog();
     await loadMatches();
   } catch {
     catalog = [];
-    setStatus(sourceStatus, "error", "Каталогът не се зареди. Няма показвани източници или заглавия.");
+    setStatus(sourceStatus, "error", message("Каталогът не се зареди. Няма показвани източници или заглавия.","Directory unavailable. No sources or headlines are shown."));
   }
 }
 
@@ -235,3 +236,5 @@ regionSelect.addEventListener("change", () => {
 reloadButton.addEventListener("click", loadMatches);
 healthButton.addEventListener("click", loadHealth);
 loadCatalog();
+
+window.addEventListener("aurora:language-changed",()=>{renderCatalog();resetHealth();});
