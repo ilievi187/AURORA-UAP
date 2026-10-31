@@ -1,0 +1,34 @@
+name: AURORA 101 dossier editorial integrity
+
+on:
+  pull_request:
+    paths:
+      - 'data/cases.json'
+      - 'data/source-case-annotations.json'
+      - 'scripts/source-case-annotations.mjs'
+      - 'scripts/sync-open-case-archive.mjs'
+      - 'tests/source-case-annotations.test.mjs'
+      - '.github/workflows/source-case-editorial-quality.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'data/cases.json'
+      - 'data/source-case-annotations.json'
+      - 'scripts/source-case-annotations.mjs'
+      - 'scripts/sync-open-case-archive.mjs'
+      - 'tests/source-case-annotations.test.mjs'
+      - '.github/workflows/source-case-editorial-quality.yml'
+permissions:
+  contents: read
+jobs:
+  archive-editorial:
+    name: full-source-dossier-coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify 101 bilingual narratives, primary citations and safe sync overlays
+        run: node --test tests/source-case-annotations.test.mjs tests/auto-archive-sync.test.mjs tests/archive-authentic-translation.test.mjs tests/dossier-rich-content.test.mjs
