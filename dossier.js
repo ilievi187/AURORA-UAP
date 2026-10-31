@@ -106,7 +106,7 @@
     if(!reply||currentCase!==record||language!==lang)return;
     // Keep source provenance, event assessments and multimedia unchanged.
     render(record);
-   }).catch(()=>{});
+   }).catch(()=>{}).finally(()=>translationRequested.delete(key));
  }
  let currentCase=null,archiveCases=[],feedbackState="loading";
  function feedback(stateKey,error=false){
