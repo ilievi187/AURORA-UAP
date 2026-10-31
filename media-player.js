@@ -103,6 +103,11 @@ export function resolveMediaPlayback(media) {
   if (embedUrl) {
     return { kind: 'iframe', provider: 'vimeo', embedUrl, originalUrl: original.href };
   }
+  // Verified DVIDS public embed for the official Al Taqaddum case only.
+  if (original.hostname.toLowerCase() === 'www.dvidshub.net' &&
+      /^\/video\/960331(?:\/|$)/.test(original.pathname)) {
+    return { kind: 'iframe', provider: 'dvids', embedUrl: 'https://www.dvidshub.net/video/embed/960331', originalUrl: original.href };
+  }
   return directPlayback(media, original);
 }
 
