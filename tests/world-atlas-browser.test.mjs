@@ -93,7 +93,7 @@ try {
     await page.locator('#languageGate').waitFor({ state: 'hidden' });
     assert.notEqual(await page.locator('#worldMapState').textContent(), 'No cases match these filters.', 'loading should not be announced as an empty result');
     releaseCases();
-    await page.waitForFunction(() => document.querySelectorAll('#worldMapResults [data-world-case-id]').length === 16);
+    await page.waitForFunction(() => document.querySelectorAll('#worldMapResults [data-world-case-id]').length === 10);
 
     assert.equal(await page.locator('#worldMapCount').textContent(), '16');
     assert.equal(await page.locator('#worldResultsHeading').textContent(), 'CASES');
@@ -200,18 +200,19 @@ try {
     await page.locator('#languageGate').waitFor({ state: 'hidden' });
     await page.waitForFunction(() => document.querySelector('#worldMapCount')?.textContent === '266');
     assert.equal(await page.locator('#worldMapCount').textContent(), '266');
-    assert.equal(await page.locator('#worldMapResults [data-world-case-id]').count(), 60, 'the result window should stay bounded');
+    assert.equal(await page.locator('#worldMapResults [data-world-case-id]').count(), 10, 'the result window should show ten cases');
+    assert.equal(await page.locator('#worldMapResults button[data-page="2"]').count(),1,'numbered navigation exists');
     for (let pageNumber = 0; pageNumber < 4; pageNumber++) {
       await page.locator('#worldResultsNext').focus();
       await page.keyboard.press('Enter');
-      assert.ok(await page.locator('#worldMapResults [data-world-case-id]').count() <= 60);
-      const expectedFocus = pageNumber < 3 ? 'worldResultsNext' : 'worldResultsPrevious';
+      assert.ok(await page.locator('#worldMapResults [data-world-case-id]').count() <= 10);
+      const expectedFocus = 'worldResultsNext';
       assert.equal(await page.evaluate(() => document.activeElement.id), expectedFocus, 'pager keyboard focus should survive page replacement');
     }
-    assert.equal(await page.locator('#worldMapResults [data-world-case-id="test-d1-250"]').count(), 1);
+    assert.equal(await page.locator('#worldMapResults [data-world-case-id]').count(), 10,'page four remains ten cases');
     await page.locator('#worldResultsPrevious').focus();
     await page.keyboard.press('Enter');
-    assert.ok(await page.locator('#worldMapResults [data-world-case-id]').count() <= 60);
+    assert.ok(await page.locator('#worldMapResults [data-world-case-id]').count() <= 10);
     assert.equal(await page.evaluate(() => document.activeElement.id), 'worldResultsPrevious');
     assert.ok(caseOffsets.includes(250), `expected a second page request; offsets were ${caseOffsets.join(',')}`);
     await page.locator('#worldSearch').fill('D1 page two sentinel');
