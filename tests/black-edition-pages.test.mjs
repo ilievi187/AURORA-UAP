@@ -59,3 +59,26 @@ test("embedded player respects publisher permissions and fallback labels stay ho
  assert.match(read("media-player.js"),/hosting_permission/);
  assert.match(read("archive-localization.js"),/translationDisclosure/);
 });
+
+test("archive chrome is fully authored in all 18 supported languages",async()=>{
+ const {ARCHIVE_PACKS}=await import("../archive-ui-packs.js");
+ const keys=[
+ "home","countries","news","language","heading","intro","caseCount","pageCount","countryCount",
+ "browse","search","filterCountry","filterMedia","allCountries","allMedia","hasPlayable",
+ "hasVideo","hasDocuments","loading","offline","empty","results","page","of","prev","next",
+ "view","source","video","linkedVideo","documents","disclaimer","undated","unknown","count","go"];
+ assert.equal(Object.keys(ARCHIVE_PACKS).length,16);
+ for(const [lang,pack] of Object.entries(ARCHIVE_PACKS)){
+  for(const k of keys)assert.ok(typeof pack[k]==="string"&&pack[k].length>=1,lang+" missing "+k);
+ }
+ assert.match(read("archive-directory.js"),/Object\.assign\(packs,ARCHIVE_PACKS\)/);
+});
+test("source directory keeps locale choice and translated headings from 18 languages",()=>{
+ const content=read("sources-localization.js");
+ for(const key of ["bg","en","de","ru","zh-CN","fr","es","it","pt","tr","ro","el","sr","uk","pl","ar","ja","ko"]){
+  assert.ok(content.includes(key+":" )||content.includes('"'+key+'":'),"source language "+key);
+ }
+ assert.match(read("sources.html"),/sources-localization\.js/);
+ assert.match(content,/localStorage\.setItem\("aurora-lang"/);
+ assert.match(content,/aria-label/);
+});
