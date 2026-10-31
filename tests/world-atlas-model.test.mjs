@@ -14,6 +14,27 @@ test('global atlas exposes accessible search, filters, results, and zoomable map
   assert.match(readFileSync(new URL('../world-atlas.js', import.meta.url), 'utf8'), /world-atlas-labels\.js/);
 });
 
+
+test('orbital atlas uses local night-Earth imagery and preserves precise case coordinates', () => {
+ const page=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+ const source=readFileSync(new URL('../world-atlas.js',import.meta.url),'utf8');
+ const orbital=readFileSync(new URL('../world-atlas-orbital.css',import.meta.url),'utf8');
+ assert.match(page,/world-atlas-orbital\.css/,'dedicated orbital skin is loaded');
+ assert.ok(page.indexOf('world-atlas-orbital.css')<page.indexOf('aurora-silence.css'),'the approved homepage still has final visual authority');
+ assert.match(page,/id="worldMapCanvas"/);
+ assert.match(page,/id="worldMapPins"/);
+ assert.match(page,/world-map-orbital-legend/);
+ assert.match(source,/assets\/earth\/earth-night-4096\.jpg/);
+ assert.match(source,/assets\/earth\/earth-day-4096\.jpg/);
+ assert.match(source,/context\.drawImage\(satellite\.night/);
+ assert.match(source,/Offline image fallback/);
+ assert.match(source,/clusterMarkers\(filtered/,'clustering still uses real case records');
+ assert.match(orbital,/prefers-reduced-motion:reduce/);
+ assert.match(orbital,/\.world-map-marker/);
+ const night=readFileSync(new URL('../assets/earth/earth-night-4096.jpg',import.meta.url));
+ assert.equal(night[0],0xff);assert.equal(night[1],0xd8,'image is a JPEG not a placeholder');
+});
+
 test('atlas controls have labels in every advertised locale', () => {
   const locales = ['bg', 'en', 'de', 'ru', 'zh-CN', 'fr', 'es', 'it', 'pt', 'tr', 'ro', 'el', 'sr', 'uk', 'pl', 'ar', 'ja', 'ko'];
   for (const locale of locales) {
