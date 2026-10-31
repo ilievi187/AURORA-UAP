@@ -78,7 +78,8 @@ export function normalizeCase(row){
   typeof row.lon==="number"&&Number.isFinite(row.lon)&&Math.abs(row.lon)<=180;
  const lat=locationOk?row.lat:null,lng=locationOk?row.lon:null;
  const location=safeText(row.en?.location,230)||safeText(row.en?.countryName,100)||"Location not published";
- const status=row.status==="explained"?"explained":row.status==="unresolved"||row.status==="insufficient"||row.status==="disputed"?"reported":"official_record";
+ // Unknown secondary-publisher labels must never silently become official findings.
+ const status=row.status==="explained"?"explained":"reported";
  const subtitle=safeText(row.en?.subtitle,430);
  const authority=safeText(row.en?.official,1700);
  const alternatives=(Array.isArray(row.en?.alternatives)?row.en.alternatives:[])
