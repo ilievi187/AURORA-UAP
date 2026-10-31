@@ -1,0 +1,40 @@
+name: AURORA archive translation integrity
+
+on:
+  pull_request:
+    paths:
+      - 'functions/api/archive-translation.js'
+      - 'archive-localization.js'
+      - 'dossier.js'
+      - 'tests/archive-translation-resilience.test.mjs'
+      - 'tests/archive-authentic-translation.test.mjs'
+      - '.github/workflows/archive-translation-quality.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'functions/api/archive-translation.js'
+      - 'archive-localization.js'
+      - 'dossier.js'
+      - 'tests/archive-translation-resilience.test.mjs'
+      - 'tests/archive-authentic-translation.test.mjs'
+      - '.github/workflows/archive-translation-quality.yml'
+permissions:
+  contents: read
+jobs:
+  translation-integrity:
+    name: archive-translation-integrity
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify complete translations, edge caching, retries and 101-case attribution
+        run: node --test tests/archive-translation-resilience.test.mjs tests/archive-authentic-translation.test.mjs tests/gemini-i18n.test.mjs
+      - name: Parse deployed source modules and validate diff
+        run: |
+          node --check archive-localization.js
+          node --check dossier.js
+          node --check functions/api/archive-translation.js
+          git diff --check

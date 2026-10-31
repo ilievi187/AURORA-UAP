@@ -39,8 +39,17 @@ export function translationDisclosure(language){
 }
 export function isFullTranslation(record,language,detail=false){
  if(!accepted.has(language))return false;
- if(isLegacyPlaceholder(record,language)||!record?.title?.[language]||!record?.summary?.[language])return false;
- return !detail||Array.isArray(record.story?.[language]);
+ if(!record?.title?.[language]||!record?.summary?.[language])return false;
+ if(isLegacyPlaceholder(record,language)&&!(record.translationSummaryReady&&!detail))return false;
+ if(!detail)return true;
+ const translated=record.story?.[language];
+ const source=Array.isArray(record.story?.en)?record.story.en:[];
+ // Curated Bulgarian paragraphs are authored separately and do not need to
+ // mirror the English author's paragraph boundaries. Machine output does.
+ const authoredBg=language==="bg"&&!record.translationStatus;
+ return Array.isArray(translated)&&
+  (authoredBg?translated.length>=3:translated.length===source.length)&&
+  translated.every(p=>typeof p==="string"&&p.trim().length>=2&&p.length<=6000);
 }
 export async function translatePublicCase(record,language,{detail=false}={}){
  if(!record||typeof record.id!=="string"||!accepted.has(language)||language==="en")return null;
@@ -49,28 +58,36 @@ export async function translatePublicCase(record,language,{detail=false}={}){
  const key=record.id+"/"+language+"/"+Number(detail);
  if(requests.has(key))return requests.get(key);
  const q=new URLSearchParams({id:record.id,lang:language,detail:detail?"1":"0"});
- const request=fetch("/api/archive-translation?"+q.toString(),{headers:{Accept:"application/json"}})
-  .then(async response=>response.ok?response.json():null)
-  .then(data=>{
-   if(!data||!["translated","partial","original"].includes(data.status))return null;
-   // Never copy untrusted HTML or modify source links, statuses and evidence.
-   const limit=(x,n)=>typeof x==="string"&&x.length>=2&&x.length<=n?x:null;
-   if(!limit(data.title,750)||!limit(data.summary,6000))return null;
-   // Replace legacy boilerplate rather than displaying an English/Bulgarian collage.
-   record.title??={};record.summary??={};
-   record.title[language]=data.title;record.summary[language]=data.summary;
-   if(detail&&Array.isArray(data.story)&&data.story.every(x=>x===null||limit(x,6000))){
-     const existing=Array.isArray(record.story?.en)?record.story.en:[];
-     if(data.story.length&&data.story.every(x=>typeof x==="string")){
-       record.story??={};record.story[language]=data.story;
-     }else if(existing.length){
-       // Mixed-language paragraphs are not presented as fully translated.
-       record.translationPartial=true;
-     }
-   }
-   record.translationStatus=data.status;
-   return data;
-  }).catch(()=>null);
+ const controller=new AbortController();
+ // Avoid a permanently stuck card when an edge worker times out.
+ const timeout=setTimeout(()=>controller.abort(),30000);
+ const request=fetch("/api/archive-translation?"+q.toString(),{
+  signal:controller.signal,headers:{Accept:"application/json"}
+ }).then(async response=>response.ok?response.json():null).then(data=>{
+  if(!data||!["translated","partial","original"].includes(data.status)||
+     data.id!==record.id||data.target_language!==language)return null;
+  const valid=(x,n)=>typeof x==="string"&&x.trim().length>=2&&x.length<=n;
+  if(!valid(data.title,750)||!valid(data.summary,6000))return null;
+  // The API is untrusted input: never copy HTML, media, statuses or URLs.
+  record.title??={};record.summary??={};
+  record.title[language]=data.title;record.summary[language]=data.summary;
+  record.translationSummaryReady=true;
+  const source=Array.isArray(record.story?.en)?record.story.en:[];
+  const fullStory=detail&&Array.isArray(data.story)&&data.story.length===source.length&&
+   data.story.every(p=>valid(p,6000));
+  if(fullStory){
+   record.story??={};record.story[language]=[...data.story];
+  }
+  // A partially translated story is displayed in the original language,
+  // explicitly identified as such; no mixed-language paragraphs are inserted.
+  record.translationPartial=Boolean(detail&&!fullStory&&source.length);
+  record.translationStatus=data.status==="translated"&&!record.translationPartial?
+   "translated":data.status==="original"&&!record.translationPartial?"original":"partial";
+  return data;
+ }).catch(()=>null).finally(()=>{
+  clearTimeout(timeout);
+  requests.delete(key); // Failed or partial translations can be retried on navigation.
+ });
  requests.set(key,request);
  return request;
 }

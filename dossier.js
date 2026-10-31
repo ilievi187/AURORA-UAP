@@ -75,6 +75,10 @@
   return {...base.en,...o,categoryName:{...base.en.categoryName,...(o.categoryName||{})},statusName:{...base.en.statusName,...(o.statusName||{})},confidence:{...base.en.confidence,...(o.confidence||{})}};
  };
  const local=x=>x?.[language]||x?.en||"";
+ const legacyBulgarian=x=>language==="bg"&&(
+  /(?:е случай, описан в публичния каталог|Публикуваните сведения се отнасят|Маркерът, ако има такъв)/i.test(String(x?.summary?.bg||""))||
+  (x?.story?.bg||[]).some(p=>/^EN\s*[·:]/.test(String(p))||/Следва оригиналното описание на английски/.test(String(p)))
+ );
  const translationRequested=new Set();
  function narrativeDisclosure(record){
   const el=$("dossierTranslationDisclosure")||(()=>{
@@ -84,14 +88,26 @@
    $("dossierSubtitle")?.after(tag);return tag;
   })();
   const currentIsNative=Boolean(record?.title?.[language]&&record?.summary?.[language]&&
-    Array.isArray(record?.story?.[language]));
+    Array.isArray(record?.story?.[language])&&!legacyBulgarian(record));
   if(language==="en"||currentIsNative){el.hidden=true;return}
   const labels={
    bg:"Оригиналният разказ е на английски. Преводът не е наличен или е частичен.",
    de:"Originalbericht auf Englisch; die Übersetzung ist nicht verfügbar oder unvollständig.",
    ru:"Оригинальный рассказ на английском; перевод недоступен или неполон.",
    fr:"Récit original en anglais ; traduction absente ou partielle.",
-   es:"Relato original en inglés; traducción no disponible o parcial."
+   es:"Relato original en inglés; traducción no disponible o parcial.",
+   "zh-CN":"英文原文 · 翻译暂不可用或不完整。",
+   it:"Testo originale inglese · traduzione non disponibile o incompleta.",
+   pt:"Texto original em inglês · tradução indisponível ou parcial.",
+   tr:"İngilizce özgün metin · çeviri mevcut değil veya eksik.",
+   ro:"Text original în engleză · traducere indisponibilă sau parțială.",
+   el:"Αγγλικό πρωτότυπο · η μετάφραση δεν είναι διαθέσιμη ή είναι ελλιπής.",
+   sr:"Енглески изворни текст · превод није доступан или је непотпун.",
+   uk:"Англійський оригінал · переклад недоступний або неповний.",
+   pl:"Oryginalny tekst angielski · tłumaczenie niedostępne lub niepełne.",
+   ar:"النص الإنجليزي الأصلي · الترجمة غير متاحة أو غير مكتملة.",
+   ja:"英語の原文です。翻訳が利用できないか不完全です。",
+   ko:"영어 원문입니다. 번역이 없거나 불완전합니다。"
   };
   el.textContent=labels[language]||"Original English narrative · Translation unavailable or partial";
   el.hidden=false;
@@ -106,7 +122,7 @@
     if(!reply||currentCase!==record||language!==lang)return;
     // Keep source provenance, event assessments and multimedia unchanged.
     render(record);
-   }).catch(()=>{});
+   }).catch(()=>{}).finally(()=>translationRequested.delete(key));
  }
  let currentCase=null,archiveCases=[],feedbackState="loading";
  function feedback(stateKey,error=false){
@@ -159,8 +175,9 @@
  function render(c){
   currentCase=c;
   const t=getPack();
-  const title=local(c.title)||c.title||id;
-  const summary=local(c.summary)||c.description||"";
+  const sourceEnglish=legacyBulgarian(c)&&!c.translationSummaryReady;
+  const title=(sourceEnglish?c.title?.en:local(c.title))||id;
+  const summary=(sourceEnglish?c.summary?.en:local(c.summary))||c.description||"";
   const area=local(c.city)||c.location||"—";
   const country=c.country_code||c.country||"";
   const assessment=c.assessment_status||c.status||"undetermined";
@@ -178,7 +195,7 @@
   label("factAssessment",t.statusName[assessment]||t.statusName.undetermined);
   label("factPrecision",Number.isFinite(c.lat)&&Number.isFinite(c.lng)?(language==="en"?(c.location_precision||t.approx):t.approx):t.noCoords);
   label("dossierSummary",summary);
-  label("dossierDepth",["editorial","sourced-feature"].includes(c.content_depth)?
+  label("dossierDepth",["editorial","sourced-feature","source-reviewed"].includes(c.content_depth)?
    (language==="bg"?"ИСТОРИЯ И КОНТЕКСТ · РАЗШИРЕНО ДОСИЕ":"STORY & CONTEXT · EXTENDED FILE"):
    (language==="bg"?"АРХИВЕН ЗАПИС · ОРИГИНАЛНИ ИЗТОЧНИЦИ":"ARCHIVE FILE · ORIGINAL SOURCES"));
   // Source provenance is preserved; visuals are labelled if illustrative.
@@ -204,7 +221,7 @@
   // Replace baked-in stock Play with an actual, lazy source-verified video hero.
   window.AURORA_DOSSIER_HERO?.render({caseRecord:c,lang:language});
   const story=$("dossierStory");story.replaceChildren();
-  const narrative=c.story?.[language]||c.story?.en;
+  const narrative=(legacyBulgarian(c)?c.story?.en:c.story?.[language])||c.story?.en;
   if(Array.isArray(narrative)){
    // Skip repeated catalog boilerplate and verbatim copies of the synopsis.
    // Their source attribution is visible in the separate provenance panel.
