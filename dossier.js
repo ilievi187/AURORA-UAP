@@ -177,7 +177,7 @@
    const host=new URL(original).hostname.toLowerCase();
    const allowedHost=["youtube.com","www.youtube.com","m.youtube.com","youtu.be","vimeo.com","www.vimeo.com","player.vimeo.com"].includes(host);
    const rightsCleared=media.playback?.rights_status==="verified"&&media.playback?.hosting_permission===true;
-   const dvidsPublished=legacy&&c.id==="al-taqaddum-2017"&&host==="www.aaro.mil";
+   const dvidsPublished=legacy&&c.id==="al-taqaddum-2017"&&original==="https://www.dvidshub.net/video/960331/al-taqaddum-object";
    if(!allowedHost&&!rightsCleared&&!dvidsPublished)return;
    const watch=document.createElement("button");
    watch.type="button";watch.className="case-watch-button";
