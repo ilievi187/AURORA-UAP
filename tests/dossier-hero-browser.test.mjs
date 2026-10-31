@@ -61,6 +61,7 @@ test("the small Play below never redirects: in-site player and separate source l
   assert.doesNotMatch(await page.locator("#caseMediaGrid .case-media-source-link .case-media-icon").innerText(),/▶/);
   await btn.click();
   const lower=page.locator("#caseMediaGrid video");
+  await lower.waitFor({state:"attached",timeout:5000});
   assert.equal(await lower.count(),1,"clicking lower play should mount a real video");
   assert.match(await lower.getAttribute("src"),/FLIR1.*\.webm$/);
   assert.equal(new URL(page.url()).pathname,"/archive/nimitz-2004","must stay on AURORA");
