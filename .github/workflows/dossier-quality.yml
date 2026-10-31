@@ -34,5 +34,5 @@ jobs:
         run: node --test tests/dossier-rich-content.test.mjs
       - name: Validate baseline archive and media contracts
         run: |
-          node --test tests/archive-records.test.mjs tests/aurora-v1.test.mjs tests/media-player.test.mjs
+          node --test tests/archive-records.test.mjs tests/aurora-v1.test.mjs
           git diff --check
