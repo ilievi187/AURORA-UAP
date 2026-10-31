@@ -2,11 +2,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 import { resolve, join, sep, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
+// The legacy atlas map behavior is exercised against the original editorial case
+// fixtures, independently from the larger licensed source catalog.
+const curatedArchive=(()=>{const {cases,...meta}=JSON.parse(readFileSync(new URL('../data/cases.json',import.meta.url)));return JSON.stringify({...meta,cases:cases.filter(c=>!c.provenance?.automated).sort((a,b)=>a.id==='phoenix-1997'?-1:b.id==='phoenix-1997'?1:0)});})();
 const types = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.js': 'application/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8',
@@ -30,6 +34,7 @@ let statsIncludesDemo = false;
 const caseOffsets = [];
 const server = createServer(async (request, response) => {
   const url = new URL(request.url || '/', 'http://127.0.0.1');
+  if(url.pathname==='/data/cases.json'){response.writeHead(200,{'content-type':'application/json'}).end(curatedArchive);return;}
   if (url.pathname === '/api/stats') {
     if (statsFailure) {
       response.writeHead(503, { 'content-type': 'application/json' }).end(JSON.stringify({ error: 'database_unavailable' }));
@@ -94,6 +99,7 @@ try {
     assert.notEqual(await page.locator('#worldMapState').textContent(), 'No cases match these filters.', 'loading should not be announced as an empty result');
     releaseCases();
     await page.waitForFunction(() => document.querySelectorAll('#worldMapResults [data-world-case-id]').length === 10);
+    await page.waitForFunction(() => document.querySelector('#worldMapCount')?.textContent === '16');
 
     assert.equal(await page.locator('#worldMapCount').textContent(), '16');
     assert.equal(await page.locator('#worldResultsHeading').textContent(), 'CASES');
