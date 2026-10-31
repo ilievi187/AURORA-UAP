@@ -520,14 +520,18 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
       player=documentRef.createElement("iframe");
       player.title=details.title+" — "+details.sourceName;
       player.loading="lazy";
-      player.allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen";
+      player.allow="autoplay; accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen";
       player.allowFullscreen=true;
       player.referrerPolicy="strict-origin-when-cross-origin";
       player.setAttribute("sandbox","allow-scripts allow-same-origin allow-presentation");
       player.addEventListener("load",()=>{status.textContent=words.iframeReady},{once:true});
       player.addEventListener("error",()=>{status.textContent=words.iframeError},{once:true});
       stage.append(player);
-      player.src=playback.embedUrl;
+      // The user pressed Play: request playback in this single inline embed.
+      // The provider can still restrict autoplay; its own controls remain available.
+      const embed=new URL(playback.embedUrl);
+      if(["youtube","vimeo","dvids"].includes(playback.provider))embed.searchParams.set("autoplay","1");
+      player.src=embed.href;
     }else{
       player=documentRef.createElement("video");
       player.controls=true;player.preload="metadata";player.playsInline=true;
@@ -536,6 +540,10 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
       player.addEventListener("error",()=>{status.textContent=words.videoError},{once:true});
       stage.append(player);
       loadVerifiedVideo(player,playback,state=>{status.textContent=state==="fallback"?"Trying official backup video…":words.videoError});
+      // Playback is requested only in direct response to the user's Play click.
+      // Do not claim success if the browser or the publisher blocks it.
+      const attempt=player.play();
+      if(attempt?.catch)attempt.catch(()=>{if(player.isConnected)status.textContent=words.videoReady;});
     }
     activeInline={card,picture,stage,trigger,img,badge,close,player,status};
     close.focus();
@@ -761,7 +769,7 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
       if(picture){
         const thumb=resolveVideoPoster(media),img=picture.querySelector("img");
         if(img){
-          img.src=thumb||"/assets/video-poster.svg";
+          img.src=thumb||"/assets/media-video-preview.svg";
           img.alt=thumb?
             ("Published video thumbnail: "+title):
             ("Decorative AURORA preview, not an original incident frame");
