@@ -256,3 +256,20 @@ body,body.live-page,body.donate-v1 {
 
 /* Country directory uses .hero too; preserve its compact listing header. */
 .page-shell .hero{min-height:0;height:auto;margin:0;padding-block:clamp(44px,6vw,74px) 32px;overflow:visible;}
+
+/* Calm first-visit language selection; same glass-and-type system as the site. */
+.language-gate{background:radial-gradient(ellipse at 50% 12%,#19384b,#080f19 64%);color:var(--aurora-text);}
+.language-gate .gate-inner{
+  width:min(820px,100%);max-width:820px;
+  border:1px solid var(--aurora-border);border-radius:22px;
+  background:linear-gradient(145deg,rgba(20,39,55,.88),rgba(8,19,31,.95));
+  box-shadow:0 25px 100px #0008;padding:clamp(24px,5vw,54px);
+}
+.language-gate .gate-inner h2{font-family:inherit;letter-spacing:-.05em;font-weight:730;}
+.language-gate .gate-subtitle,.language-gate .gate-foot{color:var(--aurora-muted);}
+.language-gate .gate-language-grid button{border-radius:11px;border-color:var(--aurora-border-strong);background:#162b3a;box-shadow:none;}
+.language-gate .gate-language-grid button.is-selected{border-color:#aee6e9;background:#1c4451;}
+.language-gate .gate-continue{border-radius:11px;background:#b9ecf0;color:#08151e;box-shadow:none;}
+.language-gate .gate-continue:not(:disabled):hover{background:#e6fbff;box-shadow:none;}
+.language-gate .gate-hud-side,.language-gate .gate-corner,.language-gate .gate-scanner-beam{display:none!important;}
+.language-gate .gate-symbol-ring{opacity:.25;}
