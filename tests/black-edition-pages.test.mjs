@@ -4,11 +4,13 @@ import {readFileSync} from "node:fs";
 import {selectPublicCase,translatePublishedCase,onRequestGet} from "../functions/api/archive-translation.js";
 const read=p=>readFileSync(new URL("../"+p,import.meta.url),"utf8");
 const pages=["archive","countries","country","dossier","media","news","sources","report","donate"];
-test("all nine subpages load the approved final Black Edition skin, home remains unchanged",()=>{
+test("all nine subpages have page-specific SILENCE composition layered over Black Edition, home intact",()=>{
  for(const name of pages){
   const html=read(name+".html");
   const styles=[...html.matchAll(/<link\s+rel="stylesheet"\s+href="([^"]+)"/g)].map(m=>m[1]);
-  assert.equal(styles.at(-1),"/aurora-black-pages.css",name);
+  assert.equal(styles.at(-2),"/aurora-black-pages.css",name);
+  assert.equal(styles.at(-1),"/aurora-editorial-interiors.css",name);
+  assert.match(html,new RegExp(`data-aurora-page="${name}"`));
   assert.ok(html.includes("/aurora-design-refresh.css"),"shared base retained: "+name);
  }
  const home=read("index.html");
@@ -19,6 +21,18 @@ test("all nine subpages load the approved final Black Edition skin, home remains
  assert.match(css,/archive-card/);assert.match(css,/media-entry/);
  assert.match(css,/dossier-top/);assert.match(css,/report-hero/);
  assert.match(css,/prefers-reduced-motion:reduce/);
+ const interior=read("aurora-editorial-interiors.css");
+ for(const page of pages)assert.ok(interior.includes(`data-aurora-page="${page}"`),`distinct ${page} editorial identity`);
+ assert.match(interior,/@media\(max-width:740px\)/);
+ assert.match(interior,/prefers-reduced-motion:reduce/);
+});
+test("published editorial copy invites investigation without the repeated extraterrestrial-origin warning",()=>{
+ for(const file of ["archive.html","news.html","sources.html","dossier.html","globe.js","archive-directory.js","archive-ui-packs.js","dossier.js","subpage-i18n.js","script.js","i18n-extra.js"]){
+  const source=read(file);
+  assert.doesNotMatch(source,/not proof of extraterrestrial|does not establish extraterrestrial|не доказва(?:т|телства)|не доказателства за извънземен|не е извънземно обяснение/i,file);
+ }
+ assert.match(read("index.html"),/СЛЕДВАЙ ИСТОРИЯТА/);
+ assert.doesNotMatch(read("dossier.html"),/dossierCaution/);
 });
 test("source-locked translator denies unpublished and arbitrary strings",async()=>{
  const record={id:"case-a",title:{en:"Lights above the harbor"},summary:{en:"Three bright lights moved slowly."},story:{en:["Witnesses observed them for two minutes."]},source:{url:"https://example.org/1"}};
