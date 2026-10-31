@@ -82,8 +82,30 @@ function directPlayback(media, original) {
     provider: 'direct',
     mediaUrl: asset.href,
     mimeType,
-    originalUrl: original.href
+    originalUrl: original.href,
+    alternatives:(Array.isArray(playback.fallback_urls)?playback.fallback_urls:[])
+     .slice(0,3).filter(v=>{
+      const u=safeHttpsUrl(v?.url);
+      return u&&["www.navair.navy.mil","upload.wikimedia.org"].includes(u.hostname)&&
+       DIRECT_TYPES[String(v.mime_type||"").toLowerCase()]?.includes(u.pathname.toLowerCase().split(".").at(-1));
+     }).map(v=>({url:safeHttpsUrl(v.url).href,mimeType:String(v.mime_type).toLowerCase()}))
   };
+}
+
+// Stream only verified and approved sources. If a public-domain video CDN
+// rate-limits the client, switch to the authorized government original.
+export function loadVerifiedVideo(video,playback,onStatus=()=>{}){
+ if(!video||playback?.kind!=="html5")return false;
+ const queue=[playback.mediaUrl,...(playback.alternatives||[]).map(v=>v.url)];
+ let index=0;
+ video.addEventListener("error",()=>{
+  if(!video.isConnected)return;
+  if(index<queue.length-1){
+   index++;onStatus("fallback");video.src=queue[index];
+  }else onStatus("failed");
+ });
+ video.src=queue[0];
+ return true;
 }
 
 export function resolveMediaPlayback(media) {
