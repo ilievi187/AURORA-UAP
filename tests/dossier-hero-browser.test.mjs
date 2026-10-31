@@ -54,6 +54,9 @@ test("FLIR1 hero replaces misleading stock screenshot with real source-verified 
 test("the small Play below never redirects: in-site player and separate source link",async()=>{
  const{page,ctx,errors}=await pageFor("nimitz-2004");
  try{
+  // Keep the media request pending: the test verifies the *real DOM player*
+  // without depending on external CDN connectivity or codec support.
+  await page.route("https://upload.wikimedia.org/**",()=>{});
   const btn=page.locator("#caseMediaGrid .case-media-play-tile");
   await btn.waitFor({state:"visible"});
   assert.equal(await page.locator("#caseMediaGrid .case-media-source-link").count(),1);
@@ -65,6 +68,17 @@ test("the small Play below never redirects: in-site player and separate source l
   assert.equal(await lower.count(),1,"clicking lower play should mount a real video");
   assert.match(await lower.getAttribute("src"),/FLIR1.*\.webm$/);
   assert.equal(new URL(page.url()).pathname,"/archive/nimitz-2004","must stay on AURORA");
+  assert.deepEqual(errors,[]);
+ }finally{await ctx.close()}
+});
+
+test("a failed lower player reports an error while preserving publisher link",async()=>{
+ const{page,ctx,errors}=await pageFor("nimitz-2004");
+ try{
+  await page.locator("#caseMediaGrid .case-media-play-tile").click();
+  await page.waitForFunction(()=>document.querySelector("#caseMediaGrid .case-video-status")?.textContent.includes("източник"));
+  assert.equal(await page.locator("#caseMediaGrid .case-media-source-link").isVisible(),true);
+  assert.equal(new URL(page.url()).pathname,"/archive/nimitz-2004");
   assert.deepEqual(errors,[]);
  }finally{await ctx.close()}
 });
