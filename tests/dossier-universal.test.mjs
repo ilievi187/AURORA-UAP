@@ -77,9 +77,21 @@ test("all case views load source content and never invent photos or embed unknow
  assert.match(js,/contentHelper\?\.media\(c\)/);
  assert.match(js,/contentHelper\?\.photoPreview\(m\)/);
  assert.match(js,/img\.loading="lazy"/);
- assert.match(js,/watch\.addEventListener\("click",async/);
+ assert.doesNotMatch(js,/case-watch-button|case-video-frame/);
+ assert.match(read("dossier-hero.js"),/button\.addEventListener\("click"/);
  const items=JSON.parse(read("data/cases.json")).cases;
  assert.ok(items.every(c=>c.source?.url&&c.story?.en?.length&&c.story?.bg?.length));
  const nonembeddable=items.find(c=>c.id==="westall-1966");
  assert.ok(nonembeddable.media.every(m=>resolveMediaPlayback(m)===null));
+});
+
+
+test("published video source links remain available without a second player",()=>{
+ const cases=JSON.parse(read("data/cases.json")).cases;
+ for(const c of cases){
+  for(const video of (c.media||[]).filter(x=>x.type==="video"&&x.public!==false)){
+   const refs=d.sources(c,"en");
+   assert.ok(refs.some(x=>x.url===video.url),"Missing video provenance "+c.id+": "+video.url);
+  }
+ }
 });
