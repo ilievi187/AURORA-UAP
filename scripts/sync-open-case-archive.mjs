@@ -1,9 +1,11 @@
 /* AURORA automatic archive ingestion: approved CC BY metadata only.
  * No private reports, no scraping, no inference of geographical coordinates. */
 import {readFile, writeFile, rename} from "node:fs/promises";
+import {readFileSync} from "node:fs";
 import {fileURLToPath} from "node:url";
 import path from "node:path";
 import {withApproximateMapAnchor} from "./approximate-case-geography.mjs";
+import {applySourceCaseAnnotations,validateSourceCaseAnnotations} from "./source-case-annotations.mjs";
 
 export const SOURCE_URL="https://www.uap-archive.org/uap/data/cases.json";
 export const SOURCE_NAME="UAP Records Archive";
@@ -11,6 +13,7 @@ export const SOURCE_LICENSE="CC BY 4.0";
 const ROOT=path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const DATA=path.join(ROOT,"data","cases.json");
 const MANIFEST=path.join(ROOT,"data","archive-sync-status.json");
+const EDITORIAL=validateSourceCaseAnnotations(JSON.parse(readFileSync(path.join(ROOT,"data","source-case-annotations.json"),"utf8")));
 const MAX_SOURCE_BYTES=5_000_000;
 const FIXTURE_SOURCE={license:"U.S. government works; Creative Commons Attribution 4.0 (CC BY 4.0)",cases:[
  {id:"fixture-colorado-2022",designation:"Colorado Springs UAP Incident",kind:"pursue-cluster",card:{en:{apparent:"Documents describing a published observation; no further findings are provided."}},assets:[{type:"document",label:"Original release",url:"https://media.uap-archive.org/pursue-docs/example.pdf"}],incidentDates:["February, 2022"],incidentLocations:["Colorado Springs, Colorado, U.S."]},
@@ -129,7 +132,7 @@ export function buildArchive(existing,source){
   const duplicateAlias=ALIASES[row.id];
   if((duplicateAlias&&existingIds.has(duplicateAlias))||existingIds.has(c.id)||
      existingNames.has(canonical(c.title.en))){duplicates++;continue}
-  imported.push(c);
+  imported.push(applySourceCaseAnnotations(c,EDITORIAL));
  }
  if(!imported.length)throw Error("No importable source records: refusing replacement");
  const previous=existing.cases.filter(x=>x?.provenance?.source_url===SOURCE_URL).length;
