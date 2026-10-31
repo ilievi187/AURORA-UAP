@@ -1,4 +1,4 @@
-import {resolveMediaPlayback,resolveVideoPoster} from "./media-player.js";
+import {resolveMediaPlayback,resolveVideoPoster,loadVerifiedVideo} from "./media-player.js";
 
 // Lightweight, native in-card player. Only one active card can stream at a time.
 // A player is never started until someone deliberately presses Play.
@@ -63,7 +63,7 @@ export function addArchivePlayback(card,video,lang="bg",title="Video"){
   preview.hidden=true;play.hidden=true;frame.hidden=false;close.hidden=false;
   status.textContent=bg?"Зареждане на плейъра…":"Loading source player…";
   active={media,frame,close,play,preview,status};
-  if(playback.kind==="html5")media.src=playback.mediaUrl;
+  if(playback.kind==="html5")loadVerifiedVideo(media,playback,state=>{status.textContent=state==="fallback"?(bg?"Основният източник е ограничен. Зарежда се официалното резервно копие…":"Trying official video backup…"):(bg?"Видеото не може да се зареди.":"Video unavailable.")});
   else media.src=playback.embedUrl;
   close.focus();
  });
