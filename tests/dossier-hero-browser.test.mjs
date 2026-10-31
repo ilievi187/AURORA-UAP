@@ -171,3 +171,31 @@ test("two official DVIDS clips reuse ONE mobile hero iframe without redirect",as
   assert.deepEqual(errors,[]);
  }finally{await ctx.close()}
 });
+
+test("government source PDFs open inside dossier only on click and unload on close",async()=>{
+ const {page,ctx,errors}=await pageFor("disclosure-colorado-springs-2022",{width:390,height:844});
+ try{
+  await page.route("https://www.war.gov/**",route=>route.fulfill({
+   status:200,contentType:"text/html",
+   body:"<!doctype html><html><body>Original source reader fixture</body></html>"
+  }));
+  assert.equal(await page.locator("#caseDocumentFrameHost iframe").count(),0,"never preload publisher PDFs");
+  assert.equal(await page.locator("#caseDocumentViewer").isHidden(),true);
+  const buttons=page.locator("#caseMediaGrid .case-media-preview");
+  assert.ok(await buttons.count()>=3,"government source PDFs receive inline preview controls");
+  assert.match(await buttons.first().textContent(),/ПРОЧЕТИ ДОКУМЕНТА ТУК/);
+  const origin=page.url();
+  await buttons.first().click();
+  await page.locator("#caseDocumentFrameHost iframe").waitFor({state:"attached"});
+  assert.equal(await page.locator("#caseDocumentViewer").isVisible(),true);
+  assert.match(await page.locator("#caseDocumentFrameHost iframe").getAttribute("src"),/^https:\/\/www\.war\.gov\/.*\.pdf$/);
+  assert.match(await page.locator("#caseDocumentSource").getAttribute("href"),/^https:\/\/www\.war\.gov\/.*\.pdf$/);
+  assert.equal(page.url(),origin,"the reader never leaves AURORA");
+  await page.locator("#caseDocumentClose").click();
+  assert.equal(await page.locator("#caseDocumentFrameHost iframe").count(),0,"closing unloads the remote document");
+  assert.equal(await page.locator("#caseDocumentViewer").isHidden(),true);
+  const widths=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth}));
+  assert.ok(widths.scroll<=widths.client+1,"PDF reader overflow on mobile");
+  assert.deepEqual(errors,[]);
+ }finally{await ctx.close()}
+});
