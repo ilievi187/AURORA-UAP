@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 import { resolve, join, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
@@ -14,6 +15,9 @@ import {onRequestGet as oneCase} from '../functions/api/cases/[id].js';
 
 
 const root=resolve(fileURLToPath(new URL('..',import.meta.url)));
+// Legacy globe/navigation suites intentionally use the 15 curated editorial fixtures.
+// The full licensed multi-provider archive is verified in archive-directory tests.
+const curatedArchive=(()=>{const {cases,...meta}=JSON.parse(readFileSync(new URL('../data/cases.json',import.meta.url)));return JSON.stringify({...meta,cases:cases.filter(c=>!c.provenance?.automated)});})();
 const mime={'.html':'text/html','.css':'text/css','.js':'application/javascript','.webp':'image/webp','.svg':'image/svg+xml','.txt':'text/plain'};
 const sqlite=new DatabaseSync(':memory:');
 sqlite.exec(await readFile(join(root,'migrations/0001_init.sql'),'utf8'));
@@ -45,6 +49,7 @@ await importReviewed(db,JSON.parse(await readFile(join(root,'data/imports/aaro-r
 
 const server=createServer(async(req,res)=>{
   const path=(req.url||'/').split('?')[0];
+  if(path==='/data/cases.json'){res.writeHead(200,{'Content-Type':'application/json'}).end(curatedArchive);return;}
   const decoded=decodeURIComponent(path);
   if(decoded.startsWith('/api/')){
     const url=new URL(req.url,'http://127.0.0.1');
