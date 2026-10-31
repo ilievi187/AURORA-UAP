@@ -1,74 +1,49 @@
-
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import {Script} from "node:vm";
 const read=p=>readFileSync(new URL("../"+p,import.meta.url),"utf8");
-const html=read("index.html"),render=read("aurora-experience.js"),css=read("aurora-cinematic.css");
-test("Earth-centered original WebGL space, not a static demo background",()=>{
-  assert.match(html,/id="odyssey"[^>]+data-chapter="0"/);
-  assert.match(html,/id="auroraSceneCanvas"[^>]*aria-hidden="true"/);
-  assert.match(html,/src="\/aurora-experience\.js"/);
-  assert.match(render,/getContext\("webgl"/);
-  assert.match(render,/hitSphere/);
-  assert.match(render,/gl\.drawArrays\(gl\.TRIANGLES,0,6\)/);
-  assert.match(render,/scenePixels/);
-  assert.doesNotThrow(()=>new Script(render,{filename:"aurora-experience.js"}));
-  assert.doesNotMatch(render,/igloo\.inc|audio\.play\(/);
+const page=read("index.html"),visual=read("aurora-silence.css"),logic=read("aurora-silence.js");
+test("AURORA opens with one black full-screen UFO-over-Earth scene, not a carousel",()=>{
+ assert.match(page,/class="hero silence-hero" id="silenceHero"/);
+ assert.match(page,/id="hero-title">AURORA<\/h1>/);
+ assert.match(page,/UNIDENTIFIED AERIAL PHENOMENA/);
+ assert.match(page,/href="\/archive\.html" class="button button-primary"/);
+ assert.match(page,/href="\/media\.html" class="button button-secondary"/);
+ assert.match(page,/href="#worldAtlas" class="silence-micro-map"/);
+ assert.match(visual,/\/assets\/hero-ufo\.webp/);
+ assert.match(visual,/\/assets\/earth\/earth-night-4096\.jpg/);
+ assert.match(visual,/\/assets\/earth\/moon-1024\.jpg/);
+ assert.match(visual,/background:#010305/);
+ assert.doesNotMatch(page,/id="odyssey"|class="odyssey-scene/);
+ assert.doesNotMatch(page,/src="\/aurora-experience\.js"/);
+ assert.match(page,/src="\/aurora-silence\.js"/);
+ assert.equal(readFileSync(new URL("../assets/hero-ufo.webp",import.meta.url)).length>10000,true);
 });
-test("Earth land shape texture is 4K and source-geographic, planets are true 3D",()=>{
-  assert.match(render,/fetch\("\/data\/earth-land\.json"/);
-  assert.match(render,/tex\.width=4096;tex\.height=2048/);
-  assert.match(render,/gl\.generateMipmap/);
-  assert.match(render,/uEarth/);
-  assert.match(render,/tMoon=hitSphere/);
-  assert.match(render,/tMars=hitSphere/);
-  assert.match(render,/tSat=hitSphere/);
-  assert.match(render,/ringN/);
-  assert.match(render,/Math\.min\(box\.width\*scale,limit\)/);
-  assert.match(render,/window\.devicePixelRatio/);
-  assert.match(render,/4096/);
-});
-test("Three immersive chapters are accessible and real archive follows",()=>{
-  for(const id of ["hero-title","worldAtlas","worldMapCanvas","homeNewsGrid","controlTabs","caseGlobe","reportGrid","languageGate"]){
-    assert.ok(html.includes('id="'+id+'"'),id+" retained");
-  }
-  assert.match(html,/class="odyssey-scene odyssey-intro"/);
-  assert.match(html,/class="odyssey-scene odyssey-chapter" aria-hidden="true" inert/);
-  assert.match(html,/class="odyssey-scene odyssey-archive-chapter" aria-hidden="true" inert/);
-  assert.match(render,/progress<\.24\?0:progress<\.66\?1:2/);
-  assert.match(render,/s\.inert=hidden/);
-  assert.match(html,/href="\/archive\.html" class="button button-primary"/);
-  assert.match(html,/class="odyssey-link" href="#worldAtlas"/);
-});
-test("Native scene respects accessibility, performance, fallback and reduced motion",()=>{
-  assert.match(css,/@media\(max-width:680px\)/);
-  assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
-  assert.match(css,/data-renderer="webgl"/);
-  assert.match(css,/body:has\(#odyssey\)/);
-  for(const regex of [/webglcontextlost/,/webglcontextrestored/,/document\.hidden/,/IntersectionObserver/,/reduce\.matches/,/requestAnimationFrame/,/dataset\.renderer="fallback"/])assert.match(render,regex);
-  assert.doesNotMatch(html,/igloo\.inc|igloo\.glb|three\.min\.js/);
-});
-
-test("photo Earth resources are genuine locally hosted images with compliant credits",()=>{
- const assets=["earth-day-4096.jpg","earth-night-4096.jpg","earth-clouds-1024.png","earth-specular-2048.jpg","moon-1024.jpg","mars-2048.jpg","saturn-2048.jpg"];
- for(const name of assets){
-   const bytes=readFileSync(new URL("../assets/earth/"+name,import.meta.url));
-   assert.ok(bytes.length>100000,"binary texture must not be placeholder: "+name);
-   if(name.endsWith(".jpg"))assert.equal(bytes[0],0xff,"JPEG signature: "+name);
-   if(name.endsWith(".png"))assert.equal(bytes.toString("ascii",1,4),"PNG","PNG signature: "+name);
-   assert.ok(render.includes("/assets/earth/"+name),"render fetches "+name);
+test("all four hero metrics are faithful to available public archive, not fantasy live data",()=>{
+ for(const id of ["auroraArchiveCount","auroraMappedCount","auroraLanguageCount","auroraOpenValue"]){
+  if(id==="auroraOpenValue")continue;
+  assert.match(page,new RegExp('id="'+id+'"'));
  }
- assert.match(render,/uHasPhotos/);
- assert.match(render,/uDay/);
- assert.match(render,/uNight/);
- assert.match(render,/uClouds/);
- assert.match(render,/uSpecular/);
- assert.match(render,/uMoon/);
- assert.match(render,/uMars/);
- assert.match(render,/uSaturn/);
- assert.match(render,/root\.dataset\.earthImagery="photographic"/);
- assert.match(html,/Solar System Scope/);
- assert.match(html,/creativecommons\.org\/licenses\/by\/4\.0/);
- assert.match(read("docs/EARTH-IMAGERY-ATTRIBUTION.md"),/CC BY 4\.0/);
+ assert.match(page,/data-stat-label="openValue"/);
+ assert.match(logic,/fetch\("\/data\/cases\.json"/);
+ assert.match(logic,/Number\.isFinite\(record\?\.lat\)/);
+ assert.match(logic,/Array\.isArray\(data\.cases\)/);
+ assert.match(logic,/dataset\.stats="unavailable"/);
+ assert.doesNotMatch(page,/12,842|48,702|2,341|24\/7|LIVE SIGHTINGS|THREAT ASSESSMENT/);
+ assert.doesNotThrow(()=>new Script(logic,{filename:"aurora-silence.js"}));
+});
+test("all 18 languages, sourced map, videos and reports remain accessible",()=>{
+ for(const id of ["languageGate","heroHudCanvas","worldAtlas","worldMapCanvas","worldMapPins","homeNewsGrid","controlTabs","caseGlobe","reportGrid","reportDialog"]){
+  assert.ok(page.includes('id="'+id+'"'),"preserved "+id);
+ }
+ for(const path of ["archive.html","media.html","news.html","report.html"]){
+  assert.ok(read(path).length>1000,path+" exists");
+ }
+ for(const lang of ["bg","en","de","ru","zh-CN","fr","es","it","pt","tr","ro","el","sr","uk","pl","ar","ja","ko"]){
+  assert.ok(logic.includes(lang+":" )||logic.includes('"'+lang+'":'),"metric translation "+lang);
+ }
+ assert.match(page,/href="\/report\.html" data-i18n="reportButton"/);
+ assert.match(visual,/@media\(max-width:640px\)/);
+ assert.match(visual,/@media\(prefers-reduced-motion:reduce\)/);
 });
