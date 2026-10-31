@@ -56,7 +56,7 @@ test("legacy Bulgarian source catalog narratives remain readable and are not pas
  try{
   assert.match(await page.locator("#dossierSummary").textContent(),/US Navy reported approximately 100 aerial objects/);
   assert.doesNotMatch(await page.locator("#dossierSummary").textContent(),/е случай, описан/);
-  assert.match(await page.locator("#dossierStory").textContent(),/The US Navy reported approximately 100 aerial objects/);
+  assert.match(await page.locator("#dossierStory").textContent(),/Around a hundred aerial objects and two surface systems/);
   assert.doesNotMatch(await page.locator("#dossierStory").textContent(),/Следва оригиналното описание/);
   assert.equal(await page.locator("#dossierTranslationDisclosure").isVisible(),true);
   assert.match(await page.locator("#dossierTranslationDisclosure").textContent(),/на английски/);
