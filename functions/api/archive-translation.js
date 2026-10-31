@@ -13,6 +13,8 @@ const result=(data,status=200,cache="no-store")=>Response.json(data,{status,head
 const nonempty=(x,max=6000)=>typeof x==="string"&&x.trim().length>=2&&x.length<=max;
 const storyComplete=(story,original)=>Array.isArray(story)&&story.length===original.length&&
  story.every(s=>nonempty(s,6000));
+const authoredBgComplete=story=>Array.isArray(story)&&story.length>=3&&
+ story.every(s=>nonempty(s,6000));
 export function selectPublicCase(cases,id){
  return Array.isArray(cases)?cases.find(c=>c?.id===id&&c?.private!==true&&c?.public!==false&&
   typeof c?.source?.url==="string"&&/^https:\/\//.test(c.source.url))??null:null;
@@ -31,7 +33,8 @@ export async function translatePublishedCase(record,lang,ai,{detail=false,seed=n
  const nativeSummary=legacyPlaceholder?null:record.summary?.[lang];
  const nativeStory=legacyPlaceholder?null:record.story?.[lang];
  if(nonempty(nativeTitle,750)&&nonempty(nativeSummary,6000)&&
-   (!detail||storyComplete(nativeStory,originalStory))){
+   (!detail||(lang==="bg"&&!legacyPlaceholder?
+    authoredBgComplete(nativeStory):storyComplete(nativeStory,originalStory)))){
   return {status:"original",source_language:lang,target_language:lang,
    title:nativeTitle,summary:nativeSummary,story:detail?[...nativeStory]:undefined};
  }
