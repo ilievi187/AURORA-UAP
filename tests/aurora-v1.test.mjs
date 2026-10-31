@@ -112,7 +112,8 @@ test('case data has sourced prose, conservative statuses and approximate map anc
     assert.ok(c.location_precision.length>=8,'location precision is explicit');
     assert.ok(Array.isArray(c.story?.bg)&&c.story.bg.length>=1,'rich Bulgarian editorial context');
     assert.ok(Array.isArray(c.story?.en)&&c.story.en.length>=1,'rich English editorial context');
-    assert.ok(Array.isArray(c.media)&&c.media.length>=1,'at least one real source-linked media asset');
+    assert.ok(Array.isArray(c.media),'media must be a well-defined collection');
+    assert.ok(c.media.length>=1||c.sources?.length>=1||c.source?.url,'every dossier needs a real published source');
     assert.ok(c.media.every(m=>/^https:\/\//.test(m.url)),'media links should point to original sources');
   }
 });

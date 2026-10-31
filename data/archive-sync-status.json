@@ -1,0 +1,12 @@
+{
+  "source": "https://www.uap-archive.org/uap/data/cases.json",
+  "license": "CC BY 4.0",
+  "upstream": 14,
+  "generated": 10,
+  "existing_curated": 15,
+  "skipped_duplicates": 4,
+  "skipped_invalid": 0,
+  "total": 25,
+  "coordinates_policy": "source-only; missing latitude/longitude remain null",
+  "status": "ok"
+}

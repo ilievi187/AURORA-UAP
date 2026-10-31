@@ -7,7 +7,9 @@ const read=name=>readFileSync(new URL("../"+name,import.meta.url),"utf8");
 const cases=JSON.parse(read("data/cases.json")).cases;
 test("all editorial historical dossiers contain sourced expanded bilingual narratives",()=>{
  assert.ok(cases.length>=15);
- for(const c of cases){
+ const editorial=cases.filter(c=>c.content_depth==="editorial");
+ assert.equal(editorial.length,15,"original 15 editorial cases must retain full narratives");
+ for(const c of editorial){
   assert.equal(c.content_depth,"editorial",c.id);
   assert.match(c.source.url,/^https:\/\//,c.id+" provenance");
   assert.ok(c.story&&Array.isArray(c.story.bg)&&Array.isArray(c.story.en),c.id);
