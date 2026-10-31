@@ -153,7 +153,7 @@ try{
    await page.addInitScript(()=>localStorage.setItem("aurora-lang","bg"));
    await page.goto("http://127.0.0.1:"+server.address().port+"/archive.html");
    await page.waitForFunction(()=>document.querySelector("#archiveCount")?.textContent==="105");
-   await page.locator("#archiveSearch").fill("Historical fixture 104");
+   await page.locator("#archiveSearch").fill("case-fixture-104");
    assert.equal(await page.locator(".archive-card").count(),1);
    assert.match(await page.locator(".card-description").textContent(),/Public source linked historical observation/i);
    assert.doesNotMatch(await page.locator(".card-description").textContent(),/е случай, описан/);
