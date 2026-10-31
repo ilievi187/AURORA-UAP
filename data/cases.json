@@ -3709,7 +3709,13 @@
             "authorization_type": "public_domain",
             "rights_checked_at": "2026-10-30",
             "rights_evidence_url": "https://commons.wikimedia.org/wiki/File:FLIR1_Official_UAP_Footage_from_the_USG_for_Public_Release.webm",
-            "rights_evidence_ref": "PD-USGov-Military-Navy-FLIR1-2020"
+            "rights_evidence_ref": "PD-USGov-Military-Navy-FLIR1-2020",
+            "fallback_urls": [
+              {
+                "url": "https://www.navair.navy.mil/foia/sites/g/files/jejdrs566/files/2020-04/1%20-%20FLIR.mp4",
+                "mime_type": "video/mp4"
+              }
+            ]
           }
         }
       ],
