@@ -5,8 +5,7 @@ const local = JSON.parse(await readFile(new URL('../data/cases.json',import.meta
 const expected = local.cases.length;
 const urls = [
  'https://aurorauap.org/data/cases.json',
- 'https://aurora-uap.pages.dev/data/cases.json',
- 'https://e7a80214.aurora-uap.pages.dev/data/cases.json'
+ 'https://aurora-uap.pages.dev/data/cases.json'
 ];
 console.log('Repository committed cases:',expected);
 for(const url of urls){
