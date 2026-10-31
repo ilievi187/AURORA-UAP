@@ -167,12 +167,29 @@
     paragraph.textContent=passage;story.append(paragraph);
    }
   }
+  // Structured chronology is optional and always taken from published case metadata.
+  const contentHelper=globalThis.AURORA_DOSSIER_CONTENT;
+  const timelineBox=$("dossierTimeline"),timelineList=$("dossierTimelineList");
+  const events=contentHelper?.timeline(c,language)||[];
+  timelineList.replaceChildren();
+  $("dossierTimelineHeading").textContent=language==="bg"?"ХРОНОЛОГИЯ ПО ИЗТОЧНИЦИ":"SOURCE-LINKED TIMELINE";
+  for(const event of events){
+   const row=document.createElement("li");
+   if(event.date){const date=document.createElement("time");date.textContent=event.date;row.append(date)}
+   if(event.title){const heading=document.createElement("strong");heading.textContent=event.title;row.append(heading)}
+   if(event.description){const desc=document.createElement("p");desc.textContent=event.description;row.append(desc)}
+   if(event.url){const link=document.createElement("a");link.href=event.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent=language==="bg"?"Първоизточник ↗":"Original source ↗";row.append(link)}
+   timelineList.append(row);
+  }
+  timelineBox.hidden=timelineList.childElementCount===0;
+
   const mediaBox=$("caseMediaSection"),mediaGrid=$("caseMediaGrid");
   mediaGrid.replaceChildren();
   $("caseMediaTitle").textContent=window.AURORA_UI?.label("mediaTitle")||(language==="bg"?"СНИМКИ, ВИДЕО И ДОКУМЕНТИ":"PHOTOS, VIDEO & SOURCE DOCUMENTS");
   const approvedTypes=new Set(["video","documents","archive","photo"]);
   const isBg=language==="bg";
-  const availableMedia=(Array.isArray(c.media)?c.media:[]).slice(0,20);
+  const availableMedia=contentHelper?.media(c)|| (Array.isArray(c.media)?c.media:[]).slice(0,60);
+  const photoGallery=$("casePhotoGallery");photoGallery.replaceChildren();
   const playLabel=isBg?"▶ ГЛЕДАЙ ВИДЕО В AURORA":"▶ WATCH VIDEO IN AURORA";
   const errorLabel=isBg?"Видеото не може да се възпроизведе тук. Използвай оригиналния източник.":"Video playback unavailable here. Open the original source.";
   const addPlayer=media=>{
@@ -237,8 +254,27 @@
    type.textContent=({video:"VIDEO",photo:"PHOTO",documents:"DOCUMENTS",archive:"ARCHIVE"})[m.type];
    anchor.append(icon,text,type);mediaGrid.append(anchor);
    if(m.type==="video")addPlayer(m);
+   if(m.type==="photo"){
+    const preview=contentHelper?.photoPreview(m);
+    if(preview){
+     const figure=document.createElement("figure");
+     figure.className="case-source-photo";
+     const photoLink=document.createElement("a");
+     photoLink.href=safe;photoLink.target="_blank";photoLink.rel="noopener noreferrer";
+     const img=document.createElement("img");img.src=preview.url;img.loading="lazy";
+     img.decoding="async";img.alt=local(m.title)||"Published source image";
+     photoLink.append(img);figure.append(photoLink);
+     const caption=document.createElement("figcaption");
+     caption.textContent=(local(m.title)||"")+(preview.attribution?" · "+preview.attribution:"");
+     figure.append(caption);
+     const rights=document.createElement("a");rights.href=preview.evidence;
+     rights.target="_blank";rights.rel="noopener noreferrer";
+     rights.textContent=language==="bg"?"Права и произход ↗":"Rights and provenance ↗";
+     figure.append(rights);photoGallery.append(figure);
+    }
+   }
   }
-  mediaBox.hidden=mediaGrid.childElementCount===0;
+  mediaBox.hidden=mediaGrid.childElementCount===0&&photoGallery.childElementCount===0;
 
   label("dossierCaution",t.caution);
   const provenance=c.provenance||{};
@@ -248,6 +284,23 @@
   src.hidden=!source;
   if(source){src.href=source;src.textContent=t.openSource}
   label("dossierLicense",legacy?(provenance.license?(t.reference+" · "+provenance.source_name+" — "+provenance.license+" · "+provenance.source_url):t.reference):(c.license||provenance.license||""));
+  // Show every independent public source, not only the first source URL.
+  const sourcePanel=$("dossierSourcesSection"),sourceList=$("dossierSourcesList");
+  sourceList.replaceChildren();
+  const citations=contentHelper?.sources(c,language)||[];
+  $("dossierSourcesHeading").textContent=language==="bg"?"ДОПЪЛНИТЕЛНИ ПУБЛИЧНИ ИЗТОЧНИЦИ":"PUBLISHED SOURCES AND DOCUMENTS";
+  for(const cited of citations){
+   const row=document.createElement("li");
+   const link=document.createElement("a");link.href=cited.url;link.target="_blank";
+   link.rel="noopener noreferrer";link.textContent=cited.name+" ↗";
+   row.append(link);
+   if(cited.type&&cited.type!=="primary"){
+    const note=document.createElement("small");note.textContent=" · "+cited.type;row.append(note);
+   }
+   sourceList.append(row);
+  }
+  sourcePanel.hidden=citations.length<2;
+
   const authority=c.assessment_authority?
    c.assessment_authority+" · "+(t.confidence[c.assessment_confidence]||t.confidence.not_stated):"";
   label("dossierAssessmentAuthority",authority);
