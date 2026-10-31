@@ -36,7 +36,14 @@ test("preview has real provider thumbnail where supported, else honest decorativ
  assert.equal(resolveVideoPoster(yt),"https://i.ytimg.com/vi/aqz-KE-bpKQ/hqdefault.jpg");
  assert.equal(resolveVideoPoster({type:"video",url:"https://evil.example/page",playback:{poster_url:"https://evil.example/pretend.jpg"}}),null);
  const playable=cases.find(c=>c.id==="nimitz-2004").media.find(m=>m.type==="video");
- assert.equal(resolveVideoPoster(playable),null,"must never invent a still frame from government footage");
+ assert.match(resolveVideoPoster(playable),/^https:\/\/uap-archive\.org\/_astro\/NAVAIR_FOIA_FLIR_video_poster\..*\.webp$/);
+ for(const id of ["nimitz-2004","gimbal-2015","gofast-2015"]){
+  const m=cases.find(c=>c.id===id).media.find(x=>x.type==="video");
+  const poster=resolveVideoPoster(m);
+  assert.ok(poster?.startsWith("https://uap-archive.org/_astro/NAVAIR_"),id+" must show actual source still");
+  assert.equal(m.playback.poster_rights_status,"verified");
+  assert.equal(m.playback.poster_rights_evidence_url,"https://uap-archive.org/uap/imagery/");
+ }
  const js=read("archive-inline-player.js");
  assert.match(js,/\/assets\/video-poster\.svg/);
  assert.match(js,/media\.controls=true/);
