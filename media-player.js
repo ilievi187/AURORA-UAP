@@ -399,6 +399,12 @@ const COPY = {
   }
 };
 
+// Shared 18-language player controls used by dossier and archival video UI.
+export function mediaWordsFor(lang){
+  const raw=String(lang||"en").trim();
+  return COPY[raw]||COPY[raw.toLowerCase().split("-")[0]]||COPY.en;
+}
+
 function localeFor(documentRef) {
   let stored = '';
   try { stored = documentRef.defaultView?.localStorage?.getItem('aurora-lang') || ''; } catch { /* storage may be restricted */ }
