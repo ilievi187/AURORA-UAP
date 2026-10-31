@@ -85,3 +85,11 @@ jobs:
           npx playwright install --only-shell chromium
       - name: Test real Canvas animation, gate, Continue and mobile behavior
         run: node --experimental-sqlite --test tests/aurora-browser.test.mjs
+      - name: Save real Chromium visual frames
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aurora-earth-visuals
+          path: artifacts/aurora-earth-*.png
+          if-no-files-found: ignore
+          retention-days: 7

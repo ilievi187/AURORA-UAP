@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
-import { readFileSync } from 'node:fs';
+import { readFileSync, mkdirSync } from 'node:fs';
 import { resolve, join, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
@@ -676,6 +676,8 @@ try{
     await page.locator("#languageGate").waitFor({state:"hidden"});
     const mode=page.locator("#odyssey");
     await page.waitForFunction(()=>["webgl","fallback"].includes(document.querySelector("#odyssey")?.dataset.renderer));
+    mkdirSync("artifacts",{recursive:true});
+    await page.screenshot({path:"artifacts/aurora-earth-desktop.png",fullPage:false,animations:"disabled"});
     assert.equal(await page.locator("#auroraSceneCanvas").count(),1);
     if(await mode.getAttribute("data-renderer")==="webgl"){
       await page.waitForFunction(()=>document.querySelector("#odyssey")?.dataset.scenePixels,{timeout:10000});
@@ -697,6 +699,7 @@ try{
     });
     await page.waitForFunction(()=>document.querySelector("#odyssey")?.dataset.chapter==="2");
     assert.equal(await page.locator(".odyssey-archive-chapter").getAttribute("aria-hidden"),"false");
+    await page.screenshot({path:"artifacts/aurora-earth-archive-chapter.png",fullPage:false,animations:"disabled"});
     assert.equal(await page.locator("#worldMapCanvas").count(),1);
     assert.deepEqual(errors,[]);
     await ctx.close();
@@ -710,6 +713,8 @@ try{
     await page.locator("#gateContinue").click();
     await page.locator("#languageGate").waitFor({state:"hidden"});
     assert.equal(await page.locator("#odyssey").getAttribute("data-chapter"),"1");
+    mkdirSync("artifacts",{recursive:true});
+    await page.screenshot({path:"artifacts/aurora-earth-mobile.png",fullPage:false,animations:"disabled"});
     assert.equal(await page.locator(".odyssey-chapter").getAttribute("aria-hidden"),"false");
     assert.equal(await page.locator(".odyssey-archive-chapter").isVisible(),false);
     assert.equal(await page.locator('.hero-buttons a[href="/archive.html"]').count(),1);
