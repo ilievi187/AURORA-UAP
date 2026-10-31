@@ -191,7 +191,7 @@ try{
     assert.equal(await page.locator('#pageLanguage').inputValue(),'es');
     assert.equal(await page.locator('html').getAttribute('lang'),'es');
     assert.equal(await page.locator('#dossierBack').textContent(),'← INICIO');
-    assert.equal(await page.locator('#summaryHeading').textContent(),'TESTIMONIOS Y HECHOS DOCUMENTADOS');
+    assert.equal(await page.locator('#summaryHeading').textContent(),'LA HISTORIA DEL AVISTAMIENTO');
     assert.equal(await page.locator('#factCategory').textContent(),'Luces');
     assert.equal(await page.locator('#relatedHeading').textContent(),'CASOS RELACIONADOS EN EL ARCHIVO');
     assert.ok((await page.locator('#relatedCasesGrid .related-case-card').count())>=1,'related cases must render on dossier');
