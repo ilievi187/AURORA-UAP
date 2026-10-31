@@ -451,7 +451,8 @@ test("page and worker agree on region ids", async () => {
   const declared = page.match(/const REGIONS = \[([^\]]+)\]/)[1].match(/"([^"]+)"/g).map((token) => token.slice(1, -1));
   assert.deepEqual(declared, REGIONS);
   for (const region of REGIONS) assert.match(html, new RegExp(`value="${region}"`));
-  assert.match(html, /не потвърдени случаи|не е архив на потвърдени случаи/);
+  assert.match(html, /Изследвай източниците по регион/,"the catalog invites independent research");
+  assert.match(html, /оригиналната публикация/,"source attribution stays visible");
   assert.equal(page.includes("innerHTML"), false);
 });
 

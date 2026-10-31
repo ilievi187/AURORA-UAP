@@ -9,7 +9,7 @@ const langs={
  allCountries:"Alle Länder",allMedia:"Alle Einträge",hasPlayable:"Mit eingebettetem Player",hasVideo:"Mit Videoquelle",hasDocuments:"Mit Dokumenten",loading:"Weltarchiv wird geladen…",offline:"Archiv vorübergehend nicht verfügbar.",empty:"Keine passenden Fälle.",
  results:"Fälle",page:"Seite",of:"von",prev:"← Zurück",next:"Weiter →",view:"VOLLSTÄNDIGE AKTE ÖFFNEN",
  source:"ORIGINALQUELLE",video:"▶ ABSPIELBARES VIDEO",linkedVideo:"VIDEOQUELLE",documents:"DOKUMENTE",
- disclaimer:"Veröffentlichte Berichte sind kein Beleg für außerirdischen Ursprung. Kartenpunkte können ungefähre Ortsangaben und keine gemessenen Flugbahnen sein.",
+ disclaimer:"Entdecken Sie veröffentlichte Berichte und Originalquellen. Kartenpunkte markieren ungefähre Orte.",
  undated:"Ohne genaues Datum",unknown:"Ort nicht angegeben",count:"Insgesamt",go:"Zur Seite"
  },
  ru:{
@@ -18,7 +18,7 @@ const langs={
  caseCount:"ДОСЬЕ",pageCount:"СТРАНИЦЫ",countryCount:"СТРАНЫ",browse:"ИЗУЧИТЬ СЛУЧАИ",search:"ПОИСК",filterCountry:"СТРАНА",filterMedia:"МАТЕРИАЛЫ",
  allCountries:"Все страны",allMedia:"Все записи",hasPlayable:"Со встроенным видео",hasVideo:"С видеоисточником",hasDocuments:"С документами",loading:"Загрузка мирового архива…",offline:"Архив временно недоступен.",empty:"Совпадений нет.",
  results:"случаев",page:"Страница",of:"из",prev:"← Назад",next:"Далее →",view:"ОТКРЫТЬ ПОЛНОЕ ДОСЬЕ",source:"ПЕРВОИСТОЧНИК",video:"▶ ВСТРОЕННОЕ ВИДЕО",linkedVideo:"ВИДЕОИСТОЧНИК",documents:"ДОКУМЕНТЫ",
- disclaimer:"Публикации не доказывают внеземное происхождение. Маркеры на карте могут указывать лишь приблизительный район, а не измеренный маршрут.",
+ disclaimer:"Исследуйте опубликованные свидетельства и первоисточники. Точки на карте обозначают примерные районы.",
  undated:"Дата не указана",unknown:"Место не указано",count:"Всего",go:"На страницу"
  },
  "zh-CN":{
@@ -27,7 +27,7 @@ const langs={
  caseCount:"案例档案",pageCount:"页数",countryCount:"国家/地区",browse:"探索案例",search:"搜索",filterCountry:"国家/地区",filterMedia:"资料",
  allCountries:"所有国家/地区",allMedia:"所有记录",hasPlayable:"可在站内播放",hasVideo:"有视频来源",hasDocuments:"有文件",loading:"正在载入全球档案…",offline:"档案暂时不可用。",empty:"没有符合条件的案例。",
  results:"条记录",page:"第",of:"共",prev:"← 上一页",next:"下一页 →",view:"打开完整档案",source:"原始来源",video:"▶ 可播放视频",linkedVideo:"视频来源",documents:"文件",
- disclaimer:"已发布报告不能证明地外来源。地图位置可能仅是大致参考地点，并非实际测得的飞行轨迹。",
+ disclaimer:"探索公开记录与原始资料。地图标记表示大致区域。",
  undated:"日期未公布",unknown:"地点未注明",count:"总计",go:"转到第"
  },
  fr:{
@@ -36,7 +36,7 @@ const langs={
  caseCount:"DOSSIERS",pageCount:"PAGES",countryCount:"PAYS",browse:"EXPLORER LES CAS",search:"RECHERCHER",filterCountry:"PAYS",filterMedia:"DOCUMENTS",
  allCountries:"Tous les pays",allMedia:"Tous les documents",hasPlayable:"Avec lecteur intégré",hasVideo:"Avec source vidéo",hasDocuments:"Avec documents",loading:"Chargement des archives…",offline:"Archives momentanément indisponibles.",empty:"Aucun cas correspondant.",
  results:"dossiers",page:"Page",of:"sur",prev:"← Précédent",next:"Suivant →",view:"OUVRIR LE DOSSIER COMPLET",source:"SOURCE ORIGINALE",video:"▶ VIDÉO INTÉGRÉE",linkedVideo:"SOURCE VIDÉO",documents:"DOCUMENTS",
- disclaimer:"Un signalement publié ne prouve pas une origine extraterrestre. Les coordonnées peuvent être approximatives et ne constituent pas une trajectoire mesurée.",
+ disclaimer:"Explorez les témoignages publiés et leurs sources. Les points sur la carte indiquent des lieux approximatifs.",
  undated:"Date inconnue",unknown:"Lieu non précisé",count:"Total",go:"Aller à la page"
  },
  es:{
@@ -45,7 +45,7 @@ const langs={
  caseCount:"EXPEDIENTES",pageCount:"PÁGINAS",countryCount:"PAÍSES",browse:"EXPLORAR CASOS",search:"BUSCAR",filterCountry:"PAÍS",filterMedia:"MATERIALES",
  allCountries:"Todos los países",allMedia:"Todos los registros",hasPlayable:"Con reproductor integrado",hasVideo:"Con fuente de vídeo",hasDocuments:"Con documentos",loading:"Cargando archivo mundial…",offline:"Archivo temporalmente no disponible.",empty:"No hay casos coincidentes.",
  results:"casos",page:"Página",of:"de",prev:"← Anterior",next:"Siguiente →",view:"ABRIR EXPEDIENTE COMPLETO",source:"FUENTE ORIGINAL",video:"▶ VÍDEO REPRODUCIBLE",linkedVideo:"FUENTE DE VÍDEO",documents:"DOCUMENTOS",
- disclaimer:"Los informes publicados no prueban un origen extraterrestre. Los puntos del mapa pueden ser ubicaciones aproximadas, no trayectorias medidas.",
+ disclaimer:"Explora los relatos publicados y las fuentes originales. Los puntos del mapa señalan zonas aproximadas.",
  undated:"Fecha desconocida",unknown:"Lugar sin especificar",count:"Total",go:"Ir a la página"
  },
  it:{
@@ -54,7 +54,7 @@ const langs={
  caseCount:"DOSSIER",pageCount:"PAGINE",countryCount:"PAESI",browse:"ESPLORA I CASI",search:"CERCA",filterCountry:"PAESE",filterMedia:"MATERIALI",
  allCountries:"Tutti i paesi",allMedia:"Tutti i materiali",hasPlayable:"Con lettore incorporato",hasVideo:"Con fonte video",hasDocuments:"Con documenti",loading:"Caricamento archivio…",offline:"Archivio temporaneamente non disponibile.",empty:"Nessun caso trovato.",
  results:"casi",page:"Pagina",of:"di",prev:"← Precedente",next:"Successivo →",view:"APRI DOSSIER COMPLETO",source:"FONTE ORIGINALE",video:"▶ VIDEO INTEGRATO",linkedVideo:"FONTE VIDEO",documents:"DOCUMENTI",
- disclaimer:"Le segnalazioni pubblicate non dimostrano un'origine extraterrestre. I punti della mappa possono indicare luoghi approssimativi, non traiettorie misurate.",
+ disclaimer:"Esplora le testimonianze pubblicate e le fonti originali. I punti sulla mappa indicano aree approssimative.",
  undated:"Data sconosciuta",unknown:"Luogo non indicato",count:"Totale",go:"Vai alla pagina"
  },
  pt:{
@@ -63,7 +63,7 @@ const langs={
  caseCount:"DOSSIÊS",pageCount:"PÁGINAS",countryCount:"PAÍSES",browse:"EXPLORAR CASOS",search:"PESQUISAR",filterCountry:"PAÍS",filterMedia:"MATERIAIS",
  allCountries:"Todos os países",allMedia:"Todos os registos",hasPlayable:"Com leitor incorporado",hasVideo:"Com fonte de vídeo",hasDocuments:"Com documentos",loading:"A carregar o arquivo…",offline:"Arquivo temporariamente indisponível.",empty:"Sem casos correspondentes.",
  results:"casos",page:"Página",of:"de",prev:"← Anterior",next:"Seguinte →",view:"ABRIR DOSSIÊ COMPLETO",source:"FONTE ORIGINAL",video:"▶ VÍDEO INCORPORADO",linkedVideo:"FONTE DE VÍDEO",documents:"DOCUMENTOS",
- disclaimer:"Relatos publicados não provam origem extraterrestre. Os pontos no mapa podem ser locais aproximados, não trajetórias medidas.",
+ disclaimer:"Explore relatos publicados e fontes originais. Os marcadores indicam regiões aproximadas.",
  undated:"Sem data exata",unknown:"Local não indicado",count:"Total",go:"Ir para a página"
  },
  tr:{
@@ -72,7 +72,7 @@ const langs={
  caseCount:"VAKA DOSYASI",pageCount:"SAYFA",countryCount:"ÜLKE",browse:"VAKALARI İNCELE",search:"ARA",filterCountry:"ÜLKE",filterMedia:"MATERYALLER",
  allCountries:"Tüm ülkeler",allMedia:"Tüm kayıtlar",hasPlayable:"Gömülü oynatıcıyla",hasVideo:"Video kaynağı olan",hasDocuments:"Belgeli",loading:"Dünya arşivi yükleniyor…",offline:"Arşiv geçici olarak kullanılamıyor.",empty:"Eşleşen vaka bulunamadı.",
  results:"vaka",page:"Sayfa",of:"/",prev:"← Önceki",next:"Sonraki →",view:"TAM DOSYAYI AÇ",source:"ÖZGÜN KAYNAK",video:"▶ OYNATILABİLİR VİDEO",linkedVideo:"VİDEO KAYNAĞI",documents:"BELGELER",
- disclaimer:"Yayımlanmış raporlar dünya dışı kökeni kanıtlamaz. Harita noktaları ölçülmüş uçuş yolları değil yaklaşık konumlar olabilir.",
+ disclaimer:"Yayımlanmış anlatımları ve özgün kaynakları keşfedin. Harita işaretleri yaklaşık bölgeleri gösterir.",
  undated:"Tarih belirtilmedi",unknown:"Konum belirtilmedi",count:"Toplam",go:"Sayfaya git"
  },
  ro:{
@@ -81,7 +81,7 @@ const langs={
  caseCount:"DOSARE",pageCount:"PAGINI",countryCount:"ȚĂRI",browse:"EXPLOREAZĂ CAZURI",search:"CAUTĂ",filterCountry:"ȚARĂ",filterMedia:"MATERIALE",
  allCountries:"Toate țările",allMedia:"Toate înregistrările",hasPlayable:"Cu player încorporat",hasVideo:"Cu sursă video",hasDocuments:"Cu documente",loading:"Se încarcă arhiva…",offline:"Arhiva este temporar indisponibilă.",empty:"Niciun caz găsit.",
  results:"cazuri",page:"Pagina",of:"din",prev:"← Anterior",next:"Următor →",view:"DESCHIDE DOSARUL COMPLET",source:"SURSA ORIGINALĂ",video:"▶ VIDEO ÎNCORPORAT",linkedVideo:"SURSĂ VIDEO",documents:"DOCUMENTE",
- disclaimer:"Rapoartele publicate nu dovedesc origine extraterestră. Punctele de pe hartă pot fi localizări aproximative, nu trasee măsurate.",
+ disclaimer:"Explorează relatările publicate și sursele originale. Marcajele indică zone aproximative.",
  undated:"Fără dată exactă",unknown:"Loc neprecizat",count:"Total",go:"Mergi la pagina"
  },
  el:{
@@ -90,7 +90,7 @@ const langs={
  caseCount:"ΦΑΚΕΛΟΙ",pageCount:"ΣΕΛΙΔΕΣ",countryCount:"ΧΩΡΕΣ",browse:"ΕΞΕΡΕΥΝΗΣΗ ΠΕΡΙΣΤΑΤΙΚΩΝ",search:"ΑΝΑΖΗΤΗΣΗ",filterCountry:"ΧΩΡΑ",filterMedia:"ΥΛΙΚΟ",
  allCountries:"Όλες οι χώρες",allMedia:"Όλες οι καταχωρίσεις",hasPlayable:"Με ενσωματωμένο βίντεο",hasVideo:"Με πηγή βίντεο",hasDocuments:"Με έγγραφα",loading:"Φόρτωση αρχείου…",offline:"Το αρχείο δεν είναι προσωρινά διαθέσιμο.",empty:"Δεν βρέθηκαν περιστατικά.",
  results:"περιστατικά",page:"Σελίδα",of:"από",prev:"← Προηγούμενο",next:"Επόμενο →",view:"ΑΝΟΙΓΜΑ ΦΑΚΕΛΟΥ",source:"ΠΡΩΤΟΤΥΠΗ ΠΗΓΗ",video:"▶ ΕΝΣΩΜΑΤΩΜΕΝΟ ΒΙΝΤΕΟ",linkedVideo:"ΠΗΓΗ ΒΙΝΤΕΟ",documents:"ΕΓΓΡΑΦΑ",
- disclaimer:"Οι δημοσιευμένες αναφορές δεν αποδεικνύουν εξωγήινη προέλευση. Τα σημεία στον χάρτη μπορεί να είναι κατά προσέγγιση και όχι καταγεγραμμένες τροχιές.",
+ disclaimer:"Εξερευνήστε δημοσιευμένες μαρτυρίες και πρωτογενείς πηγές. Οι δείκτες δείχνουν κατά προσέγγιση περιοχές.",
  undated:"Χωρίς ημερομηνία",unknown:"Άγνωστη τοποθεσία",count:"Σύνολο",go:"Μετάβαση στη σελίδα"
  },
  sr:{
@@ -99,7 +99,7 @@ const langs={
  caseCount:"ДОСИЈЕА",pageCount:"СТРАНИЦЕ",countryCount:"ДРЖАВЕ",browse:"ИСТРАЖИ СЛУЧАЈЕВЕ",search:"ПРЕТРАГА",filterCountry:"ДРЖАВА",filterMedia:"МАТЕРИЈАЛИ",
  allCountries:"Све државе",allMedia:"Сви записи",hasPlayable:"Са уграђеним плејером",hasVideo:"Са видео-извором",hasDocuments:"Са документима",loading:"Учитавање архиве…",offline:"Архива је привремено недоступна.",empty:"Нема одговарајућих случајева.",
  results:"случајева",page:"Страница",of:"од",prev:"← Претходна",next:"Следећа →",view:"ОТВОРИ ЦЕО ДОСИЈЕ",source:"ОРИГИНАЛНИ ИЗВОР",video:"▶ УГРАЂЕНИ ВИДЕО",linkedVideo:"ВИДЕО-ИЗВОР",documents:"ДОКУМЕНТА",
- disclaimer:"Објављени извештаји нису доказ ванземаљског порекла. Тачке на мапи могу бити приближне локације, а не измерене путање.",
+ disclaimer:"Истражите објављене извештаје и изворне материјале. Ознаке приказују приближне области.",
  undated:"Непознат датум",unknown:"Локација непозната",count:"Укупно",go:"Иди на страницу"
  },
  uk:{
@@ -108,7 +108,7 @@ const langs={
  caseCount:"ДОСЬЄ",pageCount:"СТОРІНКИ",countryCount:"КРАЇНИ",browse:"ПЕРЕГЛЯНУТИ ВИПАДКИ",search:"ПОШУК",filterCountry:"КРАЇНА",filterMedia:"МАТЕРІАЛИ",
  allCountries:"Усі країни",allMedia:"Усі записи",hasPlayable:"Із вбудованим відео",hasVideo:"З відеоджерелом",hasDocuments:"З документами",loading:"Завантаження архіву…",offline:"Архів тимчасово недоступний.",empty:"Відповідних випадків немає.",
  results:"випадків",page:"Сторінка",of:"із",prev:"← Попередня",next:"Наступна →",view:"ВІДКРИТИ ПОВНЕ ДОСЬЄ",source:"ПЕРШОДЖЕРЕЛО",video:"▶ ВБУДОВАНЕ ВІДЕО",linkedVideo:"ВІДЕОДЖЕРЕЛО",documents:"ДОКУМЕНТИ",
- disclaimer:"Опубліковані свідчення не доводять позаземне походження. Позначки на мапі можуть бути приблизними, а не виміряними траєкторіями.",
+ disclaimer:"Досліджуйте опубліковані свідчення та першоджерела. Позначки показують приблизні райони.",
  undated:"Без точної дати",unknown:"Місце не вказано",count:"Усього",go:"Перейти на сторінку"
  },
  pl:{
@@ -117,7 +117,7 @@ const langs={
  caseCount:"AKTA",pageCount:"STRONY",countryCount:"KRAJE",browse:"PRZEGLĄDAJ PRZYPADKI",search:"SZUKAJ",filterCountry:"KRAJ",filterMedia:"MATERIAŁY",
  allCountries:"Wszystkie kraje",allMedia:"Wszystkie wpisy",hasPlayable:"Z odtwarzaczem",hasVideo:"Ze źródłem wideo",hasDocuments:"Z dokumentami",loading:"Ładowanie archiwum…",offline:"Archiwum chwilowo niedostępne.",empty:"Brak pasujących przypadków.",
  results:"przypadków",page:"Strona",of:"z",prev:"← Poprzednia",next:"Następna →",view:"OTWÓRZ PEŁNE AKTA",source:"ŹRÓDŁO ORYGINALNE",video:"▶ ODTWARZALNE WIDEO",linkedVideo:"ŹRÓDŁO WIDEO",documents:"DOKUMENTY",
- disclaimer:"Opublikowane relacje nie dowodzą pozaziemskiego pochodzenia. Punkty na mapie mogą oznaczać przybliżone lokalizacje, nie zmierzone trasy.",
+ disclaimer:"Odkrywaj opublikowane relacje i źródła. Znaczniki pokazują przybliżone obszary.",
  undated:"Bez daty",unknown:"Miejsce nieokreślone",count:"Łącznie",go:"Idź do strony"
  },
  ar:{
@@ -126,7 +126,7 @@ const langs={
  caseCount:"ملفات الحالات",pageCount:"الصفحات",countryCount:"البلدان",browse:"استكشف الحالات",search:"بحث",filterCountry:"البلد",filterMedia:"المواد",
  allCountries:"جميع البلدان",allMedia:"جميع السجلات",hasPlayable:"مع مشغل مدمج",hasVideo:"مع مصدر فيديو",hasDocuments:"مع وثائق",loading:"جارٍ تحميل الأرشيف…",offline:"الأرشيف غير متاح مؤقتًا.",empty:"لا توجد حالات مطابقة.",
  results:"سجلات",page:"الصفحة",of:"من",prev:"← السابق",next:"التالي →",view:"افتح الملف الكامل",source:"المصدر الأصلي",video:"▶ فيديو قابل للتشغيل",linkedVideo:"مصدر الفيديو",documents:"وثائق",
- disclaimer:"التقارير المنشورة ليست دليلًا على أصل خارج الأرض. مواقع الخريطة قد تكون تقريبية وليست مسارات طيران مقاسة.",
+ disclaimer:"استكشف الروايات المنشورة والمصادر الأصلية. تحدد علامات الخريطة مناطق تقريبية.",
  undated:"دون تاريخ محدد",unknown:"الموقع غير محدد",count:"المجموع",go:"انتقل إلى الصفحة"
  },
  ja:{
@@ -135,7 +135,7 @@ const langs={
  caseCount:"事例ファイル",pageCount:"ページ",countryCount:"国・地域",browse:"事例を見る",search:"検索",filterCountry:"国・地域",filterMedia:"資料",
  allCountries:"すべての国・地域",allMedia:"すべての記録",hasPlayable:"埋め込み再生可",hasVideo:"動画出典あり",hasDocuments:"文書あり",loading:"アーカイブを読み込み中…",offline:"アーカイブを利用できません。",empty:"該当する事例はありません。",
  results:"件",page:"ページ",of:"／",prev:"← 前へ",next:"次へ →",view:"事例の詳細を開く",source:"原典",video:"▶ 再生可能な動画",linkedVideo:"動画出典",documents:"文書",
- disclaimer:"公開報告は地球外起源の証明ではありません。地図上の位置は概略であり、実測された飛行経路ではありません。",
+ disclaimer:"公開された証言と原資料を探検してください。地図上の印はおおよその地域を示します。",
  undated:"日付不明",unknown:"場所不明",count:"合計",go:"ページへ移動"
  },
  ko:{
@@ -144,7 +144,7 @@ const langs={
  caseCount:"사례 파일",pageCount:"페이지",countryCount:"국가",browse:"사례 살펴보기",search:"검색",filterCountry:"국가",filterMedia:"자료",
  allCountries:"모든 국가",allMedia:"모든 기록",hasPlayable:"내장 재생 지원",hasVideo:"영상 출처 있음",hasDocuments:"문서 있음",loading:"자료실 불러오는 중…",offline:"자료실을 일시적으로 사용할 수 없습니다.",empty:"검색 결과가 없습니다.",
  results:"사례",page:"페이지",of:"중",prev:"← 이전",next:"다음 →",view:"전체 사례 보기",source:"원본 출처",video:"▶ 재생 가능한 영상",linkedVideo:"영상 출처",documents:"문서",
- disclaimer:"공개 보고는 외계 기원의 증거가 아닙니다. 지도 위치는 실제 측정 경로가 아닌 대략적인 기준점일 수 있습니다.",
+ disclaimer:"공개된 증언과 원본 자료를 살펴보세요. 지도 표시는 대략적인 지역입니다.",
  undated:"날짜 불명",unknown:"장소 불명",count:"합계",go:"페이지로 이동"
  }
 };

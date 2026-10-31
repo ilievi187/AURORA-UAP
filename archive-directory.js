@@ -17,7 +17,7 @@ const packs={
  loading:"Зареждане на световния архив…",offline:"Архивът временно не отговаря.",empty:"Няма случаи по избраните критерии.",
  results:"случая",page:"Страница",of:"от",prev:"← Предишна",next:"Следваща →",view:"ОТВОРИ ПЪЛНОТО ДОСИЕ",
  source:"ОРИГИНАЛЕН ИЗТОЧНИК",video:"▶ ВГРАДИМО ВИДЕО",linkedVideo:"ВИДЕОИЗТОЧНИК",documents:"ДОКУМЕНТИ",
- disclaimer:"Това са публикации и свидетелства, не доказателства за извънземен произход. Географските точки могат да са приблизителни референтни райони, не измерени траектории.",
+ disclaimer:"Разгледай публикациите и свидетелствата. Маркерите на картата показват приблизителни райони.",
  undated:"Без точна дата",unknown:"Неуточнен район",count:"Общо",go:"Отиди на страница"},
  en:{home:"Home",countries:"Countries",news:"News",language:"Language",
  heading:"WORLD UAP ARCHIVE",intro:"Published case records and original documents from attributed sources. Open each dossier for detailed context, assessments, documents and embedded video when playback is available.",
@@ -27,7 +27,7 @@ const packs={
  loading:"Loading the world archive…",offline:"Archive temporarily unavailable.",empty:"No cases match your filters.",
  results:"records",page:"Page",of:"of",prev:"← Previous",next:"Next →",view:"OPEN FULL DOSSIER",
  source:"ORIGINAL SOURCE",video:"▶ PLAYABLE VIDEO",linkedVideo:"VIDEO SOURCE",documents:"DOCUMENTS",
- disclaimer:"Published reports are not proof of extraterrestrial origin. Map positions may be approximate locality anchors, not measured flight paths.",
+ disclaimer:"Explore the published accounts and original sources. Map markers indicate approximate locations.",
  undated:"Undated",unknown:"Location not specified",count:"Total",go:"Go to page"}
 };
 Object.assign(packs,ARCHIVE_PACKS);

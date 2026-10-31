@@ -191,7 +191,7 @@ try{
     assert.equal(await page.locator('#pageLanguage').inputValue(),'es');
     assert.equal(await page.locator('html').getAttribute('lang'),'es');
     assert.equal(await page.locator('#dossierBack').textContent(),'← INICIO');
-    assert.equal(await page.locator('#summaryHeading').textContent(),'TESTIMONIOS Y HECHOS DOCUMENTADOS');
+    assert.equal(await page.locator('#summaryHeading').textContent(),'LA HISTORIA DEL AVISTAMIENTO');
     assert.equal(await page.locator('#factCategory').textContent(),'Luces');
     assert.equal(await page.locator('#relatedHeading').textContent(),'CASOS RELACIONADOS EN EL ARCHIVO');
     assert.ok((await page.locator('#relatedCasesGrid .related-case-card').count())>=1,'related cases must render on dossier');
@@ -200,7 +200,7 @@ try{
     const coordsEs=await page.locator('#dossierCoordinate').textContent();
     await page.locator('#pageLanguage').selectOption('ja');
     assert.equal(await page.locator('#dossierBack').textContent(),'← ホーム');
-    assert.equal(await page.locator('#summaryHeading').textContent(),'目撃報告と記録された事実');
+    assert.equal(await page.locator('#summaryHeading').textContent(),'目撃の記録');
     assert.equal(await page.locator('#factCategory').textContent(),'光');
     assert.equal(await page.locator('#relatedHeading').textContent(),'関連するアーカイブ事例');
     assert.equal(await page.locator('#dossierCoordinate').textContent(),coordsEs,'coordinates must remain identical across locales');
