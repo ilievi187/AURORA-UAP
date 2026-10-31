@@ -260,7 +260,8 @@ body:has(#odyssey) .footer{padding-inline:clamp(24px,5vw,96px);}
  body:has(#odyssey) .aurora-odyssey{height:auto;min-height:0;}
  .aurora-odyssey .odyssey-sticky{position:relative;height:100svh;min-height:640px;}
  .aurora-odyssey .odyssey-intro,.aurora-odyssey .odyssey-archive-chapter{display:none!important;}
- .aurora-odyssey .odyssey-chapter{opacity:1;transform:none;pointer-events:auto;transition:none;}
+ /* Override legacy reduced-motion display:none; content must remain readable. */
+ .aurora-odyssey .odyssey-chapter{display:block!important;opacity:1;transform:none;pointer-events:auto;transition:none;}
  .aurora-odyssey .odyssey-webgl,.aurora-odyssey .odyssey-fallback{transition:none;}
  .aurora-odyssey .odyssey-scroll-symbol b{animation:none;}
 }

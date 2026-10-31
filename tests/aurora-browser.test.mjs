@@ -716,6 +716,8 @@ try{
     mkdirSync("artifacts",{recursive:true});
     await page.screenshot({path:"artifacts/aurora-earth-mobile.png",fullPage:false,animations:"disabled"});
     assert.equal(await page.locator(".odyssey-chapter").getAttribute("aria-hidden"),"false");
+    assert.equal(await page.locator(".odyssey-chapter .hero-content").isVisible(),true,"reduced-motion mobile must show its heading and navigation");
+    assert.equal(await page.locator(".odyssey-chapter .hero-content h1").isVisible(),true);
     assert.equal(await page.locator(".odyssey-archive-chapter").isVisible(),false);
     assert.equal(await page.locator('.hero-buttons a[href="/archive.html"]').count(),1);
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
