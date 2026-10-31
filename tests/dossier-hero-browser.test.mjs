@@ -51,37 +51,37 @@ test("FLIR1 hero replaces misleading stock screenshot with real source-verified 
   assert.deepEqual(errors,[]);
  }finally{await ctx.close()}
 });
-test("the small Play below never redirects: in-site player and separate source link",async()=>{
+test("single-player rule: top FLIR1 video only; lower archive and second video removed",async()=>{
  const{page,ctx,errors}=await pageFor("nimitz-2004");
  try{
-  // Keep the media request pending: the test verifies the *real DOM player*
-  // without depending on external CDN connectivity or codec support.
-  await page.route("https://upload.wikimedia.org/**",()=>{});
-  const btn=page.locator("#caseMediaGrid .case-media-play-tile");
-  await btn.waitFor({state:"visible"});
-  assert.equal(await page.locator("#caseMediaGrid .case-media-source-link").count(),1);
-  assert.match(await page.locator("#caseMediaGrid .case-media-source-link").getAttribute("href"),/^https:\/\/www\.defense\.gov\//);
-  assert.doesNotMatch(await page.locator("#caseMediaGrid .case-media-source-link .case-media-icon").innerText(),/▶/);
-  await btn.click();
-  const lower=page.locator("#caseMediaGrid video");
-  await lower.waitFor({state:"attached",timeout:5000});
-  assert.equal(await lower.count(),1,"clicking lower play should mount a real video");
-  assert.match(await lower.getAttribute("src"),/FLIR1.*\.webm$/);
-  assert.equal(new URL(page.url()).pathname,"/archive/nimitz-2004","must stay on AURORA");
-  assert.deepEqual(errors,[]);
- }finally{await ctx.close()}
-});
-
-test("a failed lower player reports an error while preserving publisher link",async()=>{
- const{page,ctx,errors}=await pageFor("nimitz-2004");
- try{
-  await page.locator("#caseMediaGrid .case-media-play-tile").click();
-  await page.waitForFunction(()=>document.querySelector("#caseMediaGrid .case-video-status")?.textContent.includes("източник"));
-  assert.equal(await page.locator("#caseMediaGrid .case-media-source-link").isVisible(),true);
+  await page.locator("#caseHeroPlay").waitFor({state:"visible"});
+  assert.equal(await page.locator("#caseMediaSection").isHidden(),true,"video-only section must not duplicate main player");
+  assert.equal(await page.locator("#caseMediaGrid button,#caseMediaGrid video,#caseMediaGrid iframe").count(),0);
+  await page.locator("#caseHeroPlay").click();
+  assert.equal(await page.locator("#caseHeroStage video").count(),1);
+  assert.equal(await page.locator("video,iframe").count(),1,"dossier has exactly one embedded player");
+  assert.match(await page.locator("#caseHeroSource").getAttribute("href"),/^https:\/\/www\.defense\.gov\//);
   assert.equal(new URL(page.url()).pathname,"/archive/nimitz-2004");
   assert.deepEqual(errors,[]);
  }finally{await ctx.close()}
 });
+
+for(const [caseId,expectedKind] of [["gimbal-2015","video"],["gofast-2015","video"],["al-taqaddum-2017","iframe"]]){
+ test("only one embedded video across dossier "+caseId,async()=>{
+  const{page,ctx,errors}=await pageFor(caseId);
+  try{
+   await page.locator("#caseHeroPlay").waitFor({state:"visible"});
+   assert.equal(await page.locator("#caseMediaGrid button,#caseMediaGrid video,#caseMediaGrid iframe").count(),0);
+   await page.locator("#caseHeroPlay").click();
+   const target=page.locator("#caseHeroStage "+expectedKind);
+   await target.waitFor({state:"attached"});
+   assert.equal(await page.locator("video,iframe").count(),1);
+   if(expectedKind==="iframe")assert.match(await target.getAttribute("src"),/dvidshub\.net\/video\/embed\/960331/);
+   assert.ok((await page.locator("#dossierSourcesList a").count())>=1,"video stays attributed under sources");
+   assert.deepEqual(errors,[]);
+  }finally{await ctx.close()}
+ });
+}
 test("Westall publisher landing page has no fake playable video target",async()=>{
  const{page,ctx,errors}=await pageFor("westall-1966");
  try{
@@ -89,8 +89,9 @@ test("Westall publisher landing page has no fake playable video target",async()=
   assert.equal(await page.locator("#caseHeroPlay").isVisible(),false);
   assert.equal(await page.locator("#caseVisualImage").isHidden(),true);
   assert.equal(await page.locator("#caseHeroSource").isVisible(),true);
-  assert.equal(await page.locator("#caseMediaGrid .case-media-play-tile").count(),0);
-  assert.ok((await page.locator("#caseMediaGrid .case-media-link").count())>=2);
+  assert.equal(await page.locator("#caseMediaGrid video,#caseMediaGrid iframe,#caseMediaGrid .case-media-play-tile").count(),0);
+  assert.equal(await page.locator("#caseMediaSection").isHidden(),true);
+  assert.ok((await page.locator("#dossierSourcesList a").count())>=2,"both ABC video links remain in the sources list");
   assert.deepEqual(errors,[]);
  }finally{await ctx.close()}
 });
