@@ -140,3 +140,34 @@ test("three official PURSUE recordings share a SINGLE hero player with selectabl
   assert.deepEqual(errors,[]);
  }finally{await ctx.close()}
 });
+
+
+test("two official DVIDS clips reuse ONE mobile hero iframe without redirect",async()=>{
+ const {page,ctx,errors}=await pageFor("disclosure-eastern-mediterranean-2024",{width:390,height:844});
+ try{
+  await page.route("https://www.dvidshub.net/**",route=>route.fulfill({status:200,contentType:"text/html",body:"<!doctype html><title>Official video embed fixture</title>"}));
+  await page.locator("#caseHeroPlay").waitFor({state:"visible"});
+  const playlist=page.locator("#caseHeroPlaylist .case-hero-clip");
+  assert.equal(await playlist.count(),2,"two official source clips must share one hero player");
+  const origin=page.url();
+  await page.locator("#caseHeroPlay").click();
+  const frame=page.locator("#caseHeroStage iframe");
+  await frame.waitFor({state:"attached"});
+  assert.equal(await frame.getAttribute("src"),"https://www.dvidshub.net/video/embed/1006073");
+  assert.equal(await page.locator("video,iframe").count(),1);
+  await playlist.nth(1).click();
+  assert.equal(await page.locator("video,iframe").count(),0,"source switch must unload previous iframe");
+  assert.match(await page.locator("#caseHeroSource").getAttribute("href"),/\/1006074\//);
+  await page.locator("#caseHeroPlay").click();
+  await frame.waitFor({state:"attached"});
+  assert.equal(await frame.getAttribute("src"),"https://www.dvidshub.net/video/embed/1006074");
+  assert.equal(await page.locator("video,iframe").count(),1);
+  assert.equal(await page.locator("#caseMediaGrid video,#caseMediaGrid iframe").count(),0,"no lower duplicate");
+  assert.equal(page.url(),origin,"inline Play must never navigate to the publisher");
+  await page.locator("#caseHeroClose").click();
+  assert.equal(await page.locator("video,iframe").count(),0);
+  const widths=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth}));
+  assert.ok(widths.scroll<=widths.client+1,"mobile playlist overflow: "+JSON.stringify(widths));
+  assert.deepEqual(errors,[]);
+ }finally{await ctx.close()}
+});

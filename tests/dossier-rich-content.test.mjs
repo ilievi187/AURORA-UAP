@@ -66,3 +66,21 @@ test("official DVIDS Al Taqaddum recording is real in-page source media, not a f
  assert.equal(playback?.originalUrl,"https://www.dvidshub.net/video/960331/al-taqaddum-object");
  assert.equal(resolveMediaPlayback({type:"video",url:"https://www.dvidshub.net/video/12345/other"}),null);
 });
+
+test("twelve real DVIDS/AARO public video embeds are preserved across six new case dossiers",()=>{
+ const imported=cases.filter(c=>c.provenance?.source_name==="disclosure.zone");
+ const clips=imported.flatMap(c=>(c.media||[]).filter(m=>m.type==="video").map(m=>({id:c.id,media:m})));
+ assert.equal(clips.length,12,"all original video links must survive into source-rich case archive");
+ assert.equal(new Set(clips.map(c=>c.id)).size,6);
+ for(const {id,media} of clips){
+  const playback=resolveMediaPlayback(media);
+  assert.equal(playback?.kind,"iframe",id+" should embed publisher's official player");
+  assert.equal(playback?.provider,"dvids");
+  assert.match(playback.embedUrl,/^https:\/\/www\.dvidshub\.net\/video\/embed\/[1-9]\d{5,8}$/);
+  assert.equal(playback.originalUrl,media.url);
+  assert.equal(media.playback.permission,"public_embed");
+ }
+ const sample=clips[0].media;
+ assert.equal(resolveMediaPlayback({...sample,playback:null}),null,"arbitrary unapproved video source is not auto-embedded");
+ assert.equal(resolveMediaPlayback({...sample,playback:{...sample.playback,source_url:"https://elsewhere.example/"}}),null);
+});
