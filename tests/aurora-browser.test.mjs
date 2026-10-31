@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
-import { readFileSync } from 'node:fs';
+import { readFileSync, mkdirSync } from 'node:fs';
 import { resolve, join, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
@@ -218,7 +218,7 @@ try{
     await page.locator('#gateContinue').click();
     await page.locator('#languageGate').waitFor({state:'hidden',timeout:1500});
 
-    assert.equal(await page.locator('a[href="#control"]').count(),3,'desktop, mobile and footer navigation');
+    assert.equal(await page.locator('a[href="#control"]').count(),2,'mobile and footer retain Mission Control navigation; cinematic desktop header is deliberately minimal');
     assert.equal(await page.locator('#controlHeading').textContent(),'MISSION CONTROL');
     assert.equal(await page.locator('#controlTabs [role="tab"]').count(),4);
     assert.equal(await page.locator('#controlTab0').getAttribute('aria-selected'),'true');
@@ -665,49 +665,66 @@ try{
     assert.deepEqual(errors,[]);
     await context.close();
   });
-  await test("AURORA THE SIGNAL scroll narrative responds on desktop and keeps source archive",async()=>{
-    const context=await browser.newContext({viewport:{width:1365,height:900},reducedMotion:"no-preference"});
-    const page=await context.newPage(),errors=[];
+
+  await test("AURORA 4K Earth scene renders pixels and changes through all three scroll chapters",async()=>{
+    const ctx=await browser.newContext({viewport:{width:1365,height:900},reducedMotion:"no-preference"});
+    const page=await ctx.newPage(),errors=[];
     page.on("pageerror",e=>errors.push(e.message));
     await page.goto("http://127.0.0.1:"+port+"/");
     await page.locator('#gateLanguageGrid button[data-language="en"]').click();
     await page.locator("#gateContinue").click();
     await page.locator("#languageGate").waitFor({state:"hidden"});
-    const scene=page.locator("#odyssey");
+    const mode=page.locator("#odyssey");
+    await page.waitForFunction(()=>["webgl","fallback"].includes(document.querySelector("#odyssey")?.dataset.renderer));
+    mkdirSync("artifacts",{recursive:true});
+    await page.screenshot({path:"artifacts/aurora-earth-desktop.png",fullPage:false,animations:"disabled"});
     assert.equal(await page.locator("#auroraSceneCanvas").count(),1);
-    await page.waitForFunction(()=>["webgl","fallback"].includes(document.querySelector("#odyssey")?.dataset.renderer),{timeout:7000});
-    const mode=await scene.getAttribute("data-renderer");
-    assert.ok(["webgl","fallback"].includes(mode));
-    if(mode==="webgl"){
-      const canvas=page.locator("#auroraSceneCanvas");
-      assert.ok(await canvas.evaluate(el=>el.width>100&&el.height>100));
+    if(await mode.getAttribute("data-renderer")==="webgl"){
+      await page.waitForFunction(()=>document.querySelector("#odyssey")?.dataset.scenePixels,{timeout:10000});
+      const values=(await mode.getAttribute("data-scene-pixels")).split("|").map(x=>x.split(",").map(Number));
+      assert.ok(values.some(row=>row.some(v=>v>12)),"GPU must render visibly non-black pixel values");
+      await page.waitForFunction(()=>["4096","fallback"].includes(document.querySelector("#odyssey")?.dataset.earthTexture),{timeout:10000});
+      const tex=await mode.getAttribute("data-earth-texture");
+      assert.equal(tex,"4096","public land vector texture must be 4K in browser");
     }
     await page.evaluate(()=>{
       const el=document.querySelector("#odyssey"),r=el.getBoundingClientRect();
-      window.scrollTo({top:window.scrollY+r.top+(r.height-window.innerHeight)*.76,behavior:"instant"});
+      window.scrollTo({top:window.scrollY+r.top+(r.height-window.innerHeight)*.42,behavior:"instant"});
     });
-    await page.waitForFunction(()=>document.querySelector("#odyssey")?.dataset.chapter==="1",{timeout:7000});
-    assert.equal(await page.locator(".odyssey-intro").getAttribute("aria-hidden"),"true");
+    await page.waitForFunction(()=>document.querySelector("#odyssey")?.dataset.chapter==="1");
     assert.equal(await page.locator(".odyssey-chapter").getAttribute("aria-hidden"),"false");
+    await page.screenshot({path:"artifacts/aurora-earth-story-chapter.png",fullPage:false,animations:"disabled"});
+    await page.evaluate(()=>{
+      const el=document.querySelector("#odyssey"),r=el.getBoundingClientRect();
+      window.scrollTo({top:window.scrollY+r.top+(r.height-window.innerHeight)*.84,behavior:"instant"});
+    });
+    await page.waitForFunction(()=>document.querySelector("#odyssey")?.dataset.chapter==="2");
+    assert.equal(await page.locator(".odyssey-archive-chapter").getAttribute("aria-hidden"),"false");
+    await page.screenshot({path:"artifacts/aurora-earth-archive-chapter.png",fullPage:false,animations:"disabled"});
     assert.equal(await page.locator("#worldMapCanvas").count(),1);
     assert.deepEqual(errors,[]);
-    await context.close();
+    await ctx.close();
   });
-  await test("AURORA reduced-motion fallback remains navigable on a mobile viewport",async()=>{
-    const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:"reduce"});
-    const page=await context.newPage(),errors=[];
+  await test("AURORA Earth renders a still accessible mobile view for reduced motion",async()=>{
+    const ctx=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:"reduce"});
+    const page=await ctx.newPage(),errors=[];
     page.on("pageerror",e=>errors.push(e.message));
     await page.goto("http://127.0.0.1:"+port+"/");
     await page.locator('#gateLanguageGrid button[data-language="bg"]').click();
     await page.locator("#gateContinue").click();
     await page.locator("#languageGate").waitFor({state:"hidden"});
-    assert.equal(await page.locator("#odyssey").getAttribute("data-chapter"),"0");
-    assert.equal(await page.locator(".odyssey-chapter").isVisible(),false);
+    assert.equal(await page.locator("#odyssey").getAttribute("data-chapter"),"1");
+    mkdirSync("artifacts",{recursive:true});
+    await page.screenshot({path:"artifacts/aurora-earth-mobile.png",fullPage:false,animations:"disabled"});
+    assert.equal(await page.locator(".odyssey-chapter").getAttribute("aria-hidden"),"false");
+    assert.equal(await page.locator(".odyssey-chapter .hero-content").isVisible(),true,"reduced-motion mobile must show its heading and navigation");
+    assert.equal(await page.locator(".odyssey-chapter .hero-content h1").isVisible(),true);
+    assert.equal(await page.locator(".odyssey-archive-chapter").isVisible(),false);
     assert.equal(await page.locator('.hero-buttons a[href="/archive.html"]').count(),1);
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
-    assert.ok(overflow<=1,"responsive viewport must not overflow: "+overflow);
+    assert.ok(overflow<=1,"mobile viewport overflows by "+overflow);
     assert.deepEqual(errors,[]);
-    await context.close();
+    await ctx.close();
   });
   await test('news API outage is shown as an explicit offline state, not a blank loading feed',async()=>{
     const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});

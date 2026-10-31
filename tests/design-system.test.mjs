@@ -5,7 +5,8 @@ const read=(f)=>readFileSync(new URL("../"+f,import.meta.url),"utf8");
 const pages=["index.html","archive.html","countries.html","country.html","donate.html","dossier.html","media.html","news.html","report.html","sources.html"];
 test("all public pages load the same shared style after local CSS",()=>{
  const css=read("aurora-design-refresh.css");assert.match(css,/--aurora-border/);assert.match(css,/prefers-reduced-motion:reduce/);
- for(const page of pages){const html=read(page);const styles=[...html.matchAll(/<link\s+rel="stylesheet"\s+href="([^"]+)"/g)].map(m=>m[1]);assert.equal(styles.at(-1),"/aurora-design-refresh.css",page);}
+ for(const page of pages){const html=read(page);const styles=[...html.matchAll(/<link\s+rel="stylesheet"\s+href="([^"]+)"/g)].map(m=>m[1]);assert.equal(styles.at(-1),page==="index.html"?"/aurora-cinematic.css":"/aurora-design-refresh.css",page);
+  assert.ok(styles.includes("/aurora-design-refresh.css"),page+" must preserve shared tokens");}
 });
 test("retired demo UI removed while approved archive, globe, media and language remain",()=>{
  const html=read("index.html");
