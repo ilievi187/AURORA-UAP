@@ -693,6 +693,7 @@ try{
     });
     await page.waitForFunction(()=>document.querySelector("#odyssey")?.dataset.chapter==="1");
     assert.equal(await page.locator(".odyssey-chapter").getAttribute("aria-hidden"),"false");
+    await page.screenshot({path:"artifacts/aurora-earth-story-chapter.png",fullPage:false,animations:"disabled"});
     await page.evaluate(()=>{
       const el=document.querySelector("#odyssey"),r=el.getBoundingClientRect();
       window.scrollTo({top:window.scrollY+r.top+(r.height-window.innerHeight)*.84,behavior:"instant"});
