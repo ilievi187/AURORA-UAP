@@ -3,8 +3,8 @@
  * never arbitrary user text, private intake, publisher names or evidence links. */
 import {NEWS_LANGUAGES,normalizeTargetLanguage} from "../_lib/news-translation.js";
 const MODEL="@cf/meta/m2m100-1.2b";
-const CACHE_REVISION="public-case-l10n-v1";
-const MAX_DETAIL=6;
+const CACHE_REVISION="public-case-l10n-v2-full";
+const MAX_DETAIL=12;
 const ID=/^[a-z0-9-]{3,90}$/;
 const headers={"X-Content-Type-Options":"nosniff","Vary":"Accept-Encoding"};
 const result=(data,status=200,cache="no-store")=>Response.json(data,{status,headers:{...headers,"Cache-Control":cache}});
@@ -17,7 +17,11 @@ export async function translatePublishedCase(record,lang,ai,{detail=false}={}){
  const sum=record?.summary?.en||record?.summary?.bg;
  const originalStory=Array.isArray(record?.story?.en)?record.story.en:[];
  if(typeof src!=="string"||!src.trim()||typeof sum!=="string")return {status:"unavailable"};
- const nativeTitle=record.title?.[lang],nativeSummary=record.summary?.[lang];
+ const legacyPlaceholder=lang==="bg"&&(
+  /(?:е случай, описан в публичния каталог|Публикуваните сведения се отнасят|Маркерът, ако има такъв)/i.test(String(record?.summary?.bg||""))||
+  (record?.story?.bg||[]).some(x=>/^EN\s*[·:]/.test(String(x))||/Следва оригиналното описание на английски/.test(String(x)))
+ );
+ const nativeTitle=legacyPlaceholder?null:record.title?.[lang],nativeSummary=legacyPlaceholder?null:record.summary?.[lang];
  if(nativeTitle&&nativeSummary&&(!detail||Array.isArray(record.story?.[lang])))
   return {status:"original",title:nativeTitle,summary:nativeSummary,story:detail?(record.story[lang]||[]):undefined};
  if(!ai||typeof ai.run!=="function")return {status:"unavailable",source_language:"en"};
@@ -26,7 +30,8 @@ export async function translatePublishedCase(record,lang,ai,{detail=false}={}){
  if(detail)originalStory.slice(0,MAX_DETAIL).forEach((line,i)=>{if(typeof line==="string"&&line.trim())jobs.push(["story_"+i,line,1800])});
  const translated={title:nativeTitle||"",summary:nativeSummary||"",story:[]};
  let successes=0,failures=0;
- // Bound all text and sequential calls to limit Workers AI consumption per request.
+ // Translate every available paragraph, not just the opening six. Sequential calls
+ // bound per-request AI work; cached results are served to subsequent visitors.
  for(const [name,text,max] of jobs){
   if((name==="title"&&nativeTitle)||(name==="summary"&&nativeSummary))continue;
   if(!String(text).trim())continue;
