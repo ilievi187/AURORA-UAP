@@ -6,6 +6,7 @@ import {fileURLToPath} from "node:url";
 import path from "node:path";
 import {withApproximateMapAnchor} from "./approximate-case-geography.mjs";
 import {applySourceCaseAnnotations,validateSourceCaseAnnotations} from "./source-case-annotations.mjs";
+import {resolveMediaPlayback} from "../media-player.js";
 
 export const SOURCE_URL="https://www.uap-archive.org/uap/data/cases.json";
 export const SOURCE_NAME="UAP Records Archive";
@@ -114,6 +115,25 @@ export function normalizeCase(row){
   visual:null
  });
 }
+/* Previously verified in-site playback may survive a metadata-only refresh,
+ * but only for the identical published video URL and source record.
+ * Any changed/removed upstream media loses the old approval automatically. */
+export function preserveVerifiedSourcePlayback(next,previous){
+ if(!next||!previous||next.provenance?.source_url!==SOURCE_URL||
+    previous.provenance?.source_url!==SOURCE_URL||
+    next.provenance?.source_record_id!==previous.provenance?.source_record_id||
+    !Array.isArray(next.media)||!Array.isArray(previous.media))return next;
+ const previously=new Map(previous.media.filter(m=>m?.type==="video"&&typeof m.url==="string")
+  .map(m=>[m.url,m]));
+ const media=next.media.map(m=>{
+  if(m?.type!=="video"||!previously.has(m.url))return m;
+  const approved=previously.get(m.url);
+  if(!approved?.playback)return m;
+  const restored={...m,playback:approved.playback};
+  return resolveMediaPlayback(restored)?restored:m;
+ });
+ return {...next,media};
+}
 export function buildArchive(existing,source){
  if(!Array.isArray(existing?.cases))throw Error("Invalid current case archive");
  if(!source||!Array.isArray(source.cases)||source.cases.length<1||source.cases.length>20000)throw Error("Invalid source case set");
@@ -123,6 +143,8 @@ export function buildArchive(existing,source){
  const existingNames=knownExisting(current);
  const seen=new Set();
  const imported=[];
+ const priorImported=new Map(existing.cases.filter(c=>c?.provenance?.source_url===SOURCE_URL&&
+   typeof c?.provenance?.source_record_id==="string").map(c=>[c.provenance.source_record_id,c]));
  let invalid=0,duplicates=0;
  for(const row of source.cases){
   const c=normalizeCase(row);
@@ -132,7 +154,7 @@ export function buildArchive(existing,source){
   const duplicateAlias=ALIASES[row.id];
   if((duplicateAlias&&existingIds.has(duplicateAlias))||existingIds.has(c.id)||
      existingNames.has(canonical(c.title.en))){duplicates++;continue}
-  imported.push(applySourceCaseAnnotations(c,EDITORIAL));
+  imported.push(applySourceCaseAnnotations(preserveVerifiedSourcePlayback(c,priorImported.get(row.id)),EDITORIAL));
  }
  if(!imported.length)throw Error("No importable source records: refusing replacement");
  const previous=existing.cases.filter(x=>x?.provenance?.source_url===SOURCE_URL).length;
