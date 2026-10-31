@@ -53,7 +53,7 @@
   const status=$("caseHeroStatus"),link=$("caseHeroSource");
   const playlist=$("caseHeroPlaylist"),poster=$("caseHeroPoster");
   playlist.replaceChildren();playlist.hidden=true;
-  poster.src="/assets/video-poster.svg";poster.dataset.actualFrame="false";
+  poster.src="/assets/media-ufo-earth-preview.svg";poster.dataset.actualFrame="false";
   const videos=(Array.isArray(caseRecord?.media)?caseRecord.media:[])
    .filter(m=>m?.type==="video"&&safeUrl(m.url)&&m.private!==true&&m.public!==false);
   // A graphic with a baked-in ▶ should never pose as an actual video player.
@@ -88,7 +88,7 @@
     status.textContent="";button.hidden=false;button.textContent=w.play;
     button.setAttribute("aria-label",w.play+" · "+title(item.media.title,lang));
     const thumbnail=module.resolveVideoPoster(item.media);
-    poster.src=thumbnail||"/assets/video-poster.svg";
+    poster.src=thumbnail||"/assets/media-ufo-earth-preview.svg";
     poster.dataset.actualFrame=thumbnail?"true":"false";
     poster.alt=thumbnail?("Published video thumbnail · "+title(item.media.title,lang)):
       (lang==="bg"?"Тематичен преглед, не кадър от наблюдението":"Decorative preview, not an incident frame");
@@ -105,7 +105,7 @@
      control.className="case-hero-clip";control.setAttribute("aria-pressed","false");
      const thumb=module.resolveVideoPoster(item.media);
      const img=document.createElement("img");
-     img.src=thumb||"/assets/video-poster.svg";img.loading="lazy";
+     img.src=thumb||"/assets/media-ufo-earth-preview.svg";img.loading="lazy";
      img.alt=thumb?"Video thumbnail":"Decorative source video preview";
      const label=document.createElement("span");
      label.textContent=String(idx+1).padStart(2,"0")+" · "+(title(item.media.title,lang)||"Official recording");
