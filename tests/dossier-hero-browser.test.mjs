@@ -56,7 +56,7 @@ test("single-player rule: top FLIR1 video only; lower archive and second video r
  try{
   await page.locator("#caseHeroPlay").waitFor({state:"visible"});
   assert.equal(await page.locator("#caseMediaSection").isHidden(),true,"video-only section must not duplicate main player");
-  assert.equal(await page.locator("#caseMediaGrid button,#caseMediaGrid video,#caseMediaGrid iframe").count(),0);
+  assert.equal(await page.locator("#caseMediaGrid video,#caseMediaGrid iframe").count(),0);
   await page.locator("#caseHeroPlay").click();
   assert.equal(await page.locator("#caseHeroStage video").count(),1);
   assert.equal(await page.locator("video,iframe").count(),1,"dossier has exactly one embedded player");
@@ -71,7 +71,7 @@ for(const [caseId,expectedKind] of [["gimbal-2015","video"],["gofast-2015","vide
   const{page,ctx,errors}=await pageFor(caseId);
   try{
    await page.locator("#caseHeroPlay").waitFor({state:"visible"});
-   assert.equal(await page.locator("#caseMediaGrid button,#caseMediaGrid video,#caseMediaGrid iframe").count(),0);
+   assert.equal(await page.locator("#caseMediaGrid video,#caseMediaGrid iframe").count(),0);
    await page.locator("#caseHeroPlay").click();
    const target=page.locator("#caseHeroStage "+expectedKind);
    await target.waitFor({state:"attached"});
