@@ -10,7 +10,7 @@ const headers={"X-Content-Type-Options":"nosniff","Vary":"Accept-Encoding"};
 const result=(data,status=200,cache="no-store")=>Response.json(data,{status,headers:{...headers,"Cache-Control":cache}});
 export function selectPublicCase(cases,id){
  return Array.isArray(cases)?cases.find(c=>c?.id===id&&c?.private!==true&&c?.public!==false&&
-  typeof c?.source?.url==="string"&&/^https:\/\//.test(c.source.url)):null;
+  typeof c?.source?.url==="string"&&/^https:\/\//.test(c.source.url))??null:null;
 }
 export async function translatePublishedCase(record,lang,ai,{detail=false}={}){
  const src=record?.title?.en||record?.title?.bg;
