@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-11-01",
+  "notes": "Batch 1 summaries are editorial paraphrases of the imported disclosure.zone CC BY 4.0 source records. Each record links official archival or government documents. Some direct PDF/catalog fetches did not expose readable text to the retrieval tools (403 or loader-only); no access restriction was bypassed. Original dates, locations, status, coordinates, media and rights are not overridden.",
+  "records": {
+    "test-site-2023": {
+      "title_bg": "Бронзово, сиво или просто светлина — разказите от тестовия полигон",
+      "summary_bg": "Три интервюта на ФБР от септември 2023 г. съдържат различни описания на кратко наблюдение край тестов обект; датата и географските названия са заличени, а публикуваните документи не предлагат анализ или идентификация.",
+      "story_bg": [
+        "През септември 2023 г. ФБР записва три интервюта за кратко наблюдение, описано от петима души в три автомобила, пътували през контролирана врата към тестов обект. В публикуваните копия са заличени конкретният ден и всички географски названия.",
+        "Свидетелските описания се различават: две интервюта говорят за удължен метален обект — единият бронзов, другият сив; третото описва ярка светлина над хоризонта и предположение, че може да е метеор. Посочената продължителност е приблизително пет до десет секунди.",
+        "В едно интервю изрично е записано, че не са направени снимки или видео. Отделен файл със скица носи дата 30 април 2024 г. само в името си и не е споменат в интервютата, затова не може да се представя като съвременен запис на случката.",
+        "Пакетът съдържа разкази, но не и анализ или идентификация. Досието запазва несъответствията и заличаванията; хипотезите за метеор, самолет или дрон остават предположения, а не установени факти."
+      ],
+      "story_en": [
+        "In September 2023 the FBI recorded three interviews about a short observation reported by five people in three vehicles traveling through a gate on the way to a test site. The released copies redact the exact day and place names.",
+        "The descriptions differ: two accounts describe an elongated metallic object, one bronze and one gray; a third describes only a bright light over the horizon and a thought that it might have been a meteor. The reported duration is five to ten seconds.",
+        "One interview states that no photographs or video were taken. A separate sketch file carries a 30 April 2024 date in its filename but is not mentioned in the interviews, so it cannot be treated as contemporaneous footage.",
+        "The release contains interview accounts but no analysis or identification. The dossier preserves their differences and redactions; meteor, aircraft or drone explanations remain hypotheses, not established findings."
+      ],
+      "references": [
+        {"name": "FBI interview Serial 003 (redacted)", "url": "https://www.war.gov/medialink/ufo/release_1/serial-3_redacted.pdf"},
+        {"name": "FBI interview Serial 004 (redacted)", "url": "https://www.war.gov/medialink/ufo/release_1/serial-4-redacted_redacted.pdf"},
+        {"name": "FBI interview Serial 005 (redacted)", "url": "https://www.war.gov/medialink/ufo/release_1/serial%205%20redacted_redacted.pdf"}
+      ]
+    },
+    "ghost-rockets-1946": {
+      "title_bg": "„Призрачните ракети“ над Скандинавия през 1946 г.",
+      "summary_bg": "Американски разузнавателен обзор от януари 1947 г. обобщава втора ръка доклади за „призрачни ракети“ в Швеция и съседни държави; той приписва повечето на небесни явления, но допуска малък брой неразрешени нисколетящи случаи.",
+      "story_bg": [
+        "От края на май 1946 г. шведски вестници съобщават за летящи „ракети“; през следващите месеци подобни разкази идват и от Финландия, Дания и Норвегия. Американският обзор съобщава, че до края на юли шведските служби са получили почти хиляда доклада.",
+        "Обзорът на Разузнавателната служба на Военното министерство на САЩ от 9 януари 1947 г. обобщава описания от огнени кълба с опашка до лъскави предмети с форма на пура. В него е записано, че откритите фрагменти са описани като неметална шлака, а не като части от ракета.",
+        "Документът предава втора ръка шведска оценка, според която преобладаващата част от съобщенията са с небесен произход. Самият американски обзор смята високите наблюдения за метеори или фойерверки, но допуска, че малък брой нисколетящи случаи може да са били ракетоподобни обекти.",
+        "Това е американско резюме на шведски сведения, а не пълният шведски архивен доклад. Досието разграничава обществените съобщения, оценките на службите и ограниченията на публикувания пакет; никоя от тези части не установява конкретен произход."
+      ],
+      "story_en": [
+        "From late May 1946, Swedish newspapers reported flying missiles; accounts followed from Finland and Denmark in June and Norway in July. A U.S. intelligence review said Swedish authorities had received nearly one thousand reports by the end of July.",
+        "The U.S. War Department Intelligence Review of 9 January 1947 summarized descriptions ranging from a ball of fire with a tail to shiny cigar-shaped objects. It said that recovered fragments were described as nonmetallic slag rather than identifiable rocket parts.",
+        "The review relayed a Swedish assessment that most reports had a celestial origin. Its authors considered high-altitude reports likely meteors or fireworks, while allowing that a small number of low-flying cases might have involved missile-like objects.",
+        "This is a U.S. summary of Swedish information, not the complete Swedish archive record. The dossier distinguishes public reports, official assessments and the limits of the released package; none establishes a specific origin."
+      ],
+      "references": [
+        {"name": "U.S. War Department Intelligence Review: Ghost Rockets (1947)", "url": "https://www.war.gov/medialink/ufo/release_05/Aug_07/documents/DOW-UAP-D099_Intelligence-Review-of-Ghost-Rocket-Incidents_1947.pdf"},
+        {"name": "Air Materiel Command Report on Unidentified Flying Objects (1947–48)", "url": "https://www.war.gov/medialink/ufo/release_05/Aug_07/documents/DOW-UAP-D100_Air-Materiel-Command-Report-on-UFOs_1947-1948.pdf"}
+      ]
+    },
+    "mantell-1948": {
+      "title_bg": "Thomas Mantell и обектът над Godman Field",
+      "summary_bg": "На 7 януари 1948 г. служители в Godman Field и пилоти на P-51 съобщават за ярък обект; капитан Thomas Mantell загива при последвала катастрофа. Архивът пази различни оценки и не доказва нито идентичността на обекта, нито причината за катастрофата.",
+      "story_bg": [
+        "На 7 януари 1948 г. служители в контролната кула на Godman Field, Kentucky, наблюдават обект в югозападното небе след съобщения от щатската полиция. Описанията в досието го сравняват с парашут или конус; полет от четири P-51 е помолен да го разпознае.",
+        "Трима пилоти се изкачват към обекта. В радиообмена капитан Thomas F. Mantell съобщава, че той е пред тях и изглежда като метален предмет с големи размери; последният контакт е около 15:15. Самолетът му се разбива на около пет мили югозападно от Franklin, Kentucky.",
+        "Архивът пази различни оценки: през ноември 1948 г. разузнавателен документ смята случая за неидентифициран, след като хипотезата за Венера е отхвърлена; през януари 1949 г. инцидентът е сред тези с висока вероятност да са балони. Картата на досието съдържа ръкописно „BALLOON“, без посочени дата или автор.",
+        "Записките не дават едно окончателно заключение за обекта и не доказват какво е причинило катастрофата. Досието представя наблюденията и по-късните хипотези отделно, без да третира Венера или балон като установен факт."
+      ],
+      "story_en": [
+        "On 7 January 1948, personnel at the Godman Field control tower in Kentucky watched an object in the southwestern sky after reports relayed from state police. File witnesses compared its appearance to a parachute or cone, and a flight of four P-51s was asked to identify it.",
+        "Three pilots climbed toward the object. Radio messages attributed to Captain Thomas F. Mantell described it as ahead and above, appearing metallic and very large; the last contact was around 15:15. His aircraft crashed about five miles southwest of Franklin, Kentucky.",
+        "The archive preserves differing assessments. A November 1948 intelligence document called the sighting unexplained after rejecting Venus, while a January 1949 Air Materiel Command list placed it among incidents with a high possibility of being balloons. The record card bears a handwritten “BALLOON” with no date or signed rationale.",
+        "The records do not provide one final identification of the object or establish what caused the crash. The dossier keeps observations and later hypotheses separate rather than presenting Venus or a balloon as proven."
+      ],
+      "references": [
+        {"name": "U.S. National Archives: Project Blue Book file 28930550", "url": "https://catalog.archives.gov/id/28930550"},
+        {"name": "U.S. Air Force Analysis of Flying Objects in the U.S., DOW-UAP-D087", "url": "https://www.war.gov/medialink/ufo/061226/release_03/documents/DOW-UAP-D087_US-AirForce_Analysis-of-Flying-Objects-in-the-US_1-100.pdf"}
+      ]
+    },
+    "lubbock-lights-1951": {
+      "title_bg": "Светлините над Lubbock — свидетелства, снимки и спорни оценки",
+      "summary_bg": "През 1951 г. преподаватели от Texas Technological College съобщават за формации от светлини над Lubbock, а студент прави снимки. Документите пазят противоречиви хипотези, а лабораторията на Военновъздушните сили не потвърждава произхода на негативите.",
+      "story_bg": [
+        "Вечерта на 25 август 1951 г. преподаватели от Texas Technological College съобщават за формации от светлини, преминаващи над Lubbock, Texas. Те описват дъговидни или V-образни групи; наблюденията продължават и през следващите месеци.",
+        "Студент заснема формации в края на август, но в документите се срещат различни дати — 30 и 31 август. Лаборатория на Военновъздушните сили заявява, че не може нито да потвърди, нито да отхвърли, че негативите показват непознати обекти.",
+        "Индексът на Project Blue Book класифицира случая като „Other (BIRDS)“, а по-късен обзор предлага птици, осветени от улични лампи. Някои свидетели оспорват това обяснение; вътрешен доклад допуска, че различните наблюдатели може да са видели различни неща.",
+        "Наличните записи пазят спор, а не окончателна идентификация; Edward J. Ruppelt през 1952 г. описва случая като неразрешен. Свидетелствата, снимките и последващите обяснения трябва да се разглеждат като отделни доказателствени елементи."
+      ],
+      "story_en": [
+        "On the evening of 25 August 1951, professors at Texas Technological College reported formations of lights crossing the sky over Lubbock, Texas. They described arcuate or V-shaped arrangements, with further observations reported over the following months.",
+        "A college student photographed formations near the end of August, although the file gives both 30 and 31 August as the date. An Air Force photographic laboratory said it could neither confirm nor deny that the negatives showed unknown objects.",
+        "The Project Blue Book index classifies the case as “Other (BIRDS),” and a later summary proposed birds reflecting streetlights. Some witnesses disputed that explanation; an internal report allowed that different observers might have seen different things.",
+        "The surviving records preserve a dispute rather than a final identification; Edward J. Ruppelt described the case as unresolved in 1952. Witness accounts, photographs and later explanations should be treated as distinct evidence."
+      ],
+      "references": [
+        {"name": "U.S. National Archives: Project Blue Book Lubbock file 28939743", "url": "https://catalog.archives.gov/id/28939743"},
+        {"name": "U.S. Department of War: Ruppelt presentation transcript, DOW-UAP-D154", "url": "https://www.war.gov/medialink/ufo/sept-18/release-06/assets/DOW-UAP-D154_Transcript-of-a-Presentation-by-Captain-Edward-J-Ruppelt-1952.pdf"}
+      ]
+    },
+    "tremonton-1952": {
+      "title_bg": "Филмът от Tremonton — анализът и променящите се оценки",
+      "summary_bg": "Военноморски фотограф заснема ярки движещи се обекти край Tremonton, Utah, през юли 1952 г. Project Blue Book и други звена дават различни оценки — от „неизвестно“ до предположение за птици — без еднозначно заключение в публикуваните документи.",
+      "story_bg": [
+        "На 2 юли 1952 г. военноморски фотограф Delbert Newhouse заснема цветен филм с група ярки движещи се обекти край Tremonton, Utah. Материалът е разглеждан от Project Blue Book и от военни фотографски и научни звена.",
+        "Работният лист на Военновъздушните сили от 1952 г. записва финалната оценка „Unknown“. През 1953 г. служебно съобщение допуска, че обектите може да са чайки; меморандум от 1956 г. представя това като почти сигурно обяснение.",
+        "В същия архив лабораторен анализ посочва, че яркостта на изображенията надхвърля тази на обичайни дифузни отражатели като бели птици. Научният панел на ЦРУ отбелязва, че движението напомня птици, но наличните данни не включват измерване на тяхното албедо.",
+        "Документите показват променящи се и противоречиви оценки, а не единодушно заключение. Досието представя последователността на анализите; нито „чайки“, нито неизвестен произход се обявяват за доказани."
+      ],
+      "story_en": [
+        "On 2 July 1952, Navy photographer Delbert Newhouse filmed a group of bright moving objects near Tremonton, Utah. Project Blue Book and other military photographic and scientific units examined the color film.",
+        "The Air Force worksheet from 1952 records its final evaluation as “Unknown.” A 1953 message proposed soaring gulls as a strong possibility, while a 1956 memorandum presented gulls as the highly likely explanation.",
+        "The same archive includes a laboratory analysis stating that the image brightness exceeded that of ordinary diffuse reflectors such as white birds. A CIA scientific panel said the motion suggested birds but noted that the available record did not include measurements of bird albedo.",
+        "The documents show changing and conflicting assessments rather than a unanimous conclusion. The dossier preserves that sequence and does not present either gulls or an unknown origin as proven."
+      ],
+      "references": [
+        {"name": "U.S. Department of War: Project Blue Book Tremonton case file, DOW-UAP-D102", "url": "https://www.war.gov/medialink/ufo/sept-18/release-06/assets/DOW-UAP-D102_Project-Blue-Book-File-on-Tremonton-Film-Utah-1952.pdf"},
+        {"name": "U.S. Department of War: Project Blue Book photo file, DOW-UAP-D103", "url": "https://www.war.gov/medialink/ufo/sept-18/release-06/assets/DOW-UAP-D103_Project-Blue-Book-Photo-File-Relating-to-Tremonton-Film-Utah-1952.pdf"},
+        {"name": "CIA Scientific Advisory Panel on UAP, 1952–53, DOW-UAP-002", "url": "https://www.war.gov/medialink/ufo/061226/release_03/documents/CIA-UAP-002_Scientific-Advisory-Panel-on-Unidentified-Flying-Objects_Report_1952-1953.pdf"}
+      ]
+    },
+    "socorro-1964": {
+      "title_bg": "Socorro — докладът на полицай Lonnie Zamora от 1964 г.",
+      "summary_bg": "На 24 април 1964 г. полицай Lonnie Zamora съобщава за обект на земята и две фигури край Socorro, New Mexico. Картата на Project Blue Book отбелязва случая като неидентифициран към момента на записа.",
+      "story_bg": [
+        "На 24 април 1964 г. около 17:45 ч. полицай Lonnie Zamora прекратява автомобилно преследване след шум и пламък южно от Socorro, New Mexico. В последвалия си доклад той описва обект край пътя и две фигури, привидно облечени в бели гащеризони.",
+        "По разказа му обектът се издига с шум и пламък и отлита. Щатски полицай и помощник-шериф, пристигнали по радиосигнал, намират четири обгорени петна и вдлъбнатини; същата вечер капитан R. T. Holder ги измерва.",
+        "Картата на Project Blue Book отбелязва случая като „Unknown“ и „Unidentified pending additional data“. През май 1964 г. звено на Военновъздушните сили съобщава, че не е успяло да определи какъв е бил обектът и че проверката продължава.",
+        "Архивът документира свидетелството и огледа, но не установява произход или окончателна идентификация. Координатите в каталога са ориентир за района, а не измерена позиция на обекта или траектория."
+      ],
+      "story_en": [
+        "At about 5:45 p.m. on 24 April 1964, Socorro police officer Lonnie Zamora broke off a car chase after hearing a roar and seeing a flame south of town. In his subsequent report he described an object on the ground and two figures apparently in white coveralls.",
+        "According to his account, the object rose with a roar and flame and departed. A state police sergeant and undersheriff who answered his radio call found four scorched areas and depressions; Captain R. T. Holder measured them that evening.",
+        "The Project Blue Book card marked the case “Unknown” and “Unidentified pending additional data.” In May 1964, an Air Force office said it had not identified the object and that the investigation was still in progress.",
+        "The archive documents the witness account and the site examination but does not establish an origin or final identification. The catalog coordinates are a regional reference, not a measured object position or flight path."
+      ],
+      "references": [
+        {"name": "U.S. National Archives: Project Blue Book Socorro file 302532129", "url": "https://catalog.archives.gov/id/302532129"},
+        {"name": "U.S. Department of War: Socorro Project Blue Book record, serial 438", "url": "https://www.war.gov/medialink/ufo/release_1/65_hs1-834228961_62-hq-83894_serial_438.pdf"},
+        {"name": "U.S. Department of War: FBI and Air Force Socorro material, section 9", "url": "https://www.war.gov/medialink/ufo/release_1/65_hs1-834228961_62-hq-83894_section_9.pdf"}
+      ]
+    },
+    "himalaya-1968": {
+      "title_bg": "Балтичаур — едно изречение за метален диск в доклад на ЦРУ",
+      "summary_bg": "Доклад на ЦРУ от 1968 г. изброява седем наблюдения в Хималаите; твърдение за метален диск в кратер край Baltichaur е споменато с едно изречение, без последващ анализ в самия документ.",
+      "story_bg": [
+        "Информационен доклад на ЦРУ, разпространен на 11 април 1968 г., изброява седем наблюдения на светли обекти от 19 февруари до 25 март в Ladakh, Nepal, Sikkim и Bhutan. Източникът на сведенията е заличен, а документът е означен като неприключил за окончателна оценка.",
+        "Един запис добавя с едно изречение, че голям метален предмет с форма на диск е намерен в кратер край Baltichaur, на около пет мили североизточно от Pokhara. Докладът не описва оглед, измервания, снимки или последващо изследване на предмета.",
+        "Останалите точки включват различни описания, сред които ракетоподобен обект с ярка следа. Те са записи на източник в един информационен документ, а не потвърдени отделни въздушни инциденти с еднакъв произход.",
+        "Индекс от 1974 г. по-късно класифицира материала като неидентифицирано летящо явление и авиопроизшествие, но самият доклад не установява какво е било намерено. Досието запазва тази граница и не представя „диска“ като потвърден катастрофирал апарат."
+      ],
+      "story_en": [
+        "A CIA information report distributed on 11 April 1968 lists seven sightings of bright objects between 19 February and 25 March across Ladakh, Nepal, Sikkim and Bhutan. Its source is redacted, and the document is marked as not finally evaluated.",
+        "One entry adds a single sentence saying that a large metallic disc-shaped object was found in a crater near Baltichaur, about five miles northeast of Pokhara. The report provides no inspection, measurements, photographs or follow-up examination of that object.",
+        "Other entries describe different observations, including a rocket-like object with a bright trail. They are reports grouped in one information document, not independently confirmed incidents with an established common origin.",
+        "A 1974 index later tags the material as an unidentified flying object and aircraft accident, but the report itself does not establish what was found. The dossier preserves that limit and does not present the “disc” as a confirmed crashed craft."
+      ],
+      "references": [
+        {"name": "CIA Information Report: Sightings in Ladakh, Nepal, Sikkim and Bhutan, DOW-UAP-016", "url": "https://www.war.gov/medialink/ufo/061226/release_03/documents/CIA-UAP-016-Sightings_of_Unidentified_Flying_Ojbects_in_Ladakh_Nepal_Sikkim_and_Bhutan.pdf"}
+      ]
+    },
+    "conde-1963": {
+      "title_bg": "Conde, Bahia — радиорепортажът и дипломатическите проверки",
+      "summary_bg": "Радиостанция в Rio de Janeiro съобщава за сфера край бразилския град Conde през ноември 1963 г. Дипломатическата проверка не намира местни свидетели; документите потвърждават разследването на репортажа, а не паднал обект.",
+      "story_bg": [
+        "На 8 ноември 1963 г. радио Tupi в Rio de Janeiro съобщава, че метална сфера с прозорци е паднала в центъра на Conde, Bahia, оставила е кратер и в нея имало тяло. Службата FBIS записва репортажа, а на 13 ноември американска служба пита Държавния департамент за допълнителни сведения.",
+        "Посолството в Rio и консулството в Salvador проверяват местните данни. В телеграма от 14 ноември консулът съобщава, че никой в района не е видял обекта и описва историята като вероятно измислена в Rio.",
+        "Консулът споменава, че секретарят по обществена сигурност е предположил метеорологичен балон, но и това не е подкрепено с потвърдено наблюдение. Дипломатическа бележка от 20 ноември предава втора ръка отричане от бразилското Министерство на въздухоплаването и местни вестникарски опровержения.",
+        "Държавният департамент отбелязва документа „NOTED — NO ACTION“. Записите потвърждават радиорепортаж и дипломатическа проверка; те не потвърждават, че сфера или тяло действително са намерени."
+      ],
+      "story_en": [
+        "On 8 November 1963, Rio de Janeiro radio station Tupi reported that a metal sphere with windows had fallen in the center of Conde, Bahia, leaving a crater and a body inside. The Foreign Broadcast Information Service recorded the broadcast, and an inquiry was sent to the U.S. State Department on 13 November.",
+        "The embassy in Rio and the consulate in Salvador sought local information. In a cable dated 14 November, the consul reported that no one in the area had seen the object and described the story as apparently fabricated in Rio.",
+        "The consul mentioned that a public-security official had speculated about a weather balloon, but no sighting was verified. A 20 November diplomatic airgram relayed a denial attributed to Brazil's Ministry of Aeronautics and reports of local newspaper rebuttals.",
+        "The State Department marked the airgram “NOTED — NO ACTION.” The records establish a radio report and a diplomatic inquiry; they do not confirm that a sphere or a body was found."
+      ],
+      "references": [
+        {"name": "NASC Inquiry into Bahia incident, 13 November 1963, EOP-UAP-D001", "url": "https://www.war.gov/medialink/ufo/release_05/Aug_07/documents/EOP-UAP-D001_NASC-Inquiry-into-Bahia-Brazil-Incident_November-13-1963.pdf"},
+        {"name": "U.S. State Department cable on Brazil, 14 November 1963, DOS-UAP-D001", "url": "https://www.war.gov/medialink/ufo/release_05/Aug_07/documents/DOS-UAP-D001_Diplomatic-Cable_Brazil_November-14-1963.pdf"},
+        {"name": "U.S. State Department airgram on Brazil, 20 November 1963, DOS-UAP-D002", "url": "https://www.war.gov/medialink/ufo/release_05/Aug_07/documents/DOS-UAP-D002_Diplomatic-Cable_Brazil_November-20-1963.pdf"}
+      ]
+    },
+    "newfoundland-1955": {
+      "title_bg": "KC-97 край Newfoundland — радарният отчет и визуалното наблюдение",
+      "summary_bg": "На 6 юли 1955 г. екипаж на KC-97 съобщава за обект край Newfoundland, докато земен радар регистрира отметка в района. Комитет на Военновъздушните сили не успява да съгласува двата отчета и класифицира случая като неидентифициран.",
+      "story_bg": [
+        "На 6 юли 1955 г. екипаж на американски танкер KC-97 съобщава за неидентифициран обект във въздушното пространство на Newfoundland. Земен радар в същия район получава отметка, която според документа изглежда свързана с обекта, наблюдаван от екипажа.",
+        "Комитет на щаба на Военновъздушните сили на САЩ отбелязва, че не може да обясни едновременното наличие на радарни връщания и визуални наблюдения. Той временно приема оценката на Northeast Air Command за електрическо явление и погрешно тълкуване от екипажа.",
+        "В доклада случаят е класифициран като неидентифициран летящ обект и се препоръчва в бъдещи подобни ситуации изтребители да бъдат изпращани без забавяне. Комитетът не посочва какво точно е било предполагаемото електрическо явление.",
+        "Публикуваното досие не съдържа първоначалните разкази на екипажа, суровите радарни данни или всички оригинални съобщения. Затова то не позволява независимо възстановяване на траекторията или окончателна идентификация."
+      ],
+      "story_en": [
+        "On 6 July 1955, the crew of a U.S. KC-97 tanker reported an unidentified airborne object in the Newfoundland area. Ground radar in the same area obtained a return that the record says apparently corresponded to the object the crew was watching.",
+        "A Headquarters U.S. Air Force intelligence committee said it could not explain the simultaneous ground-radar returns and aircrew visual sightings. It tentatively accepted Northeast Air Command's assessment of an electrical phenomenon and misinterpretation by the crew.",
+        "The report classified the incident as an unidentified flying object and recommended that fighters be scrambled without delay in future incidents of this kind. It did not identify the specific electrical phenomenon proposed as an explanation.",
+        "The released file does not contain the crew's original accounts, raw radar data or all initial messages. It therefore does not allow an independent reconstruction of the track or a definitive identification."
+      ],
+      "references": [
+        {"name": "Joint U.S.-Canadian Aviation Projects and UFO Sighting Reports, 1954–1955, DOW-UAP-D095", "url": "https://www.war.gov/medialink/ufo/071026/release_04/documents/DOW-UAP-D095_Joint-US-Canadian-Aviation-Projects-and-UFO-Sighting-Reports_1954-1955.pdf"}
+      ]
+    },
+    "russell-1955": {
+      "title_bg": "Влакът от Baku — четири разказа и оценката на ЦРУ",
+      "summary_bg": "През октомври 1955 г. четирима американци във влак от Baku към Tiflis съобщават за различни светлини край летище. ЦРУ заключава, че само един разказ подкрепя идеята за необичаен самолет, а доказателствата не установяват нов съветски тип.",
+      "story_bg": [
+        "През октомври 1955 г. четирима американци във влак от Baku към Tiflis съобщават за светлини, издигащи се край летище между железопътната линия и Каспийско море. Документите показват, че разказите им се различават и не непременно описват един и същ обект.",
+        "В рамките на около шест седмици ЦРУ подготвя няколко документа: бележки след интервю с един участник, след разговори с четиримата и информационен доклад без окончателна оценка. Пакетът съхранява както наблюденията, така и административната им обработка.",
+        "В обобщение от 31 октомври помощник-директорът на ЦРУ пише, че само показанията на полковник Hathaway подкрепят съществуването на летяща чиния или радикално необичаен самолет. Останалите наблюдения вероятно могат да се обяснят с рязко изкачващи се самолети или ракети.",
+        "Същото обобщение казва, че доказателствата не са достатъчно надеждни, за да се заключи, че СССР е разработил нов тип самолет. Това е оценка на ЦРУ от 1955 г.; тя не идентифицира със сигурност всеки видян обект."
+      ],
+      "story_en": [
+        "In October 1955, four Americans aboard a train from Baku to Tiflis reported lights rising near an airfield between the railway and the Caspian Sea. The documents show that their accounts differed and did not necessarily describe the same object.",
+        "Over roughly six weeks, the CIA prepared several records: notes after interviewing one participant, a memorandum after debriefing all four, and an information report without a final evaluation. The collection preserves both the observations and their administrative review.",
+        "In a summary dated 31 October, the CIA's Assistant Director for Scientific Intelligence wrote that only Colonel Hathaway's testimony supported flying saucers or radically unconventional aircraft. The other observations could probably be explained as steep-climbing aircraft or missiles.",
+        "The same summary said the evidence was not firm enough to conclude that the Soviet Union had developed a radically new aircraft. This is the CIA's 1955 assessment; it does not identify every reported object with certainty."
+      ],
+      "references": [
+        {"name": "CIA Analysis of Unconventional Aircraft Sightings, 31 October 1955, DOW-UAP-D021", "url": "https://www.war.gov/medialink/ufo/071026/release_04/documents/CIA-UAP-D021_Analysis-of-Unconventional-Aircraft-Sightings_1955.pdf"},
+        {"name": "CIA Memorandum on Unconventional Aircraft Sightings, 1955, DOW-UAP-D020", "url": "https://www.war.gov/medialink/ufo/071026/release_04/documents/CIA-UAP-D020_Memorandum-on-Unconventional-Aircraft-Sightings_1955.pdf"},
+        {"name": "CIA Sighting of Unconventional Aircraft, DOW-UAP-006", "url": "https://www.war.gov/medialink/ufo/061226/release_03/documents/CIA-UAP-006_Sighting_of_Unconventional_Aircraft.pdf"}
+      ]
+    }
+  }
+}
