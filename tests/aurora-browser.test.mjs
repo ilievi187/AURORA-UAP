@@ -75,7 +75,7 @@ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
 const port=server.address().port;
 let browser;
 try{
-  browser=await chromium.launch({headless:true});
+  browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{})});
   await test("news automatically renders generated language text and exposes original title",async()=>{
     const ctx=await browser.newContext({viewport:{width:1200,height:800},reducedMotion:"reduce"});
     const page=await ctx.newPage(),errors=[],queryLanguages=[];
@@ -209,7 +209,7 @@ try{
     assert.deepEqual(errors,[]);
     await context.close();
   });
-  await test('Mission Control demo tabs, localized steps and case shortcuts work in a real browser',async()=>{
+  await test('Mission Control stages remain localized while fictional case shortcuts stay retired',async()=>{
     const context=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'reduce'});
     const page=await context.newPage(),errors=[];
     page.on('pageerror',e=>errors.push(e.message));
@@ -235,10 +235,29 @@ try{
     await page.locator('#controlTab3').focus();
     await page.keyboard.press('Home');
     assert.equal(await page.locator('#controlStageTitle').textContent(),'Document the observation');
-    assert.equal(await page.locator('#controlCaseButtons button').count(),3);
-    await page.locator('#controlCaseButtons button').first().click();
-    assert.equal(await page.locator('#caseDialog').evaluate(el=>el.open),true,'demo case dialog is opened');
-    await page.locator('#caseClose').click();
+    assert.equal(await page.locator('#controlCaseButtons button').count(),0);
+    assert.equal(await page.locator('#controlCaseButtons a[href="/archive.html"]').count(),1);
+    assert.equal(await page.locator('#caseDialog').count(),0);
+    assert.equal(await page.locator('#reportDialog').count(),0);
+    for(const title of ['Три светлини над гора','Дискообразен силует над море','Инфрачервен запис от полет'])
+      assert.equal(await page.getByText(title,{exact:true}).count(),0,'fictional sample removed: '+title);
+    for(const locale of ['bg','en','de','ru','zh-CN','fr','es','it','pt','tr','ro','el','sr','uk','pl','ar','ja','ko']){
+      const copy=await page.evaluate(async lang=>{
+        const select=document.querySelector('#langToggle');
+        if(![...select.options].some(option=>option.value===lang)){
+          const option=document.createElement('option');option.value=lang;option.textContent=lang;select.append(option);
+        }
+        select.value=lang;select.dispatchEvent(new Event('change',{bubbles:true}));
+        await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+        return {
+          archive:document.querySelector('#controlCaseButtons a')?.textContent.trim()||'',
+          report:document.querySelector('.footer-report-note')?.textContent.trim()||''
+        };
+      },locale);
+      assert.ok(copy.archive.length>0,'localized archive action for '+locale);
+      assert.ok(copy.report.length>0,'localized local-draft disclosure for '+locale);
+      assert.equal(await page.locator('#controlCaseButtons a').getAttribute('href'),'/archive.html');
+    }
 
     assert.equal(await page.locator('#historicDemoMap').count(),0);
     assert.equal(await page.locator('.prototype-notice').count(),0);
@@ -339,7 +358,36 @@ try{
     assert.equal(await page.locator('.case-details .case-dossier-link').getAttribute('href'),'/cases/aaro-pr-2013');
     assert.ok((await page.locator('.case-details a[target="_blank"]').getAttribute('href')).startsWith('https://www.aaro.mil/'));
     assert.equal(await page.locator('#reportLink').getAttribute('href'),'/report.html?country=PR');
+    await page.locator('#reportLink').click();
+    await page.waitForURL('**/report.html?country=PR');
+    await page.waitForFunction(()=>document.querySelector('#country')?.value==='PR');
+    assert.equal(await page.locator('#sendReport').isDisabled(),true,'public intake remains disabled');
     assert.deepEqual(errors,[]);
+    await context.close();
+  });
+  await test('malformed canonical storage does not hide a legacy local homepage draft',async()=>{
+    const context=await browser.newContext({viewport:{width:1280,height:850},reducedMotion:'reduce'});
+    const page=await context.newPage(),submissions=[];
+    page.on('request',request=>{
+      if(request.method()==='POST'&&new URL(request.url()).pathname==='/api/intake/submit')submissions.push(request.url());
+    });
+    await context.addInitScript(()=>{
+      localStorage.setItem('aurora-demo-draft',JSON.stringify({
+        country:'BG',place:'Shumen',date:'2026-10-31T19:20',type:'light',
+        description:'A locally saved observation draft with enough detail to preserve the original notes.'
+      }));
+      localStorage.setItem('aurora-private-text-report-draft-v1','{malformed canonical JSON');
+    });
+    await page.goto('http://127.0.0.1:'+port+'/report.html');
+    await page.waitForFunction(()=>JSON.parse(localStorage.getItem('aurora-private-text-report-draft-v1')||'null')?.location==='Shumen');
+    assert.equal(await page.locator('#country').inputValue(),'BG');
+    assert.equal(await page.locator('#location').inputValue(),'Shumen');
+    assert.equal(await page.locator('#occurred').inputValue(),'2026-10-31T19:20');
+    assert.equal(await page.locator('#category').inputValue(),'lights');
+    assert.equal(await page.locator('#description').inputValue(),'A locally saved observation draft with enough detail to preserve the original notes.');
+    assert.equal(await page.evaluate(()=>localStorage.getItem('aurora-demo-draft')),null);
+    assert.equal(await page.locator('#sendReport').isDisabled(),true);
+    assert.deepEqual(submissions,[]);
     await context.close();
   });
   await test('V1.4 mobile country explorer and globe do not overflow or expose DEMO totals',async()=>{

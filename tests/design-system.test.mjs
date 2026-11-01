@@ -11,8 +11,8 @@ test("all pages share base tokens and interiors layer their unique editorial ski
 });
 test("retired demo UI removed while approved archive, globe, media and language remain",()=>{
  const html=read("index.html");
- for(const key of ['id="historicDemoMap"','id="mapPins"','class="prototype-notice"','class="data-hub"','class="feature-grid"','class="signal-ribbon"'])assert.ok(!html.includes(key),key+" removed");
- for(const key of ['id="worldAtlas"','id="worldMapPins"','id="homeNewsGrid"','id="controlTabs"','id="caseGlobe"','id="reportGrid"','id="languageGate"','id="reportDialog"','id="caseDialog"'])assert.ok(html.includes(key),key+" kept");
+ for(const key of ['id="historicDemoMap"','id="mapPins"','class="prototype-notice"','class="data-hub"','class="feature-grid"','class="signal-ribbon"','id="reportDialog"','id="caseDialog"'])assert.ok(!html.includes(key),key+" removed");
+ for(const key of ['id="worldAtlas"','id="worldMapPins"','id="homeNewsGrid"','id="controlTabs"','id="caseGlobe"','id="reportGrid"','id="languageGate"'])assert.ok(html.includes(key),key+" kept");
 });
 test("homepage archive-first CTA, navigation labels, and abandoned demo guard",()=>{
  const html=read("index.html"),script=read("script.js");

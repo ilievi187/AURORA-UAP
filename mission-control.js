@@ -12,7 +12,7 @@
   const count=root.querySelector("#controlCounter");
   const next=root.querySelector("#controlNext");
   const visualStage=root.querySelector("#controlVisualStage");
-  const feed=root.querySelector("#controlCaseButtons");
+
   const changes={
     bg:{
       heading:"КОМАНДЕН ЦЕНТЪР",
@@ -20,7 +20,6 @@
       phaseLabel:"ИЗБЕРИ ЕТАП",disclaimer:"Илюстративен процес. Не обработваме реални сигнали онлайн.",
       phase0:"Регистриране",phase1:"Проверка",phase2:"Анализ",phase3:"Заключение",
       activeStage:"АКТИВЕН ЕТАП",next:"СЛЕДВАЩ ЕТАП",methodLink:"ВИЖ МЕТОДИКАТА",
-      feedLabel:"ПРИМЕРНИ ДОСИЕТА / ДЕМО",feedIntro:"Разгледай примерните случаи или отвори пълния архив.",
       archiveLink:"КЪМ АРХИВА",navControl:"Център",
       items:[
         ["Регистриране на наблюдението","Започваме със свидетелството: кога, къде и при какви условия е наблюдавано явлението.",["Дата, час и местоположение","Свидетели, описание и условия","Оригинални снимки и видео"]],
@@ -35,7 +34,6 @@
       phaseLabel:"SELECT A STAGE",disclaimer:"Illustrative workflow. Real sightings are not processed online.",
       phase0:"Document",phase1:"Verify",phase2:"Analyze",phase3:"Conclude",
       activeStage:"ACTIVE STAGE",next:"NEXT STAGE",methodLink:"OUR METHODS",
-      feedLabel:"EXAMPLE CASE FILES / DEMO",feedIntro:"Explore fictional examples or browse the complete demo archive.",
       archiveLink:"OPEN ARCHIVE",navControl:"Control",
       items:[
         ["Document the observation","Start with first-hand facts: when, where, and under what conditions did the observation occur?",["Date, time and location","Witness account and conditions","Original photos and footage"]],
@@ -49,7 +47,6 @@
       phaseLabel:"PHASE AUSWÄHLEN",disclaimer:"Nur Demo-Prozess. Es werden online keine echten Meldungen verarbeitet.",
       phase0:"Dokumentieren",phase1:"Prüfen",phase2:"Analysieren",phase3:"Fazit",
       activeStage:"AKTIVE PHASE",next:"NÄCHSTE PHASE",methodLink:"METHODIK",
-      feedLabel:"BEISPIELFÄLLE / DEMO",feedIntro:"Fiktive Fälle ansehen oder das Demo-Archiv öffnen.",
       archiveLink:"ZUM ARCHIV",navControl:"Zentrale",
       items:[
         ["Beobachtung dokumentieren","Zuerst erfassen wir Zeitpunkt, Ort und Umstände der Beobachtung.",["Datum, Uhrzeit und Ort","Zeugenaussagen und Kontext","Unveränderte Fotos und Videos"]],
@@ -63,7 +60,6 @@
       phaseLabel:"ВЫБЕРИТЕ ЭТАП",disclaimer:"Демонстрационный процесс. Реальные сообщения пока не обрабатываются.",
       phase0:"Документация",phase1:"Проверка",phase2:"Анализ",phase3:"Вывод",
       activeStage:"ТЕКУЩИЙ ЭТАП",next:"СЛЕДУЮЩИЙ ЭТАП",methodLink:"МЕТОДИКА",
-      feedLabel:"ПРИМЕРЫ ДЕЛ / ДЕМО",feedIntro:"Изучите вымышленные примеры или откройте архив.",
       archiveLink:"ОТКРЫТЬ АРХИВ",navControl:"Центр",
       items:[
         ["Документирование наблюдения","Записываем время, место и условия, при которых произошло наблюдение.",["Дата, время и место","Свидетели и обстоятельства","Оригинальные фото и видео"]],
@@ -77,7 +73,6 @@
       phaseLabel:"选择阶段",disclaimer:"仅为示范流程，暂不在线处理真实报告。",
       phase0:"记录",phase1:"核查",phase2:"分析",phase3:"结论",
       activeStage:"当前阶段",next:"下一阶段",methodLink:"研究方法",
-      feedLabel:"案例样例 / 演示",feedIntro:"浏览虚构样例或打开完整演示档案。",
       archiveLink:"打开档案",navControl:"控制中心",
       items:[
         ["记录观察","首先记录现象出现的时间、地点和具体环境。",["日期、时间与地点","目击者描述与环境","原始照片和视频"]],
@@ -91,7 +86,6 @@
       phaseLabel:"CHOISIR UNE ÉTAPE",disclaimer:"Processus illustratif. Les vrais signalements ne sont pas traités en ligne.",
       phase0:"Documenter",phase1:"Vérifier",phase2:"Analyser",phase3:"Conclure",
       activeStage:"ÉTAPE ACTIVE",next:"ÉTAPE SUIVANTE",methodLink:"NOTRE MÉTHODE",
-      feedLabel:"DOSSIERS D'EXEMPLE / DÉMO",feedIntro:"Explorez des exemples fictifs ou ouvrez les archives complètes.",
       archiveLink:"OUVRIR L'ARCHIVE",navControl:"Centre",
       items:[
         ["Documenter l'observation","Commencer par les faits de première main : quand, où et dans quelles conditions ?",["Date, heure et lieu","Témoignages et conditions","Photos et vidéos originales"]],
@@ -105,7 +99,6 @@
       phaseLabel:"SELECCIONAR ETAPA",disclaimer:"Flujo ilustrativo. Los informes reales no se procesan en línea.",
       phase0:"Documentar",phase1:"Verificar",phase2:"Analizar",phase3:"Concluir",
       activeStage:"ETAPA ACTIVA",next:"SIGUIENTE ETAPA",methodLink:"METODOLOGÍA",
-      feedLabel:"CASOS DE EJEMPLO / DEMO",feedIntro:"Explora ejemplos ficticios o abre el archivo completo.",
       archiveLink:"ABRIR ARCHIVO",navControl:"Control",
       items:[
         ["Documentar la observación","Empezar por los datos directos: ¿cuándo, dónde y en qué condiciones ocurrió?",["Fecha, hora y lugar","Testimonios y condiciones","Fotos y vídeos originales"]],
@@ -119,7 +112,6 @@
       phaseLabel:"SELEZIONA FASE",disclaimer:"Flusso dimostrativo. Le segnalazioni reali non vengono elaborate online.",
       phase0:"Documentare",phase1:"Verificare",phase2:"Analizzare",phase3:"Concludere",
       activeStage:"FASE ATTIVA",next:"FASE SUCCESSIVA",methodLink:"METODOLOGIA",
-      feedLabel:"CASI DI ESEMPIO / DEMO",feedIntro:"Esplora esempi fittizi o apri l'archivio completo.",
       archiveLink:"APRI ARCHIVIO",navControl:"Controllo",
       items:[
         ["Documentare l'osservazione","Partiamo dai dati diretti: quando, dove e in quali condizioni è avvenuta?",["Data, ora e luogo","Testimonianze e condizioni","Foto e filmati originali"]],
@@ -133,7 +125,6 @@
       phaseLabel:"SELECIONAR ETAPA",disclaimer:"Fluxo ilustrativo. Relatos reais não são processados online.",
       phase0:"Documentar",phase1:"Verificar",phase2:"Analisar",phase3:"Concluir",
       activeStage:"ETAPA ATIVA",next:"PRÓXIMA ETAPA",methodLink:"METODOLOGIA",
-      feedLabel:"CASOS DE EXEMPLO / DEMO",feedIntro:"Explore exemplos fictícios ou abra o arquivo completo.",
       archiveLink:"ABRIR ARQUIVO",navControl:"Controlo",
       items:[
         ["Documentar a observação","Começamos pelos factos diretos: quando, onde e em que condições ocorreu?",["Data, hora e localização","Testemunhos e condições","Fotos e vídeos originais"]],
@@ -147,7 +138,6 @@
       phaseLabel:"AŞAMA SEÇİN",disclaimer:"Örnek iş akışıdır. Gerçek bildirimler çevrimiçi işlenmez.",
       phase0:"Belgele",phase1:"Doğrula",phase2:"Analiz Et",phase3:"Sonuçlandır",
       activeStage:"AKTİF AŞAMA",next:"SONRAKİ AŞAMA",methodLink:"METODOLOJİ",
-      feedLabel:"ÖRNEK DOSYALAR / DEMO",feedIntro:"Kurgusal örnekleri inceleyin veya arşivi açın.",
       archiveLink:"ARŞİVİ AÇ",navControl:"Merkez",
       items:[
         ["Gözlemi belgele","İlk elden olgularla başlarız: gözlem ne zaman, nerede ve hangi koşullarda gerçekleşti?",["Tarih, saat ve konum","Tanık anlatımı ve koşullar","Orijinal fotoğraf ve videolar"]],
@@ -161,7 +151,6 @@
       phaseLabel:"SELECTEAZĂ ETAPA",disclaimer:"Flux demonstrativ. Semnalările reale nu sunt procesate online.",
       phase0:"Documentare",phase1:"Verificare",phase2:"Analiză",phase3:"Concluzie",
       activeStage:"ETAPĂ ACTIVĂ",next:"ETAPA URMĂTOARE",methodLink:"METODOLOGIE",
-      feedLabel:"DOSARE EXEMPLU / DEMO",feedIntro:"Explorează exemple fictive sau deschide arhiva completă.",
       archiveLink:"DESCHIDE ARHIVA",navControl:"Control",
       items:[
         ["Documentarea observației","Începem cu datele directe: când, unde și în ce condiții a avut loc observația?",["Data, ora și locația","Mărturii și condiții","Fotografii și filmări originale"]],
@@ -175,7 +164,6 @@
       phaseLabel:"ΕΠΙΛΟΓΗ ΣΤΑΔΙΟΥ",disclaimer:"Ενδεικτική ροή εργασίας. Οι πραγματικές αναφορές δεν υποβάλλονται σε ζωντανή επεξεργασία.",
       phase0:"Καταγραφή",phase1:"Έλεγχος",phase2:"Ανάλυση",phase3:"Συμπέρασμα",
       activeStage:"ΕΝΕΡΓΟ ΣΤΑΔΙΟ",next:"ΕΠΟΜΕΝΟ ΣΤΑΔΙΟ",methodLink:"ΜΕΘΟΔΟΛΟΓΙΑ",
-      feedLabel:"ΕΝΔΕΙΚΤΙΚΟΙ ΦΑΚΕΛΟΙ / DEMO",feedIntro:"Εξερευνήστε εικονικά παραδείγματα ή ανοίξτε το πλήρες αρχείο.",
       archiveLink:"ΑΝΟΙΓΜΑ ΑΡΧΕΙΟΥ",navControl:"Κέντρο",
       items:[
         ["Καταγραφή της παρατήρησης","Ξεκινάμε με τα πρωτογενή στοιχεία: πότε, πού και υπό ποιες συνθήκες συνέβη;",["Ημερομηνία, ώρα και τοποθεσία","Μαρτυρίες και συνθήκες","Πρωτότυπες φωτογραφίες και βίντεο"]],
@@ -189,7 +177,6 @@
       phaseLabel:"ИЗАБЕРИ ФАЗУ",disclaimer:"Илустративни процес. Стварне пријаве се не обрађују онлајн.",
       phase0:"Документовање",phase1:"Провера",phase2:"Анализа",phase3:"Закључак",
       activeStage:"АКТИВНА ФАЗА",next:"СЛЕДЕЋА ФАЗА",methodLink:"МЕТОДОЛОГИЈА",
-      feedLabel:"ПРИМЕРИ ДОСИЈЕА / ДЕМО",feedIntro:"Прегледај фиктивне примере или отвори комплетан архив.",
       archiveLink:"ОТВОРИ АРХИВ",navControl:"Центар",
       items:[
         ["Документовање посматрања","Почињемо од основних чињеница: када, где и под којим условима се догодило?",["Датум, време и локација","Сведочење и услови","Оригиналне фотографије и снимци"]],
@@ -203,7 +190,6 @@
       phaseLabel:"ОБЕРІТЬ ЕТАП",disclaimer:"Ілюстративний процес. Реальні повідомлення не обробляються онлайн.",
       phase0:"Документування",phase1:"Перевірка",phase2:"Аналіз",phase3:"Висновок",
       activeStage:"АКТИВНИЙ ЕТАП",next:"НАСТУПНИЙ ЕТАП",methodLink:"МЕТОДИКА",
-      feedLabel:"ПРИКЛАДИ ДОСЬЄ / ДЕМО",feedIntro:"Перегляньте умовні приклади або відкрийте повний архів.",
       archiveLink:"ВІДКРИТИ АРХІВ",navControl:"Центр",
       items:[
         ["Документування спостереження","Починаємо з первинних фактів: коли, де та за яких умов відбулося явище?",["Дата, час і місце","Свідчення та умови","Оригінальні фото й відео"]],
@@ -217,7 +203,6 @@
       phaseLabel:"WYBIERZ ETAP",disclaimer:"Proces poglądowy. Prawdziwe zgłoszenia nie są przetwarzane online.",
       phase0:"Dokumentacja",phase1:"Weryfikacja",phase2:"Analiza",phase3:"Wniosek",
       activeStage:"AKTYWNY ETAP",next:"NASTĘPNY ETAP",methodLink:"METODOLOGIA",
-      feedLabel:"PRZYKŁADOWE AKTA / DEMO",feedIntro:"Przeglądaj fikcyjne przykłady lub otwórz pełne archiwum.",
       archiveLink:"OTWÓRZ ARCHIWUM",navControl:"Centrum",
       items:[
         ["Udokumentowanie obserwacji","Zaczynamy od faktów z pierwszej ręki: kiedy, gdzie i w jakich warunkach nastąpiła obserwacja?",["Data, godzina i lokalizacja","Relacje świadków i warunki","Oryginalne zdjęcia i nagrania"]],
@@ -231,7 +216,6 @@
       phaseLabel:"اختر مرحلة",disclaimer:"مسار توضيحي فقط؛ لا تتم معالجة البلاغات الحقيقية عبر الإنترنت.",
       phase0:"توثيق",phase1:"تحقق",phase2:"تحليل",phase3:"خلاصة",
       activeStage:"المرحلة النشطة",next:"المرحلة التالية",methodLink:"منهجيتنا",
-      feedLabel:"ملفات تجريبية / عرض",feedIntro:"استكشف أمثلة افتراضية أو افتح الأرشيف الكامل.",
       archiveLink:"فتح الأرشيف",navControl:"التحكم",
       items:[
         ["توثيق المشاهدة","نبدأ بالحقائق المباشرة: متى وأين وتحت أي ظروف حدثت المشاهدة؟",["التاريخ والوقت والموقع","شهادة الشهود والظروف","الصور ومقاطع الفيديو الأصلية"]],
@@ -245,7 +229,6 @@
       phaseLabel:"ステージを選択",disclaimer:"例示用ワークフローです。実際の報告はオンライン処理されません。",
       phase0:"記録",phase1:"検証",phase2:"分析",phase3:"結論",
       activeStage:"現在のステージ",next:"次のステージ",methodLink:"方法論を見る",
-      feedLabel:"サンプル事例 / デモ",feedIntro:"架空のサンプルを見るか、アーカイブ全体を開きます。",
       archiveLink:"アーカイブを開く",navControl:"コントロール",
       items:[
         ["目撃情報の記録","まず一次事実を整理します。いつ、どこで、どのような状況で目撃されたのか。",["日時と場所","目撃証言と周囲の状況","オリジナルの写真と映像"]],
@@ -259,7 +242,6 @@
       phaseLabel:"단계 선택",disclaimer:"예시 워크플로입니다. 실제 제보는 온라인으로 자동 처리되지 않습니다.",
       phase0:"기록",phase1:"검증",phase2:"분석",phase3:"결론",
       activeStage:"현재 단계",next:"다음 단계",methodLink:"방법론 보기",
-      feedLabel:"예시 사례 / 데모",feedIntro:"가상의 예시를 살펴보거나 전체 아카이브를 여세요.",
       archiveLink:"아카이브 열기",navControl:"컨트롤",
       items:[
         ["목격 내용 기록","먼저 1차 사실을 정리합니다: 언제, 어디서, 어떤 조건에서 관측되었는가?",["날짜, 시간 및 위치","목격자 진술과 환경 조건","원본 사진 및 영상"]],
@@ -273,24 +255,6 @@
   function copy(){
     const lang=document.documentElement.lang;
     return changes[lang]||changes.en;
-  }
-  function renderFeed(){
-    feed.replaceChildren();
-    const available=typeof cases!=="undefined"&&Array.isArray(cases)?cases.slice(0,3):[];
-    for(const c of available){
-      const button=document.createElement("button");
-      button.type="button";
-      const n=document.createElement("span");n.textContent="DEMO / "+c.date;
-      const t=document.createElement("strong");const language=document.documentElement.lang;
-      t.textContent=(c.title[language]||c.title.en);
-      button.append(n,t);
-      button.setAttribute("aria-label","DEMO: "+t.textContent);
-      button.addEventListener("click",()=>{
-        if(typeof openCase==="function")openCase(c);
-        else location.hash="#reports";
-      });
-      feed.append(button);
-    }
   }
   function render(focus=false){
     const d=copy();
@@ -320,7 +284,6 @@
     root.classList.remove("panel-transition");
     void root.offsetWidth;
     root.classList.add("panel-transition");
-    renderFeed();
   }
   function activate(index,focus=false){
     active=(index+tabs.length)%tabs.length;

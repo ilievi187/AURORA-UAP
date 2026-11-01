@@ -87,16 +87,9 @@
 .mission-console[data-phase="1"] .console-progress i:nth-child(-n+2),
 .mission-console[data-phase="2"] .console-progress i:nth-child(-n+3),
 .mission-console[data-phase="3"] .console-progress i:nth-child(-n+4){background:var(--mc-accent);box-shadow:0 0 12px #8cffff55}
-.console-feed{display:flex;gap:26px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+.console-feed{display:flex;gap:26px;align-items:center;justify-content:flex-end;flex-wrap:wrap;
  padding:23px 0 0;border-top:1px solid #47767e7c;margin-top:20px}
-.console-feed>div:first-child{max-width:270px}
-.console-feed-label{font:10px/1.3 Consolas,monospace;color:#9feef0;letter-spacing:.15em}
-.console-feed p{color:#8eabb1;font-size:11px;margin:7px 0 0}
-.console-case-buttons{display:flex;flex-wrap:wrap;gap:7px;flex:1}
-.console-case-buttons button{padding:11px 13px;font:11px/1.4 Consolas,monospace;letter-spacing:.02em;
- border:1px solid #387e888e;background:#0a2026;color:#bbe8e9;border-radius:2px;text-align:left;cursor:pointer;max-width:205px}
-.console-case-buttons button:hover{border-color:#a7faff;color:#fff;background:#133843}
-.console-case-buttons button span{display:block;color:#75abad;font-size:9px;margin-bottom:5px;letter-spacing:.1em}
+.console-archive-action{margin-left:auto}
 .console-archive-link{white-space:nowrap}
 .mission-console.panel-transition .console-detail h3,.mission-console.panel-transition .console-detail>p,
 .mission-console.panel-transition .console-checklist{animation:console-update .42s ease both}
@@ -132,8 +125,7 @@
  .console-detail{grid-column:1;padding:21px 18px 25px}
  .console-detail h3{font-size:24px}
  .console-feed{align-items:flex-start;gap:16px}
- .console-case-buttons{flex-basis:100%}
- .console-case-buttons button{flex:1;min-width:110px}
+ .console-archive-action{margin-left:0}
 }
 @media(prefers-reduced-motion:reduce){
  .console-status-light,.console-visual:after,.console-orbit,.console-sweep,.console-core span,

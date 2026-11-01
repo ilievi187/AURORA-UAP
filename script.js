@@ -89,16 +89,27 @@ const premiumNavLabels={
 };
 for(const [locale,labels] of Object.entries(premiumNavLabels))Object.assign(translations[locale],labels);
 
-const cases = [
-  {id:'m1',city:{bg:'Монтана, САЩ',en:'Montana, USA'},title:{bg:'Три светлини над гора',en:'Three lights above a forest'},description:{bg:'Илюстрация на сигнал за три синхронно движещи се светлини. Методика: проверка за дронове, самолети и перспективни ефекти.',en:'Illustrative report of three lights moving together. Research path: check drones, aircraft, and perspective effects.'},date:'2026-10-19',type:'light',video:false,px:20,py:30,img:'assets/report-triangle.webp'},
-  {id:'m2',city:{bg:'Япония',en:'Japan'},title:{bg:'Дискообразен силует над море',en:'Disc-like silhouette above the sea'},description:{bg:'Примерен случай за анализ на снимка: оригинален файл, фокусно разстояние, атмосферни условия и възможни оптични ефекти.',en:'Sample image-analysis case: original file, focal length, weather conditions, and potential optical artifacts.'},date:'2026-10-17',type:'object',video:false,px:84,py:39,img:'assets/report-ocean.webp'},
-  {id:'m3',city:{bg:'Черно море',en:'Black Sea'},title:{bg:'Инфрачервен запис от полет',en:'Infrared footage from a flight'},description:{bg:'Демо на проверка на инфрачервен кадър: стабилизация, метаданни, паралакс и възможна грешна интерпретация на сензора.',en:'Demo examination of an infrared frame: stabilization, metadata, parallax, and potential sensor misinterpretation.'},date:'2026-10-15',type:'object',video:true,px:55,py:38,img:'assets/report-infrared.webp'},
-  {id:'m4',city:{bg:'Барселона, Испания',en:'Barcelona, Spain'},title:{bg:'Светещи точки над града',en:'Luminous points over a city'},description:{bg:'Пример за няколко светлинни източника в нощно небе, проверявани спрямо астрономически и авиационни данни.',en:'A sample of several lights in the night sky, checked against astronomical and aviation data.'},date:'2026-10-12',type:'light',video:true,px:45,py:32,img:'assets/report-orbs.webp'},
-  {id:'m5',city:{bg:'Шумен, България',en:'Shumen, Bulgaria'},title:{bg:'Необичайна светлина над хоризонта',en:'Unusual light on the horizon'},description:{bg:'Демонстрация как местните наблюдения могат да се съпоставят със звезди, спътници и летателни апарати.',en:'Demonstrates how local observations can be compared with stars, satellites, and aircraft.'},date:'2026-10-10',type:'light',video:false,px:52,py:35,img:'assets/report-orbs.webp'},
-  {id:'m6',city:{bg:'Буенос Айрес, Аржентина',en:'Buenos Aires, Argentina'},title:{bg:'Неясен обект на видеозапис',en:'Unclear object in a video'},description:{bg:'Пример за анализ на компресия, цифрово увеличение, движение на камерата и липсващ контекст.',en:'Example analysis of compression, digital zoom, camera movement, and missing context.'},date:'2026-10-09',type:'object',video:true,px:27,py:78,img:'assets/report-infrared.webp'},
-  {id:'m7',city:{bg:'Норвегия',en:'Norway'},title:{bg:'Светлина в облачна нощ',en:'Light on a cloudy night'},description:{bg:'Учебен сценарий за съпоставка с атмосферни явления и възможни наземни източници на светлина.',en:'Educational scenario comparing atmospheric phenomena and possible ground-based light sources.'},date:'2026-10-08',type:'light',video:false,px:49,py:17,img:'assets/report-triangle.webp'},
-  {id:'m8',city:{bg:'Австралия',en:'Australia'},title:{bg:'Тъмен силует по здрач',en:'Dark silhouette at twilight'},description:{bg:'Демонстрация на необходимостта от мащаб, ориентир, автентичен файл и независими свидетели.',en:'Demonstrates the need for scale, references, original files, and independent witnesses.'},date:'2026-10-07',type:'object',video:false,px:82,py:77,img:'assets/report-ocean.webp'}
-];
+const reportDraftNotes={
+ bg:"Публичното подаване е изключено. Черновата остава на устройството; нищо не се изпраща към сървър.",
+ en:"Public submissions are disabled. Drafts stay on your device; nothing is sent to a server.",
+ de:"Öffentliche Meldungen sind deaktiviert. Entwürfe bleiben auf deinem Gerät; nichts wird an einen Server gesendet.",
+ ru:"Публичная отправка отключена. Черновик остаётся на устройстве; данные не отправляются на сервер.",
+ "zh-CN":"公开提交尚未启用。草稿仅保存在你的设备上，不会发送到服务器。",
+ fr:"Les envois publics sont désactivés. Le brouillon reste sur votre appareil ; rien n’est envoyé au serveur.",
+ es:"El envío público está desactivado. El borrador queda en tu dispositivo; no se envía nada al servidor.",
+ it:"L’invio pubblico è disattivato. La bozza resta sul tuo dispositivo; non viene inviato nulla al server.",
+ pt:"O envio público está desativado. O rascunho fica no seu dispositivo; nada é enviado para um servidor.",
+ tr:"Herkese açık gönderim devre dışı. Taslak cihazında kalır; sunucuya hiçbir şey gönderilmez.",
+ ro:"Trimiterea publică este dezactivată. Ciorna rămâne pe dispozitivul tău; nimic nu este trimis către un server.",
+ el:"Η δημόσια υποβολή είναι απενεργοποιημένη. Το πρόχειρο μένει στη συσκευή σου· δεν αποστέλλεται τίποτα σε διακομιστή.",
+ sr:"Јавно слање је онемогућено. Нацрт остаје на уређају; ништа се не шаље серверу.",
+ uk:"Публічне надсилання вимкнене. Чернетка залишається на пристрої; нічого не надсилається на сервер.",
+ pl:"Publiczne zgłoszenia są wyłączone. Szkic pozostaje na Twoim urządzeniu; nic nie jest wysyłane na serwer.",
+ ar:"الإرسال العام معطّل. تبقى المسودة على جهازك ولا يُرسل أي شيء إلى الخادم.",
+ ja:"公開送信は無効です。下書きは端末に保存され、サーバーには何も送信されません。",
+ ko:"공개 제출은 비활성화되어 있습니다. 초안은 기기에만 저장되며 서버로 전송되지 않습니다."
+};
+for(const [locale,note] of Object.entries(reportDraftNotes))translations[locale].reportDraftNote=note;
 
 const SUPPORTED_LOCALES = ['bg','en','de','ru','zh-CN','fr','es','it','pt','tr','ro','el','sr','uk','pl','ar','ja','ko'];
 const HOME_TITLES = {
@@ -135,7 +146,6 @@ let lang = (()=>{
     return SUPPORTED_LOCALES.includes(s)?s:'bg';
   }catch(_){return 'bg';}
 })();
-let selectedId = null;
 let editorialCases=[];
 let editorialLoaded=false;
 let editorialError=false;
@@ -143,9 +153,6 @@ let archiveLocalization=null;
 let reportPageSize=24;
 const $ = selector => document.querySelector(selector);
 const txt = key => translations[lang]?.[key] || translations.en[key] || key;
-const reportDialog = $('#reportDialog');
-const caseDialog = $('#caseDialog');
-
 function syncHomeSeo() {
   let canonical = document.querySelector('link[rel="canonical"]');
   if (!canonical) {
@@ -167,37 +174,12 @@ function translate() {
   syncHomeSeo();
   renderMap();renderReports();
 }
-function filterCases() {
-  const type = document.querySelector('input[name="mapFilter"]:checked')?.value || 'all';
-  return cases.filter(c=>type==='all'||(type==='video'?c.video:c.type===type));
-}
 function renderMap(){
   const container=$('#mapPins');
-  if(!container)return; // Sourced world atlas replaces fictional legacy demo.
-  const list=filterCases();container.replaceChildren();
-  $('#visibleCount').textContent=list.length;
-  if (!list.some(c=>c.id===selectedId)) {selectedId=null;$('#mapTooltip').hidden=true;}
-  list.forEach(c=>{
-    const pin=document.createElement('button');pin.type='button';pin.className='map-pin';pin.style.left=`${c.px}%`;pin.style.top=`${c.py}%`;
-    pin.setAttribute('aria-label',`${(c.city[lang] || c.city.en)}: ${(c.title[lang] || c.title.en)} (DEMO)`);pin.setAttribute('aria-pressed',String(selectedId===c.id));pin.title=`DEMO — ${(c.city[lang] || c.city.en)}`;
-    pin.addEventListener('click',()=>selectPin(c));container.append(pin);
-  });
-  if(selectedId){const c=cases.find(x=>x.id===selectedId);if(c) updateTooltip(c);}
+  if(!container)return; // Retired demo markers must never reappear.
+  container.replaceChildren();
 }
-function updateTooltip(c){
-  $('#tooltipName').textContent=(c.city[lang] || c.city.en);$('#tooltipDate').textContent=(c.title[lang] || c.title.en);
-  $('#mapTooltip').hidden=false;
-  // Position popup away from the clicked marker when possible.
-  $('#mapTooltip').style.left=`${Math.max(8,Math.min(c.px,67))}%`;
-  $('#mapTooltip').style.bottom=`${Math.max(7,Math.min(100-c.py+3,78))}%`;
-}
-function selectPin(c){selectedId=c.id;updateTooltip(c);renderMap();}
-function openCase(c){
-  $('#caseTitle').textContent=(c.title[lang] || c.title.en);$('#caseImage').src=c.img;$('#caseDate').textContent=`${c.date} · ${(c.city[lang] || c.city.en)} · DEMO`;
-  $('#caseDescription').textContent=(c.description[lang] || c.description.en);caseDialog.showModal();
-}
-// This homepage panel intentionally uses the sourced case archive, never the
-// eight fictional cards used in the optional historical UI prototype.
+// The homepage preview reads only the source-backed editorial archive.
 const editorialText={
  bg:{loading:"Зареждаме архивните истории…",error:"Архивът временно не е достъпен. Използвай световната карта.",empty:"Няма случаи за това търсене.",more:"Покажи още случаи",count:"досиета с източници",media:"ВИДЕО",archive:"АРХИВ",art:"Илюстрация към случая — не оригинален кадър",heading:"СЛУЧАИ ОТ СВЕТА",kicker:"СВЕТОВЕН АРХИВ"},
  en:{loading:"Loading case files…",error:"The case archive is temporarily unavailable. Explore the world map.",empty:"No matching cases.",more:"Load more cases",count:"source-linked case files",media:"VIDEO",archive:"ARCHIVE",art:"Illustration only — not original footage",heading:"CASES FROM AROUND THE WORLD",kicker:"WORLD ARCHIVE"},
@@ -292,22 +274,6 @@ async function loadEditorialCases(){
  }
  renderReports();
 }
-function openReport(){
-  $('#formResponse').textContent='';
-  try {const draft=JSON.parse(localStorage.getItem('aurora-demo-draft')||'null');if(draft){$('#fPlace').value=draft.place||'';$('#fCountry').value=draft.country||'';$('#fDate').value=draft.date||'';$('#fType').value=draft.type||'light';$('#fDescription').value=draft.description||'';}}
-  catch (_) {/* No saved draft available. */}
-  reportDialog.showModal();
-}
-function saveReport(event){
-  event.preventDefault();
-  const data={country:$('#fCountry').value.trim().toUpperCase(),place:$('#fPlace').value.trim(),date:$('#fDate').value,type:$('#fType').value,description:$('#fDescription').value.trim()};
-  if(data.place.length<1||data.description.length<15||!data.date){$('#reportForm').reportValidity();return;}
-  try{localStorage.setItem('aurora-demo-draft',JSON.stringify(data));$('#formResponse').textContent=txt('saved');}catch(_){$('#formResponse').textContent=txt('storageError');}
-}
-function clearDraft(){
-  try{localStorage.removeItem('aurora-demo-draft');$('#reportForm').reset();$('#formResponse').textContent=txt('deleted');}
-  catch(_){$('#formResponse').textContent=txt('storageError');}
-}
 function setup(){
   $('#year').textContent=new Date().getFullYear();
   $('#langToggle').addEventListener('change', e=>{lang=e.target.value;try{localStorage.setItem('aurora-lang',lang);}catch(_){}translate();});
@@ -322,26 +288,10 @@ function setup(){
   };
   $('#mobileNav').addEventListener('keydown',dismissMobileNav);
   $('#menuToggle').addEventListener('keydown',dismissMobileNav);
-  document.querySelectorAll('[data-open-report]').forEach(btn=>btn.addEventListener('click',openReport));
-  $('#closeDialog').addEventListener('click',()=>reportDialog.close());$('#caseClose').addEventListener('click',()=>caseDialog.close());
-  reportDialog.addEventListener('click',e=>{if(e.target===reportDialog)reportDialog.close();});
-  caseDialog.addEventListener('click',e=>{if(e.target===caseDialog)caseDialog.close();});
-  $('#reportForm').addEventListener('submit',saveReport);$('#clearDraft').addEventListener('click',clearDraft);
   $('#reportSearch').addEventListener('input',()=>{reportPageSize=24;renderReports()});
-  document.querySelectorAll('input[name="mapFilter"]').forEach(x=>x.addEventListener('change',renderMap));
-  $('#tooltipRead')?.addEventListener('click',()=>{const c=cases.find(x=>x.id===selectedId);if(c)openCase(c);});
-  // Leave the selected language and drafts private to the current browser.
+  $('#tooltipRead')?.addEventListener('click',()=>{location.hash='#worldAtlas';});
+  // Keep the selected interface language private to this browser.
   translate();
   loadEditorialCases();
-  // Optional link from country explorer; still a local-only draft and NEVER submitted.
-  const url=new URL(location.href);
-  if(url.searchParams.get('report')==='draft'&&/^[A-Za-z]{2}$/.test(url.searchParams.get('country')||'')){
-    const requested=url.searchParams.get('country').toUpperCase();
-    window.addEventListener('aurora:gate-closed',()=>{
-      if(!reportDialog.open){openReport();$('#fCountry').value=requested;}
-      url.searchParams.delete('report');url.searchParams.delete('country');
-      history.replaceState(null,'',url.pathname+(url.search||'')+url.hash);
-    },{once:true});
-  }
 }
 setup();

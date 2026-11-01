@@ -34,9 +34,10 @@ test("all four hero metrics are faithful to available public archive, not fantas
  assert.doesNotThrow(()=>new Script(logic,{filename:"aurora-silence.js"}));
 });
 test("all 18 languages, sourced map, videos and reports remain accessible",()=>{
- for(const id of ["languageGate","heroHudCanvas","worldAtlas","worldMapCanvas","worldMapPins","homeNewsGrid","controlTabs","caseGlobe","reportGrid","reportDialog"]){
+ for(const id of ["languageGate","heroHudCanvas","worldAtlas","worldMapCanvas","worldMapPins","homeNewsGrid","controlTabs","caseGlobe","reportGrid"]){
   assert.ok(page.includes('id="'+id+'"'),"preserved "+id);
  }
+ assert.doesNotMatch(page,/id="(?:report|case)Dialog"/,"retired homepage dialogs stay removed");
  for(const path of ["archive.html","media.html","news.html","report.html"]){
   assert.ok(read(path).length>1000,path+" exists");
  }
