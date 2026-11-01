@@ -59,6 +59,7 @@
 .world-map-caption{max-width:850px}
 .world-case-detail .world-case-place{margin:0;color:#a8d9d5;font:12px/1.6 Consolas,monospace}
 .world-case-detail .world-location-note{margin:0;padding-top:8px;border-top:1px solid #36616e;color:#99bec3;font-size:11px}
+.world-case-detail .world-translation-disclosure{display:block;padding:8px 10px;border-left:2px solid #a9c9df;background:#0c1822;color:#c3d3df;font-size:10px;line-height:1.55}
 .world-case-detail .world-media-heading{margin:8px 0 0;font-size:12px;color:#b4ddd9}
 .world-media-links{display:grid;gap:8px;padding:0;margin:0;list-style:none}
 .world-media-links a{display:block;border-top:0!important;padding:9px 10px!important;background:#0a2530;color:#b9fff1!important;font:11px/1.5 Inter,"Segoe UI",sans-serif!important;letter-spacing:0}
@@ -74,6 +75,7 @@
 .world-result-meta{color:#91bdc2;font:10px/1.4 Consolas,monospace}
 .world-result strong{font-size:13px;line-height:1.35}
 .world-result-place,.world-result-unknown{color:#9bbcc1;font-size:11px;line-height:1.4}
+.world-result-language{display:block;padding:6px 7px;border-left:2px solid #a9c9df;background:#0c1822;color:#c3d3df;font-size:9px;line-height:1.45}
 .world-result-unknown{margin-top:auto;color:#c1b49d}
 .world-no-results{grid-column:1/-1;padding:18px;color:#b5d7db;background:#071b24;border:1px solid #2a64718c}
 .world-results-pagination{grid-column:1/-1;list-style:none}

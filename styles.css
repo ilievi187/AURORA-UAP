@@ -28,6 +28,7 @@
 #reports .report-card .date{margin-top:0;color:#9ab5c9}
 #reports .report-card h3{font-size:15px;line-height:1.35;margin:9px 0}
 #reports .report-card .desc{font-size:12px;line-height:1.65;color:#b6d6dc}
+#reports .report-card .archive-translation-disclosure{display:block;padding:8px 9px;border-left:2px solid #b7cbdc;background:#121d28;color:#c5d4e1;font-size:10px;line-height:1.55}
 #reports .report-badge{border-color:#3b927d;color:#acf3d9;background:#10382f}
 #reports .report-card:focus-visible{outline:3px solid #a4fff0;outline-offset:3px}
 @media(max-width:580px){#reports .report-card>img{height:125px}#reports .report-card h3{font-size:13px}}

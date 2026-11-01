@@ -80,6 +80,26 @@
   (x?.story?.bg||[]).some(p=>/^EN\s*[·:]/.test(String(p))||/Следва оригиналното описание на английски/.test(String(p)))
  );
  const translationRequested=new Set();
+ const narrativeDisclosureLabels={
+  bg:"Оригиналният разказ е на английски. Преводът не е наличен или е частичен.",
+  de:"Originalbericht auf Englisch; die Übersetzung ist nicht verfügbar oder unvollständig.",
+  ru:"Оригинальный рассказ на английском; перевод недоступен или неполон.",
+  fr:"Récit original en anglais ; traduction absente ou partielle.",
+  es:"Relato original en inglés; traducción no disponible o parcial.",
+  "zh-CN":"英文原文 · 翻译暂不可用或不完整。",
+  it:"Testo originale inglese · traduzione non disponibile o incompleta.",
+  pt:"Texto original em inglês · tradução indisponível ou parcial.",
+  tr:"İngilizce özgün metin · çeviri mevcut değil veya eksik.",
+  ro:"Text original în engleză · traducere indisponibilă sau parțială.",
+  el:"Αγγλικό πρωτότυπο · η μετάφραση δεν είναι διαθέσιμη ή είναι ελλιπής.",
+  sr:"Енглески изворни текст · превод није доступан или је непотпун.",
+  uk:"Англійський оригінал · переклад недоступний або неповний.",
+  pl:"Oryginalny tekst angielski · tłumaczenie niedostępne lub niepełne.",
+  ar:"النص الإنجليزي الأصلي · الترجمة غير متاحة أو غير مكتملة.",
+  ja:"英語の原文です。翻訳が利用できないか不完全です。",
+  ko:"영어 원문입니다. 번역이 없거나 불완전합니다。"
+ };
+ const narrativeDisclosureText=code=>narrativeDisclosureLabels[code]||"Original English narrative · Translation unavailable or partial";
  function narrativeDisclosure(record){
   const el=$("dossierTranslationDisclosure")||(()=>{
    const tag=document.createElement("p");tag.id="dossierTranslationDisclosure";
@@ -90,26 +110,7 @@
   const currentIsNative=Boolean(record?.title?.[language]&&record?.summary?.[language]&&
     Array.isArray(record?.story?.[language])&&!legacyBulgarian(record));
   if(language==="en"||currentIsNative){el.hidden=true;return}
-  const labels={
-   bg:"Оригиналният разказ е на английски. Преводът не е наличен или е частичен.",
-   de:"Originalbericht auf Englisch; die Übersetzung ist nicht verfügbar oder unvollständig.",
-   ru:"Оригинальный рассказ на английском; перевод недоступен или неполон.",
-   fr:"Récit original en anglais ; traduction absente ou partielle.",
-   es:"Relato original en inglés; traducción no disponible o parcial.",
-   "zh-CN":"英文原文 · 翻译暂不可用或不完整。",
-   it:"Testo originale inglese · traduzione non disponibile o incompleta.",
-   pt:"Texto original em inglês · tradução indisponível ou parcial.",
-   tr:"İngilizce özgün metin · çeviri mevcut değil veya eksik.",
-   ro:"Text original în engleză · traducere indisponibilă sau parțială.",
-   el:"Αγγλικό πρωτότυπο · η μετάφραση δεν είναι διαθέσιμη ή είναι ελλιπής.",
-   sr:"Енглески изворни текст · превод није доступан или је непотпун.",
-   uk:"Англійський оригінал · переклад недоступний або неповний.",
-   pl:"Oryginalny tekst angielski · tłumaczenie niedostępne lub niepełne.",
-   ar:"النص الإنجليزي الأصلي · الترجمة غير متاحة أو غير مكتملة.",
-   ja:"英語の原文です。翻訳が利用できないか不完全です。",
-   ko:"영어 원문입니다. 번역이 없거나 불완전합니다。"
-  };
-  el.textContent=labels[language]||"Original English narrative · Translation unavailable or partial";
+  el.textContent=narrativeDisclosureText(language);
   el.hidden=false;
  }
  function requestNarrativeTranslation(record){
@@ -156,6 +157,7 @@
    section.hidden=true;
    return;
   }
+  const renderedLanguage=language;
   for(const item of related){
    const card=document.createElement("a");
    card.className="related-case-card";
@@ -163,11 +165,25 @@
    const meta=document.createElement("span");
    meta.className="related-case-meta";
    meta.textContent=[item.date,item.country,t.categoryName[item.category]||item.category].filter(Boolean).join(" · ");
+   const sourceFallback=renderedLanguage!=="en"&&(
+    item.translation_status==="needs_full_translation"||
+    !item.title?.[renderedLanguage]||!item.summary?.[renderedLanguage]||
+    (renderedLanguage==="bg"&&legacyBulgarian(item))
+   );
+   const textLanguage=sourceFallback?"en":renderedLanguage;
    const title=document.createElement("strong");
-   title.textContent=local(item.title)||item.id;
+   title.textContent=item.title?.[textLanguage]||item.title?.en||item.id;
+   card.append(meta,title);
+   if(sourceFallback){
+    const disclosure=document.createElement("small");
+    disclosure.className="related-case-translation-disclosure";
+    disclosure.setAttribute("role","note");
+    disclosure.textContent=narrativeDisclosureText(renderedLanguage);
+    card.append(disclosure);
+   }
    const cta=document.createElement("small");
    cta.textContent=t.openCase;
-   card.append(meta,title,cta);
+   card.append(cta);
    grid.append(card);
   }
   section.hidden=false;

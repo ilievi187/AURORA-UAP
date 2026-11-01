@@ -63,6 +63,18 @@ test("legacy Bulgarian source catalog narratives remain readable and are not pas
   assert.deepEqual(errors,[]);
  }finally{await ctx.close()}
 });
+test("related case previews disclose English source titles when Bulgarian translation is missing",async()=>{
+ const {page,ctx,errors}=await pageFor("disclosure-iraq-2022");
+ try{
+  const related=page.locator('#relatedCasesGrid a[href="/archive/disclosure-mosul-orb-2016"]');
+  await related.waitFor({state:"visible"});
+  assert.equal(await related.locator('strong').textContent(),'The Mosul Orb');
+  assert.equal(await related.locator('.related-case-translation-disclosure').count(),1);
+  assert.equal(await related.locator('.related-case-translation-disclosure').textContent(),
+   'Оригиналният разказ е на английски. Преводът не е наличен или е частичен.');
+  assert.deepEqual(errors,[]);
+ }finally{await ctx.close()}
+});
 test("source-authored Bulgarian dossiers remain displayed without English-fallback warning",async()=>{
  const {page,ctx,errors}=await pageFor("disclosure-harare-2008");
  try{

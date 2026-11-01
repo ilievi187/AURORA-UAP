@@ -11,6 +11,12 @@ const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 // The legacy atlas map behavior is exercised against the original editorial case
 // fixtures, independently from the larger licensed source catalog.
 const curatedArchive=(()=>{const {cases,...meta}=JSON.parse(readFileSync(new URL('../data/cases.json',import.meta.url)));return JSON.stringify({...meta,cases:cases.filter(c=>!c.provenance?.automated).sort((a,b)=>a.id==='phoenix-1997'?-1:b.id==='phoenix-1997'?1:0)});})();
+const homepageIntegrityCases=(()=>{
+  const cases=JSON.parse(readFileSync(new URL('../data/cases.json',import.meta.url))).cases;
+  const wanted=new Set(['disclosure-virginia-2024','uap-archive-aaro-atmospheric-wakes-case']);
+  return cases.filter(item=>wanted.has(item.id));
+})();
+const homepageIntegrityArchive=JSON.stringify({cases:homepageIntegrityCases});
 const types = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.js': 'application/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8',
@@ -182,6 +188,116 @@ try {
     assert.ok(mobile.mapWidth > 250, 'map remains usable on a narrow screen');
     assert.equal(await page.locator('#worldZoomIn').isVisible(), true);
     assert.deepEqual(errors, []);
+    await context.close();
+  });
+
+  await test('M0 homepage cards use real source text and disclose English fallback in BG and DE', async () => {
+    const context=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:'reduce'});
+    const page=await context.newPage(),errors=[];
+    page.on('pageerror',error=>errors.push(error.message));
+    await page.route('**/data/cases.json',route=>route.fulfill({status:200,contentType:'application/json',body:homepageIntegrityArchive}));
+    await page.route('**/api/stats',route=>route.fulfill({status:503,contentType:'application/json',body:'{"error":"database_unavailable"}'}));
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await page.locator('#gateLanguageGrid button[data-language="bg"]').click();
+    await page.locator('#gateContinue').click();
+    await page.locator('#languageGate').waitFor({state:'hidden'});
+    await page.waitForFunction(()=>document.querySelectorAll('#reportGrid a.report-card').length===2);
+
+    const legacy=homepageIntegrityCases.find(item=>item.id==='disclosure-virginia-2024');
+    const authored=homepageIntegrityCases.find(item=>item.id==='uap-archive-aaro-atmospheric-wakes-case');
+    const legacyCard=page.locator('#reportGrid a[href="/archive/disclosure-virginia-2024"]');
+    const authoredCard=page.locator('#reportGrid a[href="/archive/uap-archive-aaro-atmospheric-wakes-case"]');
+    assert.equal(await legacyCard.locator('h3').textContent(),legacy.title.en);
+    assert.equal(await legacyCard.locator('.desc').textContent(),legacy.summary.en);
+    assert.equal(await legacyCard.locator('.archive-translation-disclosure').textContent(),
+      'Оригинален текст на английски · автоматичният превод не е наличен');
+    assert.doesNotMatch(await legacyCard.textContent(),/случай, описан в публичния каталог|Маркерът, ако има такъв/);
+    assert.equal(await authoredCard.locator('h3').textContent(),authored.title.bg);
+    assert.equal(await authoredCard.locator('.desc').textContent(),authored.summary.bg);
+    assert.equal(await authoredCard.locator('.archive-translation-disclosure').count(),0,
+      'an authored Bulgarian summary must remain Bulgarian without a false fallback warning');
+
+    await page.locator('#langToggle').selectOption('de');
+    await page.waitForFunction(()=>document.querySelector('#reportGrid a[href="/archive/disclosure-virginia-2024"] .archive-translation-disclosure')?.textContent===
+      'Englischer Originaltext · Übersetzung nicht verfügbar');
+    assert.equal(await legacyCard.locator('.desc').textContent(),legacy.summary.en);
+    assert.equal(await authoredCard.locator('.desc').textContent(),authored.summary.en);
+    assert.deepEqual(errors,[]);
+    await context.close();
+  });
+
+  await test('M0 world atlas marks source-English case details and result previews in BG and DE', async () => {
+    const context=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:'reduce'});
+    const page=await context.newPage(),errors=[];
+    page.on('pageerror',error=>errors.push(error.message));
+    await page.route('**/data/cases.json',route=>route.fulfill({status:200,contentType:'application/json',body:homepageIntegrityArchive}));
+    await page.route('**/api/stats',route=>route.fulfill({status:503,contentType:'application/json',body:'{"error":"database_unavailable"}'}));
+    await page.goto(`http://127.0.0.1:${port}/`);
+    await page.locator('#gateLanguageGrid button[data-language="bg"]').click();
+    await page.locator('#gateContinue').click();
+    await page.locator('#languageGate').waitFor({state:'hidden'});
+    await page.locator('#worldMapResults [data-world-case-id="disclosure-virginia-2024"]').waitFor();
+    await page.locator('#worldMapResults [data-world-case-id="disclosure-virginia-2024"]').click();
+
+    const legacy=homepageIntegrityCases.find(item=>item.id==='disclosure-virginia-2024');
+    const detail=page.locator('#worldCaseDetail');
+    assert.equal(await detail.locator('h3').textContent(),legacy.title.en);
+    assert.equal(await detail.locator('p').nth(1).textContent(),legacy.summary.en);
+    assert.equal(await detail.locator('.world-translation-disclosure').count(),1);
+    assert.equal(await detail.locator('.world-translation-disclosure').textContent(),
+      'Оригинален текст на английски · автоматичният превод не е наличен');
+    assert.equal(await page.locator('#worldMapResults [data-world-case-id="disclosure-virginia-2024"] .world-result-language').textContent(),
+      'Оригинален текст на английски · автоматичният превод не е наличен');
+    assert.doesNotMatch(await detail.textContent(),/случай, описан в публичния каталог|Маркерът, ако има такъв/);
+
+    await page.locator('#langToggle').selectOption('de');
+    await page.waitForFunction(()=>document.querySelector('#worldCaseDetail .world-translation-disclosure')?.textContent===
+      'Englischer Originaltext · Übersetzung nicht verfügbar');
+    assert.equal(await detail.locator('h3').textContent(),legacy.title.en);
+    assert.equal(await detail.locator('p').nth(1).textContent(),legacy.summary.en);
+    await page.locator('#langToggle').selectOption('en');
+    await page.waitForFunction(()=>document.querySelector('#worldCaseDetail h3')?.textContent==='The Active Virginia Coast Case');
+    assert.equal(await detail.locator('.world-translation-disclosure').count(),0);
+    assert.deepEqual(errors,[]);
+    await context.close();
+  });
+
+  await test('M0 language gate distinguishes interface language from dossier translation across all 18 locales', async () => {
+    const context=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:'reduce'});
+    const page=await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/`);
+    const expected=[
+      ['bg','ИНТЕРФЕЙС','Езикът на интерфейса се задава тук. Досиетата може да останат на английски, ако няма пълен превод.'],
+      ['en','INTERFACE','This sets the interface language. Case files may remain in English when a complete translation is unavailable.'],
+      ['de','OBERFLÄCHE','Hier wird die Sprache der Benutzeroberfläche festgelegt. Fallakten können auf Englisch bleiben, wenn keine vollständige Übersetzung verfügbar ist.'],
+      ['ru','ИНТЕРФЕЙС','Здесь выбирается язык интерфейса. Досье может оставаться на английском, если полного перевода нет.'],
+      ['zh-CN','界面','此选项设置界面语言。若没有完整译文，案例档案可能仍为英文。'],
+      ['fr','INTERFACE','Cette option définit la langue de l’interface. Les dossiers peuvent rester en anglais lorsqu’aucune traduction complète n’est disponible.'],
+      ['es','INTERFAZ','Esta opción establece el idioma de la interfaz. Los expedientes pueden seguir en inglés si no hay una traducción completa.'],
+      ['it','INTERFACCIA','Questa scelta imposta la lingua dell’interfaccia. I dossier possono restare in inglese se non è disponibile una traduzione completa.'],
+      ['pt','INTERFACE','Esta opção define o idioma da interface. Os dossiês podem permanecer em inglês quando não houver uma tradução completa.'],
+      ['tr','ARAYÜZ','Bu seçim arayüz dilini belirler. Tam çeviri yoksa dosyalar İngilizce kalabilir.'],
+      ['ro','INTERFAȚĂ','Această opțiune stabilește limba interfeței. Dosarele pot rămâne în engleză dacă nu este disponibilă o traducere completă.'],
+      ['el','ΔΙΕΠΑΦΗ','Αυτή η επιλογή ορίζει τη γλώσσα διεπαφής. Οι φάκελοι μπορεί να παραμείνουν στα αγγλικά όταν δεν υπάρχει πλήρης μετάφραση.'],
+      ['sr','ИНТЕРФЕЈС','Овде се бира језик интерфејса. Досијеи могу остати на енглеском ако пун превод није доступан.'],
+      ['uk','ІНТЕРФЕЙС','Тут обирається мова інтерфейсу. Досьє можуть залишатися англійською, якщо повного перекладу немає.'],
+      ['pl','INTERFEJS','Ten wybór ustawia język interfejsu. Akta mogą pozostać po angielsku, gdy pełne tłumaczenie nie jest dostępne.'],
+      ['ar','الواجهة','يحدد هذا الخيار لغة الواجهة. قد تبقى ملفات القضايا باللغة الإنجليزية عند عدم توفر ترجمة كاملة.'],
+      ['ja','インターフェース','この設定はインターフェースの言語を選びます。完全な翻訳がない場合、事例ファイルは英語のまま表示されることがあります。'],
+      ['ko','인터페이스','이 설정은 인터페이스 언어를 선택합니다. 완전한 번역이 없으면 사례 기록은 영어로 표시될 수 있습니다.']
+    ];
+    const actualCodes=await page.locator('#gateLanguageGrid button').evaluateAll(buttons=>buttons.map(button=>button.dataset.language));
+    assert.deepEqual(actualCodes,expected.map(([code])=>code));
+    const mismatches=[];
+    for(const [code,badge,disclaimer] of expected){
+      const button=page.locator(`#gateLanguageGrid button[data-language="${code}"]`);
+      const actualBadge=await button.locator('small').textContent();
+      if(actualBadge!==badge)mismatches.push(`${code} badge: ${actualBadge}`);
+      await button.click();
+      const actualDisclaimer=await page.locator('#gateDisclaimer').textContent();
+      if(actualDisclaimer!==disclaimer)mismatches.push(`${code} disclaimer: ${actualDisclaimer}`);
+    }
+    assert.deepEqual(mismatches,[],'language choices must describe interface localization, not claim full dossier translation');
     await context.close();
   });
 

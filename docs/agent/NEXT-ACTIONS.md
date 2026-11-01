@@ -4,8 +4,8 @@
 
 ## What we just verified
 
-- `main` SHA `5b81f6e517c56246de7079440d0598b6e21d9226` (PR #107); **20 passed / 2 skipped** check runs; Pages build success.
-- Live homepage DOM shows 101 dossiers / 98 mapped / 18 UI locales but also Bulgarian legacy card text and some English fallback. Archive and dossier code fixes do **not** automatically fix homepage map/card renderers.
+- At the start of M0 work on 2026-11-01, GitHub `main` was `733a43e9f64d95711b980da01b4a11982badbca6` (PR #108 changed the roadmap documents only); the last application-code snapshot audited here was `5b81f6e517c56246de7079440d0598b6e21d9226` (PR #107).
+- The 2026-11-01 production homepage audit showed 101 dossiers / 98 mapped / 18 UI locales plus Bulgarian legacy card text and English fallback. PR #109 implements source-language-aware homepage cards and the primary world atlas; safe post-merge live read-back remains the release gate.
 - 101 public source-backed case records, with complete English stories; **33 source-authored Bulgarian** narratives and **68 placeholder/mixed-language Bulgarian** entries as of audit. Prior claims of 101 real BG translations were overbroad.
 - Video metadata: **23 video references across 14 cases**, 4 photo media entries, 155 document entries; live in-browser playback still needs source-by-source verification.
 - `payment-config.js` sets `AURORA_PAYMENT_LINK = null` — public donate CTA has no configured checkout.
@@ -14,7 +14,7 @@
 
 ## Ranked first six engineering PRs
 
-1. **Homepage honest-language fallback:** update homepage case cards, map panels, preview and language gate. Reject imported Bulgarian placeholders as native BG; show English originals with a notice. Add BG/EN/DE browser tests; **do not touch draft PR #43** map-source ownership without fresh coordination.
+1. **M0.1/M0.2 — implemented in PR #109:** homepage cards, primary world-atlas details/results and related dossier previews reject legacy Bulgarian placeholders as native copy; English source fallback is disclosed; the gate identifies interface language and warns in all 18 locales that dossier text may remain English. Keep exact-head CI green and verify the post-merge public page before claiming production fixed. The separate Mission Control globe remains under PR #43 ownership.
 2. **Public discoverability + donate honesty:** safe public-only robots/sitemap, no private/admin indexing; fully honest unconfigured payment state, then verified creator URL from owner. No synthetic live checkout.
 3. **Editorial BG batches:** groups of 10–15 source-reviewed imported dossiers; verify correct narrative, uncertainty, citation and importer preservation. Aim for **101/101 genuine BG + EN** stories, not 101 placeholders of adequate length.
 4. **Workers AI service proof / translation quality:** owner-configured `AI` binding, billing guard, 18-locale page matrix, full-story translations and explicit fallback. Do not claim cloud inference runs solely from unit tests.

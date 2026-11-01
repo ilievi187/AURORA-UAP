@@ -139,6 +139,7 @@ let selectedId = null;
 let editorialCases=[];
 let editorialLoaded=false;
 let editorialError=false;
+let archiveLocalization=null;
 let reportPageSize=24;
 const $ = selector => document.querySelector(selector);
 const txt = key => translations[lang]?.[key] || translations.en[key] || key;
@@ -248,14 +249,23 @@ function renderReports(){
   attribution.textContent=editorialLang().art;
   const meta=document.createElement('span');meta.className='date';
   meta.textContent=[c.date,c.country].filter(Boolean).join(' · ');
-  const title=document.createElement('h3');title.textContent=c.title?.[lang]||c.title?.en||'';
+  const contentLanguage=archiveLocalization.caseTextLanguage(c,lang);
+  const title=document.createElement('h3');title.textContent=c.title?.[contentLanguage]||c.title?.en||'';
   const desc=document.createElement('p');desc.className='desc';
-  desc.textContent=c.summary?.[lang]||c.summary?.en||'';
+  desc.textContent=c.summary?.[contentLanguage]||c.summary?.en||'';
+  const cardContent=[img,attribution,meta,title,desc];
+  if(lang!=='en'&&contentLanguage!==lang){
+   const disclosure=document.createElement('small');
+   disclosure.className='archive-translation-disclosure';
+   disclosure.textContent=archiveLocalization.translationDisclosure(lang);
+   disclosure.setAttribute('role','note');
+   cardContent.push(disclosure);
+  }
   const bottom=document.createElement('div');bottom.className='report-bottom';
   const type=document.createElement('span');type.className='report-badge';
   type.textContent=Array.isArray(c.media)&&c.media.some(m=>m.type==='video')?editorialLang().media:editorialLang().archive;
   const arrow=document.createElement('span');arrow.className='circle-arrow';arrow.setAttribute('aria-hidden','true');arrow.textContent='→';
-  bottom.append(type,arrow);card.append(img,attribution,meta,title,desc,bottom);grid.append(card);
+  bottom.append(type,arrow);card.append(...cardContent,bottom);grid.append(card);
  }
  if(!visible.length){const el=document.createElement('p');el.className='empty-results';el.textContent=editorialLang().empty;grid.append(el)}
  const count=document.createElement('span');count.textContent=visible.length+' / '+filtered.length+' '+editorialLang().count;note.append(count);
@@ -266,10 +276,14 @@ function renderReports(){
 }
 async function loadEditorialCases(){
  try{
-  const r=await fetch('/data/cases.json',{cache:'force-cache'});
+  const [r,localization]=await Promise.all([
+   fetch('/data/cases.json',{cache:'force-cache'}),
+   import('./archive-localization.js')
+  ]);
   if(!r.ok)throw Error('archive_unavailable');
   const data=await r.json();
   if(!Array.isArray(data.cases))throw Error('invalid_archive');
+  archiveLocalization=localization;
   editorialCases=data.cases.filter(c=>c&&/^[a-z0-9-]{3,90}$/.test(c.id)&&c.title?.en&&c.summary?.en&&c.source?.url?.startsWith('https://'))
     .sort((a,b)=>String(b.date).localeCompare(String(a.date)));
   editorialLoaded=true;editorialError=false;
