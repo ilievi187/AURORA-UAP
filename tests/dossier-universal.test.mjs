@@ -26,6 +26,37 @@ test("every public source and document appears only once, without including priv
  assert.equal(result.filter(x=>x.url.includes("private")).length,0);
  assert.equal(d.sources({sources:[{url:"https://site.example/",public:false}]}).length,0);
 });
+
+test("secondary source citations expose their verification classification and localized caveat",()=>{
+ const note={bg:"Това досие преразказва лицензиран вторичен източник; първичните документи не са независимо прочетени.",
+  en:"This dossier paraphrases a licensed secondary source; primary documents were not independently read."};
+ const c={source:{name:"disclosure.zone · CC BY 4.0",url:"https://disclosure.zone/cases/socorro-1964"},
+  provenance:{source_kind:"licensed secondary case compilation"},
+  source_verification_status:"SECONDARY_ATTRIBUTED",source_verification_note:note};
+ assert.equal(d.sources(c,"bg")[0].type,"secondary");
+ assert.equal(d.sources({source:c.source,provenance:c.provenance},"bg")[0].type,"secondary");
+ assert.deepEqual(d.sourceVerification(c,"bg"),{status:"SECONDARY_ATTRIBUTED",note:note.bg,suppressNarrative:false});
+ assert.deepEqual(d.sourceVerification(c,"en"),{status:"SECONDARY_ATTRIBUTED",note:note.en,suppressNarrative:false});
+ assert.equal(d.sourceVerification({...c,source_verification_status:"UNKNOWN"},"en"),null);
+ const html=read("dossier.html"),js=read("dossier.js");
+ assert.ok(html.includes('id="dossierSourceVerification"'));
+ assert.ok(html.includes('id="dossierSourceVerificationStatus"'));
+ assert.ok(html.includes('id="dossierSourceVerificationNote"'));
+ assert.match(html,/id="dossierSourceVerification"[^>]*role="note"[^>]*aria-live="polite"/);
+ assert.match(js,/contentHelper\?\.sourceVerification\(c,language\)/);
+});
+
+test("insufficient source classification suppresses unsupported narrative text",()=>{
+ const result=d.sourceVerification({source_verification_status:"INSUFFICIENT_SOURCE",source_verification_note:{bg:"Недостатъчни проверими източници.",en:"Insufficient verifiable sources."}},"bg");
+ assert.deepEqual(result,{status:"INSUFFICIENT_SOURCE",note:"Недостатъчни проверими източници.",suppressNarrative:true});
+ const js=read("dossier.js"),css=read("dossier.css");
+ assert.match(js,/verification\?\.suppressNarrative/);
+ assert.match(js,/dossierSummary"\)\.hidden=suppressNarrative/);
+ assert.match(js,/story\.hidden=suppressNarrative/);
+ assert.match(js,/timelineBox\.hidden=suppressNarrative\|\|/);
+ assert.match(css,/\.dossier-summary\[hidden\],\.dossier-story\[hidden\],\.dossier-timeline\[hidden\]\{display:none\}/);
+});
+
 test("all supported source media are included and duplicate link cards are filtered",()=>{
  const c={media:[
   {type:"video",url:"https://youtu.be/aqz-KE-bpKQ"},

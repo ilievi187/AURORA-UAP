@@ -83,6 +83,19 @@ test("source-authored Bulgarian dossiers remain displayed without English-fallba
   assert.deepEqual(errors,[]);
  }finally{await ctx.close()}
 });
+test("secondary-attributed dossier visibly discloses status and does not label its compilation as primary",async()=>{
+ const {page,ctx,errors}=await pageFor("disclosure-test-site-2023");
+ try{
+  const notice=page.locator("#dossierSourceVerification");
+  await notice.waitFor({state:"visible"});
+  assert.equal(await page.locator("#dossierSourceVerificationStatus").textContent(),"ВТОРИЧНО АТРИБУТИРАНО ДОСИЕ");
+  assert.match(await page.locator("#dossierSourceVerificationNote").textContent(),/лицензиран вторичен източник/);
+  const sourceKinds=await page.locator("#dossierSourcesList small").allTextContents();
+  assert.ok(sourceKinds.some(x=>x.includes("ВТОРИЧЕН ИЗТОЧНИК")));
+  assert.ok(sourceKinds.every(x=>!x.includes("ПЪРВИЧЕН ИЗТОЧНИК")));
+  assert.deepEqual(errors,[]);
+ }finally{await ctx.close()}
+});
 test("single-player rule: top FLIR1 video only; lower archive and second video removed",async()=>{
  const{page,ctx,errors}=await pageFor("nimitz-2004");
  try{
