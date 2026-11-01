@@ -8,27 +8,39 @@
   const select=document.getElementById("langToggle");
   if(!gate||!options||!trigger||!select)return;
 
-  // All 18 supported locales provide full homepage and subpage interface coverage.
   const languages=[
-    ["bg","Български","Bulgarian","BG",true],
-    ["en","English","English","EN",true],
-    ["de","Deutsch","German","DE",true],
-    ["ru","Русский","Russian","RU",true],
-    ["zh-CN","简体中文","Chinese","ZH",true],
-    ["fr","Français","French","FR",true],
-    ["es","Español","Spanish","ES",true],
-    ["it","Italiano","Italian","IT",true],
-    ["pt","Português","Portuguese","PT",true],
-    ["tr","Türkçe","Turkish","TR",true],
-    ["ro","Română","Romanian","RO",true],
-    ["el","Ελληνικά","Greek","EL",true],
-    ["sr","Српски","Serbian","SR",true],
-    ["uk","Українська","Ukrainian","UK",true],
-    ["pl","Polski","Polish","PL",true],
-    ["ar","العربية","Arabic","AR",true],
-    ["ja","日本語","Japanese","JA",true],
-    ["ko","한국어","Korean","KO",true]
+    ["bg","Български","Bulgarian","BG"],
+    ["en","English","English","EN"],
+    ["de","Deutsch","German","DE"],
+    ["ru","Русский","Russian","RU"],
+    ["zh-CN","简体中文","Chinese","ZH"],
+    ["fr","Français","French","FR"],
+    ["es","Español","Spanish","ES"],
+    ["it","Italiano","Italian","IT"],
+    ["pt","Português","Portuguese","PT"],
+    ["tr","Türkçe","Turkish","TR"],
+    ["ro","Română","Romanian","RO"],
+    ["el","Ελληνικά","Greek","EL"],
+    ["sr","Српски","Serbian","SR"],
+    ["uk","Українська","Ukrainian","UK"],
+    ["pl","Polski","Polish","PL"],
+    ["ar","العربية","Arabic","AR"],
+    ["ja","日本語","Japanese","JA"],
+    ["ko","한국어","Korean","KO"]
   ];
+  const interfaceBadges={
+    bg:"ИНТЕРФЕЙС",en:"INTERFACE",de:"OBERFLÄCHE",ru:"ИНТЕРФЕЙС","zh-CN":"界面",
+    fr:"INTERFACE",es:"INTERFAZ",it:"INTERFACCIA",pt:"INTERFACE",tr:"ARAYÜZ",
+    ro:"INTERFAȚĂ",el:"ΔΙΕΠΑΦΗ",sr:"ИНТЕРФЕЈС",uk:"ІНТЕРФЕЙС",pl:"INTERFEJS",
+    ar:"الواجهة",ja:"インターフェース",ko:"인터페이스"
+  };
+  const languageGroupLabels={
+    bg:"Език на интерфейса",en:"Interface language",de:"Sprache der Benutzeroberfläche",ru:"Язык интерфейса",
+    "zh-CN":"界面语言",fr:"Langue de l’interface",es:"Idioma de la interfaz",it:"Lingua dell’interfaccia",
+    pt:"Idioma da interface",tr:"Arayüz dili",ro:"Limba interfeței",el:"Γλώσσα διεπαφής",
+    sr:"Језик интерфејса",uk:"Мова інтерфейсу",pl:"Język interfejsu",ar:"لغة الواجهة",
+    ja:"インターフェース言語",ko:"인터페이스 언어"
+  };
   const extra={
     fr:{navHome:"Accueil",navMission:"Mission",navResearch:"Recherche",navMap:"Carte",navReports:"Signalements",navJoin:"Participer",navDonate:"FAIRE UN DON",heroKicker:"DONNÉES OUVERTES. ESPRIT CRITIQUE. REGARDONS PLUS HAUT.",heroTitle1:"EXPLORER",heroTitle2:"L'INEXPLIQUÉ",heroBody:"AURORA est une initiative indépendante en Bulgarie dédiée à la documentation et à l'analyse rigoureuse des phénomènes aériens non identifiés.",reportButton:"Signaler une observation",exploreButton:"Explorer la recherche",joinButton:"Rejoindre"},
     es:{navHome:"Inicio",navMission:"Misión",navResearch:"Investigación",navMap:"Mapa",navReports:"Informes",navJoin:"Participa",navDonate:"DONAR",heroKicker:"DATOS ABIERTOS. PENSAMIENTO CRÍTICO. UN CIELO POR EXPLORAR.",heroTitle1:"EXPLORAR",heroTitle2:"LO INEXPLICABLE",heroBody:"AURORA es una iniciativa independiente en Bulgaria que documenta y analiza fenómenos aéreos no identificados con rigor y transparencia.",reportButton:"Informar de un avistamiento",exploreButton:"Explorar investigaciones",joinButton:"Únete"},
@@ -47,42 +59,50 @@
   for(const [code,dict] of Object.entries(extra)){
     translations[code]={...translations.en,...(translations[code]||{}),...dict};
   }
-  for(const [code,native,english,short,complete] of languages){
+  for(const [code,native,english,short] of languages){
     if(!select.querySelector('option[value="'+code+'"]')){
       const opt=document.createElement("option");opt.value=code;opt.textContent=native;select.append(opt);
     }
     const btn=document.createElement("button");btn.type="button";btn.dataset.language=code;
-    btn.setAttribute("aria-label",native+" — "+english+(complete?"":", partial translation"));
+    btn.setAttribute("aria-label",native+" — "+english+" — "+(interfaceBadges[code]||interfaceBadges.en));
     const flag=document.createElement("span");flag.className="flag";flag.textContent=short;
     const title=document.createElement("strong");title.textContent=native;
-    const badge=document.createElement("small");badge.textContent=complete?"Full locale":"Preview · EN fallback";
+    const badge=document.createElement("small");badge.textContent=interfaceBadges[code]||interfaceBadges.en;
     btn.append(flag,title,badge);options.append(btn);
   }
   const t={
-    bg:["Избери език","Избери езика, на който искаш да изследваш AURORA.","Езиковата настройка се запазва във всички страници на платформата."],
-    en:["Choose your language","Select your interface language to enter AURORA.","Your selected language persists across all pages on the platform."],
-    de:["Sprache wählen","Wähle deine Sprache für AURORA.","Deine Sprachauswahl bleibt auf allen Seiten der Plattform erhalten."],
-    ru:["Выберите язык","Выберите язык интерфейса AURORA.","Выбранный язык сохраняется на всех страницах платформы."],
-    "zh-CN":["选择语言","选择进入 AURORA 的界面语言。","所选语言将在平台的所有页面中保持生效。"],
-    fr:["Choisir la langue","Sélectionnez votre langue d'interface pour entrer dans AURORA.","Votre langue est mémorisée sur toutes les pages de la plateforme."],
-    es:["Elige tu idioma","Selecciona el idioma de la interfaz para entrar en AURORA.","Tu idioma seleccionado se mantiene en todas las páginas de la plataforma."],
-    it:["Scegli la lingua","Seleziona la lingua dell'interfaccia per entrare in AURORA.","La lingua scelta rimane attiva in tutte le pagine della piattaforma."],
-    pt:["Escolha o idioma","Selecione o idioma da interface para entrar na AURORA.","O idioma escolhido é mantido em todas as páginas da plataforma."],
-    tr:["Dilinizi seçin","AURORA’ya girmek için arayüz dilinizi seçin.","Seçtiğiniz dil platformun tüm sayfalarında korunur."],
-    ro:["Alege limba","Selectează limba interfeței pentru a intra în AURORA.","Limba selectată se păstrează în toate paginile platformei."],
-    el:["Επιλέξτε γλώσσα","Επιλέξτε τη γλώσσα διεπαφής για είσοδο στο AURORA.","Η επιλεγμένη γλώσσα διατηρείται σε όλες τις σελίδες της πλατφόρμας."],
-    sr:["Изабери језик","Изабери језик интерфејса за улазак у AURORA.","Изабрани језик се памти на свим страницама платформе."],
-    uk:["Оберіть мову","Оберіть мову інтерфейсу для входу в AURORA.","Обрана мова зберігається на всіх сторінках платформи."],
-    pl:["Wybierz język","Wybierz język interfejsu, aby wejść do AURORA.","Wybrany język jest zapamiętywany na wszystkich stronach platformy."],
-    ar:["اختر لغتك","حدد لغة الواجهة للدخول إلى AURORA.","تُحفظ اللغة المختارة في جميع صفحات المنصة."],
-    ja:["言語を選択","AURORA に入るための表示言語を選択してください。","選択した言語はプラットフォームの全ページで保持されます。"],
-    ko:["언어 선택","AURORA에 입장할 인터페이스 언어를 선택하세요.","선택한 언어는 플랫폼의 모든 페이지에서 유지됩니다."]
+    bg:["Избери език","Избери езика на интерфейса за AURORA.","Езикът на интерфейса се задава тук. Досиетата може да останат на английски, ако няма пълен превод."],
+    en:["Choose your language","Select the interface language for AURORA.","This sets the interface language. Case files may remain in English when a complete translation is unavailable."],
+    de:["Sprache wählen","Wähle die Sprache der AURORA-Benutzeroberfläche.","Hier wird die Sprache der Benutzeroberfläche festgelegt. Fallakten können auf Englisch bleiben, wenn keine vollständige Übersetzung verfügbar ist."],
+    ru:["Выберите язык","Выберите язык интерфейса AURORA.","Здесь выбирается язык интерфейса. Досье может оставаться на английском, если полного перевода нет."],
+    "zh-CN":["选择语言","选择 AURORA 的界面语言。","此选项设置界面语言。若没有完整译文，案例档案可能仍为英文。"],
+    fr:["Choisir la langue","Sélectionnez la langue de l’interface AURORA.","Cette option définit la langue de l’interface. Les dossiers peuvent rester en anglais lorsqu’aucune traduction complète n’est disponible."],
+    es:["Elige tu idioma","Selecciona el idioma de la interfaz de AURORA.","Esta opción establece el idioma de la interfaz. Los expedientes pueden seguir en inglés si no hay una traducción completa."],
+    it:["Scegli la lingua","Seleziona la lingua dell’interfaccia AURORA.","Questa scelta imposta la lingua dell’interfaccia. I dossier possono restare in inglese se non è disponibile una traduzione completa."],
+    pt:["Escolha o idioma","Selecione o idioma da interface da AURORA.","Esta opção define o idioma da interface. Os dossiês podem permanecer em inglês quando não houver uma tradução completa."],
+    tr:["Dilinizi seçin","AURORA arayüz dilini seçin.","Bu seçim arayüz dilini belirler. Tam çeviri yoksa dosyalar İngilizce kalabilir."],
+    ro:["Alege limba","Selectează limba interfeței AURORA.","Această opțiune stabilește limba interfeței. Dosarele pot rămâne în engleză dacă nu este disponibilă o traducere completă."],
+    el:["Επιλέξτε γλώσσα","Επιλέξτε τη γλώσσα διεπαφής του AURORA.","Αυτή η επιλογή ορίζει τη γλώσσα διεπαφής. Οι φάκελοι μπορεί να παραμείνουν στα αγγλικά όταν δεν υπάρχει πλήρης μετάφραση."],
+    sr:["Изабери језик","Изабери језик интерфејса за AURORA.","Овде се бира језик интерфејса. Досијеи могу остати на енглеском ако пун превод није доступан."],
+    uk:["Оберіть мову","Оберіть мову інтерфейсу AURORA.","Тут обирається мова інтерфейсу. Досьє можуть залишатися англійською, якщо повного перекладу немає."],
+    pl:["Wybierz język","Wybierz język interfejsu AURORA.","Ten wybór ustawia język interfejsu. Akta mogą pozostać po angielsku, gdy pełne tłumaczenie nie jest dostępne."],
+    ar:["اختر لغتك","اختر لغة واجهة AURORA.","يحدد هذا الخيار لغة الواجهة. قد تبقى ملفات القضايا باللغة الإنجليزية عند عدم توفر ترجمة كاملة."],
+    ja:["言語を選択","AURORA のインターフェース言語を選択してください。","この設定はインターフェースの言語を選びます。完全な翻訳がない場合、事例ファイルは英語のまま表示されることがあります。"],
+    ko:["언어 선택","AURORA 인터페이스 언어를 선택하세요.","이 설정은 인터페이스 언어를 선택합니다. 완전한 번역이 없으면 사례 기록은 영어로 표시될 수 있습니다."]
   };
   const selectedStatusLabel={
     bg:"избран език",en:"language selected",de:"Sprache ausgewählt",ru:"выбран язык","zh-CN":"已选择语言",
     fr:"langue sélectionnée",es:"idioma seleccionado",it:"lingua selezionata",pt:"idioma selecionado",tr:"dil seçildi",
     ro:"limbă selectată",el:"επιλεγμένη γλώσσα",sr:"изабран језик",uk:"мову обрано",pl:"wybrano język",
     ar:"تم اختيار اللغة",ja:"言語を選択済み",ko:"언어 선택됨"
+  };
+  const awaitingSelection={
+    bg:"ИЗБЕРИ ЕЗИК НА ИНТЕРФЕЙСА",en:"CHOOSE AN INTERFACE LANGUAGE",de:"SPRACHE DER OBERFLÄCHE WÄHLEN",
+    ru:"ВЫБЕРИТЕ ЯЗЫК ИНТЕРФЕЙСА","zh-CN":"请选择界面语言",fr:"CHOISISSEZ LA LANGUE DE L’INTERFACE",
+    es:"ELIGE EL IDIOMA DE LA INTERFAZ",it:"SCEGLI LA LINGUA DELL’INTERFACCIA",pt:"ESCOLHA O IDIOMA DA INTERFACE",
+    tr:"ARAYÜZ DİLİNİ SEÇİN",ro:"ALEGE LIMBA INTERFEȚEI",el:"ΕΠΙΛΕΞΤΕ ΓΛΩΣΣΑ ΔΙΕΠΑΦΗΣ",
+    sr:"ИЗАБЕРИ ЈЕЗИК ИНТЕРФЕЈСА",uk:"ОБЕРІТЬ МОВУ ІНТЕРФЕЙСУ",pl:"WYBIERZ JĘZYK INTERFEJSU",
+    ar:"اختر لغة الواجهة",ja:"インターフェース言語を選択",ko:"인터페이스 언어 선택"
   };
   // First visit: choose language and Continue. Returning visitors enter immediately.
   // The LANGUAGE button always offers an optional, accessible re-selection.
@@ -112,6 +132,7 @@
     document.getElementById("gateHeading").textContent=labels[0];
     document.getElementById("gateSubtitle").textContent=labels[1];
     document.getElementById("gateDisclaimer").textContent=labels[2];
+    options.setAttribute("aria-label",languageGroupLabels[code]||languageGroupLabels.en);
     continueLabel.textContent=continueTranslations[code]||continueTranslations.en;
     document.querySelectorAll("[data-language]").forEach(btn=>{
       const active=btn.dataset.language===selectedLanguage;
@@ -122,7 +143,7 @@
     const chosen=languages.find(item=>item[0]===selectedLanguage);
     selectionStatus.textContent=chosen
       ? "✓ "+chosen[1]+" / "+chosen[2]+" — "+(selectedStatusLabel[code]||selectedStatusLabel.en)
-      : "AWAITING LANGUAGE SELECTION";
+      : awaitingSelection[code]||awaitingSelection.en;
   }
   function openGate(mandatory=false){
     previousFocus=document.activeElement;

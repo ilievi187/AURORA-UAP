@@ -1,5 +1,6 @@
 import { clusterMarkers, filterCases, hasCoordinates } from './world-atlas-model.js';
 import { labels } from './world-atlas-labels.js';
+import { caseTextLanguage as resolvedCaseTextLanguage, translationDisclosure } from './archive-localization.js';
 
 const byId = (id) => document.getElementById(id);
 const ui = {
@@ -62,6 +63,14 @@ const localized = (value) => {
   if (typeof value === 'string') return value;
   return value?.[language()] || value?.en || value?.bg || '';
 };
+const caseDisplayLanguage = (item) => resolvedCaseTextLanguage(item, language());
+const caseText = (item, field) => {
+  const value = item?.[field];
+  if (typeof value === 'string') return value;
+  const locale = caseDisplayLanguage(item);
+  return value?.[locale] || value?.en || value?.bg || '';
+};
+const needsTranslationDisclosure = (item) => language() !== 'en' && caseDisplayLanguage(item) !== language();
 const safeUrl = (value) => {
   try {
     const url = new URL(value);
@@ -212,13 +221,21 @@ function renderDetails(item) {
   tag.className = 'world-tag';
   tag.textContent = [item.country, item.date, categoryName(item.category)].filter(Boolean).join(' · ');
   const heading = document.createElement('h3');
-  heading.textContent = localized(item.title);
+  heading.textContent = caseText(item, 'title');
   const place = document.createElement('p');
   place.className = 'world-case-place';
   place.textContent = `${localized(item.city) || t('unknownLocation')}${item.country ? ` · ${item.country}` : ''}`;
   const summary = document.createElement('p');
-  summary.textContent = localized(item.summary);
+  summary.className = 'world-case-summary';
+  summary.textContent = caseText(item, 'summary');
   ui.detail.append(tag, heading, place, summary);
+  if (needsTranslationDisclosure(item)) {
+    const disclosure = document.createElement('small');
+    disclosure.className = 'world-translation-disclosure';
+    disclosure.setAttribute('role', 'note');
+    disclosure.textContent = translationDisclosure(language());
+    ui.detail.append(disclosure);
+  }
   if (!hasCoordinates(item)) {
     const unknown = document.createElement('p');
     unknown.className = 'world-location-note';
@@ -308,11 +325,17 @@ function renderResults() {
     meta.className = 'world-result-meta';
     meta.textContent = [item.date, item.country, categoryName(item.category)].filter(Boolean).join(' · ');
     const title = document.createElement('strong');
-    title.textContent = localized(item.title);
+    title.textContent = caseText(item, 'title');
     const location = document.createElement('span');
     location.className = 'world-result-place';
     location.textContent = localized(item.city) || t('unknownLocation');
     button.append(meta, title, location);
+    if (needsTranslationDisclosure(item)) {
+      const disclosure = document.createElement('small');
+      disclosure.className = 'world-result-language';
+      disclosure.textContent = translationDisclosure(language());
+      button.append(disclosure);
+    }
     if (!hasCoordinates(item)) {
       const note = document.createElement('span');
       note.className = 'world-result-unknown';
@@ -415,15 +438,16 @@ function renderPins() {
     button.dataset.clusterCount = String(cluster.count);
     button.dataset.markerCaseId = cluster.cases[0].id;
     button.textContent = cluster.count > 1 ? String(cluster.count) : approximate ? '≈' : '';
-    const preview = cluster.cases.slice(0, 3).map((item) => localized(item.title)).join(', ');
+    const preview = cluster.cases.slice(0, 3).map((item) => caseText(item, 'title')).join(', ');
     const additional = cluster.count > 3 ? ` (+${cluster.count - 3})` : '';
-    button.title = `${preview}${additional}${approximate ? (language() === 'bg' ? ' · Приблизителна локация' : ' · Approximate area') : ''}`;
+    const sourceLanguage = cluster.cases.some(needsTranslationDisclosure) ? ` · ${translationDisclosure(language())}` : '';
+    button.title = `${preview}${additional}${approximate ? (language() === 'bg' ? ' · Приблизителна локация' : ' · Approximate area') : ''}${sourceLanguage}`;
     const selectedInCluster = cluster.cases.some((item) => item.id === selected);
     if (selectedInCluster) button.dataset.selectedCaseId = selected;
     button.setAttribute('aria-pressed', String(selectedInCluster));
     button.setAttribute('aria-label', cluster.count > 1
       ? `${cluster.count} ${t('cluster')}. ${t('zoomIn')}. ${button.title}`
-      : `${localized(cluster.cases[0].title)} · ${localized(cluster.cases[0].city) || t('unknownLocation')}${approximate ? ' · ' + (language() === 'bg' ? 'ориентировъчна локация' : 'approximate area') : ''}`);
+      : `${caseText(cluster.cases[0], 'title')} · ${localized(cluster.cases[0].city) || t('unknownLocation')}${approximate ? ' · ' + (language() === 'bg' ? 'ориентировъчна локация' : 'approximate area') : ''}${needsTranslationDisclosure(cluster.cases[0]) ? ' · ' + translationDisclosure(language()) : ''}`);
     button.addEventListener('click', () => {
       if (cluster.count > 1 && zoom < MAX_ZOOM) {
         const representative = cluster.cases[0];
