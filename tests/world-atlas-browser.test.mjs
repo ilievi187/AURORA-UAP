@@ -215,6 +215,18 @@ try {
       assert.ok(pins.every(pin=>labels.some(label=>pin.aria.includes(label))), 'every marker accessible name must disclose its location precision');
       assert.ok(pins.every(pin=>pin.precision), 'every marker must carry an explicit precision class');
 
+      await page.locator('#worldSearch').fill('westall-1966');
+      const westallRow=page.locator('#worldMapResults [data-world-case-id="westall-1966"]');
+      await westallRow.waitFor();
+      const westallMarker=page.locator('#worldMapPins button[data-marker-case-id="westall-1966"]');
+      await westallMarker.waitFor({state:'visible'});
+      assert.equal(await westallMarker.getAttribute('data-map-precision'),'approx_city');
+      assert.ok((await westallMarker.getAttribute('title')).includes('Approximate — city'));
+      assert.ok((await westallMarker.getAttribute('aria-label')).includes('Approximate — city'));
+      assert.equal(await westallRow.locator('.world-result-precision').textContent(),'Approximate — city');
+      await westallRow.click();
+      assert.match(await page.locator('#worldCaseDetail .world-location-note').textContent(),/Approximate — city/);
+
       for(const id of ['disclosure-six-spheres-2025','disclosure-test-site-2023','uap-archive-aaro-atmospheric-wakes-case']){
         await page.locator('#worldSearch').fill(id);
         const row=page.locator(`#worldMapResults [data-world-case-id="${id}"]`);

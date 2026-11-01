@@ -56,6 +56,15 @@ test('map precision distinguishes explicit exact, city, region, country, and unm
   assert.equal(atlas.mapPrecision({ lat: null, lng: null, location_precision: 'Coordinates not published' }), 'unmapped');
 });
 
+test('Westall / Clayton South named local area is an approximate-city anchor', () => {
+  const published = JSON.parse(readFileSync(new URL('../data/cases.json', import.meta.url), 'utf8')).cases;
+  const westall = published.find(item => item.id === 'westall-1966');
+  assert.ok(westall, 'the real Westall archive record exists');
+  assert.equal(westall.city.en, 'Westall, Australia');
+  assert.equal(westall.location_precision, 'Westall / Clayton South area');
+  assert.equal(atlas.mapPrecision(westall), 'approx_city');
+});
+
 test('all 101 public records have a map precision state and unmapped records remain in the archive', () => {
   const published = JSON.parse(readFileSync(new URL('../data/cases.json', import.meta.url), 'utf8')).cases;
   assert.equal(published.length, 101);

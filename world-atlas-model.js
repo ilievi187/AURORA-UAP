@@ -72,6 +72,9 @@ export function mapPrecision(item) {
   if (/region|regional|coastal|offshore|\bsea\b|\bocean\b|route approximation|reports? (?:span|across)|broad regional/.test(precision)) {
     return 'approx_region';
   }
+  // A paired place-name area (for example, "Westall / Clayton South area")
+  // is a local city/suburb anchor unless a broader region rule matched above.
+  if (/\/[^,;]+\barea$/.test(precision.trim())) return 'approx_city';
   if (/locality|\bcity\b|municipal|airport|base reference|forest area|local-area/.test(precision)) {
     return 'approx_city';
   }
