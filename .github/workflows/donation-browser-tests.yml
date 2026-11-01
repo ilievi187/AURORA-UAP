@@ -18,5 +18,5 @@ jobs:
         run: |
           npm install --no-save playwright@1.56.1
           npx playwright install --only-shell chromium
-      - name: Test responsive layout, keyboard and language persistence
-        run: node --test tests/tera-donation-browser.test.mjs
+      - name: Test checkout URL validation and donation browser states
+        run: node --test tests/donation-checkout.test.mjs tests/tera-donation-browser.test.mjs

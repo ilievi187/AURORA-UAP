@@ -24,19 +24,11 @@ function translate(){
   document.querySelectorAll('[data-donate-t]').forEach(el=>{el.textContent=pack[el.dataset.donateT]||locales.en[el.dataset.donateT]||'';});
 }
 function verifiedCheckoutLink(){
-  const url=window.AURORA_PAYMENT_LINK;
-  if(typeof url!=='string')return null;
-  try{
-    const u=new URL(url);
-    if(u.protocol!=='https:'||u.username||u.password)return null;
-    if(!['buymeacoffee.com','www.buymeacoffee.com'].includes(u.hostname))return null;
-    if(!u.pathname||u.pathname==='/')return null;
-    return u.toString();
-  }catch{return null;}
+  return window.AURORA_DONATION_CHECKOUT?.verifiedCheckoutLink(window.AURORA_PAYMENT_LINK) || null;
 }
 const link=verifiedCheckoutLink();
-checkout.disabled=false;
 if(link){
+  checkout.disabled=false;
   status.hidden=true;
   checkout.addEventListener('click',()=>{window.location.assign(link);});
 }else{
