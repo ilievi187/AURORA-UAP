@@ -1,6 +1,6 @@
 /* Durable editorial overlays for licensed disclosure.zone imports.
- * Only translated prose and source references may be added; source facts,
- * coordinates, status and media/playback permissions remain importer-owned. */
+ * Only translated prose, batch access notices, and source references may be added;
+ * source facts, coordinates, status and media/playback permissions remain importer-owned. */
 const DISCLOSURE_ZONE_SOURCE_URL="https://disclosure.zone/api/cases.json";
 const SAFE_REFERENCE_HOSTS=new Set([
  "www.aaro.mil","aaro.mil","www.war.gov","war.gov","catalog.archives.gov",
@@ -19,6 +19,11 @@ export function validateDisclosureZoneEditorialAnnotations(catalog){
  if(!catalog||catalog.schema_version!==1||!/^20\d\d-\d\d-\d\d$/.test(catalog.reviewed_at||"")||
     !catalog.records||typeof catalog.records!=="object"||Array.isArray(catalog.records))
   throw Error("Invalid disclosure.zone editorial catalog");
+ const accessNote=catalog.source_access_notice;
+ if(!accessNote||typeof accessNote!=="object"||Array.isArray(accessNote)||
+    Object.keys(accessNote).length!==2||
+    !["bg","en"].every(lang=>typeof accessNote[lang]==="string"&&accessNote[lang].trim().length>=100&&accessNote[lang].length<=1200))
+  throw Error("Missing localized disclosure.zone source-access notice");
  const ids=Object.keys(catalog.records);
  if(ids.length===0||ids.length>100)throw Error("Unexpected disclosure.zone editorial batch size");
  for(const id of ids){
@@ -66,7 +71,8 @@ export function applyDisclosureZoneEditorialAnnotation(record,catalog){
   story:{...record.story,bg:[...note.story_bg],en:[...note.story_en]},
   sources,
   content_depth:"source-reviewed",
-  editorial_review:{reviewed_at:catalog.reviewed_at,method:"source-attributed",language_keys:["bg","en"]}
+  editorial_review:{reviewed_at:catalog.reviewed_at,method:"source-attributed",language_keys:["bg","en"],
+   source_access_note:{...catalog.source_access_notice}}
  };
 }
 export function applyDisclosureZoneEditorialAnnotations(archive,catalog){

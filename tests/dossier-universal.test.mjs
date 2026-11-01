@@ -35,9 +35,10 @@ test("secondary source citations expose their verification classification and lo
   source_verification_status:"SECONDARY_ATTRIBUTED",source_verification_note:note};
  assert.equal(d.sources(c,"bg")[0].type,"secondary");
  assert.equal(d.sources({source:c.source,provenance:c.provenance},"bg")[0].type,"secondary");
- assert.deepEqual(d.sourceVerification(c,"bg"),{status:"SECONDARY_ATTRIBUTED",note:note.bg,suppressNarrative:false});
- assert.deepEqual(d.sourceVerification(c,"en"),{status:"SECONDARY_ATTRIBUTED",note:note.en,suppressNarrative:false});
- assert.equal(d.sourceVerification({...c,source_verification_status:"UNKNOWN"},"en"),null);
+ assert.deepEqual(d.sourceVerification(c,"bg"),{status:"SECONDARY_ATTRIBUTED",note:note.bg});
+ assert.deepEqual(d.sourceVerification(c,"en"),{status:"SECONDARY_ATTRIBUTED",note:note.en});
+ assert.equal(d.sourceVerification({provenance:c.provenance},"bg"),null);
+ assert.equal(d.sourceVerification({source_verification_status:"UNKNOWN"},"en"),null);
  const html=read("dossier.html"),js=read("dossier.js");
  assert.ok(html.includes('id="dossierSourceVerification"'));
  assert.ok(html.includes('id="dossierSourceVerificationStatus"'));
@@ -46,15 +47,19 @@ test("secondary source citations expose their verification classification and lo
  assert.match(js,/contentHelper\?\.sourceVerification\(c,language\)/);
 });
 
-test("insufficient source classification suppresses unsupported narrative text",()=>{
- const result=d.sourceVerification({source_verification_status:"INSUFFICIENT_SOURCE",source_verification_note:{bg:"Недостатъчни проверими източници.",en:"Insufficient verifiable sources."}},"bg");
- assert.deepEqual(result,{status:"INSUFFICIENT_SOURCE",note:"Недостатъчни проверими източници.",suppressNarrative:true});
- const js=read("dossier.js"),css=read("dossier.css");
- assert.match(js,/verification\?\.suppressNarrative/);
- assert.match(js,/dossierSummary"\)\.hidden=suppressNarrative/);
- assert.match(js,/story\.hidden=suppressNarrative/);
- assert.match(js,/timelineBox\.hidden=suppressNarrative\|\|/);
- assert.match(css,/\.dossier-summary\[hidden\],\.dossier-story\[hidden\],\.dossier-timeline\[hidden\]\{display:none\}/);
+test("source-access notice is localized from explicit editorial review metadata only",()=>{
+ const note={bg:"Всички препратки са запазени; някои документи може да не се отварят.",
+  en:"All references are retained; some documents may not open."};
+ const record={editorial_review:{reviewed_at:"2026-11-01",source_access_note:note}};
+ assert.deepEqual(d.sourceAccessNotice(record,"bg"),{note:note.bg,reviewedAt:"2026-11-01"});
+ assert.equal(d.sourceAccessNotice({provenance:{source_kind:"licensed secondary case compilation"}},"bg"),null);
+});
+
+test("primary-verified and insufficient-source statuses remain informational",()=>{
+ const note={bg:"Текстът е запазен с атрибуция към публикуван източник.",en:"The narrative is retained with attribution to the published source."};
+ assert.deepEqual(d.sourceVerification({source_verification_status:"PRIMARY_VERIFIED"},"bg"),{status:"PRIMARY_VERIFIED",note:""});
+ assert.deepEqual(d.sourceVerification({source_verification_status:"INSUFFICIENT_SOURCE",source_verification_note:note},"bg"),{status:"INSUFFICIENT_SOURCE",note:note.bg});
+ assert.doesNotMatch(read("dossier.js"),/suppressNarrative/);
 });
 
 test("all supported source media are included and duplicate link cards are filtered",()=>{

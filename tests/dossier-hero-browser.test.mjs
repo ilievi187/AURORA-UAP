@@ -107,20 +107,66 @@ test("explicit secondary-attributed fixture visibly discloses status without cal
   assert.deepEqual(errors,[]);
  }finally{await ctx.close()}
 });
-test("explicit insufficient-source fixture withholds narrative but keeps the archive record accessible",async()=>{
+test("batch source access notice is visible while every narrative and citation stays available",async()=>{
+ const {page,ctx,errors}=await pageFor("disclosure-test-site-2023");
+ try{
+  await page.locator("#dossierSourceAccess").waitFor({state:"visible"});
+  assert.equal(await page.locator("#dossierSourceAccessLabel").textContent(),"ДОСТЪП ДО ПРЕПРАТКИТЕ");
+  const accessNote=await page.locator("#dossierSourceAccessNote").textContent();
+  assert.match(accessNote,/пакет от десет досиета/);
+  assert.match(accessNote,/403/);
+  assert.match(accessNote,/само обща каталожна страница/);
+  assert.match(accessNote,/не установява кои конкретни връзки са засегнати/);
+  assert.match(accessNote,/Всички препратки са запазени/);
+  assert.equal(await page.locator("#dossierSourcesList a").count()>0,true);
+  assert.equal(await page.locator("#dossierSummary").isVisible(),true);
+  assert.equal(await page.locator("#dossierStory").isVisible(),true);
+  assert.deepEqual(errors,[]);
+ }finally{await ctx.close()}
+});
+test("explicit primary-verified fixture keeps archive narrative, timeline and sources visible",async()=>{
  const {page,ctx,errors}=await pageFor("disclosure-test-site-2023",{width:1280,height:860},{
-  source_verification_status:"INSUFFICIENT_SOURCE",
-  source_verification_note:{bg:"Няма достатъчно проверима основа за това описание.",en:"There is not enough verifiable support for this narrative."}
+  source_verification_status:"PRIMARY_VERIFIED",
+  timeline:[{date:"2023-09",title:{bg:"Интервюта",en:"Interviews"},
+   description:{bg:"Публикуваните интервюта са свързани по-долу.",en:"The published interviews are linked below."},
+   source_url:"https://www.war.gov/medialink/ufo/release_1/serial-3_redacted.pdf"}]
  });
  try{
   await page.locator("#dossierSourceVerification").waitFor({state:"visible"});
-  assert.equal(await page.locator("#dossierSourceVerificationStatus").textContent(),"НЕДОСТАТЪЧЕН ИЗТОЧНИК");
+  assert.equal(await page.locator("#dossierSourceVerificationStatus").textContent(),"ПЪРВИЧЕН ДОКУМЕНТ ПРОЧЕТЕН");
+  assert.doesNotMatch(await page.locator("#dossierSourceVerificationNote").textContent(),/403|недостъпни|връзките са запазени/);
+  assert.equal(await page.locator("#dossierSourceAccess").isVisible(),true);
+  assert.match(await page.locator("#dossierSourceAccessNote").textContent(),/пакет от десет досиета/);
+  assert.equal(await page.locator("#dossierSourcesList a").count()>0,true);
+  assert.equal(await page.locator("#dossierSummary").isVisible(),true);
+  assert.equal(await page.locator("#dossierStory").isVisible(),true);
+  assert.equal(await page.locator("#dossierTimeline").isVisible(),true);
+  assert.equal(await page.locator('meta[name="description"]').getAttribute("content"),await page.locator("#dossierSummary").textContent());
+  assert.deepEqual(errors,[]);
+ }finally{await ctx.close()}
+});
+test("explicit insufficient-source fixture discloses access limits while keeping the archive narrative and source visible",async()=>{
+ const {page,ctx,errors}=await pageFor("disclosure-test-site-2023",{width:1280,height:860},{
+  source_verification_status:"INSUFFICIENT_SOURCE",
+  timeline:[{date:"2023-09",title:{bg:"Интервюта",en:"Interviews"},
+   description:{bg:"Публикуваните интервюта са свързани по-долу.",en:"The published interviews are linked below."},
+   source_url:"https://www.war.gov/medialink/ufo/release_1/serial-3_redacted.pdf"}]
+ });
+ try{
+  await page.locator("#dossierSourceVerification").waitFor({state:"visible"});
+  assert.equal(await page.locator("#dossierSourceVerificationStatus").textContent(),"НЕЗАВИСИМАТА ПРОВЕРКА Е НЕПЪЛНА");
+  assert.doesNotMatch(await page.locator("#dossierSourceVerificationNote").textContent(),/403|недостъпни|връзките са запазени|файлове/);
+  await page.locator("#dossierSourceAccess").waitFor({state:"visible"});
+  assert.match(await page.locator("#dossierSourceAccessNote").textContent(),/не установява кои конкретни връзки са засегнати/);
   assert.equal(await page.locator("#dossierTitle").isVisible(),true);
   assert.equal(await page.locator("#dossierSourceUrl").isVisible(),true);
-  assert.equal(await page.locator("#dossierSummary").isHidden(),true);
-  assert.equal(await page.locator("#dossierStory").isHidden(),true);
-  assert.equal(await page.locator("#dossierTimeline").isHidden(),true);
-  assert.equal(await page.locator('meta[name="description"]').getAttribute("content"),"Описанието е скрито до проверка на източниците.");
+  assert.equal(await page.locator("#dossierSourcesList a").count()>0,true);
+  assert.equal(await page.locator("#dossierSummary").isVisible(),true);
+  assert.ok((await page.locator("#dossierSummary").textContent()).length>0);
+  assert.equal(await page.locator("#dossierStory").isVisible(),true);
+  assert.ok((await page.locator("#dossierStory p").count())>0);
+  assert.equal(await page.locator("#dossierTimeline").isVisible(),true);
+  assert.equal(await page.locator('meta[name="description"]').getAttribute("content"),await page.locator("#dossierSummary").textContent());
   assert.deepEqual(errors,[]);
  }finally{await ctx.close()}
 });

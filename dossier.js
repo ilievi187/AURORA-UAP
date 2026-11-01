@@ -103,14 +103,15 @@
  const sourceVerificationLabels={
   PRIMARY_VERIFIED:{bg:"ПЪРВИЧЕН ДОКУМЕНТ ПРОЧЕТЕН",en:"PRIMARY DOCUMENT BODY REVIEWED"},
   SECONDARY_ATTRIBUTED:{bg:"ВТОРИЧНО АТРИБУТИРАНО ДОСИЕ",en:"SECONDARY-ATTRIBUTED SUMMARY"},
-  INSUFFICIENT_SOURCE:{bg:"НЕДОСТАТЪЧЕН ИЗТОЧНИК",en:"INSUFFICIENT SOURCE"}
+  INSUFFICIENT_SOURCE:{bg:"НЕЗАВИСИМАТА ПРОВЕРКА Е НЕПЪЛНА",en:"INDEPENDENT VERIFICATION INCOMPLETE"}
  };
  const sourceVerificationDefaults={
   PRIMARY_VERIFIED:{bg:"Проверено е какво записва документът; това не доказва причината или произхода на наблюдението.",en:"The primary record was reviewed; this does not prove the cause or origin of the reported observation."},
   SECONDARY_ATTRIBUTED:{bg:"Текстът преразказва лицензиран вторичен източник. Първичните документи са посочени като препратки, но не са независимо прочетени от AURORA.",en:"This text paraphrases a licensed secondary source. Primary documents are linked for reference but were not independently read by AURORA."},
-  INSUFFICIENT_SOURCE:{bg:"Наличните източници не подкрепят достатъчно проверимо описание; случаят остава за допълнително проучване.",en:"Available sources do not support a sufficiently verifiable narrative; further research is required."}
+  INSUFFICIENT_SOURCE:{bg:"Текстът е запазен с атрибуция към публикувания източник. Статусът отбелязва ограничение на редакционната проверка, а не извод за достоверността на описаното събитие.",en:"The text is retained with attribution to the published source. This status records a limit in editorial review, not a conclusion about the truth of the reported event."}
  };
  const sourceTypeLabels={secondary:{bg:"ВТОРИЧЕН ИЗТОЧНИК",en:"SECONDARY SOURCE"},
+  reference:{bg:"ПРЕПРАТКА КЪМ ДОКУМЕНТ",en:"DOCUMENT REFERENCE"},
   "editorial-reference":{bg:"ПРЕПРАТКА КЪМ ДОКУМЕНТ",en:"DOCUMENT REFERENCE"},
   documents:{bg:"ДОКУМЕНТ",en:"DOCUMENT"},archive:{bg:"АРХИВ",en:"ARCHIVE"},
   video:{bg:"ВИДЕО ИЗТОЧНИК",en:"VIDEO SOURCE"},photo:{bg:"СНИМКА",en:"PHOTO"}};
@@ -213,10 +214,9 @@
   const assessment=c.assessment_status||c.status||"undetermined";
   const contentHelper=globalThis.AURORA_DOSSIER_CONTENT;
   const verification=contentHelper?.sourceVerification(c,language);
-  const suppressNarrative=verification?.suppressNarrative===true;
   document.title=title+" | AURORA UAP";
   const metaDesc=document.querySelector('meta[name="description"]');
-  if(metaDesc)metaDesc.setAttribute("content",suppressNarrative?(language==="bg"?"Описанието е скрито до проверка на източниците.":"Narrative withheld pending source review."):summary);
+  if(metaDesc&&summary)metaDesc.setAttribute("content",summary);
   label("dossierTitle",title);
   label("dossierKind",legacy?t.kindLegacy:t.kindD1);
   label("dossierSubtitle",t.subtitle);
@@ -227,7 +227,7 @@
   label("factPublication",legacy?t.reference:t.approved);
   label("factAssessment",t.statusName[assessment]||t.statusName.undetermined);
   label("factPrecision",Number.isFinite(c.lat)&&Number.isFinite(c.lng)?(language==="en"?(c.location_precision||t.approx):t.approx):t.noCoords);
-  label("dossierSummary",summary);$("dossierSummary").hidden=suppressNarrative;
+  label("dossierSummary",summary);$("dossierSummary").hidden=false;
   label("dossierDepth",["editorial","sourced-feature","source-reviewed"].includes(c.content_depth)?
    (language==="bg"?"ИСТОРИЯ И КОНТЕКСТ · РАЗШИРЕНО ДОСИЕ":"STORY & CONTEXT · EXTENDED FILE"):
    (language==="bg"?"АРХИВЕН ЗАПИС · ОРИГИНАЛНИ ИЗТОЧНИЦИ":"ARCHIVE FILE · ORIGINAL SOURCES"));
@@ -253,9 +253,9 @@
   }else{visualImage.removeAttribute("src")}
   // Replace baked-in stock Play with an actual, lazy source-verified video hero.
   window.AURORA_DOSSIER_HERO?.render({caseRecord:c,lang:language});
-  const story=$("dossierStory");story.replaceChildren();story.hidden=suppressNarrative;
+  const story=$("dossierStory");story.replaceChildren();story.hidden=false;
   const narrative=(legacyBulgarian(c)?c.story?.en:c.story?.[language])||c.story?.en;
-  if(!suppressNarrative&&Array.isArray(narrative)){
+  if(Array.isArray(narrative)){
    // Skip repeated catalog boilerplate and verbatim copies of the synopsis.
    // Their source attribution is visible in the separate provenance panel.
    const compact=value=>String(value||"").replace(/\s+/g," ").trim().toLocaleLowerCase();
@@ -283,7 +283,7 @@
    if(event.url){const link=document.createElement("a");link.href=event.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent=language==="bg"?"Първоизточник ↗":"Original source ↗";row.append(link)}
    timelineList.append(row);
   }
-  timelineBox.hidden=suppressNarrative||timelineList.childElementCount===0;
+  timelineBox.hidden=timelineList.childElementCount===0;
 
   // Every case has ONE playback surface, in its top evidence/hero section.
   // Keep the lower archive for photographs and documents only; video source
@@ -362,6 +362,18 @@
     $("dossierSourceVerificationStatus").textContent=labelText;
     $("dossierSourceVerificationNote").textContent=verification.note||defaultNote;
     verificationBox.hidden=false;
+   }
+  }
+  const accessNotice=contentHelper?.sourceAccessNotice(c,language);
+  const accessBox=$("dossierSourceAccess");
+  if(accessBox){
+   if(!accessNotice){accessBox.hidden=true;delete accessBox.dataset.reviewedAt}
+   else{
+    $("dossierSourceAccessLabel").textContent=language==="bg"?"ДОСТЪП ДО ПРЕПРАТКИТЕ":"SOURCE LINK ACCESS";
+    $("dossierSourceAccessNote").textContent=accessNotice.note;
+    if(accessNotice.reviewedAt)accessBox.dataset.reviewedAt=accessNotice.reviewedAt;
+    else delete accessBox.dataset.reviewedAt;
+    accessBox.hidden=false;
    }
   }
   // Show every independent public source, not only the first source URL.

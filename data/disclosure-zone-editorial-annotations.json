@@ -2,6 +2,10 @@
   "schema_version": 1,
   "reviewed_at": "2026-11-01",
   "notes": "Batch 1 summaries are editorial paraphrases of the imported disclosure.zone CC BY 4.0 source records. Each record links official archival or government documents. Some direct PDF/catalog fetches did not expose readable text to the retrieval tools (403 or loader-only); no access restriction was bypassed. Original dates, locations, status, coordinates, media and rights are not overridden.",
+  "source_access_notice": {
+    "bg": "Бележка за целия пакет от десет досиета: при одита на 1 ноември 2026 г. някои директни PDF заявки върнаха 403, а някои архивни връзки показаха само обща каталожна страница вместо текста на документа. Одитът не установява кои конкретни връзки са засегнати. Всички препратки са запазени; достъпът за посетителите може да е различен. Това описва ограничение на извличането от AURORA, а не преценка за достоверността на публикуваните сведения.",
+    "en": "Batch-wide note for the ten dossiers: During the 1 November 2026 audit, some direct PDF requests returned 403, and some archive links exposed only a generic catalog page rather than the document text. The audit does not identify which individual links were affected. All references are retained; visitor access may differ. This describes AURORA's retrieval limitation, not a judgment about the truth of the published accounts."
+  },
   "records": {
     "test-site-2023": {
       "title_bg": "Бронзов или сив обект — или просто светлина: разказите от тестовия полигон",

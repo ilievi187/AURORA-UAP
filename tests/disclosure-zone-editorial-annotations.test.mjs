@@ -15,6 +15,13 @@ test("M1 batch one replaces ten identified BG placeholders and preserves source-
  assert.equal(BATCH_ONE_IDS.length,10);
  assert.ok(existsSync(catalogPath),"durable disclosure.zone editorial sidecar exists");
  const catalog=validateDisclosureZoneEditorialAnnotations(JSON.parse(readFileSync(catalogPath,"utf8")));
+ assert.deepEqual(Object.keys(catalog.source_access_notice).sort(),["bg","en"],"batch-level access notice is localized");
+ assert.ok(catalog.source_access_notice.bg.includes("403"),"Bulgarian notice identifies the observed HTTP access failure");
+ assert.ok(catalog.source_access_notice.en.includes("403"),"English notice identifies the observed HTTP access failure");
+ assert.match(catalog.source_access_notice.bg,/пакет от десет досиета/);
+ assert.match(catalog.source_access_notice.bg,/не установява кои конкретни връзки са засегнати/);
+ assert.match(catalog.source_access_notice.en,/Batch-wide note for the ten dossiers/);
+ assert.match(catalog.source_access_notice.en,/does not identify which individual links were affected/);
  const enrichedCases=applyDisclosureZoneEditorialAnnotations({schema_version:1,cases},catalog).cases;
  assert.equal(cases.filter(c=>isLegacyPlaceholder(c,"bg")).length,58,"batch one removes exactly ten of 68 legacy placeholders");
  for(const id of BATCH_ONE_IDS){
@@ -31,6 +38,7 @@ test("M1 batch one replaces ten identified BG placeholders and preserves source-
   assert.equal(enriched.summary.bg,note.summary_bg,id+" has a substantive BG summary");
   assert.deepEqual(enriched.story.bg,note.story_bg,id+" stores the exact reviewed BG narrative");
   assert.deepEqual(enriched.story.en,note.story_en,id+" stores the exact edited EN narrative");
+  assert.deepEqual(enriched.editorial_review.source_access_note,catalog.source_access_notice,id+" carries the batch-level access caveat");
   assert.ok(enriched.story.bg.length>=3&&enriched.story.bg.every(p=>p.trim().length>=75),id+" has substantive BG paragraphs");
   assert.ok(enriched.story.en.length>=3&&enriched.story.en.every(p=>p.trim().length>=75),id+" retains a substantive EN narrative");
   for(const field of ["date","date_precision","lat","lng","location_precision","country","city","category","status","media","source","provenance"])
@@ -43,6 +51,8 @@ test("disclosure.zone editorial validator rejects unsafe references and source-f
  assert.ok(existsSync(catalogPath),"durable disclosure.zone editorial sidecar exists");
  const catalog=JSON.parse(readFileSync(catalogPath,"utf8"));
  const id=Object.keys(catalog.records)[0],note=catalog.records[id];
+ const missingAccessNotice={...catalog};delete missingAccessNotice.source_access_notice;
+ assert.throws(()=>validateDisclosureZoneEditorialAnnotations(missingAccessNotice),/source-access notice/);
  const unsafe={...catalog,records:{[id]:{...note,references:[{name:"Injected source",url:"https://example.org/report.pdf"}]}}};
  assert.throws(()=>validateDisclosureZoneEditorialAnnotations(unsafe),/unsafe disclosure.zone editorial source/);
  const tampered={...catalog,records:{[id]:{...note,lat:1,lng:2}}};

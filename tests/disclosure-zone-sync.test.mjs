@@ -84,7 +84,10 @@ test("manual editorial aliases win; second fetch stays stable and does not dupli
  assert.deepEqual(second.report,{...first.report,previous:2});
 });
 test("source refresh reapplies reviewed Bulgarian editorial copy without changing source facts or media",()=>{
- const catalog={schema_version:1,reviewed_at:"2026-11-01",records:{
+ const catalog={schema_version:1,reviewed_at:"2026-11-01",source_access_notice:{
+  bg:"При ограничена достъпност на архивните връзки препратките се запазват; наличността на документа може да се различава за посетителите и тази бележка не оценява достоверността на публикацията.",
+  en:"When linked archive records are not fully accessible, references are retained; visitor access may differ, and this notice is not a judgment about the truth of the publication."
+ },records:{
   "nuremberg-1561":{
    title_bg:"Нюрнбергската брошура от 1561 г.",
    summary_bg:"Печатна брошура от 1561 г. описва небесни знаци над Нюрнберг; тя е историческо свидетелство, а не инструментален запис.",
@@ -107,6 +110,7 @@ test("source refresh reapplies reviewed Bulgarian editorial copy without changin
  assert.equal(first.summary.bg,catalog.records["nuremberg-1561"].summary_bg);
  assert.deepEqual(first.story.bg,catalog.records["nuremberg-1561"].story_bg);
  assert.equal(first.content_depth,"source-reviewed");
+ assert.deepEqual(first.editorial_review.source_access_note,catalog.source_access_notice);
  assert.equal(first.status,prior.status);
  assert.equal(first.date,prior.date);
  assert.equal(first.lat,prior.lat);

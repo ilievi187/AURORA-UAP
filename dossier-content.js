@@ -41,7 +41,12 @@
  function sourceVerification(c,lang="en"){
   const status=c?.source_verification_status||c?.provenance?.source_verification_status;
   if(!["PRIMARY_VERIFIED","SECONDARY_ATTRIBUTED","INSUFFICIENT_SOURCE"].includes(status))return null;
-  return {status,note:localized(c?.source_verification_note,lang),suppressNarrative:status==="INSUFFICIENT_SOURCE"};
+  return {status,note:localized(c?.source_verification_note,lang)};
+ }
+ function sourceAccessNotice(c,lang="en"){
+  const note=localized(c?.editorial_review?.source_access_note,lang);
+  if(!note)return null;
+  return {note,reviewedAt:text(c?.editorial_review?.reviewed_at,20)};
  }
  function timeline(c,lang="en"){
   const out=[];
@@ -82,5 +87,5 @@
   return {url,attribution:text(photo.attribution,240)||text(item.source_name,240),
    evidence,license:photo.authorization_type==="license"?safeUrl(photo.license_url):null};
  }
- root.AURORA_DOSSIER_CONTENT={sources,sourceVerification,timeline,media,photoPreview,safeUrl,localized};
+ root.AURORA_DOSSIER_CONTENT={sources,sourceVerification,sourceAccessNotice,timeline,media,photoPreview,safeUrl,localized};
 })(globalThis);
