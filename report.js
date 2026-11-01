@@ -3,6 +3,7 @@
 (()=>{
  const $=id=>document.getElementById(id);
  const STORAGE="aurora-private-text-report-draft-v1";
+ const LEGACY_STORAGE="aurora-demo-draft";
  const fields=["country","region","location","occurred","timezone","category","description"];
  let enabled=false,siteKey="",policyVersion="",challenge="",widget=null,pending=false;
  let requestKey=crypto.randomUUID(),widgetApi=null,statusState="checking";
@@ -643,7 +644,29 @@
  }
  function restoreDraft(){
   try{
-   const draft=JSON.parse(localStorage.getItem(STORAGE)||"null");
+   let draft=null;
+   try{draft=JSON.parse(localStorage.getItem(STORAGE)||"null")}catch{/* A corrupt canonical draft must not block the legacy recovery path. */}
+   if(!draft){
+    const legacy=JSON.parse(localStorage.getItem(LEGACY_STORAGE)||"null");
+    if(legacy&&typeof legacy==="object"&&!Array.isArray(legacy)&&
+       ["country","place","date","description"].some(key=>typeof legacy[key]==="string"&&legacy[key].trim())){
+     const migrated={};
+     if(typeof legacy.country==="string"&&/^[A-Za-z]{2}$/.test(legacy.country))migrated.country=legacy.country.toUpperCase();
+     if(typeof legacy.place==="string")migrated.location=legacy.place.slice(0,120);
+     if(typeof legacy.date==="string"&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(legacy.date))migrated.occurred=legacy.date.slice(0,16);
+     const categories={light:"lights",object:"object",other:"other"};
+     if(Object.prototype.hasOwnProperty.call(categories,legacy.type))migrated.category=categories[legacy.type];
+     if(typeof legacy.description==="string")migrated.description=legacy.description.slice(0,5000);
+     if(Object.keys(migrated).length){
+      draft={...migrated,requestKey};
+      try{
+       localStorage.setItem(STORAGE,JSON.stringify(draft));
+       try{localStorage.removeItem(LEGACY_STORAGE)}catch{}
+       msg(pack().msgDraftSaved);
+      }catch{/* Keep displaying the legacy draft if storage is currently unavailable. */}
+     }
+    }
+   }
    if(draft){
     for(const id of fields)if(typeof draft[id]==="string")$(id).value=draft[id];
     if(typeof draft.requestKey==="string"&&/^[a-f0-9-]{36}$/i.test(draft.requestKey))requestKey=draft.requestKey;
@@ -654,7 +677,7 @@
   const t=pack();
   $("receiptPanel").hidden=true;
   $("receiptValue").textContent="";
-  try{localStorage.removeItem(STORAGE)}catch{}
+  try{localStorage.removeItem(STORAGE);localStorage.removeItem(LEGACY_STORAGE)}catch{}
   $("observationForm").reset();
   requestKey=crypto.randomUUID();
   msg(t.msgCleared);

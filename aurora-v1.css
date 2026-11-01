@@ -131,15 +131,9 @@ radial-gradient(circle at 50% -20%,#24494550 0,transparent 52%),#020508}
 .join-actions{border-radius:2px;background:#061511db;border-color:#588f7b6b;padding:25px}
 .donate-banner{border-radius:2px;margin:28px 0 0;padding:clamp(26px,4vw,55px);background:radial-gradient(circle at 90% 50%,#56202f6b,transparent 50%),#111015}
 .donate-banner h2{font-size:clamp(30px,3.2vw,46px)}
-.prototype-notice{margin-top:24px;background:#091310;border:1px dashed #688e7657;border-radius:2px;color:#a6b8ae;padding:16px}
 .footer{padding:55px 0;border-top:1px solid #344b40;margin-top:55px}
 .footer-links a{font-size:11px;color:#afc4ba}
-.site-dialog{border-radius:3px;background:#091512;border-color:#6ca98e}
-.site-dialog input,.site-dialog select,.site-dialog textarea{border-radius:2px;background:#06100e;border-color:#457361;color:#f3fff7}
-.site-dialog .dialog-explainer{background:#10231c;border-color:#a5f9d1}
-.dialog-close{border-radius:2px;background:#142821}
-.site-dialog::backdrop{backdrop-filter:blur(12px);background:#010606db}
-.site-dialog input:focus,.site-dialog textarea:focus,.site-dialog select:focus{border-color:#b2f6d4}
+.footer-report-note{display:block;flex:0 0 100%;grid-column:1/-1;max-width:36ch;margin-top:-9px;color:#a6c3d1;font-size:10px;line-height:1.45}
 @keyframes aurora-image-drift{from{transform:scale(1)}to{transform:scale(1.1) translate(-2%,1%)}}
 @keyframes orbit-breathe{from{transform:rotate(-27deg) scale(.96)}to{transform:rotate(-22deg) scale(1.04)}}
 @keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}

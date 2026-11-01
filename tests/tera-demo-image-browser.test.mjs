@@ -19,20 +19,25 @@ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
 let browser;
 try{
   browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{})});
-  await test('demo illustration does not error on startup and loads when opened',async()=>{
+  await test('homepage exposes sourced archive navigation, not fictional case artwork or dialogs',async()=>{
     const page=await browser.newPage({viewport:{width:390,height:800},reducedMotion:'reduce'});
     try{
-      await page.addInitScript(()=>{window.__demoImageErrors=[];document.addEventListener('error',e=>{if(e.target?.id==='caseImage')window.__demoImageErrors.push(e.target.getAttribute('src'));},true)});
+      const demoAssets=[];
+      page.on('request',request=>{
+        if(/\/assets\/report-(?:triangle|ocean|infrared|orbs)\.webp(?:$|\?)/.test(request.url()))demoAssets.push(request.url());
+      });
       await page.goto(`http://127.0.0.1:${server.address().port}/`);
-      assert.notEqual(await page.locator('#caseImage').getAttribute('src'),'', 'demo image must not have an empty src');
-      assert.deepEqual(await page.evaluate(()=>window.__demoImageErrors),[],'no failed demo image load at startup');
       await page.locator('#gateLanguageGrid button[data-language="en"]').click();
       await page.locator('#gateContinue').click();
-      await page.locator('#controlCaseButtons button').first().click();
-      assert.equal(await page.locator('#caseDialog').evaluate(el=>el.open),true);
-      await page.locator('#caseImage').evaluate(img=>img.decode());
-      assert.ok(await page.locator('#caseImage').evaluate(img=>img.naturalWidth>0));
-      assert.deepEqual(await page.evaluate(()=>window.__demoImageErrors),[]);
+      await page.locator('#languageGate').waitFor({state:'hidden',timeout:1500});
+      await page.locator('#controlHeading').waitFor();
+      assert.equal(await page.locator('#reportDialog').count(),0);
+      assert.equal(await page.locator('#caseDialog').count(),0);
+      assert.equal(await page.locator('#controlCaseButtons button').count(),0);
+      assert.equal(await page.locator('#controlCaseButtons a[href="/archive.html"]').count(),1);
+      assert.doesNotMatch(await page.locator('#controlCaseButtons').innerText(),/DEMO|fictional|примерни|демо/i);
+      assert.equal(await page.locator('#caseImage').count(),0);
+      assert.deepEqual(demoAssets,[]);
     }finally{await page.close();}
   });
 }finally{await browser?.close();await new Promise(resolve=>server.close(resolve));}
