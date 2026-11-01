@@ -127,7 +127,7 @@ try {
     assert.equal(clusterCounts.reduce((sum, count) => sum + count, 0), 15);
     assert.ok(clusterCounts.some((count) => count > 1));
     const alignment = await page.evaluate(() => {
-      const marker = [...document.querySelectorAll('#worldMapPins button')].find((button) => button.title === 'Westall witnesses');
+      const marker = document.querySelector('#worldMapPins button[data-marker-case-id="westall-1966"]');
       const map = document.querySelector('#worldMapViewport').getBoundingClientRect();
       const pin = marker.getBoundingClientRect();
       const expectedX = map.left + ((145.14 + 180) / 360) * map.width;
@@ -135,7 +135,7 @@ try {
       return { dx: pin.left + pin.width / 2 - expectedX, dy: pin.top + pin.height / 2 - expectedY };
     });
     assert.ok(Math.abs(alignment.dx) <= 2 && Math.abs(alignment.dy) <= 2, `marker drift: ${JSON.stringify(alignment)}`);
-    await page.locator('#worldMapPins button[title="Westall witnesses"]').focus();
+    await page.locator('#worldMapPins button[data-marker-case-id="westall-1966"]').focus();
     await page.keyboard.press('Enter');
     assert.deepEqual(await page.evaluate(() => ({
       insidePins: document.querySelector('#worldMapPins').contains(document.activeElement),
