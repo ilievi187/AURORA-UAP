@@ -28,6 +28,10 @@ try {
         for (const language of ['bg', 'en', 'de', 'ru', 'zh-CN']) {
           await page.locator('#langSelect').selectOption(language);
           assert.equal(await page.locator('html').getAttribute('lang'), language);
+          assert.equal(await page.locator('#donateCheckout').isDisabled(), true);
+          const statusText = await page.locator('#paymentStatus').innerText();
+          assert.ok(statusText.length > 15, `${language} checkout state must be explicit`);
+          assert.doesNotMatch(statusText, /prepar|vorbere|准备中|en préparation|προετοιμά|у припреми|w przygotowaniu|يجري إعداد|準備中|준비 중/i);
           for (const selector of ['.brand', '#langSelect', '.header-actions a', '#donateCheckout']) {
             const box = await page.locator(selector).boundingBox();
             assert.ok(box && box.x >= -1 && box.x + box.width <= width + 1, `${language} ${selector} extends beyond viewport: ${JSON.stringify(box)}`);
@@ -39,11 +43,16 @@ try {
       } finally { await page.close(); }
     });
   }
-  await test('keyboard activation explains inactive payments without navigating', async () => {
+  await test('unconfigured checkout is disabled and exposes its explanation to assistive technology', async () => {
     const page = await browser.newPage({viewport:{width:375,height:800}, reducedMotion:'reduce'});
     try {
       await page.goto(`http://127.0.0.1:${server.address().port}/donate.html`);
       assert.equal(await page.locator('#langSelect').getAttribute('id'), await page.locator('label[for="langSelect"]').getAttribute('for'));
+      assert.equal(await page.locator('#donateCheckout').isDisabled(), true);
+      assert.equal(await page.locator('#donateCheckout').getAttribute('aria-describedby'), 'paymentStatus');
+      assert.equal(await page.locator('#paymentStatus').getAttribute('role'), 'status');
+      assert.equal(await page.locator('#paymentStatus').getAttribute('aria-live'), 'polite');
+      assert.equal(await page.locator('#paymentStatus').isVisible(), true);
       await page.keyboard.press('Tab');
       assert.equal(await page.evaluate(() => document.activeElement.className), 'brand');
       await page.keyboard.press('Tab');
@@ -52,14 +61,48 @@ try {
       assert.notEqual(focus.style, 'none');
       assert.notEqual(focus.width, '0px');
       await page.keyboard.press('Tab');
-      await page.keyboard.press('Tab');
-      assert.equal(await page.evaluate(() => document.activeElement.id), 'donateCheckout');
+      assert.equal(await page.evaluate(() => document.activeElement.tagName), 'A');
       const url = page.url();
-      await page.keyboard.press('Enter');
+      assert.equal(await page.locator('#donateCheckout').isDisabled(), true);
       assert.equal(page.url(), url);
-      assert.equal(await page.evaluate(() => document.activeElement.id), 'paymentStatus');
-      assert.equal(await page.locator('#paymentStatus').getAttribute('role'), 'status');
+    } finally { await page.close(); }
+  });
+  await test('all 18 donation locales disclose unavailable checkout and keep payment disabled', async () => {
+    const page = await browser.newPage({reducedMotion:'reduce'});
+    try {
+      await page.goto(`http://127.0.0.1:${server.address().port}/donate.html`);
+      for (const language of ['bg', 'en', 'de', 'ru', 'zh-CN', 'fr', 'es', 'it', 'pt', 'tr', 'ro', 'el', 'sr', 'uk', 'pl', 'ar', 'ja', 'ko']) {
+        await page.locator('#langSelect').selectOption(language);
+        const statusText = await page.locator('#paymentStatus').innerText();
+        assert.equal(await page.locator('html').getAttribute('lang'), language);
+        assert.equal(await page.locator('#donateCheckout').isDisabled(), true);
+        assert.ok(statusText.length > 15, `${language} must explain why checkout is unavailable`);
+        assert.doesNotMatch(statusText, /prepar|vorbere|准备中|en préparation|προετοιμά|у припреми|w przygotowaniu|يجري إعداد|準備中|준비 중/i);
+      }
+    } finally { await page.close(); }
+  });
+  await test('malicious configured URL remains unavailable and cannot navigate', async () => {
+    const page = await browser.newPage({reducedMotion:'reduce'});
+    await page.route('**/payment-config.js', route => route.fulfill({contentType:'application/javascript', body:'window.AURORA_PAYMENT_LINK = "https://buymeacoffee.com.attacker.example/fake";'}));
+    try {
+      await page.goto(`http://127.0.0.1:${server.address().port}/donate.html`);
+      assert.equal(await page.locator('#donateCheckout').isDisabled(), true);
       assert.equal(await page.locator('#paymentStatus').isVisible(), true);
+      assert.match(await page.locator('#paymentStatus').innerText(), /не са налични/i);
+    } finally { await page.close(); }
+  });
+  await test('a future valid creator URL enables checkout and navigates only to that URL', async () => {
+    const page = await browser.newPage({reducedMotion:'reduce'});
+    await page.route('**/payment-config.js', route => route.fulfill({contentType:'application/javascript', body:'window.AURORA_PAYMENT_LINK = "https://buymeacoffee.com/test-creator";'}));
+    await page.route('https://buymeacoffee.com/test-creator', route => route.fulfill({contentType:'text/html', body:'<!doctype html><title>Intercepted test destination</title>'}));
+    try {
+      await page.goto(`http://127.0.0.1:${server.address().port}/donate.html`);
+      assert.equal(await page.locator('#donateCheckout').isEnabled(), true);
+      assert.equal(await page.locator('#paymentStatus').isVisible(), false);
+      await page.locator('#donateCheckout').click();
+      await page.waitForURL('https://buymeacoffee.com/test-creator');
+      assert.equal(page.url(), 'https://buymeacoffee.com/test-creator');
+      assert.equal(await page.title(), 'Intercepted test destination');
     } finally { await page.close(); }
   });
   await test('language persists across reload and browser history', async () => {

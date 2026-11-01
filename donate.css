@@ -6,8 +6,9 @@
 .donate-hero h1 span{color:#ff6b7c}.donate-hero p{max-width:700px;color:#d5ddea;line-height:1.7;font-size:16px}
 .donate-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:28px}
 .donate-primary{font-size:25px;padding:22px 42px;height:auto;min-height:74px;border-radius:12px;cursor:pointer}
-.donate-primary:disabled{cursor:default;opacity:.66;box-shadow:none}
-.notice-payment{font-size:13px;color:#f1b4bc;padding:14px 18px;border:1px solid #79495a;background:#300f204d;border-radius:9px;line-height:1.7}
+.donate-primary:disabled{cursor:not-allowed;opacity:.62;box-shadow:none;filter:saturate(.55)}
+.donate-primary:not(:disabled){cursor:pointer}
+.notice-payment{font-size:14px;font-weight:650;color:#ffe2e5;padding:16px 19px;border:1px solid #b85d71;background:linear-gradient(110deg,#35131fdd,#160e18e8);border-radius:9px;line-height:1.7;box-shadow:inset 3px 0 #ff7188,0 10px 28px #0005}
 .use-funds{margin:44px 0}.use-funds h2{font-size:clamp(24px,4vw,33px)}
 .fund-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:25px}
 .fund-card{padding:24px 23px;background:#091e2e;border:1px solid #24536d;border-radius:10px}
