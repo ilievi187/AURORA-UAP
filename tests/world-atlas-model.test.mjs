@@ -39,10 +39,49 @@ test('atlas controls have labels in every advertised locale', () => {
   const locales = ['bg', 'en', 'de', 'ru', 'zh-CN', 'fr', 'es', 'it', 'pt', 'tr', 'ro', 'el', 'sr', 'uk', 'pl', 'ar', 'ja', 'ko'];
   for (const locale of locales) {
     assert.ok(labels[locale], `missing ${locale}`);
-    for (const key of ['search', 'searchHint', 'year', 'allYears', 'category', 'allCategories', 'lights', 'objects', 'instrument', 'zoomIn', 'zoomOut', 'resetView', 'results', 'mapped', 'noResults', 'unknownLocation', 'readCase', 'originalSource', 'media', 'mapHelp', 'cluster', 'archiveUnavailable', 'notMapped', 'other', 'mapControls', 'mapMarkers', 'mapCaveat', 'registryIncomplete', 'nextPage', 'previousPage']) {
+    for (const key of ['search', 'searchHint', 'year', 'allYears', 'category', 'allCategories', 'lights', 'objects', 'instrument', 'zoomIn', 'zoomOut', 'resetView', 'results', 'mapped', 'noResults', 'unknownLocation', 'readCase', 'originalSource', 'media', 'mapHelp', 'cluster', 'archiveUnavailable', 'notMapped', 'other', 'mapControls', 'mapMarkers', 'mapCaveat', 'registryIncomplete', 'nextPage', 'previousPage', 'precisionExact', 'precisionApproxCity', 'precisionApproxRegion', 'precisionApproxCountry']) {
       assert.ok(labels[locale][key], `missing ${locale}.${key}`);
     }
   }
+});
+
+test('map precision distinguishes explicit exact, city, region, country, and unmapped records', () => {
+  assert.equal(typeof atlas.mapPrecision, 'function', 'world-atlas-model exports mapPrecision');
+  assert.equal(atlas.mapPrecision({ lat: 12, lng: 34, map_anchor: { kind: 'exact_source_coordinates' } }), 'exact');
+  assert.equal(atlas.mapPrecision({ lat: 12, lng: 34, map_anchor: { kind: 'approximate_source_locality', level: 'city-area' } }), 'approx_city');
+  assert.equal(atlas.mapPrecision({ lat: 12, lng: 34, map_anchor: { kind: 'approximate_source_locality', level: 'large-region' } }), 'approx_region');
+  assert.equal(atlas.mapPrecision({ lat: 12, lng: 34, map_anchor: { kind: 'approximate_country_center', level: 'country-center' } }), 'approx_country');
+  assert.equal(atlas.mapPrecision({ lat: 12, lng: 34, location_precision: 'Approximate locality reference from a licensed source' }), 'approx_city');
+  assert.equal(atlas.mapPrecision({ lat: 12, lng: 34, location_precision: 'Approximate coastal-region anchor; not an observation position' }), 'approx_region');
+  assert.equal(atlas.mapPrecision({ lat: null, lng: null, location_precision: 'Coordinates not published' }), 'unmapped');
+});
+
+test('Westall / Clayton South named local area is an approximate-city anchor', () => {
+  const published = JSON.parse(readFileSync(new URL('../data/cases.json', import.meta.url), 'utf8')).cases;
+  const westall = published.find(item => item.id === 'westall-1966');
+  assert.ok(westall, 'the real Westall archive record exists');
+  assert.equal(westall.city.en, 'Westall, Australia');
+  assert.equal(westall.location_precision, 'Westall / Clayton South area');
+  assert.equal(atlas.mapPrecision(westall), 'approx_city');
+});
+
+test('all 101 public records have a map precision state and unmapped records remain in the archive', () => {
+  const published = JSON.parse(readFileSync(new URL('../data/cases.json', import.meta.url), 'utf8')).cases;
+  assert.equal(published.length, 101);
+  assert.equal(published.filter(atlas.hasCoordinates).length, 98);
+  const unlocated = published.filter(item => !atlas.hasCoordinates(item));
+  assert.deepEqual(unlocated.map(item => item.id).sort(), [
+    'disclosure-six-spheres-2025',
+    'disclosure-test-site-2023',
+    'uap-archive-aaro-atmospheric-wakes-case'
+  ]);
+  assert.ok(unlocated.every(item => atlas.mapPrecision(item) === 'unmapped'));
+  for (const item of published) {
+    assert.ok(['exact', 'approx_city', 'approx_region', 'approx_country', 'unmapped'].includes(atlas.mapPrecision(item)), item.id);
+  }
+  assert.equal(published.filter(item => atlas.mapPrecision(item) === 'exact').length, 0,
+    'no existing record explicitly claims exact observation coordinates');
+  assert.equal(published.filter(item => ['approx_city', 'approx_region', 'approx_country'].includes(atlas.mapPrecision(item))).length, 98);
 });
 
 const cases = [

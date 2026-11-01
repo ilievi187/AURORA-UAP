@@ -1,4 +1,4 @@
-import { clusterMarkers, filterCases, hasCoordinates } from './world-atlas-model.js';
+import { clusterMarkers, filterCases, hasCoordinates, mapPrecision } from './world-atlas-model.js';
 import { labels } from './world-atlas-labels.js';
 import { caseTextLanguage as resolvedCaseTextLanguage, translationDisclosure } from './archive-localization.js';
 
@@ -71,6 +71,21 @@ const caseText = (item, field) => {
   return value?.[locale] || value?.en || value?.bg || '';
 };
 const needsTranslationDisclosure = (item) => language() !== 'en' && caseDisplayLanguage(item) !== language();
+const precisionLabelKeys = {
+  exact: 'precisionExact',
+  approx_city: 'precisionApproxCity',
+  approx_region: 'precisionApproxRegion',
+  approx_country: 'precisionApproxCountry'
+};
+const precisionLabel = (kind) => t(precisionLabelKeys[kind] || 'notMapped');
+const precisionNote = (item) => {
+  const kind = mapPrecision(item);
+  if (kind === 'unmapped') return t('notMapped');
+  const detail = language() === 'bg' && item.location_precision_bg
+    ? item.location_precision_bg
+    : item.location_precision;
+  return `${precisionLabel(kind)}${detail ? ` · ${localized(detail)}` : ''}`;
+};
 const safeUrl = (value) => {
   try {
     const url = new URL(value);
@@ -236,17 +251,10 @@ function renderDetails(item) {
     disclosure.textContent = translationDisclosure(language());
     ui.detail.append(disclosure);
   }
-  if (!hasCoordinates(item)) {
-    const unknown = document.createElement('p');
-    unknown.className = 'world-location-note';
-    unknown.textContent = t('notMapped');
-    ui.detail.append(unknown);
-  } else if (item.location_precision) {
-    const precision = document.createElement('p');
-    precision.className = 'world-location-note';
-    precision.textContent = language() === "bg" && item.location_precision_bg ? item.location_precision_bg : item.location_precision;
-    ui.detail.append(precision);
-  }
+  const precision = document.createElement('p');
+  precision.className = 'world-location-note';
+  precision.textContent = precisionNote(item);
+  ui.detail.append(precision);
   const dossier = document.createElement('a');
   dossier.href = (item.recordOrigin === 'd1' ? '/cases/' : '/archive/') + encodeURIComponent(item.id);
   dossier.textContent = t('readCase');
@@ -336,12 +344,11 @@ function renderResults() {
       disclosure.textContent = translationDisclosure(language());
       button.append(disclosure);
     }
-    if (!hasCoordinates(item)) {
-      const note = document.createElement('span');
-      note.className = 'world-result-unknown';
-      note.textContent = t('notMapped');
-      button.append(note);
-    }
+    const precision = document.createElement('span');
+    const precisionKind = mapPrecision(item);
+    precision.className = precisionKind === 'unmapped' ? 'world-result-unknown' : 'world-result-place world-result-precision';
+    precision.textContent = precisionKind === 'unmapped' ? t('notMapped') : precisionLabel(precisionKind);
+    button.append(precision);
     button.addEventListener('click', () => selectCase(item.id, { center: true }));
     row.append(button);
     ui.results.append(row);
@@ -430,24 +437,30 @@ function renderPins() {
   for (const cluster of clusters) {
     const button = document.createElement('button');
     button.type = 'button';
-    const approximate = cluster.count === 1 && cluster.cases[0].map_anchor?.kind === 'approximate_source_locality';
+    const precisionKinds = [...new Set(cluster.cases.map(mapPrecision))];
+    const precisionLabels = precisionKinds.map(precisionLabel);
+    const precisionKind = cluster.count === 1
+      ? precisionKinds[0]
+      : precisionKinds.length === 1 ? precisionKinds[0] : 'mixed';
+    const approximate = cluster.count === 1 && precisionKind !== 'exact';
     button.className = cluster.count > 1 ? 'world-map-marker is-cluster' : 'world-map-marker';
     if (approximate) button.classList.add('is-approximate');
     button.style.left = `${cluster.left}%`;
     button.style.top = `${cluster.top}%`;
     button.dataset.clusterCount = String(cluster.count);
     button.dataset.markerCaseId = cluster.cases[0].id;
-    button.textContent = cluster.count > 1 ? String(cluster.count) : approximate ? '≈' : '';
+    button.dataset.mapPrecision = precisionKind;
+    button.textContent = cluster.count > 1 ? String(cluster.count) : approximate ? '≈' : '•';
     const preview = cluster.cases.slice(0, 3).map((item) => caseText(item, 'title')).join(', ');
     const additional = cluster.count > 3 ? ` (+${cluster.count - 3})` : '';
     const sourceLanguage = cluster.cases.some(needsTranslationDisclosure) ? ` · ${translationDisclosure(language())}` : '';
-    button.title = `${preview}${additional}${approximate ? (language() === 'bg' ? ' · Приблизителна локация' : ' · Approximate area') : ''}${sourceLanguage}`;
+    button.title = `${preview}${additional} · ${precisionLabels.join(', ')}${sourceLanguage}`;
     const selectedInCluster = cluster.cases.some((item) => item.id === selected);
     if (selectedInCluster) button.dataset.selectedCaseId = selected;
     button.setAttribute('aria-pressed', String(selectedInCluster));
     button.setAttribute('aria-label', cluster.count > 1
       ? `${cluster.count} ${t('cluster')}. ${t('zoomIn')}. ${button.title}`
-      : `${caseText(cluster.cases[0], 'title')} · ${localized(cluster.cases[0].city) || t('unknownLocation')}${approximate ? ' · ' + (language() === 'bg' ? 'ориентировъчна локация' : 'approximate area') : ''}${needsTranslationDisclosure(cluster.cases[0]) ? ' · ' + translationDisclosure(language()) : ''}`);
+      : `${caseText(cluster.cases[0], 'title')} · ${localized(cluster.cases[0].city) || t('unknownLocation')} · ${precisionLabels[0]}${needsTranslationDisclosure(cluster.cases[0]) ? ' · ' + translationDisclosure(language()) : ''}`);
     button.addEventListener('click', () => {
       if (cluster.count > 1 && zoom < MAX_ZOOM) {
         const representative = cluster.cases[0];
