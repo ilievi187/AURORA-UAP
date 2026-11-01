@@ -1,0 +1,31 @@
+name: AURORA archive upstream verification
+on:
+  pull_request:
+    paths:
+      - 'scripts/probe-gep-source.mjs'
+      - '.github/workflows/archive-source-audit.yml'
+      - 'scripts/sync-open-case-archive.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  first-provider-dry-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check source availability, expected metadata, and existing catalog without writing
+        run: node scripts/sync-open-case-archive.mjs --check
+  gep-schema-read-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Read the GEP Zenodo license and CSV headings only
+        run: node scripts/probe-gep-source.mjs
