@@ -23,12 +23,19 @@ before(async()=>{
  browser=await chromium.launch({headless:true,...(process.env.AURORA_CHROMIUM_PATH?{executablePath:process.env.AURORA_CHROMIUM_PATH}:{})});
 });
 after(async()=>{await browser?.close();server?.closeAllConnections();if(server)await new Promise(resolve=>server.close(resolve))});
-async function pageFor(id,viewport={width:1280,height:860}){
+async function pageFor(id,viewport={width:1280,height:860},caseOverrides=null){
  const ctx=await browser.newContext({viewport,reducedMotion:"reduce"});
  const page=await ctx.newPage();
  const errors=[];page.on("pageerror",e=>errors.push(e.message));
  await page.addInitScript(()=>localStorage.setItem("aurora-lang","bg"));
  await page.route("https://upload.wikimedia.org/**",route=>route.abort("failed"));
+ if(caseOverrides){
+  const data=JSON.parse(await readFile(resolve(root,"data/cases.json"),"utf8"));
+  const record=data.cases.find(item=>item.id===id);
+  if(!record)throw new Error("Archive fixture not found: "+id);
+  Object.assign(record,caseOverrides);
+  await page.route("**/data/cases.json",route=>route.fulfill({status:200,contentType:"application/json",body:JSON.stringify(data)}));
+ }
  await page.goto("http://127.0.0.1:"+port+"/archive/"+id);
  await page.locator("#dossierContent").waitFor({state:"visible"});
  return{page,ctx,errors};
@@ -83,8 +90,12 @@ test("source-authored Bulgarian dossiers remain displayed without English-fallba
   assert.deepEqual(errors,[]);
  }finally{await ctx.close()}
 });
-test("secondary-attributed dossier visibly discloses status and does not label its compilation as primary",async()=>{
- const {page,ctx,errors}=await pageFor("disclosure-test-site-2023");
+test("explicit secondary-attributed fixture visibly discloses status without calling its compilation primary",async()=>{
+ const {page,ctx,errors}=await pageFor("disclosure-test-site-2023",{width:1280,height:860},{
+  source_verification_status:"SECONDARY_ATTRIBUTED",
+  source_verification_note:{bg:"Това досие преразказва лицензиран вторичен източник; първичните документи не са независимо прочетени.",
+   en:"This dossier paraphrases a licensed secondary source; primary documents were not independently read."}
+ });
  try{
   const notice=page.locator("#dossierSourceVerification");
   await notice.waitFor({state:"visible"});
@@ -93,6 +104,23 @@ test("secondary-attributed dossier visibly discloses status and does not label i
   const sourceKinds=await page.locator("#dossierSourcesList small").allTextContents();
   assert.ok(sourceKinds.some(x=>x.includes("ВТОРИЧЕН ИЗТОЧНИК")));
   assert.ok(sourceKinds.every(x=>!x.includes("ПЪРВИЧЕН ИЗТОЧНИК")));
+  assert.deepEqual(errors,[]);
+ }finally{await ctx.close()}
+});
+test("explicit insufficient-source fixture withholds narrative but keeps the archive record accessible",async()=>{
+ const {page,ctx,errors}=await pageFor("disclosure-test-site-2023",{width:1280,height:860},{
+  source_verification_status:"INSUFFICIENT_SOURCE",
+  source_verification_note:{bg:"Няма достатъчно проверима основа за това описание.",en:"There is not enough verifiable support for this narrative."}
+ });
+ try{
+  await page.locator("#dossierSourceVerification").waitFor({state:"visible"});
+  assert.equal(await page.locator("#dossierSourceVerificationStatus").textContent(),"НЕДОСТАТЪЧЕН ИЗТОЧНИК");
+  assert.equal(await page.locator("#dossierTitle").isVisible(),true);
+  assert.equal(await page.locator("#dossierSourceUrl").isVisible(),true);
+  assert.equal(await page.locator("#dossierSummary").isHidden(),true);
+  assert.equal(await page.locator("#dossierStory").isHidden(),true);
+  assert.equal(await page.locator("#dossierTimeline").isHidden(),true);
+  assert.equal(await page.locator('meta[name="description"]').getAttribute("content"),"Описанието е скрито до проверка на източниците.");
   assert.deepEqual(errors,[]);
  }finally{await ctx.close()}
 });
