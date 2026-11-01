@@ -53,6 +53,32 @@ export function hasCoordinates(item) {
     Math.abs(item.lat) <= 90 && Math.abs(item.lng) <= 180;
 }
 
+export function mapPrecision(item) {
+  if (!hasCoordinates(item)) return 'unmapped';
+  const anchor = item?.map_anchor;
+  const kind = String(anchor?.kind ?? '').toLowerCase();
+  const level = String(anchor?.level ?? '').toLowerCase();
+  const precision = String(item?.location_precision ?? '').toLowerCase();
+
+  if (kind === 'exact_source_coordinates' || kind === 'exact_source_location' ||
+      level === 'exact' || /^exact(?:\b|[-_])/.test(precision)) return 'exact';
+  if (kind === 'approximate_country_center' || /country/.test(level) || /country[- ]center|national center/.test(precision)) {
+    return 'approx_country';
+  }
+  if (/city|locality/.test(level)) return 'approx_city';
+  if (/region|coast|sea|ocean|local-area/.test(level)) return 'approx_region';
+
+  if (/country[- ]center|national center/.test(precision)) return 'approx_country';
+  if (/region|regional|coastal|offshore|\bsea\b|\bocean\b|route approximation|reports? (?:span|across)|broad regional/.test(precision)) {
+    return 'approx_region';
+  }
+  if (/locality|\bcity\b|municipal|airport|base reference|forest area|local-area/.test(precision)) {
+    return 'approx_city';
+  }
+  if (kind === 'approximate_source_locality') return 'approx_city';
+  return 'approx_region';
+}
+
 export function clusterMarkers(cases, { width, height, zoom = 1, radius = 42 } = {}) {
   if (!Number.isFinite(width) || width <= 0 || !Number.isFinite(height) || height <= 0) return [];
   const scale = Number.isFinite(zoom) && zoom > 0 ? zoom : 1;
