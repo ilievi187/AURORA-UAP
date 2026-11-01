@@ -56,11 +56,14 @@ test("future licensed imports infer an approximate city without guessing an inci
  assert.equal(unknown.lat,null);assert.equal(unknown.lng,null);
 });
 
-test("world atlas visually distinguishes inferred locations and localizes the warning",()=>{
+test("world atlas renders structured precision labels instead of a generic area warning",()=>{
  const atlas=readFileSync(new URL("../world-atlas.js",import.meta.url),"utf8");
  const css=readFileSync(new URL("../world-atlas.css",import.meta.url),"utf8");
  assert.match(atlas,/is-approximate/);
- assert.match(atlas,/location_precision_bg/);
- assert.match(atlas,/approximate area/);
+ assert.match(atlas,/mapPrecision\(item\)/);
+ assert.match(atlas,/precisionLabelKeys/);
+ assert.match(atlas,/precisionNote\(item\)/);
+ assert.match(atlas,/precisionLabels\.join/);
+ assert.match(atlas,/world-result-precision/);
  assert.match(css,/\.world-map-marker\.is-approximate/);
 });

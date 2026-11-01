@@ -160,6 +160,28 @@ const extraLabels = {
 };
 for (const [locale, values] of Object.entries(extraLabels)) Object.assign(labels[locale], values);
 
+const precisionLabels = {
+  bg: { precisionExact: 'Точно място', precisionApproxCity: 'Ориентировъчно — град', precisionApproxRegion: 'Ориентировъчно — регион', precisionApproxCountry: 'Ориентировъчно — държава' },
+  en: { precisionExact: 'Exact place', precisionApproxCity: 'Approximate — city', precisionApproxRegion: 'Approximate — region', precisionApproxCountry: 'Approximate — country' },
+  de: { precisionExact: 'Exakter Ort', precisionApproxCity: 'Ungefähre Angabe — Stadt', precisionApproxRegion: 'Ungefähre Angabe — Region', precisionApproxCountry: 'Ungefähre Angabe — Land' },
+  ru: { precisionExact: 'Точное место', precisionApproxCity: 'Приблизительно — город', precisionApproxRegion: 'Приблизительно — регион', precisionApproxCountry: 'Приблизительно — страна' },
+  'zh-CN': { precisionExact: '确切地点', precisionApproxCity: '大致位置 — 城市', precisionApproxRegion: '大致位置 — 地区', precisionApproxCountry: '大致位置 — 国家' },
+  fr: { precisionExact: 'Lieu exact', precisionApproxCity: 'Approximatif — ville', precisionApproxRegion: 'Approximatif — région', precisionApproxCountry: 'Approximatif — pays' },
+  es: { precisionExact: 'Lugar exacto', precisionApproxCity: 'Aproximado — ciudad', precisionApproxRegion: 'Aproximado — región', precisionApproxCountry: 'Aproximado — país' },
+  it: { precisionExact: 'Luogo esatto', precisionApproxCity: 'Approssimativo — città', precisionApproxRegion: 'Approssimativo — regione', precisionApproxCountry: 'Approssimativo — paese' },
+  pt: { precisionExact: 'Local exato', precisionApproxCity: 'Aproximado — cidade', precisionApproxRegion: 'Aproximado — região', precisionApproxCountry: 'Aproximado — país' },
+  tr: { precisionExact: 'Kesin yer', precisionApproxCity: 'Yaklaşık — şehir', precisionApproxRegion: 'Yaklaşık — bölge', precisionApproxCountry: 'Yaklaşık — ülke' },
+  ro: { precisionExact: 'Loc exact', precisionApproxCity: 'Aproximativ — oraș', precisionApproxRegion: 'Aproximativ — regiune', precisionApproxCountry: 'Aproximativ — țară' },
+  el: { precisionExact: 'Ακριβής τοποθεσία', precisionApproxCity: 'Κατά προσέγγιση — πόλη', precisionApproxRegion: 'Κατά προσέγγιση — περιοχή', precisionApproxCountry: 'Κατά προσέγγιση — χώρα' },
+  sr: { precisionExact: 'Tačno mesto', precisionApproxCity: 'Približno — grad', precisionApproxRegion: 'Približno — region', precisionApproxCountry: 'Približno — država' },
+  uk: { precisionExact: 'Точне місце', precisionApproxCity: 'Приблизно — місто', precisionApproxRegion: 'Приблизно — регіон', precisionApproxCountry: 'Приблизно — країна' },
+  pl: { precisionExact: 'Dokładne miejsce', precisionApproxCity: 'Przybliżone — miasto', precisionApproxRegion: 'Przybliżone — region', precisionApproxCountry: 'Przybliżone — kraj' },
+  ar: { precisionExact: 'موقع دقيق', precisionApproxCity: 'تقريبي — مدينة', precisionApproxRegion: 'تقريبي — منطقة', precisionApproxCountry: 'تقريبي — دولة' },
+  ja: { precisionExact: '正確な場所', precisionApproxCity: 'おおよその位置 — 都市', precisionApproxRegion: 'おおよその位置 — 地域', precisionApproxCountry: 'おおよその位置 — 国' },
+  ko: { precisionExact: '정확한 장소', precisionApproxCity: '대략적인 위치 — 도시', precisionApproxRegion: '대략적인 위치 — 지역', precisionApproxCountry: '대략적인 위치 — 국가' }
+};
+for (const [locale, values] of Object.entries(precisionLabels)) Object.assign(labels[locale], values);
+
 const operationalLabels = {
   bg: { registryIncomplete: 'Регистърът е зареден частично; възможни са още досиета.', showMore: 'ПОКАЖИ ОЩЕ' },
   en: { registryIncomplete: 'The registry load is incomplete; more cases may be available.', showMore: 'SHOW MORE' },

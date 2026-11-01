@@ -11,6 +11,7 @@ const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 // The legacy atlas map behavior is exercised against the original editorial case
 // fixtures, independently from the larger licensed source catalog.
 const curatedArchive=(()=>{const {cases,...meta}=JSON.parse(readFileSync(new URL('../data/cases.json',import.meta.url)));return JSON.stringify({...meta,cases:cases.filter(c=>!c.provenance?.automated).sort((a,b)=>a.id==='phoenix-1997'?-1:b.id==='phoenix-1997'?1:0)});})();
+const fullArchive=readFileSync(new URL('../data/cases.json',import.meta.url),'utf8');
 const homepageIntegrityCases=(()=>{
   const cases=JSON.parse(readFileSync(new URL('../data/cases.json',import.meta.url))).cases;
   const wanted=new Set(['disclosure-virginia-2024','uap-archive-aaro-atmospheric-wakes-case']);
@@ -126,7 +127,7 @@ try {
     assert.equal(clusterCounts.reduce((sum, count) => sum + count, 0), 15);
     assert.ok(clusterCounts.some((count) => count > 1));
     const alignment = await page.evaluate(() => {
-      const marker = [...document.querySelectorAll('#worldMapPins button')].find((button) => button.title === 'Westall witnesses');
+      const marker = document.querySelector('#worldMapPins button[data-marker-case-id="westall-1966"]');
       const map = document.querySelector('#worldMapViewport').getBoundingClientRect();
       const pin = marker.getBoundingClientRect();
       const expectedX = map.left + ((145.14 + 180) / 360) * map.width;
@@ -134,7 +135,7 @@ try {
       return { dx: pin.left + pin.width / 2 - expectedX, dy: pin.top + pin.height / 2 - expectedY };
     });
     assert.ok(Math.abs(alignment.dx) <= 2 && Math.abs(alignment.dy) <= 2, `marker drift: ${JSON.stringify(alignment)}`);
-    await page.locator('#worldMapPins button[title="Westall witnesses"]').focus();
+    await page.locator('#worldMapPins button[data-marker-case-id="westall-1966"]').focus();
     await page.keyboard.press('Enter');
     assert.deepEqual(await page.evaluate(() => ({
       insidePins: document.querySelector('#worldMapPins').contains(document.activeElement),
@@ -189,6 +190,120 @@ try {
     assert.equal(await page.locator('#worldZoomIn').isVisible(), true);
     assert.deepEqual(errors, []);
     await context.close();
+  });
+
+  await test('real 101-case atlas gives every mapped cluster a precision label and keeps unlocated records searchable', async () => {
+    const previous={fixtures:approvedFixtures,failAtOffset,nullAtOffset,statsFailure,statsIncludesDemo};
+    approvedFixtures=[];failAtOffset=null;nullAtOffset=null;statsFailure=false;statsIncludesDemo=false;
+    const context=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:'reduce'});
+    try{
+      const page=await context.newPage(),errors=[];
+      page.on('pageerror',error=>errors.push(error.message));
+      await page.route('**/data/cases.json',route=>route.fulfill({status:200,contentType:'application/json',body:fullArchive}));
+      await page.goto(`http://127.0.0.1:${port}/`);
+      await page.locator('button[data-language="en"]').click();
+      await page.locator('#gateContinue').click();
+      await page.locator('#languageGate').waitFor({state:'hidden'});
+      await page.waitForFunction(()=>document.querySelector('#worldMapCount')?.textContent==='101');
+
+      const pins=await page.locator('#worldMapPins button').evaluateAll(buttons=>buttons.map(button=>({
+        title:button.title,aria:button.getAttribute('aria-label'),count:Number(button.dataset.clusterCount),precision:button.dataset.mapPrecision
+      })));
+      assert.equal(pins.reduce((sum,pin)=>sum+pin.count,0),98,'all 98 currently geolocated cases must remain represented by a marker or cluster');
+      const labels=['Exact place','Approximate — city','Approximate — region','Approximate — country'];
+      assert.ok(pins.every(pin=>labels.some(label=>pin.title.includes(label))), 'every marker title must disclose its location precision');
+      assert.ok(pins.every(pin=>labels.some(label=>pin.aria.includes(label))), 'every marker accessible name must disclose its location precision');
+      assert.ok(pins.every(pin=>pin.precision), 'every marker must carry an explicit precision class');
+
+      await page.locator('#worldSearch').fill('westall-1966');
+      const westallRow=page.locator('#worldMapResults [data-world-case-id="westall-1966"]');
+      await westallRow.waitFor();
+      const westallMarker=page.locator('#worldMapPins button[data-marker-case-id="westall-1966"]');
+      await westallMarker.waitFor({state:'visible'});
+      assert.equal(await westallMarker.getAttribute('data-map-precision'),'approx_city');
+      assert.ok((await westallMarker.getAttribute('title')).includes('Approximate — city'));
+      assert.ok((await westallMarker.getAttribute('aria-label')).includes('Approximate — city'));
+      assert.equal(await westallRow.locator('.world-result-precision').textContent(),'Approximate — city');
+      await westallRow.click();
+      assert.match(await page.locator('#worldCaseDetail .world-location-note').textContent(),/Approximate — city/);
+
+      for(const id of ['disclosure-six-spheres-2025','disclosure-test-site-2023','uap-archive-aaro-atmospheric-wakes-case']){
+        await page.locator('#worldSearch').fill(id);
+        const row=page.locator(`#worldMapResults [data-world-case-id="${id}"]`);
+        await row.waitFor();
+        assert.equal(await row.locator('.world-result-unknown').textContent(),'Not mapped — coordinates unavailable');
+        await row.click();
+        assert.equal(await page.locator('#worldCaseDetail .world-location-note').textContent(),'Not mapped — coordinates unavailable');
+        assert.equal(await page.locator(`#worldMapPins button[data-marker-case-id="${id}"]`).count(),0);
+      }
+      assert.deepEqual(errors,[]);
+    }finally{
+      approvedFixtures=previous.fixtures;failAtOffset=previous.failAtOffset;nullAtOffset=previous.nullAtOffset;
+      statsFailure=previous.statsFailure;statsIncludesDemo=previous.statsIncludesDemo;
+      await context.close();
+    }
+  });
+
+  await test('marker, result, cluster, and detail precision labels localize exact and approximate anchors',async()=>{
+    const previous={fixtures:approvedFixtures,failAtOffset,nullAtOffset,statsFailure,statsIncludesDemo};
+    approvedFixtures=[];failAtOffset=null;nullAtOffset=null;statsFailure=false;statsIncludesDemo=false;
+    const record=(id,title,lat,lng,precision,map_anchor,country='US')=>({
+      id,date:'2024',category:'other',status:'reported',country,lat,lng,location_precision:precision,map_anchor,
+      city:{en:`${title} area`,bg:`${title} район`},title:{en:title,bg:title},
+      summary:{en:'A test-only record with an explicit map precision fixture.',bg:'Тестов запис за точността на маркера.'},
+      source:{name:'Fixture source',url:`https://example.org/${id}`}
+    });
+    const fixtures=[
+      record('precision-exact','Exact source point',42,-120,'Exact coordinates published by the source',{kind:'exact_source_coordinates'}),
+      record('precision-city','City anchor',25,-80,'Approximate city-area anchor',{kind:'approximate_source_locality',level:'city-area'}),
+      record('precision-region','Regional anchor',5,20,'Approximate large-region anchor',{kind:'approximate_source_locality',level:'large-region'}),
+      record('precision-country','Country center',-35,140,'Approximate country-center anchor',{kind:'approximate_country_center',level:'country-center'},'AU'),
+      record('precision-cluster-city','Cluster city anchor',-20,30,'Approximate city-area anchor',{kind:'approximate_source_locality',level:'city-area'}),
+      record('precision-cluster-region','Cluster region anchor',-20,30,'Approximate regional anchor',{kind:'approximate_source_locality',level:'large-region'}),
+      record('precision-unmapped','Unlocated report',null,null,'Coordinates not published',undefined,'')
+    ];
+    const fixtureArchive=JSON.stringify({cases:fixtures});
+    const context=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:'reduce'});
+    try{
+      const page=await context.newPage(),errors=[];
+      page.on('pageerror',error=>errors.push(error.message));
+      await page.route('**/data/cases.json',route=>route.fulfill({status:200,contentType:'application/json',body:fixtureArchive}));
+      await page.goto(`http://127.0.0.1:${port}/`);
+      await page.locator('button[data-language="en"]').click();
+      await page.locator('#gateContinue').click();
+      await page.locator('#languageGate').waitFor({state:'hidden'});
+      await page.waitForFunction(()=>document.querySelector('#worldMapCount')?.textContent==='7');
+
+      for(const [id,kind,label] of [
+        ['precision-exact','exact','Exact place'],
+        ['precision-city','approx_city','Approximate — city'],
+        ['precision-region','approx_region','Approximate — region'],
+        ['precision-country','approx_country','Approximate — country']
+      ]){
+        const marker=page.locator(`#worldMapPins button[data-marker-case-id="${id}"]`);
+        assert.equal(await marker.getAttribute('data-map-precision'),kind);
+        assert.ok((await marker.getAttribute('title')).includes(label));
+        assert.ok((await marker.getAttribute('aria-label')).includes(label));
+        assert.equal(await page.locator(`#worldMapResults [data-world-case-id="${id}"] .world-result-precision`).textContent(),label);
+      }
+      const cluster=page.locator('#worldMapPins button[data-cluster-count="2"]');
+      assert.equal(await cluster.getAttribute('data-map-precision'),'mixed');
+      assert.match(await cluster.getAttribute('title'),/Approximate — city.*Approximate — region/);
+      assert.match(await cluster.getAttribute('aria-label'),/Approximate — city.*Approximate — region/);
+      await page.locator('#worldMapResults [data-world-case-id="precision-city"]').click();
+      assert.match(await page.locator('#worldCaseDetail .world-location-note').textContent(),/Approximate — city/);
+      assert.equal(await page.locator('#worldMapResults [data-world-case-id="precision-unmapped"] .world-result-unknown').textContent(),
+        'Not mapped — coordinates unavailable');
+
+      await page.locator('#langToggle').selectOption('bg');
+      await page.waitForFunction(()=>document.querySelector('#worldMapPins button[data-marker-case-id="precision-city"]')?.title.includes('Ориентировъчно — град'));
+      assert.equal(await page.locator('#worldMapResults [data-world-case-id="precision-city"] .world-result-precision').textContent(),'Ориентировъчно — град');
+      assert.deepEqual(errors,[]);
+    }finally{
+      approvedFixtures=previous.fixtures;failAtOffset=previous.failAtOffset;nullAtOffset=previous.nullAtOffset;
+      statsFailure=previous.statsFailure;statsIncludesDemo=previous.statsIncludesDemo;
+      await context.close();
+    }
   });
 
   await test('M0 homepage cards use real source text and disclose English fallback in BG and DE', async () => {
