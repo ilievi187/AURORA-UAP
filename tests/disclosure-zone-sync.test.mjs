@@ -83,6 +83,52 @@ test("manual editorial aliases win; second fetch stays stable and does not dupli
  assert.deepEqual(second.archive,first.archive);
  assert.deepEqual(second.report,{...first.report,previous:2});
 });
+test("source refresh reapplies reviewed Bulgarian editorial copy without changing source facts or media",()=>{
+ const catalog={schema_version:1,reviewed_at:"2026-11-01",source_access_notice:{
+  bg:"При ограничена достъпност на архивните връзки препратките се запазват; наличността на документа може да се различава за посетителите и тази бележка не оценява достоверността на публикацията.",
+  en:"When linked archive records are not fully accessible, references are retained; visitor access may differ, and this notice is not a judgment about the truth of the publication."
+ },records:{
+  "nuremberg-1561":{
+   title_bg:"Нюрнбергската брошура от 1561 г.",
+   summary_bg:"Печатна брошура от 1561 г. описва небесни знаци над Нюрнберг; тя е историческо свидетелство, а не инструментален запис.",
+   story_bg:[
+    "На 14 април 1561 г. в Нюрнберг е отпечатана брошура с текст и дърворезба за наблюдавани над града небесни форми.",
+    "Документът предава описанието и тълкуването на печатницата от XVI век; сам по себе си той не установява физическата природа на видяното.",
+    "Съвременният читател може да разгледа запазения екземпляр и да отдели първоизточника от по-късни обяснения и спекулации."
+   ],
+   story_en:[
+    "A printed broadsheet dated 14 April 1561 describes and depicts signs seen above Nuremberg.",
+    "The item preserves a sixteenth-century account and interpretation; it is not an instrument record and does not identify a physical cause.",
+    "Readers can inspect the surviving print while distinguishing the historical source from later explanations and speculation."
+   ],
+   references:[{name:"U.S. Department of War UAP records portal",url:"https://www.war.gov/ufo/"}]
+  }
+ }};
+ const prior=normalizeCase(row("nuremberg-1561"));
+ const first=buildArchive(existing,source([row("nuremberg-1561")]),catalog).archive.cases.find(c=>c.id===prior.id);
+ assert.equal(first.title.bg,catalog.records["nuremberg-1561"].title_bg);
+ assert.equal(first.summary.bg,catalog.records["nuremberg-1561"].summary_bg);
+ assert.deepEqual(first.story.bg,catalog.records["nuremberg-1561"].story_bg);
+ assert.equal(first.content_depth,"source-reviewed");
+ assert.deepEqual(first.editorial_review.source_access_note,catalog.source_access_notice);
+ assert.equal(first.status,prior.status);
+ assert.equal(first.date,prior.date);
+ assert.equal(first.lat,prior.lat);
+ assert.equal(first.lng,prior.lng);
+ assert.deepEqual(first.media,prior.media);
+ assert.deepEqual(first.sources.filter(s=>s.type!=="editorial-reference"),prior.sources,"existing publisher references remain intact");
+ assert.ok(first.sources.some(s=>s.url==="https://www.war.gov/ufo/"));
+ const second=buildArchive({schema_version:1,cases:[first]},source([row("nuremberg-1561")]),catalog).archive.cases.find(c=>c.id===prior.id);
+ assert.deepEqual(second,first,"fresh source import must reapply, not erase, reviewed copy");
+});
+test("unmatched source IDs cannot resolve inherited annotation properties",()=>{
+ const editorial=JSON.parse(readFileSync(new URL("../data/disclosure-zone-editorial-annotations.json",import.meta.url),"utf8"));
+ const archive=buildArchive(existing,source([row("constructor")]),editorial).archive;
+ const imported=archive.cases.find(c=>c.id==="disclosure-constructor");
+ assert.ok(imported);
+ assert.equal(imported.title.bg,imported.title.en);
+ assert.equal(imported.content_depth,"source-linked");
+});
 test("publisher changing or deleting most of a published corpus never destroys earlier entries",()=>{
  const rows=Array.from({length:12},(_,i)=>row("case-"+String(i+1).padStart(3,"0")));
  const first=buildArchive(existing,source(rows));

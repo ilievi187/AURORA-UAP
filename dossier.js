@@ -100,6 +100,21 @@
   ko:"영어 원문입니다. 번역이 없거나 불완전합니다。"
  };
  const narrativeDisclosureText=code=>narrativeDisclosureLabels[code]||"Original English narrative · Translation unavailable or partial";
+ const sourceVerificationLabels={
+  PRIMARY_VERIFIED:{bg:"ПЪРВИЧЕН ДОКУМЕНТ ПРОЧЕТЕН",en:"PRIMARY DOCUMENT BODY REVIEWED"},
+  SECONDARY_ATTRIBUTED:{bg:"ВТОРИЧНО АТРИБУТИРАНО ДОСИЕ",en:"SECONDARY-ATTRIBUTED SUMMARY"},
+  INSUFFICIENT_SOURCE:{bg:"НЕЗАВИСИМАТА ПРОВЕРКА Е НЕПЪЛНА",en:"INDEPENDENT VERIFICATION INCOMPLETE"}
+ };
+ const sourceVerificationDefaults={
+  PRIMARY_VERIFIED:{bg:"Проверено е какво записва документът; това не доказва причината или произхода на наблюдението.",en:"The primary record was reviewed; this does not prove the cause or origin of the reported observation."},
+  SECONDARY_ATTRIBUTED:{bg:"Текстът преразказва лицензиран вторичен източник. Първичните документи са посочени като препратки, но не са независимо прочетени от AURORA.",en:"This text paraphrases a licensed secondary source. Primary documents are linked for reference but were not independently read by AURORA."},
+  INSUFFICIENT_SOURCE:{bg:"Текстът е запазен с атрибуция към публикувания източник. Статусът отбелязва ограничение на редакционната проверка, а не извод за достоверността на описаното събитие.",en:"The text is retained with attribution to the published source. This status records a limit in editorial review, not a conclusion about the truth of the reported event."}
+ };
+ const sourceTypeLabels={secondary:{bg:"ВТОРИЧЕН ИЗТОЧНИК",en:"SECONDARY SOURCE"},
+  reference:{bg:"ПРЕПРАТКА КЪМ ДОКУМЕНТ",en:"DOCUMENT REFERENCE"},
+  "editorial-reference":{bg:"ПРЕПРАТКА КЪМ ДОКУМЕНТ",en:"DOCUMENT REFERENCE"},
+  documents:{bg:"ДОКУМЕНТ",en:"DOCUMENT"},archive:{bg:"АРХИВ",en:"ARCHIVE"},
+  video:{bg:"ВИДЕО ИЗТОЧНИК",en:"VIDEO SOURCE"},photo:{bg:"СНИМКА",en:"PHOTO"}};
  function narrativeDisclosure(record){
   const el=$("dossierTranslationDisclosure")||(()=>{
    const tag=document.createElement("p");tag.id="dossierTranslationDisclosure";
@@ -197,6 +212,8 @@
   const area=local(c.city)||c.location||"—";
   const country=c.country_code||c.country||"";
   const assessment=c.assessment_status||c.status||"undetermined";
+  const contentHelper=globalThis.AURORA_DOSSIER_CONTENT;
+  const verification=contentHelper?.sourceVerification(c,language);
   document.title=title+" | AURORA UAP";
   const metaDesc=document.querySelector('meta[name="description"]');
   if(metaDesc&&summary)metaDesc.setAttribute("content",summary);
@@ -210,7 +227,7 @@
   label("factPublication",legacy?t.reference:t.approved);
   label("factAssessment",t.statusName[assessment]||t.statusName.undetermined);
   label("factPrecision",Number.isFinite(c.lat)&&Number.isFinite(c.lng)?(language==="en"?(c.location_precision||t.approx):t.approx):t.noCoords);
-  label("dossierSummary",summary);
+  label("dossierSummary",summary);$("dossierSummary").hidden=false;
   label("dossierDepth",["editorial","sourced-feature","source-reviewed"].includes(c.content_depth)?
    (language==="bg"?"ИСТОРИЯ И КОНТЕКСТ · РАЗШИРЕНО ДОСИЕ":"STORY & CONTEXT · EXTENDED FILE"):
    (language==="bg"?"АРХИВЕН ЗАПИС · ОРИГИНАЛНИ ИЗТОЧНИЦИ":"ARCHIVE FILE · ORIGINAL SOURCES"));
@@ -236,7 +253,7 @@
   }else{visualImage.removeAttribute("src")}
   // Replace baked-in stock Play with an actual, lazy source-verified video hero.
   window.AURORA_DOSSIER_HERO?.render({caseRecord:c,lang:language});
-  const story=$("dossierStory");story.replaceChildren();
+  const story=$("dossierStory");story.replaceChildren();story.hidden=false;
   const narrative=(legacyBulgarian(c)?c.story?.en:c.story?.[language])||c.story?.en;
   if(Array.isArray(narrative)){
    // Skip repeated catalog boilerplate and verbatim copies of the synopsis.
@@ -254,7 +271,6 @@
    }
   }
   // Structured chronology is optional and always taken from published case metadata.
-  const contentHelper=globalThis.AURORA_DOSSIER_CONTENT;
   const timelineBox=$("dossierTimeline"),timelineList=$("dossierTimelineList");
   const events=contentHelper?.timeline(c,language)||[];
   timelineList.replaceChildren();
@@ -337,6 +353,29 @@
   src.hidden=!source;
   if(source){src.href=source;src.textContent=t.openSource}
   label("dossierLicense",legacy?(provenance.license?(t.reference+" · "+provenance.source_name+" — "+provenance.license+" · "+provenance.source_url):t.reference):(c.license||provenance.license||""));
+  const verificationBox=$("dossierSourceVerification");
+  if(verificationBox){
+   if(!verification){verificationBox.hidden=true}
+   else{
+    const labelText=sourceVerificationLabels[verification.status]?.[language]||sourceVerificationLabels[verification.status]?.en||verification.status;
+    const defaultNote=sourceVerificationDefaults[verification.status]?.[language]||sourceVerificationDefaults[verification.status]?.en||"";
+    $("dossierSourceVerificationStatus").textContent=labelText;
+    $("dossierSourceVerificationNote").textContent=verification.note||defaultNote;
+    verificationBox.hidden=false;
+   }
+  }
+  const accessNotice=contentHelper?.sourceAccessNotice(c,language);
+  const accessBox=$("dossierSourceAccess");
+  if(accessBox){
+   if(!accessNotice){accessBox.hidden=true;delete accessBox.dataset.reviewedAt}
+   else{
+    $("dossierSourceAccessLabel").textContent=language==="bg"?"ДОСТЪП ДО ПРЕПРАТКИТЕ":"SOURCE LINK ACCESS";
+    $("dossierSourceAccessNote").textContent=accessNotice.note;
+    if(accessNotice.reviewedAt)accessBox.dataset.reviewedAt=accessNotice.reviewedAt;
+    else delete accessBox.dataset.reviewedAt;
+    accessBox.hidden=false;
+   }
+  }
   // Show every independent public source, not only the first source URL.
   const sourcePanel=$("dossierSourcesSection"),sourceList=$("dossierSourcesList");
   sourceList.replaceChildren();
@@ -348,7 +387,9 @@
    link.rel="noopener noreferrer";link.textContent=cited.name+" ↗";
    row.append(link);
    if(cited.type&&cited.type!=="primary"){
-    const note=document.createElement("small");note.textContent=" · "+cited.type;row.append(note);
+    const note=document.createElement("small");
+    note.textContent=" · "+(sourceTypeLabels[cited.type]?.[language]||sourceTypeLabels[cited.type]?.en||cited.type);
+    row.append(note);
    }
    sourceList.append(row);
   }

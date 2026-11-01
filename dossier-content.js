@@ -14,10 +14,12 @@
  const isPublicResource=record=>record&&typeof record==="object"&&record.private!==true&&record.public!==false;
  function sources(c,lang="en"){
   const candidates=[];
+  const sourceIsSecondary=c?.source_verification_status==="SECONDARY_ATTRIBUTED"||
+   c?.provenance?.source_kind==="licensed secondary case compilation";
   if(c?.source_url||c?.source?.url)candidates.push({
    url:c.source_url||c.source.url,
    name:c.source_name||c.source?.name||"",
-   type:"primary"
+   type:sourceIsSecondary?"secondary":"primary"
   });
   for(const item of Array.isArray(c?.sources)?c.sources:[]){
    if(!isPublicResource(item))continue;
@@ -35,6 +37,16 @@
    if(out.length>=60)break;
   }
   return out;
+ }
+ function sourceVerification(c,lang="en"){
+  const status=c?.source_verification_status||c?.provenance?.source_verification_status;
+  if(!["PRIMARY_VERIFIED","SECONDARY_ATTRIBUTED","INSUFFICIENT_SOURCE"].includes(status))return null;
+  return {status,note:localized(c?.source_verification_note,lang)};
+ }
+ function sourceAccessNotice(c,lang="en"){
+  const note=localized(c?.editorial_review?.source_access_note,lang);
+  if(!note)return null;
+  return {note,reviewedAt:text(c?.editorial_review?.reviewed_at,20)};
  }
  function timeline(c,lang="en"){
   const out=[];
@@ -75,5 +87,5 @@
   return {url,attribution:text(photo.attribution,240)||text(item.source_name,240),
    evidence,license:photo.authorization_type==="license"?safeUrl(photo.license_url):null};
  }
- root.AURORA_DOSSIER_CONTENT={sources,timeline,media,photoPreview,safeUrl,localized};
+ root.AURORA_DOSSIER_CONTENT={sources,sourceVerification,sourceAccessNotice,timeline,media,photoPreview,safeUrl,localized};
 })(globalThis);

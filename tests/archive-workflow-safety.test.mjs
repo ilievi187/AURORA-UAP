@@ -58,3 +58,17 @@ test("workflow has no caller-controlled publishing inputs and fixtures precede i
  assert.ok(workflow.indexOf("node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs")<workflow.indexOf("node scripts/sync-open-case-archive.mjs"));
  assert.ok(workflow.indexOf("node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs")<workflow.indexOf("git add data/cases.json data/archive-sync-status.json"));
 });
+
+test("licensed temp import copies overlay dependencies and checks exact narratives",()=>{
+ assert.ok(workflow.includes("'scripts/disclosure-zone-editorial-annotations.mjs'"));
+ assert.ok(workflow.includes("'data/disclosure-zone-editorial-annotations.json'"));
+ assert.ok(workflow.includes("'tests/disclosure-zone-editorial-annotations.test.mjs'"));
+ assert.ok(validate.includes("tests/disclosure-zone-editorial-annotations.test.mjs"));
+ assert.ok(validate.includes('cp scripts/disclosure-zone-editorial-annotations.mjs "$tmp/scripts/"'));
+ assert.ok(validate.includes('cp data/disclosure-zone-editorial-annotations.json "$tmp/data/"'));
+ assert.ok(validate.includes('node "$tmp/scripts/sync-disclosure-zone.mjs"'));
+ assert.ok(validate.includes("record.story?.bg"));
+ assert.ok(validate.includes("record.story?.en"));
+ assert.ok(validate.includes("note.story_bg"));
+ assert.ok(validate.includes("note.story_en"));
+});

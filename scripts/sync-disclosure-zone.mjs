@@ -4,6 +4,8 @@ import {readFile,writeFile,rename} from "node:fs/promises";
 import {fileURLToPath} from "node:url";
 import path from "node:path";
 import {withApproximateMapAnchor} from "./approximate-case-geography.mjs";
+import {applyDisclosureZoneEditorialAnnotation,applyDisclosureZoneEditorialAnnotations,
+ validateDisclosureZoneEditorialAnnotations} from "./disclosure-zone-editorial-annotations.mjs";
 
 export const SOURCE_URL="https://disclosure.zone/api/cases.json";
 export const SOURCE_NAME="disclosure.zone";
@@ -11,6 +13,7 @@ export const SOURCE_LICENSE="CC BY 4.0";
 const ROOT=path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const DATA=path.join(ROOT,"data","cases.json");
 const MANIFEST=path.join(ROOT,"data","disclosure-zone-sync-status.json");
+const EDITORIAL=path.join(ROOT,"data","disclosure-zone-editorial-annotations.json");
 const MAX_SOURCE_BYTES=8_000_000;
 const MAX_CASES=4000;
 const ALIASES={
@@ -136,9 +139,10 @@ export function normalizeCase(row){
    verification:"source-attributed; not independently confirmed"}
  });
 }
-export function buildArchive(existing,source){
+export function buildArchive(existing,source,editorialCatalog=null){
  if(!existing||!Array.isArray(existing.cases))throw Error("Invalid existing case archive");
  metadataIsValid(source);
+ const editorial=editorialCatalog?validateDisclosureZoneEditorialAnnotations(editorialCatalog):null;
  const current=existing.cases.filter(c=>c?.provenance?.source_url!==SOURCE_URL);
  const previous=existing.cases.filter(c=>c?.provenance?.source_url===SOURCE_URL).length;
  const ids=new Set(current.map(x=>x.id));
@@ -146,14 +150,15 @@ export function buildArchive(existing,source){
  const seen=new Set(),imported=[];
  let skipped_duplicates=0,skipped_invalid=0;
  for(const row of source.cases){
-  const c=normalizeCase(row);
-  if(!c){skipped_invalid++;continue}
-  const matchKey=canon(c.title.en)+"|"+c.date+"|"+c.country;
+  const normalized=normalizeCase(row);
+  if(!normalized){skipped_invalid++;continue}
+  const matchKey=canon(normalized.title.en)+"|"+normalized.date+"|"+normalized.country;
   const alias=ALIASES[row.id]||row.id;
-  if(seen.has(c.id)||ids.has(c.id)||ids.has(alias)||keys.has(matchKey)){
+  if(seen.has(normalized.id)||ids.has(normalized.id)||ids.has(alias)||keys.has(matchKey)){
    skipped_duplicates++;continue;
   }
-  seen.add(c.id);imported.push(c);
+  seen.add(normalized.id);
+  imported.push(editorial?applyDisclosureZoneEditorialAnnotation(normalized,editorial):normalized);
  }
  if(!imported.length)throw Error("No valid nonduplicate licensed cases; refusing replacement");
  if(previous>=10&&imported.length<previous*.75)
@@ -187,10 +192,25 @@ export async function fetchSource(fetcher=fetch){
  return payload;
 }
 async function atomicWrite(filename,content){const tmp=filename+".next";await writeFile(tmp,content,"utf8");await rename(tmp,filename)}
+async function applyExistingEditorial(){
+ // Local-only path: apply the checked-in editorial sidecar without fetching
+ // disclosure.zone or touching any external service.
+ const archive=JSON.parse(await readFile(DATA,"utf8"));
+ const editorial=JSON.parse(await readFile(EDITORIAL,"utf8"));
+ const updated=applyDisclosureZoneEditorialAnnotations(archive,editorial);
+ const changed=updated.cases.filter((record,i)=>JSON.stringify(record)!==JSON.stringify(archive.cases[i]));
+ const report={mode:"local-editorial-overlay",total:updated.cases.length,
+  annotated:changed.length,ids:changed.map(x=>x.id).sort()};
+ if(process.argv.includes("--check")){console.log(JSON.stringify(report,null,2));return}
+ await atomicWrite(DATA,JSON.stringify(updated,null,2)+"\n");
+ console.log(JSON.stringify(report,null,2));
+}
 async function main(){
+ if(process.argv.includes("--apply-existing"))return applyExistingEditorial();
  const existing=JSON.parse(await readFile(DATA,"utf8"));
+ const editorial=JSON.parse(await readFile(EDITORIAL,"utf8"));
  const source=await fetchSource();
- const {archive,report}=buildArchive(existing,source);
+ const {archive,report}=buildArchive(existing,source,editorial);
  if(process.argv.includes("--check")){console.log(JSON.stringify(report,null,2));return}
  await atomicWrite(DATA,JSON.stringify(archive,null,2)+"\n");
  await atomicWrite(MANIFEST,JSON.stringify(report,null,2)+"\n");
