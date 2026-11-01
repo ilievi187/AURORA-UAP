@@ -7,9 +7,13 @@ on:
       - 'scripts/source-case-annotations.mjs'
       - 'data/source-case-annotations.json'
       - 'scripts/sync-disclosure-zone.mjs'
+      - 'scripts/disclosure-zone-editorial-annotations.mjs'
+      - 'data/disclosure-zone-editorial-annotations.json'
       - 'scripts/approximate-case-geography.mjs'
+      - 'tests/archive-workflow-safety.test.mjs'
       - 'tests/approximate-case-geography.test.mjs'
       - 'tests/disclosure-zone-sync.test.mjs'
+      - 'tests/disclosure-zone-editorial-annotations.test.mjs'
       - '.github/workflows/auto-case-archive.yml'
   pull_request:
     paths:
@@ -17,7 +21,11 @@ on:
       - 'scripts/source-case-annotations.mjs'
       - 'data/source-case-annotations.json'
       - 'scripts/sync-disclosure-zone.mjs'
+      - 'scripts/disclosure-zone-editorial-annotations.mjs'
+      - 'data/disclosure-zone-editorial-annotations.json'
+      - 'tests/archive-workflow-safety.test.mjs'
       - 'tests/disclosure-zone-sync.test.mjs'
+      - 'tests/disclosure-zone-editorial-annotations.test.mjs'
       - '.github/workflows/auto-case-archive.yml'
   schedule:
     - cron: '17 2,14 * * *'
@@ -40,7 +48,7 @@ jobs:
       - name: Test archive workflow publication safety
         run: node --test tests/archive-workflow-safety.test.mjs
       - name: Test archive importer using deterministic offline fixtures
-        run: node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs tests/disclosure-zone-sync.test.mjs tests/approximate-case-geography.test.mjs
+        run: node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs tests/disclosure-zone-sync.test.mjs tests/disclosure-zone-editorial-annotations.test.mjs tests/approximate-case-geography.test.mjs
       - name: Validate live import in an isolated temporary copy without publication
         run: |
           tmp="$(mktemp -d)"
@@ -48,19 +56,47 @@ jobs:
           mkdir -p "$tmp/scripts" "$tmp/data"
           cp scripts/sync-open-case-archive.mjs "$tmp/scripts/"
           cp scripts/sync-disclosure-zone.mjs "$tmp/scripts/"
+          cp scripts/disclosure-zone-editorial-annotations.mjs "$tmp/scripts/"
           cp scripts/approximate-case-geography.mjs "$tmp/scripts/"
           cp scripts/source-case-annotations.mjs "$tmp/scripts/"
           cp data/source-case-annotations.json "$tmp/data/"
+          cp data/disclosure-zone-editorial-annotations.json "$tmp/data/"
           cp media-player.js package.json "$tmp/"
           cp data/cases.json "$tmp/data/"
           node "$tmp/scripts/sync-open-case-archive.mjs"
           node "$tmp/scripts/sync-disclosure-zone.mjs"
-          node -e 'const a=JSON.parse(require("node:fs").readFileSync(process.argv[1])); const m=JSON.parse(require("node:fs").readFileSync(process.argv[2])); const d=JSON.parse(require("node:fs").readFileSync(process.argv[3])); if(a.cases.length!==d.total||m.status!=="ok"||d.status!=="ok"||d.generated<1) process.exit(1); console.log(JSON.stringify({first:m,second:d}))' "$tmp/data/cases.json" "$tmp/data/archive-sync-status.json" "$tmp/data/disclosure-zone-sync-status.json"
+          node --input-type=module - "$tmp/data/cases.json" "$tmp/data/archive-sync-status.json" "$tmp/data/disclosure-zone-sync-status.json" "$tmp/data/disclosure-zone-editorial-annotations.json" <<'NODE'
+          import assert from "node:assert/strict";
+          import {readFileSync} from "node:fs";
+          const [archivePath,firstPath,secondPath,editorialPath]=process.argv.slice(2);
+          const archive=JSON.parse(readFileSync(archivePath,"utf8"));
+          const first=JSON.parse(readFileSync(firstPath,"utf8"));
+          const second=JSON.parse(readFileSync(secondPath,"utf8"));
+          const editorial=JSON.parse(readFileSync(editorialPath,"utf8"));
+          assert.equal(archive.cases.length,second.total);
+          assert.equal(first.status,"ok");
+          assert.equal(second.status,"ok");
+          assert.ok(second.generated>=1);
+          const annotations=Object.entries(editorial.records);
+          assert.ok(annotations.length>0,"editorial sidecar must not be empty");
+          for(const [sourceId,note] of annotations){
+            const record=archive.cases.find(item=>item.id==="disclosure-"+sourceId);
+            assert.ok(record,"missing imported editorial record: "+sourceId);
+            assert.equal(record.provenance?.source_url,"https://disclosure.zone/api/cases.json");
+            assert.equal(record.title?.bg,note.title_bg,sourceId+" BG title drifted");
+            assert.equal(record.summary?.bg,note.summary_bg,sourceId+" BG summary drifted");
+            assert.deepEqual(record.story?.bg,note.story_bg,sourceId+" BG story drifted");
+            assert.deepEqual(record.story?.en,note.story_en,sourceId+" EN story drifted");
+            assert.equal(record.content_depth,"source-reviewed",sourceId+" editorial status missing");
+            for(const ref of note.references)assert.ok(record.sources?.some(item=>item.url===ref.url),sourceId+" missing editorial reference: "+ref.url);
+          }
+          console.log(JSON.stringify({first,second,editorial_annotations_applied:annotations.length},null,2));
+          NODE
           test ! -e "$tmp/.git"
 
       - name: Validate updated archive and static site contracts
         run: |
-          node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs tests/disclosure-zone-sync.test.mjs tests/approximate-case-geography.test.mjs
+          node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs tests/disclosure-zone-sync.test.mjs tests/disclosure-zone-editorial-annotations.test.mjs tests/approximate-case-geography.test.mjs
           git diff --check
 
   publish-scheduled-main-archive:
@@ -80,14 +116,14 @@ jobs:
         with:
           node-version: '22'
       - name: Test archive importer using deterministic offline fixtures
-        run: node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs tests/disclosure-zone-sync.test.mjs tests/approximate-case-geography.test.mjs
+        run: node --test tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs tests/disclosure-zone-sync.test.mjs tests/disclosure-zone-editorial-annotations.test.mjs tests/approximate-case-geography.test.mjs
       - name: Fetch approved, attributed first case dataset
         run: node scripts/sync-open-case-archive.mjs
       - name: Fetch CC BY worldwide case metadata without publishing private reports
         run: node scripts/sync-disclosure-zone.mjs
       - name: Validate updated archive and static site contracts
         run: |
-          node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs tests/disclosure-zone-sync.test.mjs tests/approximate-case-geography.test.mjs tests/auto-archive-sync.test.mjs
+          node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs tests/disclosure-zone-sync.test.mjs tests/disclosure-zone-editorial-annotations.test.mjs tests/approximate-case-geography.test.mjs tests/auto-archive-sync.test.mjs
           git diff --check
       - name: Commit verified archive snapshot
         run: |
