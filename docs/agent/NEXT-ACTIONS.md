@@ -5,7 +5,7 @@
 ## What we just verified
 
 - At the start of M0 work on 2026-11-01, GitHub `main` was `733a43e9f64d95711b980da01b4a11982badbca6` (PR #108 changed the roadmap documents only); the last application-code snapshot audited here was `5b81f6e517c56246de7079440d0598b6e21d9226` (PR #107).
-- The 2026-11-01 production homepage audit showed 101 dossiers / 98 mapped / 18 UI locales plus Bulgarian legacy card text and English fallback. PR #109 implements source-language-aware homepage cards and the primary world atlas; safe post-merge live read-back remains the release gate.
+- The 2026-11-01 production audit showed 101 dossiers / 98 mapped / 18 UI locales plus Bulgarian legacy card text and English fallback. PR #109 is merged; exact-head checks and main-commit workflows passed, Cloudflare Pages reported “Deployed successfully,” and the post-merge Bulgarian homepage/atlas/dossier read-back is verified below.
 - 101 public source-backed case records, with complete English stories; **33 source-authored Bulgarian** narratives and **68 placeholder/mixed-language Bulgarian** entries as of audit. Prior claims of 101 real BG translations were overbroad.
 - Video metadata: **23 video references across 14 cases**, 4 photo media entries, 155 document entries; live in-browser playback still needs source-by-source verification.
 - `payment-config.js` sets `AURORA_PAYMENT_LINK = null` — public donate CTA has no configured checkout.
@@ -14,7 +14,7 @@
 
 ## Ranked first six engineering PRs
 
-1. **M0.1/M0.2 — implemented in PR #109:** homepage cards, primary world-atlas details/results and related dossier previews reject legacy Bulgarian placeholders as native copy; English source fallback is disclosed; the gate identifies interface language and warns in all 18 locales that dossier text may remain English. Keep exact-head CI green and verify the post-merge public page before claiming production fixed. The separate Mission Control globe remains under PR #43 ownership.
+1. **M0.1/M0.2 — delivered in PR #109:** homepage cards, primary world-atlas details/results and related dossier previews reject legacy Bulgarian placeholders as native copy; English source fallback is disclosed; the gate identifies interface language and warns in all 18 locales that dossier text may remain English. Exact PR checks and post-merge workflows passed; Cloudflare Pages reported successful deployment, and Bulgarian public-page behavior is read back and verified. The separate Mission Control globe remains under PR #43 ownership.
 2. **Public discoverability + donate honesty:** safe public-only robots/sitemap, no private/admin indexing; fully honest unconfigured payment state, then verified creator URL from owner. No synthetic live checkout.
 3. **Editorial BG batches:** groups of 10–15 source-reviewed imported dossiers; verify correct narrative, uncertainty, citation and importer preservation. Aim for **101/101 genuine BG + EN** stories, not 101 placeholders of adequate length.
 4. **Workers AI service proof / translation quality:** owner-configured `AI` binding, billing guard, 18-locale page matrix, full-story translations and explicit fallback. Do not claim cloud inference runs solely from unit tests.
@@ -31,4 +31,4 @@
 
 Each change needs explicit ownership, non-destructive tests, exact-head green PR checks, clean mergeability, post-merge check and Cloudflare deploy result. A green build does not prove live AI, news availability, payment flow or moderated submissions. Source links and media rights must remain attributable; fake cases and airplane radar are out of scope by owner decision.
 
-**Audit limitation:** 2026-11-01 direct read was of an owner-opened public homepage tab. Other public routes were reviewed via repository source and browser CI, not independently navigated during this audit. Prior production news Error 1010 and database authorization limitations remain respected.
+**Audit limitation:** 2026-11-01 read-only live browser verification covered `/`, `/#worldAtlas` and `/archive/disclosure-iraq-2022` in Bulgarian at 1280×577. No separate production API, D1, news-source or mutation flows were probed; prior news Error 1010 and database authorization limits remain respected.
