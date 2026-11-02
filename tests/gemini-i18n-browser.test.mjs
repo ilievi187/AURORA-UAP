@@ -77,7 +77,7 @@ let browser;
 try{
   browser=await chromium.launch({headless:true});
 
-  await test('homepage and Mission Control support all 18 languages, ?lang= entry, reload, back/forward history, and mobile viewport fit',async()=>{
+  await test('homepage and report entry support all 18 languages, ?lang= entry, reload, back/forward history, and mobile viewport fit',async()=>{
     const ctx=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});
     const page=await ctx.newPage(),errors=[];
     page.on('pageerror',e=>errors.push(e.message));
@@ -92,22 +92,22 @@ try{
     assert.equal(await page.locator('html').getAttribute('lang'),'fr');
     assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://aurorauap.org/');
     assert.match(await page.title(),/Explorer l'inexpliqué/);
-    assert.equal(await page.locator('#controlHeading').textContent(),'CENTRE DE CONTRÔLE');
-    assert.equal(await page.locator('#controlStageTitle').textContent(),"Documenter l'observation");
+    assert.equal(await page.locator('#homeReportTitle').textContent(),await page.locator('.home-report-cta-link [data-i18n="reportButton"]').textContent());
+    assert.equal(await page.locator('#controlHeading').count(),0);
 
-    // Verify all 18 locales on the homepage render translated sections, Mission Control stages, and World Archive headings without mobile overflow
+    // Verify all 18 locales retain localized report entry and sourced archive headings without mobile overflow
     for(const locale of ALL_LOCALES){
       await page.locator('#langToggle').selectOption(locale);
       assert.equal(await page.locator('html').getAttribute('lang'),locale);
       const researchTitle=await page.locator('[data-i18n="researchTitle"]').textContent();
-      const controlHeading=await page.locator('#controlHeading').textContent();
+      const reportHeading=await page.locator('#homeReportTitle').textContent();
       const reportsHeading=await page.locator('#reports .section-heading h2').textContent();
       assert.ok(researchTitle.trim().length>0,`researchTitle empty for ${locale}`);
-      assert.ok(controlHeading.trim().length>0,`controlHeading empty for ${locale}`);
+      assert.ok(reportHeading.trim().length>0,`report heading empty for ${locale}`);
       assert.ok(reportsHeading.trim().length>0,`reportsHeading empty for ${locale}`);
       if(locale!=='en'){
         assert.notEqual(researchTitle,'OBSERVE. QUESTION. INVESTIGATE.',`researchTitle must be localized for ${locale}`);
-        assert.notEqual(controlHeading,'MISSION CONTROL',`controlHeading must be localized for ${locale}`);
+        assert.equal(reportHeading,await page.locator('.home-report-cta-link [data-i18n="reportButton"]').textContent(),`report CTA localized for ${locale}`);
         assert.notEqual(reportsHeading,'CASES FROM AROUND THE WORLD',`reportsHeading must be localized for ${locale}`);
       }
       const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
@@ -118,12 +118,12 @@ try{
     await page.locator('#langToggle').selectOption('pl');
     await page.reload();
     assert.equal(await page.locator('html').getAttribute('lang'),'pl');
-    assert.equal(await page.locator('#controlHeading').textContent(),'CENTRUM KONTROLI');
+    assert.equal(await page.locator('#homeReportTitle').textContent(),await page.locator('.home-report-cta-link [data-i18n="reportButton"]').textContent());
     await page.goto('http://127.0.0.1:'+port+'/news.html');
     assert.equal(await page.locator('html').getAttribute('lang'),'pl');
     await page.goBack();
     assert.equal(await page.locator('html').getAttribute('lang'),'pl');
-    assert.equal(await page.locator('#controlHeading').textContent(),'CENTRUM KONTROLI');
+    assert.equal(await page.locator('#homeReportTitle').textContent(),await page.locator('.home-report-cta-link [data-i18n="reportButton"]').textContent());
     await page.goForward();
     assert.equal(await page.locator('html').getAttribute('lang'),'pl');
     assert.equal(await page.locator('#pageLanguage').inputValue(),'pl');
