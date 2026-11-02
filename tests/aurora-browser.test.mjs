@@ -328,7 +328,7 @@ try{
     assert.deepEqual(submissions,[]);
     await context.close();
   });
-  await test('V1.4 mobile country explorer and globe do not overflow or expose DEMO totals',async()=>{
+  await test('V1.4 mobile country explorer and sourced world atlas do not overflow',async()=>{
     const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});
     const page=await context.newPage(),errors=[];
     page.on('pageerror',e=>errors.push(e.message));
@@ -341,11 +341,12 @@ try{
     await page.locator('button[data-language="en"]').click();
     await page.locator('#gateContinue').click();
     await page.locator('#languageGate').waitFor({state:'hidden',timeout:1000});
-    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length>=15);
-    await page.waitForFunction(()=>!!document.querySelector('#globeCaseList button[data-case-id="aaro-pr-2013"]'));
-    await page.locator('#globeFilter').selectOption('instrument');
-    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length>=6);
-    assert.equal(await page.locator('#globeCaseList button[data-case-id="nimitz-2004"]').count(),1,'historic documented footage remains visible with live records');
+    await page.waitForFunction(()=>Number(document.querySelector('#worldMapCount')?.textContent)===15);
+    assert.equal(await page.locator('#caseGlobe').count(),0,'retired duplicate globe stays absent');
+    await page.locator('#worldCountry').selectOption('US');
+    assert.equal(await page.locator('#worldMapResults [data-world-case-id="nimitz-2004"]').count(),1,'sourced Nimitz dossier remains discoverable');
+    const atlasOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+    assert.ok(atlasOverflow<=1,'atlas mobile overflow: '+atlasOverflow);
     assert.equal(await page.locator('#registeredSightings').textContent(),'3');
     assert.deepEqual(errors,[]);
     await context.close();
@@ -385,18 +386,15 @@ try{
     await page.locator('button[data-language="bg"]').click();
     await page.locator('#gateContinue').click();
     await page.locator('#languageGate').waitFor({state:'hidden',timeout:1500});
-    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length===15);
+    await page.waitForFunction(()=>Number(document.querySelector('#worldMapCount')?.textContent)===15);
     assert.equal(await page.locator('#globalRegister').isVisible(),false);
-    assert.match(await page.locator('#atlasHeading').textContent(),/СПРАВОЧЕН АРХИВ/);
-    assert.match(await page.locator('.atlas-footer').textContent(),/извън D1/);
-    assert.equal(await page.locator('#globeCaseTitle').textContent(),'Светлините над Финикс');
-    assert.equal(await page.locator('#globeCaseCountry').isVisible(),false);
-    await page.locator('#globeFilter').selectOption('resolved');
-    assert.ok((await page.locator('#globeCaseList button').count())>=3);
-    await page.locator('#globeCaseList button[data-case-id="roswell-1947"]').click();
-    assert.equal(await page.locator('#globeCaseTitle').textContent(),'Случаят „Розуел“');
-    await page.locator('#globeCountry').selectOption('US');
-    assert.ok((await page.locator('#globeCaseList button').count())>=1);
+    assert.equal(await page.locator('#worldMapResults [data-world-case-id]').count(),15,'offline D1 never hides sourced cases');
+    await page.locator('#worldSearch').fill('roswell-1947');
+    await page.locator('#worldMapResults [data-world-case-id="roswell-1947"]').click();
+    assert.equal(await page.locator('#worldCaseDetail a[href="/archive/roswell-1947"]').count(),1);
+    await page.locator('#worldSearch').fill('');
+    await page.locator('#worldCountry').selectOption('US');
+    assert.ok((await page.locator('#worldMapResults [data-world-case-id]').count())>=1);
     assert.deepEqual(errors,[]);
     await context.close();
   });
@@ -411,7 +409,8 @@ try{
     await page.locator('#languageGate').waitFor({state:'hidden',timeout:1500});
     await page.waitForFunction(()=>document.querySelector('#registerHealth')?.textContent==='D1 / NOT CONNECTED');
     assert.match(await page.locator('#registerNotice').textContent(),/Database not connected/);
-    assert.match(await page.locator('.atlas-footer').textContent(),/outside D1/);
+    await page.waitForFunction(()=>Number(document.querySelector('#worldMapCount')?.textContent)===15);
+    assert.equal(await page.locator('#caseGlobe').count(),0,'no retired globe for partial locales');
     await page.goto('http://127.0.0.1:'+port+'/countries/DE');
     await page.waitForFunction(()=>document.querySelector('#countryTotal')?.textContent==='0');
     assert.equal(await page.locator('#typeFilter option[value="lights"]').textContent(),'Lights');
@@ -559,7 +558,7 @@ try{
     assert.deepEqual(errors,[]);
     await ctx.close();
   });
-  await test('Globe dossier action links to the selected historical record',async()=>{
+  await test('World atlas dossier action links to the selected historical record',async()=>{
     const ctx=await browser.newContext({viewport:{width:1300,height:900},reducedMotion:'reduce'});
     const page=await ctx.newPage();
     await page.route('**/api/stats',route=>route.fulfill({status:503,contentType:'application/json',body:'{"error":"database_unavailable"}'}));
@@ -567,10 +566,11 @@ try{
     await page.locator('button[data-language="en"]').click();
     await page.locator('#gateContinue').click();
     await page.locator('#languageGate').waitFor({state:'hidden',timeout:1500});
-    await page.waitForFunction(()=>document.querySelectorAll('#globeCaseList button').length===15);
-    assert.equal(await page.locator('#globeCaseDossier').getAttribute('href'),'/archive/phoenix-1997');
-    await page.locator('#globeCaseList button[data-case-id="westall-1966"]').click();
-    assert.equal(await page.locator('#globeCaseDossier').getAttribute('href'),'/archive/westall-1966');
+    await page.waitForFunction(()=>Number(document.querySelector('#worldMapCount')?.textContent)===15);
+    await page.locator('#worldMapResults [data-world-case-id="phoenix-1997"]').click();
+    assert.equal(await page.locator('#worldCaseDetail a[href="/archive/phoenix-1997"]').count(),1);
+    await page.locator('#worldMapResults [data-world-case-id="westall-1966"]').click();
+    assert.equal(await page.locator('#worldCaseDetail a[href="/archive/westall-1966"]').count(),1);
     await ctx.close();
   });
   await test('main report CTA reaches the real intake page',async()=>{
