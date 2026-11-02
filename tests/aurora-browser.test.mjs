@@ -388,7 +388,7 @@ try{
     await page.locator('#languageGate').waitFor({state:'hidden',timeout:1500});
     await page.waitForFunction(()=>Number(document.querySelector('#worldMapCount')?.textContent)===15);
     assert.equal(await page.locator('#globalRegister').isVisible(),false);
-    assert.equal(await page.locator('#worldMapResults [data-world-case-id]').count(),15,'offline D1 never hides sourced cases');
+    assert.equal(await page.locator('#worldMapResults [data-world-case-id]').count(),10,'atlas paginates sourced cases without losing them');
     await page.locator('#worldSearch').fill('roswell-1947');
     await page.locator('#worldMapResults [data-world-case-id="roswell-1947"]').click();
     assert.equal(await page.locator('#worldCaseDetail a[href="/archive/roswell-1947"]').count(),1);
@@ -567,8 +567,10 @@ try{
     await page.locator('#gateContinue').click();
     await page.locator('#languageGate').waitFor({state:'hidden',timeout:1500});
     await page.waitForFunction(()=>Number(document.querySelector('#worldMapCount')?.textContent)===15);
+    await page.locator('#worldSearch').fill('phoenix-1997');
     await page.locator('#worldMapResults [data-world-case-id="phoenix-1997"]').click();
     assert.equal(await page.locator('#worldCaseDetail a[href="/archive/phoenix-1997"]').count(),1);
+    await page.locator('#worldSearch').fill('westall-1966');
     await page.locator('#worldMapResults [data-world-case-id="westall-1966"]').click();
     assert.equal(await page.locator('#worldCaseDetail a[href="/archive/westall-1966"]').count(),1);
     await ctx.close();
