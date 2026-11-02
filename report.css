@@ -41,3 +41,5 @@ footer{padding:30px 0 50px;border-top:1px solid #45798255;font:10px Consolas,mon
 .receipt-panel button{margin-top:14px;padding:11px 15px;cursor:pointer;background:#174950;color:#ecffff;border:1px solid #82ddc8}
 .receipt-panel button:focus-visible{outline:2px solid white;outline-offset:3px}
 @media(max-width:650px){.report-english{display:block;margin-top:12px}}
+
+.moderation-description{white-space:pre-wrap;overflow-wrap:anywhere}
