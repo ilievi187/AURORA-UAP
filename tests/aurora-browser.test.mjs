@@ -785,6 +785,44 @@ try{
     assert.deepEqual(errors,[]);
     await context.close();
   });
+  await test("short laptop hero preserves spacing between archive CTAs and metric cards",async()=>{
+    const context=await browser.newContext({viewport:{width:1366,height:700},reducedMotion:"reduce"});
+    const page=await context.newPage();
+    await page.addInitScript(()=>localStorage.setItem("aurora-lang","bg"));
+    await page.goto("http://127.0.0.1:"+port+"/");
+    for(const viewport of [
+      {width:1366,height:700},
+      {width:1440,height:768},
+      {width:900,height:700},
+      {width:768,height:650},
+      {width:390,height:844}
+    ]){
+      await page.setViewportSize(viewport);
+      const geometry=await page.evaluate(()=>{
+        const box=selector=>{
+          const r=document.querySelector(selector).getBoundingClientRect();
+          return {top:r.top,bottom:r.bottom,left:r.left,right:r.right,height:r.height};
+        };
+        return {
+          buttons:box(".silence-actions"),
+          stats:box(".silence-stats"),
+          hero:box("#silenceHero"),
+          cards:[...document.querySelectorAll(".silence-stat")].map(el=>{
+            const r=el.getBoundingClientRect();return {top:r.top,bottom:r.bottom};
+          })
+        };
+      });
+      assert.ok(geometry.stats.top-geometry.buttons.bottom>=24,
+        "CTA and metrics overlap at "+JSON.stringify(viewport)+": "+JSON.stringify(geometry));
+      assert.ok(geometry.hero.bottom>=geometry.stats.bottom,
+        "metric cards escape hero at "+JSON.stringify(viewport)+": "+JSON.stringify(geometry));
+      assert.equal(geometry.cards.length,4,"four sourced stats must remain visible");
+    }
+    await page.setViewportSize({width:1366,height:700});
+    mkdirSync("artifacts",{recursive:true});
+    await page.screenshot({path:"artifacts/aurora-silence-laptop.png",animations:"disabled"});
+    await context.close();
+  });
   await test("all nine inner pages use the same real black skin, not old cyan layouts",async()=>{
     const context=await browser.newContext({viewport:{width:1280,height:900}});
     const page=await context.newPage();
