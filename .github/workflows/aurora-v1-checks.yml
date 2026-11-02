@@ -32,6 +32,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Install project dependencies
+        run: npm ci
       - name: Compile Cloudflare Pages Functions exactly as deployment does
         run: npx --yes wrangler@4 pages functions build functions --outfile /tmp/aurora-pages-functions.mjs
   database-api:
@@ -50,6 +52,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Install project dependencies
+        run: npm ci
       - name: Test quarantined text intake, Turnstile verification and private moderation
         run: node --experimental-sqlite --test tests/intake.test.mjs tests/moderation.test.mjs
   deployment-readiness:
