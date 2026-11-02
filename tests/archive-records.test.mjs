@@ -63,13 +63,13 @@ test("empty, invalid and duplicate-only lists stay empty or bounded", () => {
 test("all historical views load the shared helper before their consumers", () => {
   const read = name => readFileSync(new URL("../"+name,import.meta.url),"utf8");
   for (const [page, consumer] of [
-    ["index.html","globe.js"], ["countries.html","countries.js"],
+    ["index.html","world-atlas.js"], ["countries.html","countries.js"],
     ["country.html","country.js"], ["dossier.html","dossier.js"]
   ]) {
     const html=read(page);
     assert.ok(html.includes('src="/archive-records.js"'),page+" missing helper");
     assert.ok(html.indexOf('src="/archive-records.js"')<html.indexOf('src="/'+consumer+'"') ||
-      (consumer==="globe.js" && html.indexOf('src="/archive-records.js"')<html.indexOf('src="globe.js"')),
+      (consumer==="world-atlas.js" && html.indexOf('src="/archive-records.js"')<html.indexOf('src="/world-atlas.js"')),
       page+" loads consumer before helper");
     assert.match(read(consumer),/prepareArchiveCases/,consumer+" must use shared archive cases");
   }
