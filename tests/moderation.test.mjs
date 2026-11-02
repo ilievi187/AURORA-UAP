@@ -28,7 +28,7 @@ test('moderation fails closed without configured authorization and never touches
 test('authorized moderator can read quarantine and cross-origin review is denied',async()=>{
  const original=globalThis.fetch; globalThis.fetch=fetcher;
  let reads=0;
- const db={prepare(query){assert.match(query,/FROM intake_submissions/);return {all:async()=>{reads++;return {results:[{id:'aur-int-example',description:'private'}]}}}}};
+ const db={prepare(query){assert.match(query,/FROM intake_submissions/);return {bind(...args){assert.deepEqual(args,[51,0]);return {all:async()=>{reads++;return {results:[{id:'aur-int-example',description:'private'}]}}}}}}};
  try{
   const jwt=await token();
   const good=await onRequestGet({request:req(jwt),env:{...env,DB:db}});
@@ -37,5 +37,29 @@ test('authorized moderator can read quarantine and cross-origin review is denied
   assert.equal((await onRequestPost({request:cross,env:{...env,DB:db}})).status,403);
   const preview=new Request('https://preview.pages.dev/api/moderation/',{headers:{'Cf-Access-Jwt-Assertion':jwt}});
   assert.equal((await onRequestGet({request:preview,env:{...env,DB:db}})).status,403);
+ }finally{globalThis.fetch=original}
+});
+
+test('private queue enforces bounded pagination and returns navigation metadata',async()=>{
+ const original=globalThis.fetch;globalThis.fetch=fetcher;
+ let used=[];
+ const db={prepare(query){
+  assert.match(query,/FROM intake_submissions/);
+  return {bind(limit,offset){used.push({limit,offset});return {all:async()=>({
+   results:Array.from({length:offset===0?51:1},(_,i)=>({id:'aur-int-page-'+offset+'-'+i,description:'private'}))
+  })}}};
+ }};
+ try{
+  const jwt=await token();
+  const send=async path=>onRequestGet({request:new Request('https://aurorauap.org'+path,{headers:{'Cf-Access-Jwt-Assertion':jwt}}),env:{...env,DB:db}});
+  const first=await send('/api/moderation/');
+  const one=await first.json();assert.equal(first.status,200);
+  assert.equal(one.submissions.length,50);assert.equal(one.has_more,true);assert.equal(one.next_offset,50);
+  const second=await send('/api/moderation/?offset=50');
+  const two=await second.json();assert.equal(two.submissions.length,1);assert.equal(two.has_more,false);assert.equal(two.next_offset,null);
+  assert.deepEqual(used,[{limit:51,offset:0},{limit:51,offset:50}]);
+  for(const bad of ['/api/moderation/?offset=-1','/api/moderation/?offset=100001','/api/moderation/?offset=abc','/api/moderation/?secret=1']){
+   const res=await send(bad);assert.equal(res.status,400);assert.equal(res.headers.get('cache-control'),'no-store');
+  }
  }finally{globalThis.fetch=original}
 });
