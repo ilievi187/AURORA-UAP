@@ -7,5 +7,8 @@
     "test:static": "node --test tests/aurora-v1.test.mjs",
     "test:browser": "node --test tests/aurora-browser.test.mjs",
     "test:feeds": "node --test tests/live-feeds.test.mjs"
+  },
+  "dependencies": {
+    "jose": "6.1.1"
   }
 }
