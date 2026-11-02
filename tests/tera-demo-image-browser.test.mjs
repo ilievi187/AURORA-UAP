@@ -30,12 +30,14 @@ try{
       await page.locator('#gateLanguageGrid button[data-language="en"]').click();
       await page.locator('#gateContinue').click();
       await page.locator('#languageGate').waitFor({state:'hidden',timeout:1500});
-      await page.locator('#controlHeading').waitFor();
+      await page.locator('#homeReportTitle').waitFor();
       assert.equal(await page.locator('#reportDialog').count(),0);
       assert.equal(await page.locator('#caseDialog').count(),0);
-      assert.equal(await page.locator('#controlCaseButtons button').count(),0);
-      assert.equal(await page.locator('#controlCaseButtons a[href="/archive.html"]').count(),1);
-      assert.doesNotMatch(await page.locator('#controlCaseButtons').innerText(),/DEMO|fictional|примерни|демо/i);
+      assert.equal(await page.locator('#controlTabs').count(),0);
+      assert.equal(await page.locator('#caseGlobe').count(),0);
+      assert.equal(await page.locator('#worldAtlas').count(),1);
+      assert.equal(await page.locator('.home-report-cta-link[href="/report.html"]').count(),1);
+      assert.match(await page.locator('.home-report-note').innerText(),/draft|чернов/i);
       assert.equal(await page.locator('#caseImage').count(),0);
       assert.deepEqual(demoAssets,[]);
     }finally{await page.close();}

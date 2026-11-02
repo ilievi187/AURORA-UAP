@@ -90,24 +90,24 @@ const premiumNavLabels={
 for(const [locale,labels] of Object.entries(premiumNavLabels))Object.assign(translations[locale],labels);
 
 const reportDraftNotes={
- bg:"Публичното подаване е изключено. Черновата остава на устройството; нищо не се изпраща към сървър.",
- en:"Public submissions are disabled. Drafts stay on your device; nothing is sent to a server.",
- de:"Öffentliche Meldungen sind deaktiviert. Entwürfe bleiben auf deinem Gerät; nichts wird an einen Server gesendet.",
- ru:"Публичная отправка отключена. Черновик остаётся на устройстве; данные не отправляются на сервер.",
- "zh-CN":"公开提交尚未启用。草稿仅保存在你的设备上，不会发送到服务器。",
- fr:"Les envois publics sont désactivés. Le brouillon reste sur votre appareil ; rien n’est envoyé au serveur.",
- es:"El envío público está desactivado. El borrador queda en tu dispositivo; no se envía nada al servidor.",
- it:"L’invio pubblico è disattivato. La bozza resta sul tuo dispositivo; non viene inviato nulla al server.",
- pt:"O envio público está desativado. O rascunho fica no seu dispositivo; nada é enviado para um servidor.",
- tr:"Herkese açık gönderim devre dışı. Taslak cihazında kalır; sunucuya hiçbir şey gönderilmez.",
- ro:"Trimiterea publică este dezactivată. Ciorna rămâne pe dispozitivul tău; nimic nu este trimis către un server.",
- el:"Η δημόσια υποβολή είναι απενεργοποιημένη. Το πρόχειρο μένει στη συσκευή σου· δεν αποστέλλεται τίποτα σε διακομιστή.",
- sr:"Јавно слање је онемогућено. Нацрт остаје на уређају; ништа се не шаље серверу.",
- uk:"Публічне надсилання вимкнене. Чернетка залишається на пристрої; нічого не надсилається на сервер.",
- pl:"Publiczne zgłoszenia są wyłączone. Szkic pozostaje na Twoim urządzeniu; nic nie jest wysyłane na serwer.",
- ar:"الإرسال العام معطّل. تبقى المسودة على جهازك ولا يُرسل أي شيء إلى الخادم.",
- ja:"公開送信は無効です。下書きは端末に保存され、サーバーには何も送信されません。",
- ko:"공개 제출은 비활성화되어 있습니다. 초안은 기기에만 저장되며 서버로 전송되지 않습니다."
+  bg:"Провери във формуляра дали подаването е активно. Ако е изключено, черновата остава само на устройството ти.",
+  en:"The form shows whether submissions are open. When closed, drafts stay on your device only.",
+  de:"Im Formular siehst du, ob Meldungen angenommen werden. Wenn nicht, bleibt der Entwurf nur auf deinem Gerät.",
+  ru:"В форме можно проверить, открыт ли приём сообщений. Если нет, черновик остаётся только на устройстве.",
+  "zh-CN":"请在表单中查看是否开放提交。如未开放，草稿只会保存在你的设备上。",
+  fr:"Le formulaire indique si les signalements sont ouverts. Sinon, le brouillon reste uniquement sur votre appareil.",
+  es:"El formulario indica si se aceptan informes. Si está cerrado, el borrador queda solo en tu dispositivo.",
+  it:"Il modulo indica se le segnalazioni sono aperte. In caso contrario, la bozza resta solo sul dispositivo.",
+  pt:"O formulário informa se os relatos estão abertos. Caso não estejam, o rascunho fica apenas no seu dispositivo.",
+  tr:"Form, bildirimlerin açık olup olmadığını gösterir. Kapalıysa taslak yalnızca cihazında kalır.",
+  ro:"Formularul arată dacă sesizările sunt deschise. Dacă nu, ciorna rămâne doar pe dispozitiv.",
+  el:"Η φόρμα δείχνει αν δέχεται αναφορές. Αν όχι, το πρόχειρο μένει μόνο στη συσκευή σας.",
+  sr:"Образац показује да ли је слање пријава омогућено. Ако није, нацрт остаје само на уређају.",
+  uk:"У формі видно, чи відкрито приймання повідомлень. Якщо ні, чернетка залишається лише на пристрої.",
+  pl:"Formularz pokazuje, czy zgłoszenia są przyjmowane. Gdy nie są, szkic pozostaje tylko na urządzeniu.",
+  ar:"توضح الاستمارة ما إذا كان إرسال البلاغات متاحًا. وإذا لم يكن متاحًا، تبقى المسودة على جهازك فقط.",
+  ja:"フォームで報告の受付状況を確認できます。受付停止中の下書きは端末内にのみ保存されます。",
+  ko:"양식에서 제보 접수 여부를 확인할 수 있습니다. 접수 중단 시 초안은 기기에만 저장됩니다."
 };
 for(const [locale,note] of Object.entries(reportDraftNotes))translations[locale].reportDraftNote=note;
 

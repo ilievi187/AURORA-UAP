@@ -9,10 +9,11 @@ test("all pages share base tokens and interiors layer their unique editorial ski
   assert.ok(styles.includes("/aurora-design-refresh.css"),page+" must preserve shared tokens");
   if(page!=="index.html")assert.ok(styles.includes("/aurora-black-pages.css"),page+" keeps black base");}
 });
-test("retired demo UI removed while approved archive, globe, media and language remain",()=>{
+test("retired demo UI removed while world atlas, report entry, media and language remain",()=>{
  const html=read("index.html");
  for(const key of ['id="historicDemoMap"','id="mapPins"','class="prototype-notice"','class="data-hub"','class="feature-grid"','class="signal-ribbon"','id="reportDialog"','id="caseDialog"'])assert.ok(!html.includes(key),key+" removed");
- for(const key of ['id="worldAtlas"','id="worldMapPins"','id="homeNewsGrid"','id="controlTabs"','id="caseGlobe"','id="reportGrid"','id="languageGate"'])assert.ok(html.includes(key),key+" kept");
+ for(const key of ['id="worldAtlas"','id="worldMapPins"','id="homeNewsGrid"','id="submitObservation"','id="homeReportTitle"','id="reportGrid"','id="languageGate"'])assert.ok(html.includes(key),key+" kept");
+ for(const key of ['id="control"','id="controlTabs"','id="caseGlobe"','data-control-nav'])assert.ok(!html.includes(key),key+" removed");
 });
 test("homepage archive-first CTA, navigation labels, and abandoned demo guard",()=>{
  const html=read("index.html"),script=read("script.js");

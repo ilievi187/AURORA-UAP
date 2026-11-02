@@ -21,7 +21,7 @@ test('cinematic visual assets load from repository',()=>{
   assert.match(html,/class="silence-space"/);
   assert.match(html,/href="\/aurora-silence\.css"/);
   assert.match(html,/src="\/aurora-silence\.js"/);
-  for(const name of ['aurora-v1.css','aurora-v1.js','jarvis-hud.css','jarvis-hud.js','mission-control.css','mission-control.js','assets/hero-ufo.webp','assets/favicon.svg']){
+  for(const name of ['aurora-v1.css','aurora-v1.js','jarvis-hud.css','jarvis-hud.js','assets/hero-ufo.webp','assets/favicon.svg']){
     assert.ok(existsSync(new URL('../'+name,import.meta.url)),name+' missing');
   }
 });
@@ -34,7 +34,7 @@ test('no duplicate HTML ids or broken in-page links',()=>{
 });
 
 test('Javascript syntax parses without external toolchain',()=>{
-  for(const file of ['script.js','i18n-extra.js','aurora-v1.js','jarvis-hud.js','mission-control.js','globe.js','register.js','country.js','donate.js','donate-i18n.js','payment-config.js']){
+  for(const file of ['script.js','i18n-extra.js','aurora-v1.js','jarvis-hud.js','register.js','country.js','donate.js','donate-i18n.js','payment-config.js']){
     assert.doesNotThrow(()=>new Script(read(file),{filename:file}),file);
   }
 });
@@ -42,7 +42,7 @@ test('Javascript syntax parses without external toolchain',()=>{
 test('visitors are never misled into thinking example cases are verified',()=>{
   assert.doesNotMatch(html,/id="historicDemoMap"/,'the retired fictional map is removed');
   assert.match(html,/id="worldAtlas"/,'sourced world atlas remains');
-  assert.match(html,/нищо не се изпраща към сървър/);
+  assert.match(html,/Провери във формуляра дали подаването е активно/);
   assert.match(read('payment-config.js'),/AURORA_PAYMENT_LINK\s*=\s*null/);
 });
 
@@ -71,31 +71,15 @@ test('real procedural HUD is present and honors OS reduced-motion',()=>{
   assert.match(read('jarvis-hud.css'),/gate-scan-line/);
 });
 
-test('Mission Control v1.2 has working semantic navigation and progressive workflow controls',()=>{
-  assert.match(html,/id="control"/);
-  assert.match(html,/id="controlTabs" role="tablist"/);
-  assert.match(html,/id="controlPanel" role="tabpanel"/);
-  assert.match(html,/id="controlNext"/);
-  assert.match(html,/id="controlCaseButtons"/);
-  assert.match(html,/href="mission-control\.css"/);
-  assert.match(html,/src="mission-control\.js"/);
-  assert.match(read('mission-control.js'),/next\.addEventListener\("click"/);
-  assert.match(read('mission-control.js'),/function activate\(index/);
-  assert.match(read('mission-control.css'),/prefers-reduced-motion:reduce/);
-  assert.match(read('mission-control.css'),/mc-pin-pulse/);
-});
-
-test('V1.3 globe is self-hosted and integrates a sourced case atlas',()=>{
-  assert.match(html,/id="caseGlobe"/);
-  assert.match(html,/id="globePins"/);
-  assert.match(html,/id="globeCaseList"/);
-  assert.match(html,/id="globeCaseSource"/);
-  assert.match(html,/id="globeFilter"/);
-  assert.match(html,/href="globe\.css"/);
-  assert.match(html,/src="globe\.js"/);
-  assert.ok(existsSync(new URL('../globe.css',import.meta.url)));
-  assert.ok(existsSync(new URL('../data/cases.json',import.meta.url)));
-  assert.ok(existsSync(new URL('../data/earth-land.json',import.meta.url)));
+test('retired Mission Control is absent and world atlas remains available',()=>{
+  for(const id of ['control','controlTabs','controlPanel','caseGlobe','globeCaseList','globePins']){
+    assert.doesNotMatch(html,new RegExp('id="'+id+'"'));
+  }
+  assert.doesNotMatch(html,/data-control-nav|mission-control\\.js|src="globe\\.js"/);
+  assert.match(html,/id="worldAtlas"/);
+  assert.match(html,/id="worldMapCanvas"/);
+  assert.match(html,/id="submitObservation"/);
+  assert.match(html,/class="home-report-cta-link"/);
 });
 test('case data has sourced prose, conservative statuses and approximate map anchors',()=>{
   const raw=JSON.parse(read('data/cases.json'));
@@ -137,8 +121,8 @@ test('V1.4 static country template, D1 APIs and real register controls exist',()
  assert.match(html,/id="registeredSightings"/);
  assert.match(html,/id="registeredCountries"/);
  assert.match(html,/id="lastSync"/);
- assert.match(html,/id="globeCountry"/);
- assert.match(html,/id="globeYear"/);
+ assert.match(html,/id="worldCountry"/);
+ assert.match(html,/id="worldYear"/);
  assert.ok(read('globe.js').includes('fetch("/api/cases?limit=250"'));
  assert.ok(read('globe.js').includes('useLegacyArchive()'));
  assert.ok(read('globe.js').includes('archiveCases.filter'));
@@ -156,7 +140,7 @@ test('case dossiers reuse one template with separate legacy and gated D1 routes'
   assert.match(dossier,/id="dossierFeedback"[^>]*role="status"/);
   assert.match(dossier,/id="dossierSourceUrl"/);
   assert.match(dossier,/id="dossierLocationCaveat"/);
-  assert.match(html,/id="globeCaseDossier"/);
+  assert.match(html,/id="worldCaseDetail"/);
   assert.ok(read('globe.js').includes('c.recordOrigin==="d1"'));
   assert.match(read('country.js'),/className="case-dossier-link"/);
   assert.match(script,/c\.review_status!=="approved"\|\|c\.record_kind==="demo"/);
@@ -180,7 +164,7 @@ test("V1.5 intake keeps public submission disabled and links only to an honest l
 test('country directory is discoverable and never invents live registry statistics',()=>{
  const page=read('countries.html'),script=read('countries.js'),style=read('countries.css');
  assert.match(html,/href="\/countries\.html" class="register-link"/);
- assert.match(html,/href="\/archive\.html" class="console-archive-link"/);
+ assert.match(html,/href="\/archive\.html" class="button button-primary"/);
  assert.doesNotMatch(html,/href="\/countries\/DE"/);
  assert.match(page,/id="countryGrid"/);
  assert.match(page,/id="countryDirectoryStatus"[^>]*role="status"/);
