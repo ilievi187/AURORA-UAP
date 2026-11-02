@@ -86,7 +86,12 @@ jobs:
             assert.equal(record.title?.bg,note.title_bg,sourceId+" BG title drifted");
             assert.equal(record.summary?.bg,note.summary_bg,sourceId+" BG summary drifted");
             assert.deepEqual(record.story?.bg,note.story_bg,sourceId+" BG story drifted");
-            assert.deepEqual(record.story?.en,note.story_en,sourceId+" EN story drifted");
+            if(note.story_en)assert.deepEqual(record.story?.en,note.story_en,sourceId+" EN story drifted");
+            else assert.ok(Array.isArray(record.story?.en)&&record.story.en.length>=3,sourceId+" licensed EN story was lost");
+            assert.deepEqual(record.editorial_review?.source_access_note,note.source_access_note||editorial.source_access_notice,sourceId+" access notice drifted");
+            assert.equal(record.editorial_review?.reviewed_at,note.reviewed_at||editorial.reviewed_at,sourceId+" editorial review date drifted");
+            if(note.existing_editorial_review)assert.equal(record.editorial_review?.existing_editorial_review,note.existing_editorial_review,sourceId+" prior editorial-review note was lost");
+            if(note.references.length===0)assert.equal(record.source?.url,"https://disclosure.zone/cases/"+sourceId,sourceId+" licensed publisher source was changed");
             assert.equal(record.content_depth,"source-reviewed",sourceId+" editorial status missing");
             for(const ref of note.references)assert.ok(record.sources?.some(item=>item.url===ref.url),sourceId+" missing editorial reference: "+ref.url);
           }
