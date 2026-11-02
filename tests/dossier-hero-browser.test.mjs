@@ -59,11 +59,11 @@ test("FLIR1 hero replaces misleading stock screenshot with real source-verified 
  }finally{await ctx.close()}
 });
 test("legacy Bulgarian source catalog narratives remain readable and are not passed off as translations",async()=>{
- const {page,ctx,errors}=await pageFor("disclosure-virginia-2024");
+ const {page,ctx,errors}=await pageFor("disclosure-ohare-2006");
  try{
-  assert.match(await page.locator("#dossierSummary").textContent(),/US Navy reported approximately 100 aerial objects/);
+  assert.match(await page.locator("#dossierSummary").textContent(),/A dozen airport employees reported a grey disc-shaped object/);
   assert.doesNotMatch(await page.locator("#dossierSummary").textContent(),/е случай, описан/);
-  assert.match(await page.locator("#dossierStory").textContent(),/Around a hundred aerial objects and two surface systems/);
+  assert.match(await page.locator("#dossierStory").textContent(),/Airport staff watch a disc over Terminal C/);
   assert.doesNotMatch(await page.locator("#dossierStory").textContent(),/Следва оригиналното описание/);
   assert.equal(await page.locator("#dossierTranslationDisclosure").isVisible(),true);
   assert.match(await page.locator("#dossierTranslationDisclosure").textContent(),/на английски/);

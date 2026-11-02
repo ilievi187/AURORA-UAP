@@ -70,5 +70,10 @@ test("licensed temp import copies overlay dependencies and checks exact narrativ
  assert.ok(validate.includes("record.story?.bg"));
  assert.ok(validate.includes("record.story?.en"));
  assert.ok(validate.includes("note.story_bg"));
- assert.ok(validate.includes("note.story_en"));
+ assert.ok(validate.includes("if(note.story_en)"));
+ assert.ok(validate.includes("source_access_note"));
+ assert.ok(validate.includes("note.reviewed_at"));
+ assert.ok(validate.includes("existing_editorial_review"));
+ assert.ok(validate.includes("note.references.length===0"));
+ assert.ok(validate.includes("record.source?.url"));
 });

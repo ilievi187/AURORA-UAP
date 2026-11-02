@@ -1204,11 +1204,11 @@
       },
       "title": {
         "en": "The Active Virginia Coast Case",
-        "bg": "The Active Virginia Coast Case"
+        "bg": "Случаят край бреговете на Вирджиния остава в активен анализ"
       },
       "summary": {
         "en": "The US Navy reported approximately 100 aerial objects and two probably unmanned surface systems in an area off the Virginia coast. AARO listed the case as remaining under active analysis.",
-        "bg": "„The Active Virginia Coast Case“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2024-12-01 и район Waters and airspace off the Virginia coast. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект."
+        "bg": "Военноморските сили на САЩ съобщават за приблизително 100 въздушни обекта и две вероятно безпилотни надводни системи край бреговете на Вирджиния; AARO посочва, че случаят все още се анализира."
       },
       "story": {
         "en": [
@@ -1220,13 +1220,10 @@
           "Reported alternative 2: Commercial or research activity misclassified."
         ],
         "bg": [
-          "„The Active Virginia Coast Case“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2024-12-01 и район Waters and airspace off the Virginia coast. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект.",
-          "Следва оригиналното описание на английски от лицензиран източник. То представя свидетелства и оценки на източника, а не доказателство за извънземен произход или независимо заключение на AURORA.",
-          "EN · Around a hundred aerial objects and two surface systems — still open",
-          "EN · The US Navy reported approximately 100 aerial objects and two probably unmanned surface systems in an area off the Virginia coast. AARO listed the case as remaining under active analysis.",
-          "EN · AARO was analysing the case at the time of the report; no resolution.",
-          "EN · A coordinated reconnaissance operation using unmanned aerial and surface systems.",
-          "EN · Commercial or research activity misclassified."
+          "Военноморските сили на САЩ съобщават за приблизително 100 въздушни обекта в район край бреговете на Вирджиния, както и за две вероятно безпилотни надводни системи.",
+          "Към момента на доклада AARO продължава да анализира случая; в описанието не е посочено окончателно разрешение.",
+          "Една от предложените възможности е координирана разузнавателна операция, използваща безпилотни въздушни и надводни системи.",
+          "Като друга възможност е посочена търговска или изследователска дейност, която е била погрешно класифицирана."
         ]
       },
       "source": {
@@ -1253,8 +1250,20 @@
         }
       ],
       "visual": null,
-      "content_depth": "source-linked",
-      "editorial_review": "licensed-secondary-summary; independent fact-check pending",
+      "content_depth": "source-reviewed",
+      "editorial_review": {
+        "existing_editorial_review": "licensed-secondary-summary; independent fact-check pending",
+        "reviewed_at": "2026-11-02",
+        "method": "source-attributed",
+        "language_keys": [
+          "bg",
+          "en"
+        ],
+        "source_access_note": {
+          "bg": "Бележка за преводаческата партида: индивидуалната достъпност на връзките не е проверявана повторно при този превод. Съществуващите препратки и лицензираната страница на издателя са запазени; достъпът за посетителите може да е различен. Това описва обхвата на редакционната работа, а не достоверността на сведенията.",
+          "en": "Translation-batch note: individual link availability was not rechecked during this translation pass. Existing references and the licensed publisher record are retained; visitor access may differ. This describes editorial scope, not the truth of the account."
+        }
+      },
       "dedup_key": "disclosure-zone:virginia-2024",
       "publisher_assessment": "unresolved",
       "provenance": {
@@ -1284,11 +1293,11 @@
       },
       "title": {
         "en": "The East Coast Drone Flap",
-        "bg": "The East Coast Drone Flap"
+        "bg": "Вълната от сигнали за дронове по Източното крайбрежие през 2024 г."
       },
       "summary": {
         "en": "From mid-November 2024, nightly reports of large drones over New Jersey and neighbouring states produced weeks of national coverage, emergency briefings and temporary flight restrictions. Four federal agencies assessed more than 5,000 tips and identified nothing anomalous.",
-        "bg": "„The East Coast Drone Flap“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2024-11-18 и район New Jersey and neighbouring north-eastern states. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект."
+        "bg": "От средата на ноември 2024 г. нощни сигнали за големи дронове над Ню Джърси и съседни щати предизвикват седмици на национално медийно отразяване, извънредни брифинги и временни ограничения за полети. Четири федерални агенции проверяват над 5000 сигнала и не установяват нищо необичайно."
       },
       "story": {
         "en": [
@@ -1301,14 +1310,11 @@
           "Reported alternative 3: A state or contractor programme flown without notice. No document has emerged supporting it, and the flight restrictions issued during the flap point the other way."
         ],
         "bg": [
-          "„The East Coast Drone Flap“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2024-11-18 и район New Jersey and neighbouring north-eastern states. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект.",
-          "Следва оригиналното описание на английски от лицензиран източник. То представя свидетелства и оценки на източника, а не доказателство за извънземен произход или независимо заключение на AURORA.",
-          "EN · Five thousand reports, a hundred leads, nothing anomalous: a wave documented while it was still happening",
-          "EN · From mid-November 2024, nightly reports of large drones over New Jersey and neighbouring states produced weeks of national coverage, emergency briefings and temporary flight restrictions. Four federal agencies assessed more than 5,000 tips and identified nothing anomalous.",
-          "EN · DHS, the FBI, the FAA and the Department of Defense jointly assessed the reports as a mixture of lawful commercial, hobbyist and law-enforcement drones together with manned fixed-wing aircraft, helicopters and stars misreported as drones. Over 5,000 tips produced about 100 leads. No national security or public safety risk was identified.",
-          "EN · Ordinary air traffic misjudged for range and size at night. This is the explanation the agencies reached, and the one the released police records support.",
-          "EN · A genuine unauthorised incursion, concealed or missed. Argued from the density of reports rather than from any recovered airframe, track or image.",
-          "EN · A state or contractor programme flown without notice. No document has emerged supporting it, and the flight restrictions issued during the flap point the other way."
+          "От средата на ноември 2024 г. нощни сигнали за големи дронове над Ню Джърси и съседни щати предизвикват седмици на отразяване в националните медии, извънредни брифинги и временни ограничения за полети.",
+          "DHS, FBI, FAA и Министерството на отбраната на САЩ съвместно оценяват над 5000 сигнала; те водят до около 100 следи за проверка, но агенциите не установяват нищо необичайно. Според общата им оценка съобщенията се отнасят до законно използвани търговски, любителски и правоприлагащи дронове, както и до пилотирани самолети с неподвижно крило, хеликоптери и звезди, погрешно приети за дронове. Не е установен риск за националната сигурност или обществената безопасност.",
+          "Едно от предложените обяснения е, че нощното въздушно движение е било погрешно преценено по отношение на разстоянието и размера. Именно до такова обяснение стигат агенциите, а публикуваните полицейски документи го подкрепят.",
+          "Друга предложена възможност е действително неразрешено навлизане, което е било прикрито или пропуснато. Тази версия се основава на големия брой сигнали, а не на открит летателен апарат, проследена траектория или изображение.",
+          "Посочена е и възможността за програма на държавна структура или на изпълнител по договор, провеждана без предварително уведомяване. Няма излязъл наяве документ в нейна подкрепа, а ограниченията за полети, наложени по време на вълната от сигнали, сочат в обратната посока."
         ]
       },
       "source": {
@@ -1318,8 +1324,20 @@
       "sources": [],
       "media": [],
       "visual": null,
-      "content_depth": "source-linked",
-      "editorial_review": "licensed-secondary-summary; independent fact-check pending",
+      "content_depth": "source-reviewed",
+      "editorial_review": {
+        "existing_editorial_review": "licensed-secondary-summary; independent fact-check pending",
+        "reviewed_at": "2026-11-02",
+        "method": "source-attributed",
+        "language_keys": [
+          "bg",
+          "en"
+        ],
+        "source_access_note": {
+          "bg": "Бележка за преводаческата партида: индивидуалната достъпност на връзките не е проверявана повторно при този превод. Съществуващите препратки и лицензираната страница на издателя са запазени; достъпът за посетителите може да е различен. Това описва обхвата на редакционната работа, а не достоверността на сведенията.",
+          "en": "Translation-batch note: individual link availability was not rechecked during this translation pass. Existing references and the licensed publisher record are retained; visitor access may differ. This describes editorial scope, not the truth of the account."
+        }
+      },
       "dedup_key": "disclosure-zone:east-coast-drones-2024",
       "publisher_assessment": "explained",
       "provenance": {
@@ -1686,11 +1704,11 @@
       },
       "title": {
         "en": "The Western U.S. Event",
-        "bg": "The Western U.S. Event"
+        "bg": "Западните САЩ: AARO приписва около 60% от активността на военни примамки"
       },
       "summary": {
         "en": "In October 2023, federal law enforcement special agents surveying for illegal drone launches near a sensitive national security site in the western United States reported orange orbs releasing clusters of smaller red orbs, objects that mimicked road vehicles, and kite-shaped objects at close range. AARO attributes roughly 60 percent of the activity to military countermeasure flares and states that roughly 40 percent remains unresolved. No radar return, photograph or film of the phenomena has been released.",
-        "bg": "„The Western U.S. Event“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2023-10-15 и район Undisclosed site in the western United States; the map pin is a regional placeholder, not the location. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект."
+        "bg": "През октомври 2023 г. федерални специални агенти на правоприлагащите органи, които наблюдавали за незаконни изстрелвания на дронове край чувствителен обект за националната сигурност в западните САЩ, съобщават за оранжеви сфери, изпускащи групи от по-малки червени сфери, за обекти, наподобяващи пътни превозни средства, и за обекти с форма на хвърчило, наблюдавани отблизо. AARO приписва около 60% от активността на военни инфрачервени примамки; около 40% остават нерешени. Радарни отметки, снимки или филм на явленията не са публикувани."
       },
       "story": {
         "en": [
@@ -1704,14 +1722,12 @@
           "Reported alternative 4: Foreign collection platforms. AARO rates this highly unlikely on the kinematics alone. Nothing was tracked, intercepted or recovered."
         ],
         "bg": [
-          "„The Western U.S. Event“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2023-10-15 и район Undisclosed site in the western United States; the map pin is a regional placeholder, not the location. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект.",
-          "Следва оригиналното описание на английски от лицензиран източник. То представя свидетелства и оценки на източника, а не доказателство за извънземен произход или независимо заключение на AURORA.",
-          "EN · Sixty percent attributed to flares, forty percent not, and no instrument pointed at any of it",
-          "EN · In October 2023, federal law enforcement special agents surveying for illegal drone launches near a sensitive national security site in the western United States reported orange orbs releasing clusters of smaller red orbs, objects that mimicked road vehicles, and kite-shaped objects at close range. AARO attributes roughly 60 percent of the activity to military countermeasure flares and states that roughly 40 percent remains unresolved. No radar return, photograph or film of the phenomena has been released.",
-          "EN · AARO's case analysis update of 5 June 2026, signed by Director Jon T. Kosloski, states the case remains unresolved. About 60 percent of the reported activity is plausibly attributable to infrared countermeasure flares released by military aircraft during a scheduled exercise, cross-checked against flight logs, radar and ADS-B data. For the remaining 40 percent, radar and ADS-B show no known aircraft inside the observers' estimated line of sight, and a red orb reported stationary above a ridgeline for several hours is incompatible with the burn time and descent rate of any known flare. Misidentified aircraft exhaust is ruled out; drones are unlikely; foreign activity is highly unlikely; weather, refraction and space-based causes are unlikely. A U.S. programme is assessed as plausible but inconclusive: the described characteristics match certain U.S. technologies, historical records do not place them at that time and location, and no single capability accounts for everything reported.",
-          "EN · Infrared countermeasure flares from the exercise, misjudged for range and duration. This is AARO's strongest hypothesis and the one the flight logs, radar and ADS-B support. It covers about 60 percent of the activity and fails on two points: the sightings with no aircraft in line of sight, and the orb reported stationary for several hours.",
-          "EN · A U.S. programme flown without notice to the agents on the ground. AARO calls this plausible and inconclusive. Each reported characteristic shares features with known U.S. systems, no single system accounts for all of them, and the records do not place any of them there.",
-          "EN · Perceptual error at night, sharpened by expectation. The agents were deployed specifically to watch for drone launches and already knew other teams were reporting lights. Distance carries no information in a dark sky, and the narratives were written two and a half years afterwards."
+          "През октомври 2023 г. федерални специални агенти на правоприлагащите органи, които проверявали незаконни изстрелвания на дронове край чувствителен обект за националната сигурност в западните САЩ, съобщават за оранжеви сфери, от които излизали групи по-малки червени сфери, за обекти, наподобяващи пътни превозни средства, и за обекти с форма на хвърчило, наблюдавани отблизо. Не са публикувани радарни отметки, снимки или филм на самите явления.",
+          "В актуализацията на анализа от 5 юни 2026 г., подписана от директора на AARO Jon T. Kosloski, случаят е посочен като нерешен. Според оценката приблизително 60% от съобщената активност правдоподобно се обяснява с инфрачервени примамки за противодействие, пуснати от военни самолети по време на планирано учение; останалите около 40% остават неразрешени.",
+          "В подкрепа на обяснението с примамки AARO сравнява полетни дневници, радарни и ADS-B данни. То обаче не обхваща наблюденията, при които в оценената от наблюдателите линия на видимост няма известен самолет, нито съобщението за червена сфера, неподвижна над билото в продължение на часове — поведение, несъвместимо с времето на горене и скоростта на снижаване на позната примамка.",
+          "AARO отхвърля версията, че наблюдаваното е погрешно разпознати изгорели газове от самолети, оценява дроновете като малко вероятни, а чуждестранната активност — като много малко вероятна. Също като малко вероятни са посочени причини, свързани с времето, атмосферното пречупване и космически явления.",
+          "Американска програма е оценена като правдоподобна, но без окончателно заключение. Описаните характеристики съвпадат с някои известни технологии на САЩ, но историческите записи не ги свързват с това място и време, а нито една отделна система не обяснява всички съобщени характеристики.",
+          "Като друга възможност е посочена нощна перцептивна грешка, подсилена от очакванията: агентите били изпратени специално да следят за изстрелвания на дронове и знаели, че други екипи съобщават за светлини. В тъмно небе разстоянието не може да се прецени само по видимия образ, а разказите били записани две години и половина по-късно. Отделно AARO оценява чуждестранни платформи за събиране на разузнавателни данни като много малко вероятни въз основа на кинематиката; нищо не е проследено, прехванато или възстановено."
         ]
       },
       "source": {
@@ -1835,8 +1851,20 @@
         }
       ],
       "visual": null,
-      "content_depth": "source-linked",
-      "editorial_review": "licensed-secondary-summary; independent fact-check pending",
+      "content_depth": "source-reviewed",
+      "editorial_review": {
+        "existing_editorial_review": "licensed-secondary-summary; independent fact-check pending",
+        "reviewed_at": "2026-11-02",
+        "method": "source-attributed",
+        "language_keys": [
+          "bg",
+          "en"
+        ],
+        "source_access_note": {
+          "bg": "Бележка за преводаческата партида: индивидуалната достъпност на връзките не е проверявана повторно при този превод. Съществуващите препратки и лицензираната страница на издателя са запазени; достъпът за посетителите може да е различен. Това описва обхвата на редакционната работа, а не достоверността на сведенията.",
+          "en": "Translation-batch note: individual link availability was not rechecked during this translation pass. Existing references and the licensed publisher record are retained; visitor access may differ. This describes editorial scope, not the truth of the account."
+        }
+      },
       "dedup_key": "disclosure-zone:western-us-2023",
       "publisher_assessment": "unresolved",
       "provenance": {
@@ -1980,7 +2008,8 @@
         "source_access_note": {
           "bg": "Бележка за целия пакет от десет досиета: при одита на 1 ноември 2026 г. някои директни PDF заявки върнаха 403, а някои архивни връзки показаха само обща каталожна страница вместо текста на документа. Одитът не установява кои конкретни връзки са засегнати. Всички препратки са запазени; достъпът за посетителите може да е различен. Това описва ограничение на извличането от AURORA, а не преценка за достоверността на публикуваните сведения.",
           "en": "Batch-wide note for the ten dossiers: During the 1 November 2026 audit, some direct PDF requests returned 403, and some archive links exposed only a generic catalog page rather than the document text. The audit does not identify which individual links were affected. All references are retained; visitor access may differ. This describes AURORA's retrieval limitation, not a judgment about the truth of the published accounts."
-        }
+        },
+        "existing_editorial_review": "licensed-secondary-summary; independent fact-check pending"
       },
       "dedup_key": "disclosure-zone:test-site-2023",
       "publisher_assessment": "insufficient",
@@ -2011,11 +2040,11 @@
       },
       "title": {
         "en": "The 2023 Balloon and the Shootdowns",
-        "bg": "The 2023 Balloon and the Shootdowns"
+        "bg": "Балонът от 2023 г. и трите последвали сваляния"
       },
       "summary": {
         "en": "A Chinese high-altitude balloon crossed North America and was shot down off South Carolina. In the following week, after air defence radar filters were adjusted, three further unidentified objects were engaged and destroyed over Alaska, Yukon and Lake Huron — none of which was ever conclusively identified.",
-        "bg": "„The 2023 Balloon and the Shootdowns“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2023-02-04 и район Continental United States, Alaska, Yukon and Lake Huron. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект."
+        "bg": "Китайски балон на голяма височина прекосява Северна Америка и е свален край Южна Каролина. През следващата седмица, след промяна на филтрите на радарите за противовъздушна отбрана, още три неидентифицирани обекта са поразени и унищожени над Аляска, Юкон и езерото Хюрон; нито един от тях не е идентифициран окончателно."
       },
       "story": {
         "en": [
@@ -2026,12 +2055,11 @@
           "Reported alternative 1: The three subsequent objects were small commercial or hobbyist balloons, made visible by a deliberate loosening of radar filters — the official and most probable reading."
         ],
         "bg": [
-          "„The 2023 Balloon and the Shootdowns“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2023-02-04 и район Continental United States, Alaska, Yukon and Lake Huron. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект.",
-          "Следва оригиналното описание на английски от лицензиран източник. То представя свидетелства и оценки на източника, а не доказателство за извънземен произход или независимо заключение на AURORA.",
-          "EN · A month in which the UAP category and the air-defence category merged",
-          "EN · A Chinese high-altitude balloon crossed North America and was shot down off South Carolina. In the following week, after air defence radar filters were adjusted, three further unidentified objects were engaged and destroyed over Alaska, Yukon and Lake Huron — none of which was ever conclusively identified.",
-          "EN · The first object was recovered and confirmed as a Chinese surveillance balloon. The other three were assessed as most likely benign commercial or research balloons; debris was not recovered.",
-          "EN · The three subsequent objects were small commercial or hobbyist balloons, made visible by a deliberate loosening of radar filters — the official and most probable reading."
+          "Китайски балон на голяма височина прекосява Северна Америка и е свален край Южна Каролина.",
+          "През следващата седмица, след като са променени филтрите на радарите за противовъздушна отбрана, още три неидентифицирани обекта са поразени и унищожени над Аляска, Юкон и езерото Хюрон.",
+          "Първият обект е възстановен и потвърден като китайски разузнавателен балон. Трите последвали обекта обаче не са идентифицирани окончателно.",
+          "Оценката за останалите три е, че най-вероятно са били безобидни търговски или изследователски балони; отломки не са възстановени.",
+          "Като официално и най-вероятно обяснение е посочено, че трите последвали обекта са били малки търговски или любителски балони, станали видими след целенасочено разхлабване на радарните филтри."
         ]
       },
       "source": {
@@ -2072,8 +2100,20 @@
         }
       ],
       "visual": null,
-      "content_depth": "source-linked",
-      "editorial_review": "licensed-secondary-summary; independent fact-check pending",
+      "content_depth": "source-reviewed",
+      "editorial_review": {
+        "existing_editorial_review": "licensed-secondary-summary; independent fact-check pending",
+        "reviewed_at": "2026-11-02",
+        "method": "source-attributed",
+        "language_keys": [
+          "bg",
+          "en"
+        ],
+        "source_access_note": {
+          "bg": "Бележка за преводаческата партида: индивидуалната достъпност на връзките не е проверявана повторно при този превод. Съществуващите препратки и лицензираната страница на издателя са запазени; достъпът за посетителите може да е различен. Това описва обхвата на редакционната работа, а не достоверността на сведенията.",
+          "en": "Translation-batch note: individual link availability was not rechecked during this translation pass. Existing references and the licensed publisher record are retained; visitor access may differ. This describes editorial scope, not the truth of the account."
+        }
+      },
       "dedup_key": "disclosure-zone:balloon-2023",
       "publisher_assessment": "explained",
       "provenance": {
@@ -3075,11 +3115,11 @@
       },
       "title": {
         "en": "The Colorado Drone Swarms",
-        "bg": "The Colorado Drone Swarms"
+        "bg": "Сигналите за рояци дронове над Колорадо и Небраска"
       },
       "summary": {
         "en": "For several weeks, large unmanned aircraft were reported flying nightly grid patterns over rural Colorado and Nebraska. Sheriffs, the FAA, the FBI and a state task force investigated. No operator was ever identified and no enforcement action followed.",
-        "bg": "„The Colorado Drone Swarms“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2019-12-20 и район Eastern Colorado and western Nebraska. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект."
+        "bg": "В продължение на няколко седмици се съобщава за големи безпилотни летателни апарати, които нощем летят по мрежова схема над селски райони на Колорадо и Небраска. Шерифските служби, FAA, FBI и щатска работна група разследват сигналите, но оператор не е установен и не са предприети правоприлагащи действия."
       },
       "story": {
         "en": [
@@ -3092,14 +3132,12 @@
           "Reported alternative 3: An unattributed operation, never identified."
         ],
         "bg": [
-          "„The Colorado Drone Swarms“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2019-12-20 и район Eastern Colorado and western Nebraska. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект.",
-          "Следва оригиналното описание на английски от лицензиран източник. То представя свидетелства и оценки на източника, а не доказателство за извънземен произход или независимо заключение на AURORA.",
-          "EN · Weeks of formation flying over the plains that no agency ever identified",
-          "EN · For several weeks, large unmanned aircraft were reported flying nightly grid patterns over rural Colorado and Nebraska. Sheriffs, the FAA, the FBI and a state task force investigated. No operator was ever identified and no enforcement action followed.",
-          "EN · A multi-agency task force concluded that the great majority of reports were misidentified aircraft, stars and planets, and found no evidence of a coordinated drone operation.",
-          "EN · Misidentification of ordinary aircraft and celestial objects, amplified by media attention — the task force finding.",
-          "EN · Commercial survey drones operating lawfully but without local notification.",
-          "EN · An unattributed operation, never identified."
+          "В продължение на няколко седмици се съобщава за големи безпилотни летателни апарати, които нощем летят по маршрути във формата на мрежа над селски райони на Колорадо и Небраска.",
+          "По случая работят шерифските служби, FAA, FBI и щатска работна група. Разследването не установява оператор, а не следват и правоприлагащи действия.",
+          "Според оценката на работната група огромната част от сигналите се дължат на погрешно разпознати самолети, звезди и планети. Групата не открива доказателства за координирана операция с дронове.",
+          "Първата предложена възможност е погрешно разпознаване на обичайни самолети и небесни обекти, подсилено от медийното внимание — това съвпада със заключението на работната група.",
+          "Друга предложена възможност е законна дейност с търговски дронове за заснемане или обследване на терена, без предварително уведомяване на местните власти.",
+          "Трета предложена възможност е неидентифицирана операция, чийто оператор така и не е установен."
         ]
       },
       "source": {
@@ -3117,8 +3155,20 @@
       ],
       "media": [],
       "visual": null,
-      "content_depth": "source-linked",
-      "editorial_review": "licensed-secondary-summary; independent fact-check pending",
+      "content_depth": "source-reviewed",
+      "editorial_review": {
+        "existing_editorial_review": "licensed-secondary-summary; independent fact-check pending",
+        "reviewed_at": "2026-11-02",
+        "method": "source-attributed",
+        "language_keys": [
+          "bg",
+          "en"
+        ],
+        "source_access_note": {
+          "bg": "Бележка за преводаческата партида: индивидуалната достъпност на връзките не е проверявана повторно при този превод. Съществуващите препратки и лицензираната страница на издателя са запазени; достъпът за посетителите може да е различен. Това описва обхвата на редакционната работа, а не достоверността на сведенията.",
+          "en": "Translation-batch note: individual link availability was not rechecked during this translation pass. Existing references and the licensed publisher record are retained; visitor access may differ. This describes editorial scope, not the truth of the account."
+        }
+      },
       "dedup_key": "disclosure-zone:colorado-drones-2019",
       "publisher_assessment": "unresolved",
       "provenance": {
@@ -3496,11 +3546,11 @@
       },
       "title": {
         "en": "The Mosul Orb",
-        "bg": "The Mosul Orb"
+        "bg": "Сферичният обект над Мосул"
       },
       "summary": {
         "en": "A short clip from a US reconnaissance platform showing a small spherical object crossing the field of view over Mosul. AARO presented it publicly as an example of an unresolved case.",
-        "bg": "„The Mosul Orb“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2016-04-01 и район Airspace over Mosul. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект."
+        "bg": "Кратък запис от американска разузнавателна платформа показва малък сферичен обект, който пресича зрителното поле над Мосул. AARO представя случая публично като нерешен."
       },
       "story": {
         "en": [
@@ -3512,13 +3562,10 @@
           "Reported alternative 2: A sensor artefact."
         ],
         "bg": [
-          "„The Mosul Orb“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2016-04-01 и район Airspace over Mosul. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект.",
-          "Следва оригиналното описание на английски от лицензиран източник. То представя свидетелства и оценки на източника, а не доказателство за извънземен произход или независимо заключение на AURORA.",
-          "EN · A few seconds from a reconnaissance platform over Iraq that AARO did not close",
-          "EN · A short clip from a US reconnaissance platform showing a small spherical object crossing the field of view over Mosul. AARO presented it publicly as an example of an unresolved case.",
-          "EN · AARO: unresolved for insufficient data; no basis for attributing extraordinary properties.",
-          "EN · A balloon, drone or drifting object in a conflict zone.",
-          "EN · A sensor artefact."
+          "Кратък видеозапис от американска разузнавателна платформа показва малък сферичен обект, който пресича зрителното поле над Мосул.",
+          "AARO публично представя този клип като пример за случай, който остава нерешен.",
+          "Оценката на AARO е, че случаят остава нерешен поради недостатъчни данни и няма основание да се приписват необичайни свойства на обекта.",
+          "Сред посочените възможни обяснения са балон, дрон или друг обект, носен от вятъра в зона на конфликт, както и артефакт на сензора. AARO оставя случая нерешен поради недостатъчните данни."
         ]
       },
       "source": {
@@ -3528,8 +3575,20 @@
       "sources": [],
       "media": [],
       "visual": null,
-      "content_depth": "source-linked",
-      "editorial_review": "licensed-secondary-summary; independent fact-check pending",
+      "content_depth": "source-reviewed",
+      "editorial_review": {
+        "existing_editorial_review": "licensed-secondary-summary; independent fact-check pending",
+        "reviewed_at": "2026-11-02",
+        "method": "source-attributed",
+        "language_keys": [
+          "bg",
+          "en"
+        ],
+        "source_access_note": {
+          "bg": "Бележка за преводаческата партида: индивидуалната достъпност на връзките не е проверявана повторно при този превод. Съществуващите препратки и лицензираната страница на издателя са запазени; достъпът за посетителите може да е различен. Това описва обхвата на редакционната работа, а не достоверността на сведенията.",
+          "en": "Translation-batch note: individual link availability was not rechecked during this translation pass. Existing references and the licensed publisher record are retained; visitor access may differ. This describes editorial scope, not the truth of the account."
+        }
+      },
       "dedup_key": "disclosure-zone:mosul-orb-2016",
       "publisher_assessment": "unresolved",
       "provenance": {
@@ -4091,11 +4150,11 @@
       },
       "title": {
         "en": "Aguadilla",
-        "bg": "Aguadilla"
+        "bg": "Записът от Агуадиля и реконструкцията на траекторията"
       },
       "summary": {
         "en": "Infrared footage from a border patrol aircraft shows an object flying over terrain, entering the ocean, emerging, and splitting in two. For years it was presented as the best evidence for objects moving between media.",
-        "bg": "„Aguadilla“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2013-04-25 и район Near Rafael Hernández Airport, Aguadilla. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект."
+        "bg": "Инфрачервен запис от самолет на граничния патрул показва обект, който изглежда лети над сушата, навлиза в океана, появява се отново и се разделя на две. Години наред той е представян като най-силното доказателство за обекти, преминаващи между различни среди."
       },
       "story": {
         "en": [
@@ -4106,12 +4165,11 @@
           "Reported alternative 1: Two sky lanterns carried by the wind — consistent with the speed, the trajectory and the thermal signature."
         ],
         "bg": [
-          "„Aguadilla“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2013-04-25 и район Near Rafael Hernández Airport, Aguadilla. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект.",
-          "Следва оригиналното описание на английски от лицензиран източник. То представя свидетелства и оценки на източника, а не доказателство за извънземен произход или независимо заключение на AURORA.",
-          "EN · The most famous “transmedium” footage, and the 3D reconstruction that dismantled it",
-          "EN · Infrared footage from a border patrol aircraft shows an object flying over terrain, entering the ocean, emerging, and splitting in two. For years it was presented as the best evidence for objects moving between media.",
-          "EN · AARO performed a 3D trajectory reconstruction. It established with high confidence that the objects did not enter the water and did not split, and that they moved at approximately wind speed; with moderate confidence they were identified as a pair of sky lanterns.",
-          "EN · Two sky lanterns carried by the wind — consistent with the speed, the trajectory and the thermal signature."
+          "Инфрачервените кадри от самолет на граничния патрул изглежда показват обект, който се движи над сушата, навлиза в океана, появява се отново и се разделя на две.",
+          "В продължение на години този запис е представян като най-силното доказателство за обекти, способни да преминават от една среда в друга.",
+          "AARO извършва триизмерна реконструкция на траекторията. Според анализа с висока увереност обектите не са навлезли във водата и не са се разделили.",
+          "При възстановяването на траекторията движението им е оценено като приблизително съответстващо на скоростта на вятъра.",
+          "С умерена увереност AARO идентифицира наблюдаваното като двойка небесни фенери. Посочените основания за тази версия са скоростта, траекторията и топлинният подпис."
         ]
       },
       "source": {
@@ -4138,8 +4196,20 @@
         }
       ],
       "visual": null,
-      "content_depth": "source-linked",
-      "editorial_review": "licensed-secondary-summary; independent fact-check pending",
+      "content_depth": "source-reviewed",
+      "editorial_review": {
+        "existing_editorial_review": "licensed-secondary-summary; independent fact-check pending",
+        "reviewed_at": "2026-11-02",
+        "method": "source-attributed",
+        "language_keys": [
+          "bg",
+          "en"
+        ],
+        "source_access_note": {
+          "bg": "Бележка за преводаческата партида: индивидуалната достъпност на връзките не е проверявана повторно при този превод. Съществуващите препратки и лицензираната страница на издателя са запазени; достъпът за посетителите може да е различен. Това описва обхвата на редакционната работа, а не достоверността на сведенията.",
+          "en": "Translation-batch note: individual link availability was not rechecked during this translation pass. Existing references and the licensed publisher record are retained; visitor access may differ. This describes editorial scope, not the truth of the account."
+        }
+      },
       "dedup_key": "disclosure-zone:aguadilla-2013",
       "publisher_assessment": "explained",
       "provenance": {
@@ -4169,11 +4239,11 @@
       },
       "title": {
         "en": "Ladakh",
-        "bg": "Ladakh"
+        "bg": "Светлините над Ладакх: наблюденията и астрономическото обяснение"
       },
       "summary": {
         "en": "Army and border police units in Ladakh logged several hundred sightings of luminous objects over six months, initially suspected to be Chinese surveillance drones. A scientific team was sent to investigate.",
-        "bg": "„Ladakh“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2012-08-01 и район Ladakh, along the Line of Actual Control. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект."
+        "bg": "В продължение на шест месеца подразделения на индийската армия и граничната полиция в Ладакх регистрират няколкостотин наблюдения на светещи обекти, първоначално заподозрени като китайски разузнавателни дронове. За проверка е изпратен научен екип."
       },
       "story": {
         "en": [
@@ -4185,13 +4255,11 @@
           "Reported alternative 2: Chinese surveillance drones — the initial military hypothesis, not supported by radar."
         ],
         "bg": [
-          "„Ladakh“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2012-08-01 и район Ladakh, along the Line of Actual Control. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект.",
-          "Следва оригиналното описание на английски от лицензиран източник. То представя свидетелства и оценки на източника, а не доказателство за извънземен произход или независимо заключение на AURORA.",
-          "EN · Indian Army units log hundreds of luminous objects over a disputed border",
-          "EN · Army and border police units in Ladakh logged several hundred sightings of luminous objects over six months, initially suspected to be Chinese surveillance drones. A scientific team was sent to investigate.",
-          "EN · A team from the Indian Institute of Astrophysics and the DRDO concluded the objects were Jupiter, Venus and bright stars, with atmospheric refraction accounting for the apparent motion.",
-          "EN · Jupiter and Venus refracted through the high-altitude atmosphere — the official finding, supported by the sightings ceasing when the planets moved.",
-          "EN · Chinese surveillance drones — the initial military hypothesis, not supported by radar."
+          "За период от шест месеца подразделения на индийската армия и граничната полиция в Ладакх записват няколкостотин наблюдения на светещи обекти.",
+          "Първоначално военните подозирали, че това може да са китайски разузнавателни дронове; за проучване е изпратен научен екип.",
+          "Екип от Indian Institute of Astrophysics и DRDO стига до извода, че наблюдаваните светлини са Юпитер, Венера и ярки звезди.",
+          "Според оценката на екипа атмосферното пречупване на голяма височина обяснява привидното движение на светлините. Това е официалното му обяснение.",
+          "Като подкрепа за тази версия е посочено, че наблюденията престанали, когато планетите се преместили. Първоначалната хипотеза за китайски дронове не е подкрепена от радарните данни."
         ]
       },
       "source": {
@@ -4201,8 +4269,20 @@
       "sources": [],
       "media": [],
       "visual": null,
-      "content_depth": "source-linked",
-      "editorial_review": "licensed-secondary-summary; independent fact-check pending",
+      "content_depth": "source-reviewed",
+      "editorial_review": {
+        "existing_editorial_review": "licensed-secondary-summary; independent fact-check pending",
+        "reviewed_at": "2026-11-02",
+        "method": "source-attributed",
+        "language_keys": [
+          "bg",
+          "en"
+        ],
+        "source_access_note": {
+          "bg": "Бележка за преводаческата партида: индивидуалната достъпност на връзките не е проверявана повторно при този превод. Съществуващите препратки и лицензираната страница на издателя са запазени; достъпът за посетителите може да е различен. Това описва обхвата на редакционната работа, а не достоверността на сведенията.",
+          "en": "Translation-batch note: individual link availability was not rechecked during this translation pass. Existing references and the licensed publisher record are retained; visitor access may differ. This describes editorial scope, not the truth of the account."
+        }
+      },
       "dedup_key": "disclosure-zone:ladakh-2012",
       "publisher_assessment": "explained",
       "provenance": {
@@ -4232,11 +4312,11 @@
       },
       "title": {
         "en": "Hangzhou Airport",
-        "bg": "Hangzhou Airport"
+        "bg": "Спирането на полетите на летище Xiaoshan"
       },
       "summary": {
         "en": "Xiaoshan International Airport suspended operations for roughly an hour after an unidentified object was reported in its airspace. Flights were diverted and delayed. Chinese authorities later indicated a military connection but released no detail.",
-        "bg": "„Hangzhou Airport“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2010-07-07 и район Xiaoshan International Airport, Hangzhou, Zhejiang. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект."
+        "bg": "Международното летище Xiaoshan спира работа за около час след съобщение за неидентифициран обект във въздушното му пространство. Полети са пренасочени и забавени. По-късно китайските власти посочват военна връзка, без да оповестят подробности."
       },
       "story": {
         "en": [
@@ -4249,14 +4329,11 @@
           "Reported alternative 3: A genuine unidentified object."
         ],
         "bg": [
-          "„Hangzhou Airport“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2010-07-07 и район Xiaoshan International Airport, Hangzhou, Zhejiang. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект.",
-          "Следва оригиналното описание на английски от лицензиран източник. То представя свидетелства и оценки на източника, а не доказателство за извънземен произход или независимо заключение на AURORA.",
-          "EN · A major Chinese airport closes for an hour over an unidentified object",
-          "EN · Xiaoshan International Airport suspended operations for roughly an hour after an unidentified object was reported in its airspace. Flights were diverted and delayed. Chinese authorities later indicated a military connection but released no detail.",
-          "EN · Airport operations were confirmed suspended. Authorities indicated the object had a military explanation and declined to elaborate.",
-          "EN · A military test or exercise flight, which authorities appeared to confirm without detail — the leading explanation.",
-          "EN · A missile or rocket contrail illuminated after sunset.",
-          "EN · A genuine unidentified object."
+          "След като във въздушното пространство на Международното летище Xiaoshan е съобщено за неидентифициран обект, летищните операции са спрени за приблизително един час.",
+          "Прекъсването на работата на летището е потвърдено, а полети са пренасочени и забавени.",
+          "По-късно китайските власти посочват, че обектът има военно обяснение, но не дават подробности за него.",
+          "Като водеща версия се посочва военен изпитателен или тренировъчен полет. Описанието отбелязва, че властите изглежда са потвърдили тази възможност, без да уточнят повече.",
+          "Друга предложена възможност е ракетна следа, осветена след залез. Посочена е и хипотезата за действително неидентифициран обект; тези алтернативи не са представени като установени факти."
         ]
       },
       "source": {
@@ -4266,8 +4343,20 @@
       "sources": [],
       "media": [],
       "visual": null,
-      "content_depth": "source-linked",
-      "editorial_review": "licensed-secondary-summary; independent fact-check pending",
+      "content_depth": "source-reviewed",
+      "editorial_review": {
+        "existing_editorial_review": "licensed-secondary-summary; independent fact-check pending",
+        "reviewed_at": "2026-11-02",
+        "method": "source-attributed",
+        "language_keys": [
+          "bg",
+          "en"
+        ],
+        "source_access_note": {
+          "bg": "Бележка за преводаческата партида: индивидуалната достъпност на връзките не е проверявана повторно при този превод. Съществуващите препратки и лицензираната страница на издателя са запазени; достъпът за посетителите може да е различен. Това описва обхвата на редакционната работа, а не достоверността на сведенията.",
+          "en": "Translation-batch note: individual link availability was not rechecked during this translation pass. Existing references and the licensed publisher record are retained; visitor access may differ. This describes editorial scope, not the truth of the account."
+        }
+      },
       "dedup_key": "disclosure-zone:hangzhou-2010",
       "publisher_assessment": "disputed",
       "provenance": {
@@ -4376,11 +4465,11 @@
       },
       "title": {
         "en": "Stephenville",
-        "bg": "Stephenville"
+        "bg": "Съобщенията от Стивънвил и радарните данни на FAA"
       },
       "summary": {
         "en": "After a wave of reports of a large, silent object with lights, independent researchers obtained FAA radar data under FOIA, which showed an unidentified track in the area together with F-16 activity the air base had previously denied.",
-        "bg": "„Stephenville“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2008-01-08 и район Stephenville, Erath County, Texas. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект."
+        "bg": "След вълна от съобщения за голям, безшумен обект със светлини, независими изследователи получават по FOIA радарни данни на FAA. Те показват неидентифицирана следа в района, както и активност на F-16, която авиобазата по-рано е отрекла."
       },
       "story": {
         "en": [
@@ -4393,14 +4482,11 @@
           "Reported alternative 3: A genuine large object."
         ],
         "bg": [
-          "„Stephenville“ е случай, описан в публичния каталог disclosure.zone (CC BY 4.0). Публикуваните сведения се отнасят за 2008-01-08 и район Stephenville, Erath County, Texas. Маркерът, ако има такъв, е ориентировъчен, а не измерена позиция на обект.",
-          "Следва оригиналното описание на английски от лицензиран източник. То представя свидетелства и оценки на източника, а не доказателство за извънземен произход или независимо заключение на AURORA.",
-          "EN · Texas reports set against FAA radar data obtained under freedom of information",
-          "EN · After a wave of reports of a large, silent object with lights, independent researchers obtained FAA radar data under FOIA, which showed an unidentified track in the area together with F-16 activity the air base had previously denied.",
-          "EN · The air base initially denied its aircraft were present, then corrected its position, confirming F-16 training flights that evening.",
-          "EN · Flares and F-16 training flights — confirmed; these account for a substantial share of the sightings.",
-          "EN · The unidentified radar track as an artefact or a non-cooperative object without a transponder.",
-          "EN · A genuine large object."
+          "След вълна от съобщения за голям, безшумен обект със светлини над Стивънвил, Тексас, независими изследователи получават радарни данни на FAA чрез FOIA.",
+          "Данните показват неидентифицирана радарна следа в района, както и активност на F-16, която авиобазата по-рано е отрекла.",
+          "Авиобазата впоследствие коригира позицията си и потвърждава, че през същата вечер са извършвани тренировъчни полети с F-16.",
+          "Светлинните примамки и тренировъчните полети с F-16 са посочени като потвърдени обстоятелства, обясняващи значителна част от наблюденията.",
+          "За неидентифицираната радарна следа са предложени две обяснения: артефакт или некооперативен обект без транспондер. Отделно се разглежда и хипотезата за действително голям обект."
         ]
       },
       "source": {
@@ -4410,8 +4496,20 @@
       "sources": [],
       "media": [],
       "visual": null,
-      "content_depth": "source-linked",
-      "editorial_review": "licensed-secondary-summary; independent fact-check pending",
+      "content_depth": "source-reviewed",
+      "editorial_review": {
+        "existing_editorial_review": "licensed-secondary-summary; independent fact-check pending",
+        "reviewed_at": "2026-11-02",
+        "method": "source-attributed",
+        "language_keys": [
+          "bg",
+          "en"
+        ],
+        "source_access_note": {
+          "bg": "Бележка за преводаческата партида: индивидуалната достъпност на връзките не е проверявана повторно при този превод. Съществуващите препратки и лицензираната страница на издателя са запазени; достъпът за посетителите може да е различен. Това описва обхвата на редакционната работа, а не достоверността на сведенията.",
+          "en": "Translation-batch note: individual link availability was not rechecked during this translation pass. Existing references and the licensed publisher record are retained; visitor access may differ. This describes editorial scope, not the truth of the account."
+        }
+      },
       "dedup_key": "disclosure-zone:stephenville-2008",
       "publisher_assessment": "disputed",
       "provenance": {
@@ -6759,7 +6857,8 @@
         "source_access_note": {
           "bg": "Бележка за целия пакет от десет досиета: при одита на 1 ноември 2026 г. някои директни PDF заявки върнаха 403, а някои архивни връзки показаха само обща каталожна страница вместо текста на документа. Одитът не установява кои конкретни връзки са засегнати. Всички препратки са запазени; достъпът за посетителите може да е различен. Това описва ограничение на извличането от AURORA, а не преценка за достоверността на публикуваните сведения.",
           "en": "Batch-wide note for the ten dossiers: During the 1 November 2026 audit, some direct PDF requests returned 403, and some archive links exposed only a generic catalog page rather than the document text. The audit does not identify which individual links were affected. All references are retained; visitor access may differ. This describes AURORA's retrieval limitation, not a judgment about the truth of the published accounts."
-        }
+        },
+        "existing_editorial_review": "licensed-secondary-summary; independent fact-check pending"
       },
       "dedup_key": "disclosure-zone:himalaya-1968",
       "publisher_assessment": "insufficient",
@@ -7708,7 +7807,8 @@
         "source_access_note": {
           "bg": "Бележка за целия пакет от десет досиета: при одита на 1 ноември 2026 г. някои директни PDF заявки върнаха 403, а някои архивни връзки показаха само обща каталожна страница вместо текста на документа. Одитът не установява кои конкретни връзки са засегнати. Всички препратки са запазени; достъпът за посетителите може да е различен. Това описва ограничение на извличането от AURORA, а не преценка за достоверността на публикуваните сведения.",
           "en": "Batch-wide note for the ten dossiers: During the 1 November 2026 audit, some direct PDF requests returned 403, and some archive links exposed only a generic catalog page rather than the document text. The audit does not identify which individual links were affected. All references are retained; visitor access may differ. This describes AURORA's retrieval limitation, not a judgment about the truth of the published accounts."
-        }
+        },
+        "existing_editorial_review": "licensed-secondary-summary; independent fact-check pending"
       },
       "dedup_key": "disclosure-zone:socorro-1964",
       "publisher_assessment": "unresolved",
@@ -7831,7 +7931,8 @@
         "source_access_note": {
           "bg": "Бележка за целия пакет от десет досиета: при одита на 1 ноември 2026 г. някои директни PDF заявки върнаха 403, а някои архивни връзки показаха само обща каталожна страница вместо текста на документа. Одитът не установява кои конкретни връзки са засегнати. Всички препратки са запазени; достъпът за посетителите може да е различен. Това описва ограничение на извличането от AURORA, а не преценка за достоверността на публикуваните сведения.",
           "en": "Batch-wide note for the ten dossiers: During the 1 November 2026 audit, some direct PDF requests returned 403, and some archive links exposed only a generic catalog page rather than the document text. The audit does not identify which individual links were affected. All references are retained; visitor access may differ. This describes AURORA's retrieval limitation, not a judgment about the truth of the published accounts."
-        }
+        },
+        "existing_editorial_review": "licensed-secondary-summary; independent fact-check pending"
       },
       "dedup_key": "disclosure-zone:conde-1963",
       "publisher_assessment": "explained",
@@ -9039,7 +9140,8 @@
         "source_access_note": {
           "bg": "Бележка за целия пакет от десет досиета: при одита на 1 ноември 2026 г. някои директни PDF заявки върнаха 403, а някои архивни връзки показаха само обща каталожна страница вместо текста на документа. Одитът не установява кои конкретни връзки са засегнати. Всички препратки са запазени; достъпът за посетителите може да е различен. Това описва ограничение на извличането от AURORA, а не преценка за достоверността на публикуваните сведения.",
           "en": "Batch-wide note for the ten dossiers: During the 1 November 2026 audit, some direct PDF requests returned 403, and some archive links exposed only a generic catalog page rather than the document text. The audit does not identify which individual links were affected. All references are retained; visitor access may differ. This describes AURORA's retrieval limitation, not a judgment about the truth of the published accounts."
-        }
+        },
+        "existing_editorial_review": "licensed-secondary-summary; independent fact-check pending"
       },
       "dedup_key": "disclosure-zone:russell-1955",
       "publisher_assessment": "insufficient",
@@ -9298,7 +9400,8 @@
         "source_access_note": {
           "bg": "Бележка за целия пакет от десет досиета: при одита на 1 ноември 2026 г. някои директни PDF заявки върнаха 403, а някои архивни връзки показаха само обща каталожна страница вместо текста на документа. Одитът не установява кои конкретни връзки са засегнати. Всички препратки са запазени; достъпът за посетителите може да е различен. Това описва ограничение на извличането от AURORA, а не преценка за достоверността на публикуваните сведения.",
           "en": "Batch-wide note for the ten dossiers: During the 1 November 2026 audit, some direct PDF requests returned 403, and some archive links exposed only a generic catalog page rather than the document text. The audit does not identify which individual links were affected. All references are retained; visitor access may differ. This describes AURORA's retrieval limitation, not a judgment about the truth of the published accounts."
-        }
+        },
+        "existing_editorial_review": "licensed-secondary-summary; independent fact-check pending"
       },
       "dedup_key": "disclosure-zone:newfoundland-1955",
       "publisher_assessment": "insufficient",
@@ -9512,7 +9615,8 @@
         "source_access_note": {
           "bg": "Бележка за целия пакет от десет досиета: при одита на 1 ноември 2026 г. някои директни PDF заявки върнаха 403, а някои архивни връзки показаха само обща каталожна страница вместо текста на документа. Одитът не установява кои конкретни връзки са засегнати. Всички препратки са запазени; достъпът за посетителите може да е различен. Това описва ограничение на извличането от AURORA, а не преценка за достоверността на публикуваните сведения.",
           "en": "Batch-wide note for the ten dossiers: During the 1 November 2026 audit, some direct PDF requests returned 403, and some archive links exposed only a generic catalog page rather than the document text. The audit does not identify which individual links were affected. All references are retained; visitor access may differ. This describes AURORA's retrieval limitation, not a judgment about the truth of the published accounts."
-        }
+        },
+        "existing_editorial_review": "licensed-secondary-summary; independent fact-check pending"
       },
       "dedup_key": "disclosure-zone:tremonton-1952",
       "publisher_assessment": "disputed",
@@ -9734,7 +9838,8 @@
         "source_access_note": {
           "bg": "Бележка за целия пакет от десет досиета: при одита на 1 ноември 2026 г. някои директни PDF заявки върнаха 403, а някои архивни връзки показаха само обща каталожна страница вместо текста на документа. Одитът не установява кои конкретни връзки са засегнати. Всички препратки са запазени; достъпът за посетителите може да е различен. Това описва ограничение на извличането от AURORA, а не преценка за достоверността на публикуваните сведения.",
           "en": "Batch-wide note for the ten dossiers: During the 1 November 2026 audit, some direct PDF requests returned 403, and some archive links exposed only a generic catalog page rather than the document text. The audit does not identify which individual links were affected. All references are retained; visitor access may differ. This describes AURORA's retrieval limitation, not a judgment about the truth of the published accounts."
-        }
+        },
+        "existing_editorial_review": "licensed-secondary-summary; independent fact-check pending"
       },
       "dedup_key": "disclosure-zone:lubbock-lights-1951",
       "publisher_assessment": "disputed",
@@ -10506,7 +10611,8 @@
         "source_access_note": {
           "bg": "Бележка за целия пакет от десет досиета: при одита на 1 ноември 2026 г. някои директни PDF заявки върнаха 403, а някои архивни връзки показаха само обща каталожна страница вместо текста на документа. Одитът не установява кои конкретни връзки са засегнати. Всички препратки са запазени; достъпът за посетителите може да е различен. Това описва ограничение на извличането от AURORA, а не преценка за достоверността на публикуваните сведения.",
           "en": "Batch-wide note for the ten dossiers: During the 1 November 2026 audit, some direct PDF requests returned 403, and some archive links exposed only a generic catalog page rather than the document text. The audit does not identify which individual links were affected. All references are retained; visitor access may differ. This describes AURORA's retrieval limitation, not a judgment about the truth of the published accounts."
-        }
+        },
+        "existing_editorial_review": "licensed-secondary-summary; independent fact-check pending"
       },
       "dedup_key": "disclosure-zone:mantell-1948",
       "publisher_assessment": "disputed",
@@ -10974,7 +11080,8 @@
         "source_access_note": {
           "bg": "Бележка за целия пакет от десет досиета: при одита на 1 ноември 2026 г. някои директни PDF заявки върнаха 403, а някои архивни връзки показаха само обща каталожна страница вместо текста на документа. Одитът не установява кои конкретни връзки са засегнати. Всички препратки са запазени; достъпът за посетителите може да е различен. Това описва ограничение на извличането от AURORA, а не преценка за достоверността на публикуваните сведения.",
           "en": "Batch-wide note for the ten dossiers: During the 1 November 2026 audit, some direct PDF requests returned 403, and some archive links exposed only a generic catalog page rather than the document text. The audit does not identify which individual links were affected. All references are retained; visitor access may differ. This describes AURORA's retrieval limitation, not a judgment about the truth of the published accounts."
-        }
+        },
+        "existing_editorial_review": "licensed-secondary-summary; independent fact-check pending"
       },
       "dedup_key": "disclosure-zone:ghost-rockets-1946",
       "publisher_assessment": "insufficient",

@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
+import {isLegacyPlaceholder} from "../archive-localization.js";
 import "../archive-records.js";
 
 const {identity, hasCoordinates, prepareArchiveCases} = globalThis.AURORA_ARCHIVE;
@@ -96,7 +97,9 @@ test("all 101 sourced dossiers keep short geographic labels and full source cont
  ]);
  assert.ok(unknown.every(c=>c.lat===null&&c.lng===null),"unknown geographic sites stay unpinned");
  const sanitized=normalized.find(c=>c.id==="disclosure-virginia-2024");
- assert.ok(!sanitized.summary.bg,"legacy Bulgarian template removed to request actual translation");
- assert.ok(!sanitized.story.bg,"English source paragraphs no longer masquerade as Bulgarian");
+ assert.ok(sanitized.summary.bg?.length>90,"batch-two Bulgarian summary is present");
+ assert.notEqual(sanitized.summary.bg,sanitized.summary.en,"authored BG summary is not passed off as source English");
+ assert.equal(isLegacyPlaceholder(sanitized,"bg"),false,"batch-two narrative no longer classifies as a legacy placeholder");
+ assert.ok(sanitized.story.bg.length>=3&&sanitized.story.bg.every(p=>p.trim().length>=75),"substantive Bulgarian story is present");
  assert.ok(sanitized.summary.en?.length>100);
 });

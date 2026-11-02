@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
+import {applyDisclosureZoneEditorialAnnotation} from "../scripts/disclosure-zone-editorial-annotations.mjs";
 import {buildArchive,normalizeCase,fetchSource,SOURCE_URL} from "../scripts/sync-disclosure-zone.mjs";
 
 const row=(id="nuremberg-1561",override={})=>({
@@ -120,6 +121,47 @@ test("source refresh reapplies reviewed Bulgarian editorial copy without changin
  assert.ok(first.sources.some(s=>s.url==="https://www.war.gov/ufo/"));
  const second=buildArchive({schema_version:1,cases:[first]},source([row("nuremberg-1561")]),catalog).archive.cases.find(c=>c.id===prior.id);
  assert.deepEqual(second,first,"fresh source import must reapply, not erase, reviewed copy");
+});
+test("BG-only annotation preserves licensed English and uses its own source-access note without adding references",()=>{
+ const sourceAccess={
+  bg:"Бележка за преводаческата партида: достъпността на всяка препратка не е проверявана повторно; всички връзки от издателя са запазени. Това описва обхвата на редакционната работа, а не достоверността на сведенията.",
+  en:"Translation-batch note: reachability of each citation was not rechecked; all publisher links are retained. This describes editorial scope, not the truth of the account."
+ };
+ const catalog={schema_version:1,reviewed_at:"2026-11-01",source_access_notice:{
+  bg:"Обща пакетна бележка от първата редакционна партида не трябва да замества специфичното съобщение на този запис; всички източникови връзки се запазват, а наличността им не се предполага.",
+  en:"This general access notice from the first editorial batch must not replace this record's own notice; source links remain, and link availability is not inferred."
+ },records:{
+  "nuremberg-1561":{
+   reviewed_at:"2026-11-02",
+   title_bg:"Нюрнбергската брошура от 1561 г.",
+   summary_bg:"Печатната брошура от 1561 г. описва небесни знаци над Нюрнберг и запазва историческо свидетелство, а не инструментален запис.",
+   story_bg:[
+    "На 14 април 1561 г. в Нюрнберг е отпечатана брошура с текст и дърворезба за небесни форми над града.",
+    "Този превод предава описанието и тълкуването, записани в английския източник, без да добавя ново обяснение за видяното.",
+    "Читателят може да разгледа запазения исторически разказ, като отделя източника от по-късните интерпретации."
+   ],
+   references:[],source_access_note:sourceAccess
+  }
+ }};
+ const prior=normalizeCase(row("nuremberg-1561"));
+ const result=buildArchive(existing,source([row("nuremberg-1561")]),catalog).archive.cases.find(c=>c.id===prior.id);
+ assert.deepEqual(result.story.en,prior.story.en);
+ assert.deepEqual(result.sources,prior.sources);
+ assert.equal(result.source.url,prior.source.url);
+ assert.deepEqual(result.editorial_review.source_access_note,sourceAccess);
+ assert.equal(result.editorial_review.existing_editorial_review,"licensed-secondary-summary; independent fact-check pending","existing editorial-review wording must survive the access-note overlay");
+ assert.equal(result.editorial_review.reviewed_at,"2026-11-02","record date overrides the catalog's first-batch date");
+ const invalidPublisherRecords=[
+  {...prior,source:undefined,source_url:undefined},
+  {...prior,source:{...prior.source,url:"https://example.org/cases/nuremberg-1561"}},
+  {...prior,source:{...prior.source,url:"https://disclosure.zone/cases/different-record"}},
+  {...prior,source:{...prior.source,url:"https://user:secret@disclosure.zone/cases/nuremberg-1561"}},
+  {...prior,source:{...prior.source,url:"https://disclosure.zone:444/cases/nuremberg-1561"}},
+  {...prior,source:{...prior.source,url:"https://disclosure.zone/cases/nuremberg-1561?redirect=1"}},
+  {...prior,source:{...prior.source,url:"https://disclosure.zone/cases/nuremberg-1561#fragment"}}
+ ];
+ for(const invalid of invalidPublisherRecords)
+  assert.throws(()=>applyDisclosureZoneEditorialAnnotation(invalid,catalog),/lacks its licensed publisher source/);
 });
 test("unmatched source IDs cannot resolve inherited annotation properties",()=>{
  const editorial=JSON.parse(readFileSync(new URL("../data/disclosure-zone-editorial-annotations.json",import.meta.url),"utf8"));
