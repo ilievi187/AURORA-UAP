@@ -2,37 +2,38 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 
-const read=(file)=>readFileSync(new URL("../"+file,import.meta.url),"utf8");
+const read=file=>readFileSync(new URL("../"+file,import.meta.url),"utf8");
 
-test("homepage replaces fictional case cards and dialogs with one sourced archive route",()=>{
+test("home retains sourced atlas and archive, with no duplicate demo Mission Control",()=>{
   const html=read("index.html");
-  const script=read("script.js");
-  const mission=read("mission-control.js");
-  const feed=html.match(/<div class="console-feed">([\s\S]*?)<\/div>\s*<\/section>/)?.[1];
-  assert.ok(feed,"Mission Control keeps a small archive-navigation region");
-  assert.match(feed,/id="controlCaseButtons"/);
-  assert.match(feed,/href="\/archive\.html"/);
-  assert.doesNotMatch(feed,/DEMO|ДЕМО|ПРИМЕРНИ ДОСИЕТА|href="#reports"/i);
+  for(const id of ["control","controlTabs","caseGlobe","globeCaseList","globePins"]){
+    assert.doesNotMatch(html,new RegExp('id="'+id+'"'));
+  }
+  assert.doesNotMatch(html,/data-control-nav|mission-control\.js|mission-control\.css|src="globe\.js"|href="globe\.css"/);
+  for(const id of ["worldAtlas","worldMapCanvas","worldMapPins","homeNewsGrid","reportGrid","submitObservation"]){
+    assert.match(html,new RegExp('id="'+id+'"'));
+  }
+  assert.match(html,/href="\/archive\.html" class="button button-primary"/);
   assert.doesNotMatch(html,/<dialog[^>]+id="(?:reportDialog|caseDialog)"/);
-  assert.doesNotMatch(script,/const cases\s*=\s*\[/,"fictional sample records and coordinates are removed");
-  assert.doesNotMatch(script,/report-(?:triangle|ocean|infrared|orbs)\.webp/);
-  assert.doesNotMatch(mission,/function renderFeed|typeof cases|feedLabel|feedIntro/);
+  assert.doesNotMatch(read("script.js"),/const cases\s*=\s*\[/);
 });
 
-test("country report route uses the canonical local-draft page without enabling intake",()=>{
-  const country=read("country.html");
-  const countryScript=read("country.js");
-  const report=read("report.html");
-  const reportScript=read("report.js");
-  const home=read("index.html");
-  assert.match(country,/id="reportLink"[^>]+href="\/report\.html"/);
-  assert.match(countryScript,/el\("reportLink"\)\.href="\/report\.html\?country="\+code/);
-  assert.match(home,/href="\/report\.html" data-i18n="reportButton" id="openIntakeCenter"/);
-  assert.match(home,/class="footer-report-note" data-i18n="reportDraftNote"/);
+test("report action is prominent and truthful while submit stays gated",()=>{
+  const home=read("index.html"),report=read("report.html"),js=read("report.js");
+  assert.match(home,/id="homeReportTitle" data-i18n="reportButton"/);
+  assert.match(home,/class="home-report-note" data-i18n="reportDraftNote"/);
+  assert.match(home,/class="home-report-cta-link"/);
+  assert.match(home,/id="openIntakeCenter"/);
   const notes=read("script.js").match(/const reportDraftNotes=\{([\s\S]*?)\};/)?.[1]||"";
-  const locales=[...notes.matchAll(/^\s*(?:"([^"]+)"|([a-z]{2})):\s*/gm)].map(match=>match[1]||match[2]);
-  assert.equal(new Set(locales).size,18,"the safe local-draft disclosure covers all 18 locales");
+  const langs=[...notes.matchAll(/^\s*(?:"([^"]+)"|([a-z]{2})):\s*/gm)].map(x=>x[1]||x[2]);
+  assert.equal(new Set(langs).size,18);
   assert.match(report,/<meta name="robots" content="noindex,nofollow">/);
   assert.match(report,/id="sendReport" disabled/);
-  assert.match(reportScript,/state\.accepting!==true/);
+  assert.match(js,/state\.accepting!==true/);
+});
+
+test("country-specific reports route to same safe draft form",()=>{
+  assert.match(read("country.html"),/id="reportLink"[^>]+href="\/report\.html"/);
+  assert.match(read("country.js"),/el\("reportLink"\)\.href="\/report\.html\?country="\+code/);
+  assert.match(read("index.html"),/href="\/report\.html" data-i18n="reportButton" id="openIntakeCenter"/);
 });
