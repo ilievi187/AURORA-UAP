@@ -4,7 +4,9 @@
     "/api/*",
     "/countries/*",
     "/archive/*",
-    "/cases/*"
+    "/cases/*",
+    "/moderation",
+    "/moderation.html"
   ],
   "exclude": []
 }

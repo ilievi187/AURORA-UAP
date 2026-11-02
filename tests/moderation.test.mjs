@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {accessIdentity} from '../functions/_lib/access.js';
+import {onRequest as guardModeratorPage} from '../functions/_middleware.js';
 import {onRequestGet,onRequestPost} from '../functions/api/moderation/index.js';
 const env={AURORA_ACCESS_TEAM:'https://example.cloudflareaccess.com',AURORA_ACCESS_AUD:'a'.repeat(64),AURORA_MODERATOR_EMAIL:'reviewer@example.com',AURORA_MODERATION_ENABLED:'enabled',DB:{}};
 const b64=value=>Buffer.from(value).toString('base64url');
@@ -61,5 +62,52 @@ test('private queue enforces bounded pagination and returns navigation metadata'
   for(const bad of ['/api/moderation/?offset=-1','/api/moderation/?offset=100001','/api/moderation/?offset=abc','/api/moderation/?secret=1']){
    const res=await send(bad);assert.equal(res.status,400);assert.equal(res.headers.get('cache-control'),'no-store');
   }
+ }finally{globalThis.fetch=original}
+});
+
+test('Cloudflare Pages middleware gates canonical moderator HTML and redirect alias',async()=>{
+ const routes=JSON.parse((await import('node:fs')).readFileSync(new URL('../_routes.json',import.meta.url),'utf8'));
+ assert.ok(routes.include.includes('/moderation'));
+ assert.ok(routes.include.includes('/moderation.html'));
+ let served=0;
+ const next=async()=>{served++;return new Response('<html>Private moderation shell</html>',{headers:{'Content-Type':'text/html'}})};
+ for(const path of ['/moderation','/moderation.html']){
+  const denied=await guardModeratorPage({request:new Request('https://aurorauap.org'+path),env,next});
+  assert.equal(denied.status,403,path);
+  assert.equal(denied.headers.get('cache-control').includes('no-store'),true);
+  assert.equal(denied.headers.get('x-robots-tag'),'noindex, nofollow');
+ }
+ assert.equal(served,0,'static moderator HTML must never be served without Access');
+ const publicPage=await guardModeratorPage({request:new Request('https://aurorauap.org/report.html'),env,next});
+ assert.equal(publicPage.status,200,'public reports form remains accessible');
+ assert.equal(served,1);
+ const original=globalThis.fetch;globalThis.fetch=fetcher;
+ try {
+  const jwt=await token();
+  const allowed=await guardModeratorPage({
+   request:new Request('https://aurorauap.org/moderation',{headers:{'Cf-Access-Jwt-Assertion':jwt}}),
+   env,next
+  });
+  assert.equal(allowed.status,200,'valid signed Access identity can load page');
+  assert.equal(allowed.headers.get('cache-control'),'private, no-store, max-age=0');
+  assert.equal(allowed.headers.get('x-frame-options'),'DENY');
+  assert.equal(allowed.headers.get('content-security-policy'),"frame-ancestors 'none'");
+  assert.equal(served,2);
+  const preview=await guardModeratorPage({
+   request:new Request('https://preview.pages.dev/moderation',{headers:{'Cf-Access-Jwt-Assertion':jwt}}),
+   env,next
+  });
+  assert.equal(preview.status,403,'preview cannot serve private moderator interface');
+  const disabled=await guardModeratorPage({
+   request:new Request('https://aurorauap.org/moderation',{headers:{'Cf-Access-Jwt-Assertion':jwt}}),
+   env:{...env,AURORA_MODERATION_ENABLED:'disabled'},next
+  });
+  assert.equal(disabled.status,403);
+  const post=await guardModeratorPage({
+   request:new Request('https://aurorauap.org/moderation',{method:'POST',headers:{'Cf-Access-Jwt-Assertion':jwt}}),
+   env,next
+  });
+  assert.equal(post.status,405);
+  assert.equal(served,2);
  }finally{globalThis.fetch=original}
 });
