@@ -30,8 +30,8 @@ AURORA UAP е независима платформа за публикуван�
 Човек проверява сигнала; текущата функция за одобряване **не** го копира автоматично в публичните досиета. Евентуална бъдеща публикация ще изисква отделен, проверен процес за права, минимизация, анонимизиране и правно основание. Това уведомление само по себе си **не** дава разрешение за публикуване на чужди лични данни.
 
 ### 6. Срок за съхранение
-**[РЕШЕНИЕ ЗА ПРИЕМАНЕ, НЕ ДЕЙСТВАЩА ПОЛИТИКА]**
-Предложение: отхвърлени сигнали — изтриване до 90 дни след решението; неприключили сигнали — преглед най-късно до 180 дни; одобрени, но непубликувани — не повече от 12 месеца без нова оценка; логове, резервни копия и искания за изтриване — да се установят отделни, изпълними срокове. **Не публикувай тези срокове като обещание, докато не са одобрени и не е внедрена процедура за изтриване, включително от резервните копия.**
+**[СРОКОВЕ, ОДОБРЕНИ ОТ СОБСТВЕНИКА НА 02.11.2026 — ТЕХНИЧЕСКОТО ПРИЛАГАНЕ И ПРАВНИЯТ ПРЕГЛЕД ПРЕДСТОЯТ]**
+Отхвърлени сигнали — изтриване до 90 дни след решението; неприключили сигнали — преглед най-късно до 180 дни от постъпване; одобрени, но непубликувани — повторна оценка най-късно до 12 месеца от последното решение. Логове, резервни копия и искания за изтриване — да се установят отделни, изпълними срокове. **Не публикувай тези срокове като действащо обещание, докато процедурата по изтриване, включително за резервните копия, не е внедрена и проверена.**
 
 ### 7. Вашите права
 Можете да поискате информация, достъп, коригиране, изтриване, ограничаване на обработването, преносимост — когато е приложима — и да възразите, когато това право се прилага. Ако обработката се основава на съгласие, можете да го оттеглите. Пишете на **blizzard9011@gmail.com**, като посочите номера на сигнала, ако го пазите; за защита на данните може да поискаме разумно потвърждение на връзката ви със сигнала. Имате право на жалба до Комисията за защита на личните данни в България (КЗЛД).
@@ -61,7 +61,7 @@ AURORA UAP е независима платформа за публикуван�
 
 **Recipients and location:** Authorized moderator and Cloudflare as infrastructure provider. **[TO VERIFY]** subprocessor list, contractual arrangements, locations, cross-border transfers and safeguards. Unreviewed reports are not disclosed to the public or sold.
 
-**Retention:** **[DRAFT PROPOSAL ONLY]** Rejected: up to 90 days after decision; unresolved: reassess within 180 days; approved but unpublished: reassess within 12 months. Set and implement enforceable backup/audit-log retention and deletion rules before promising these times.
+**Retention:** **[OWNER APPROVED 2 NOVEMBER 2026 — NOT YET ACTIVE]** Rejected: delete within 90 days after decision; pending/unresolved: review within 180 days of receipt; approved but unpublished: reassess within 12 months after the last decision. Enforce and verify backup/audit-log retention and deletion rules before publishing these deadlines.
 
 **Rights:** Contact blizzard9011@gmail.com for access, rectification, erasure, restriction, portability where applicable, objection and withdrawal of consent where applicable. You may complain to the Bulgarian Commission for Personal Data Protection. The receipt ID is useful for locating a report; reasonable verification may be required.
 
@@ -80,7 +80,8 @@ AURORA UAP е независима платформа за публикуван�
 - [x] Controller's full name and individual-project status confirmed by the owner.
 - [x] Privacy contact email confirmed by the owner.
 - [ ] Confirm postal/correspondence contact requirements without posting a private home address unnecessarily.
-- [ ] Owner approves the retention and deletion periods and actual implementation covers D1 + backup + review audit logs.
+- [x] Owner approved the 90-day rejection deletion, 180-day pending review and 12-month approved-case reassessment periods on 02.11.2026.
+- [ ] Implement and verify D1 retention, audit event handling, backups, review deadlines and data-subject deletion workflows.
 - [ ] Validate legal basis, withdrawal/deletion, treatment of third-party data and age policy.
 - [ ] Verify actual Cloudflare processor/subprocessor/transfer documentation.
 - [ ] Make completed BG and EN text publicly readable at `/privacy` and ensure form links match its policy version.
