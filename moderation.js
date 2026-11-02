@@ -1,13 +1,15 @@
 (()=>{
  const queue=document.getElementById('queue'),notice=document.getElementById('notice');
+ let currentOffset=0;
  const element=(tag,text)=>{const el=document.createElement(tag);if(text!==undefined)el.textContent=text;return el};
- async function load(){
+ async function load(offset=0){
   queue.replaceChildren();notice.textContent='Зареждане…';
   try{
-   const response=await fetch('/api/moderation/',{cache:'no-store',credentials:'same-origin'});
+   const response=await fetch('/api/moderation/?offset='+offset,{cache:'no-store',credentials:'same-origin'});
    if(!response.ok)throw Error();
    const data=await response.json();
-   notice.textContent=data.submissions.length?'Последните сигнали:':'Няма сигнали за показване.';
+   currentOffset=data.offset;
+   notice.textContent=data.submissions.length?'Частни сигнали — страница '+(Math.floor(currentOffset/data.limit)+1)+':':'Няма сигнали за показване.';
    for(const record of data.submissions){
     const card=element('article');card.className='report-section';
     card.append(element('h2',record.id),element('p',`${record.status} · ${record.created_at} · ${record.country_code} / ${record.region}`),element('p',`${record.approximate_location} · ${record.occurred_local} (${record.time_zone}) · ${record.category}`));
@@ -24,6 +26,16 @@
     }
     queue.append(card);
    }
+   const pager=element('nav');pager.setAttribute('aria-label','Страници със сигнали');
+   if(currentOffset>0){
+    const prev=element('button','← Предишни');prev.type='button';
+    prev.addEventListener('click',()=>load(Math.max(0,currentOffset-data.limit)));pager.append(prev);
+   }
+   if(data.has_more){
+    const next=element('button','Следващи →');next.type='button';
+    next.addEventListener('click',()=>load(data.next_offset));pager.append(next);
+   }
+   queue.append(pager);
   }catch{notice.textContent='Няма достъп до защитения преглед или услугата временно не е достъпна.'}
  }
  load();
