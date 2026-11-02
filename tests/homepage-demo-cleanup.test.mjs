@@ -13,7 +13,7 @@ test("portal navigation copy is complete and authored for every interface locale
   const cards=["news","map","archive","media","report","about","support","search"];
   assert.deepEqual(Object.keys(copy).sort(),locales.sort());
   for(const locale of locales){
-    assert.ok(copy[locale].heading&&copy[locale].intro&&copy[locale].navAbout&&copy[locale].navSupport,locale+" has localized portal chrome");
+    assert.ok(copy[locale].heading&&copy[locale].intro&&copy[locale].navAbout&&copy[locale].navSupport&&copy[locale].submitNews,locale+" has localized portal chrome and news submission");
     for(const name of cards){
       const [title,description]=copy[locale].cards[name]||[];
       assert.ok(title?.trim()&&description?.trim(),locale+" has authored "+name+" copy");
@@ -44,6 +44,7 @@ test("homepage portal exposes every primary destination as a working link",()=>{
     name:attrs.match(/\bdata-portal="([^"]+)"/)?.[1],
     href:attrs.match(/\bhref="([^"]+)"/)?.[1]
   }));
+  assert.match(section,/id="portalSubmitNews"[^>]*href="\/news\.html#newsTips"/,"homepage offers a direct news-tip destination");
   for(const [name,href] of Object.entries(destinations))
     assert.ok(links.some(link=>link.name===name&&link.href===href),name+" destination is present");
   const nav=html.match(/<nav class="desktop-nav"[\s\S]*?<\/nav>/)?.[0]||"";

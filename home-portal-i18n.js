@@ -56,3 +56,5 @@ window.AURORA_PORTAL_COPY = {
     news:['최신 뉴스','국제 출처에서 모은 기사'],map:['세계 지도','지역별 사례 기록 살펴보기'],archive:['UAP 아카이브','출처가 표시된 사례 기록 101건'],media:['동영상 및 미디어','클립, 이미지와 문서'],report:['목격 정보 제출','현재 제보 접수 여부 확인'],about:['AURORA 소개','프로젝트 사명과 편집 원칙'],support:['AURORA 후원','프로젝트를 돕는 방법 살펴보기'],search:['아카이브 검색','장소나 출처로 사례 찾기']
   }}
 };
+const submitNewsLabels={bg:'Изпрати новина',en:'Submit a news tip',de:'Nachricht vorschlagen',ru:'Предложить новость','zh-CN':'提交新闻线索',fr:'Proposer une actualité',es:'Enviar una noticia',it:'Invia una notizia',pt:'Sugerir notícia',tr:'Haber öner',ro:'Trimite o sugestie de știre',el:'Προτείνετε είδηση',sr:'Предложи вест',uk:'Запропонувати новину',pl:'Zaproponuj wiadomość',ar:'أرسل خبراً',ja:'ニュースを送る',ko:'뉴스 제보'};
+for(const [locale,label] of Object.entries(submitNewsLabels))window.AURORA_PORTAL_COPY[locale].submitNews=label;

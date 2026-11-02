@@ -115,3 +115,11 @@ jobs:
           path: artifacts/aurora-black-*.png
           if-no-files-found: ignore
           retention-days: 7
+      - name: Save release-candidate homepage screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aurora-release-candidate-homepage-visuals
+          path: artifacts/aurora-final-*.png
+          if-no-files-found: ignore
+          retention-days: 7

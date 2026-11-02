@@ -304,11 +304,11 @@ body:has(.silence-hero) .footer{padding-inline:clamp(24px,5vw,90px);}
  .silence-hero .silence-beam{top:28%;height:30%;right:23%;}
  .silence-hero .silence-horizon{height:350px;bottom:-150px;opacity:.60;}
  .silence-hero .silence-shade{background:linear-gradient(180deg,#010305b0,transparent 23%,#010305df 76%,#010305 100%);}
- .silence-hero .silence-copy{position:relative;top:auto;left:auto;width:auto;padding:0 24px;margin-top:335px;z-index:7;}
+ .silence-hero .silence-copy{position:relative;top:auto;left:auto;width:auto;padding:0 24px;margin-top:220px;z-index:7;}
  .silence-hero .silence-eyebrow{font-size:9px;letter-spacing:.13em;margin-bottom:11px;}
  .silence-hero h1#hero-title{font-size:clamp(46px,13.1vw,69px);letter-spacing:.08em;}
  .silence-hero .silence-subtitle{white-space:normal;letter-spacing:.13em;font-size:9px;margin:10px 0 16px;}
- .silence-hero .silence-description{font-size:13px;line-height:1.63;margin-bottom:18px;}
+ .silence-hero .silence-description{font-size:13px;line-height:1.55;margin-bottom:14px;}
  .silence-hero .silence-actions{flex-wrap:nowrap;gap:8px;}
  .silence-hero .silence-actions .button{min-height:44px;padding:11px 12px;font-size:10px;gap:7px;}
  .silence-hero .silence-actions .icon{width:13px;height:13px;}
@@ -381,20 +381,23 @@ body:has(.silence-hero) .silence-hero{display:block!important;}
     position:relative;
     top:auto;left:auto;
     flex:0 0 auto;
-    margin:clamp(165px,26svh,300px) 0 0 var(--silence-pad);
+    margin:clamp(115px,15svh,180px) 0 0 var(--silence-pad);
   }
+  .silence-hero .silence-description{margin-bottom:20px;}
+  .silence-hero .portal-hub{flex:0 0 auto;}
+  .silence-hero .portal-card{min-height:60px;}
+  .silence-hero .portal-card small{margin-top:2px;}
+  .silence-hero .silence-actions .button{min-height:46px;padding-block:11px;}
   .silence-hero .silence-bottom{
-    position:relative;
-    left:auto;right:auto;bottom:auto;
-    flex:0 0 auto;
+    position:relative;left:auto;right:auto;bottom:auto;flex:0 0 auto;
     margin:auto clamp(24px,5.3vw,88px) clamp(35px,6vh,82px) var(--silence-pad);
-    padding-top:clamp(36px,5svh,70px);
+    padding-top:clamp(10px,1.5svh,20px);
   }
 }
 @media (min-width:641px) and (max-width:900px){
   .silence-hero .silence-copy{
     margin-left:clamp(27px,6vw,60px);
-    margin-top:clamp(185px,30svh,300px);
+    margin-top:clamp(140px,18svh,210px);
   }
   .silence-hero .silence-bottom{
     margin-left:clamp(27px,6vw,60px);

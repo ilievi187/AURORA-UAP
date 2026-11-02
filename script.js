@@ -180,7 +180,8 @@ function renderPortalCopy(){
     if(description)description.textContent=entry[1];
   });
   document.querySelectorAll('[data-portal-nav]').forEach(link=>{
-    const label=link.dataset.portalNav==='about'?copy.navAbout:copy.navSupport;
+    const labelKey={about:'navAbout',support:'navSupport',submitNews:'submitNews'}[link.dataset.portalNav];
+    const label=copy[labelKey];
     if(label)link.textContent=label;
   });
 }

@@ -17,7 +17,8 @@ import {onRequestGet as oneCase} from '../functions/api/cases/[id].js';
 const root=resolve(fileURLToPath(new URL('..',import.meta.url)));
 // Legacy globe/navigation suites intentionally use the 15 curated editorial fixtures.
 // The full licensed multi-provider archive is verified in archive-directory tests.
-const curatedArchive=(()=>{const {cases,...meta}=JSON.parse(readFileSync(new URL('../data/cases.json',import.meta.url)));return JSON.stringify({...meta,cases:cases.filter(c=>!c.provenance?.automated).sort((a,b)=>a.id==='phoenix-1997'?-1:b.id==='phoenix-1997'?1:0)});})();
+const fullArchive=readFileSync(new URL('../data/cases.json',import.meta.url),'utf8');
+const curatedArchive=(()=>{const {cases,...meta}=JSON.parse(fullArchive);return JSON.stringify({...meta,cases:cases.filter(c=>!c.provenance?.automated).sort((a,b)=>a.id==='phoenix-1997'?-1:b.id==='phoenix-1997'?1:0)});})();
 const mime={'.html':'text/html','.css':'text/css','.js':'application/javascript','.webp':'image/webp','.svg':'image/svg+xml','.txt':'text/plain'};
 const sqlite=new DatabaseSync(':memory:');
 sqlite.exec(await readFile(join(root,'migrations/0001_init.sql'),'utf8'));
@@ -799,9 +800,16 @@ try{
     const page=await desktop.newPage(),errors=[];
     page.on("pageerror",error=>errors.push(error.message));
     await page.addInitScript(()=>{if(!sessionStorage.getItem('aurora-test-language-seeded')){localStorage.setItem('aurora-lang','bg');sessionStorage.setItem('aurora-test-language-seeded','1')}});
+    await page.route("**/data/cases.json",route=>route.fulfill({status:200,contentType:"application/json",body:fullArchive}));
+    await page.route("**/api/stats",route=>route.fulfill({status:503,contentType:"application/json",body:'{"error":"database_unavailable"}'}));
+    await page.route("**/api/cases?*",route=>route.fulfill({status:503,contentType:"application/json",body:'{"error":"database_unavailable"}'}));
     await page.goto("http://127.0.0.1:"+port+"/");
-    await page.waitForFunction(()=>document.querySelectorAll(".portal-card[data-portal]").length===8);
+    await page.waitForFunction(()=>document.querySelectorAll(".portal-card[data-portal]").length===8&&document.querySelector("#worldMapCount")?.textContent==="101");
     assert.equal(await page.locator("#portalHeading").textContent(),"Открий AURORA");
+    assert.equal(await page.locator("#portalSubmitNews").getAttribute("href"),"/news.html#newsTips");
+    assert.equal(await page.locator("#portalSubmitNews").textContent(),"Изпрати новина");
+    const desktopEntry=await page.locator(".portal-grid").evaluate(grid=>({viewport:innerHeight,top:grid.getBoundingClientRect().top,fullyVisible:[...grid.querySelectorAll('.portal-card')].filter(card=>card.getBoundingClientRect().top>=0&&card.getBoundingClientRect().bottom<=innerHeight).length}));
+    assert.ok(desktopEntry.top<desktopEntry.viewport&&desktopEntry.fullyVisible===8,"all discovery destinations should be visible on the first desktop screen: "+JSON.stringify(desktopEntry));
     const destinations=await page.locator(".portal-card").evaluateAll(cards=>cards.map(card=>[card.dataset.portal,card.getAttribute("href")]));
     assert.deepEqual(destinations,[
       ["news","/news.html"],["map","#worldAtlas"],["archive","/archive.html"],["media","/media.html"],
@@ -812,29 +820,42 @@ try{
     await page.locator("#gateContinue").click();
     await page.waitForFunction(()=>document.documentElement.lang==="es"&&document.querySelector("[data-portal=\"news\"] [data-portal-title]")?.textContent==="Últimas noticias");
     assert.equal(await page.locator("#portalHeading").textContent(),"Explora AURORA");
+    assert.equal(await page.locator("#portalSubmitNews").textContent(),"Enviar una noticia");
     assert.equal(await page.locator(".desktop-nav [data-portal-nav=\"support\"]").textContent(),"Apoyar");
     await page.reload();
     assert.equal(await page.locator("html").getAttribute("lang"),"es","selected locale persists after reload");
     assert.equal(await page.locator("[data-portal=\"archive\"] [data-portal-title]").textContent(),"Archivo UAP");
     await page.locator("#exploreAURORA").scrollIntoViewIfNeeded();
     mkdirSync("artifacts",{recursive:true});
-    await page.screenshot({path:"artifacts/aurora-final-portal-desktop.png",animations:"disabled"});
+    await page.screenshot({path:"artifacts/aurora-final-portal-desktop-section.png",animations:"disabled"});
+    await page.evaluate(()=>window.scrollTo(0,0));
+    await page.screenshot({path:"artifacts/aurora-final-home-desktop.png",animations:"disabled"});
     await desktop.close();
 
     const mobile=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:"reduce"});
     const mobilePage=await mobile.newPage();
     mobilePage.on("pageerror",error=>errors.push(error.message));
     await mobilePage.addInitScript(()=>localStorage.setItem("aurora-lang","ar"));
+    await mobilePage.route("**/data/cases.json",route=>route.fulfill({status:200,contentType:"application/json",body:fullArchive}));
+    await mobilePage.route("**/api/stats",route=>route.fulfill({status:503,contentType:"application/json",body:'{"error":"database_unavailable"}'}));
+    await mobilePage.route("**/api/cases?*",route=>route.fulfill({status:503,contentType:"application/json",body:'{"error":"database_unavailable"}'}));
     await mobilePage.goto("http://127.0.0.1:"+port+"/");
-    await mobilePage.waitForFunction(()=>document.querySelectorAll(".portal-card[data-portal]").length===8&&document.documentElement.dir==="rtl");
+    await mobilePage.waitForFunction(()=>document.querySelectorAll(".portal-card[data-portal]").length===8&&document.documentElement.dir==="rtl"&&document.querySelector("#worldMapCount")?.textContent==="101");
     assert.equal(await mobilePage.locator("[data-portal=\"news\"] [data-portal-title]").textContent(),"أحدث الأخبار");
+    assert.equal(await mobilePage.locator("#portalSubmitNews").textContent(),"أرسل خبراً");
+    const mobileEntry=await mobilePage.locator(".portal-grid").evaluate(grid=>({viewport:innerHeight,top:grid.getBoundingClientRect().top,visible:[...grid.querySelectorAll('.portal-card')].filter(card=>card.getBoundingClientRect().top<innerHeight&&card.getBoundingClientRect().bottom>0).length,fullyVisible:[...grid.querySelectorAll('.portal-card')].filter(card=>card.getBoundingClientRect().top>=0&&card.getBoundingClientRect().bottom<=innerHeight).length}));
+    assert.ok(mobileEntry.top<mobileEntry.viewport&&mobileEntry.fullyVisible===8,"all discovery destinations should fit the first mobile screen: "+JSON.stringify(mobileEntry));
     await mobilePage.locator("#menuToggle").click();
     assert.equal(await mobilePage.locator("#mobileNav a").count(),8);
     assert.equal(await mobilePage.locator("#mobileNav a[href=\"/donate.html\"]").textContent(),"الدعم");
+    await mobilePage.locator("#menuToggle").click();
     await mobilePage.locator("#exploreAURORA").scrollIntoViewIfNeeded();
     const overflow=await mobilePage.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
     assert.ok(overflow<=1,"mobile portal and RTL navigation do not overflow horizontally");
-    await mobilePage.screenshot({path:"artifacts/aurora-final-portal-mobile.png",animations:"disabled"});
+    mkdirSync("artifacts",{recursive:true});
+    await mobilePage.screenshot({path:"artifacts/aurora-final-portal-mobile-section.png",animations:"disabled"});
+    await mobilePage.evaluate(()=>window.scrollTo(0,0));
+    await mobilePage.screenshot({path:"artifacts/aurora-final-home-mobile.png",animations:"disabled"});
     assert.deepEqual(errors,[]);
     await mobile.close();
   });

@@ -119,6 +119,25 @@
         <a href="/news.html" class="button button-secondary portal-news-cta"><svg class="icon"><use href="#i-book"/></svg><span data-i18n="navNews">Новини</span></a>
       </div>
     </div>
+    <section class="portal-hub" id="exploreAURORA" aria-labelledby="portalHeading">
+      <div class="portal-hub-heading">
+        <div><p class="portal-kicker">AURORA / DISCOVERY PORTAL</p><h2 id="portalHeading">Открий AURORA</h2></div>
+        <div class="portal-hub-actions">
+          <p id="portalIntro">Избери посока — новини, архив, карта или медии.</p>
+          <a id="portalSubmitNews" class="portal-submit-news" data-portal-nav="submitNews" href="/news.html#newsTips">Изпрати новина</a>
+        </div>
+      </div>
+      <nav class="portal-grid" aria-label="Открий AURORA">
+        <a class="portal-card" data-portal="news" href="/news.html"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg><span><strong data-portal-title>Последни новини</strong><small data-portal-description>Публикации от международни източници</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+        <a class="portal-card" data-portal="map" href="#worldAtlas"><svg class="icon" aria-hidden="true"><use href="#i-globe"/></svg><span><strong data-portal-title>Световна карта</strong><small data-portal-description>Разгледай досиетата по район</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+        <a class="portal-card" data-portal="archive" href="/archive.html"><svg class="icon" aria-hidden="true"><use href="#i-folder"/></svg><span><strong data-portal-title>Архив на случаи</strong><small data-portal-description>101 досиета с посочени източници</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+        <a class="portal-card" data-portal="media" href="/media.html"><svg class="icon" aria-hidden="true"><use href="#i-image"/></svg><span><strong data-portal-title>Видео и медии</strong><small data-portal-description>Клипове, изображения и документи</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+        <a class="portal-card" data-portal="report" href="/report.html"><svg class="icon" aria-hidden="true"><use href="#i-target"/></svg><span><strong data-portal-title>Подай наблюдение</strong><small data-portal-description>Провери дали приемът е отворен</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+        <a class="portal-card" data-portal="about" href="#mission"><svg class="icon" aria-hidden="true"><use href="#i-eye"/></svg><span><strong data-portal-title>За AURORA</strong><small data-portal-description>Мисия и редакционен подход</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+        <a class="portal-card" data-portal="support" href="/donate.html"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><span><strong data-portal-title>Дарения</strong><small data-portal-description>Виж как можеш да подкрепиш проекта</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+        <a class="portal-card" data-portal="search" href="/archive.html#archiveSearch"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span><strong data-portal-title>Търси в архива</strong><small data-portal-description>Намери случай по място или източник</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+      </nav>
+    </section>
     <div class="silence-bottom">
       <div class="silence-stats" aria-label="Публична статистика на архива">
         <div class="silence-stat">
@@ -144,22 +163,6 @@
       </a>
     </div>
     <canvas id="heroHudCanvas" class="system-canvas hero-hud-canvas" aria-hidden="true" hidden></canvas>
-  </section>
-  <section class="portal-hub" id="exploreAURORA" aria-labelledby="portalHeading">
-    <div class="portal-hub-heading">
-      <div><p class="portal-kicker">AURORA / DISCOVERY PORTAL</p><h2 id="portalHeading">Открий AURORA</h2></div>
-      <p id="portalIntro">Избери посока — новини, архив, карта или медии.</p>
-    </div>
-    <nav class="portal-grid" aria-label="Открий AURORA">
-      <a class="portal-card" data-portal="news" href="/news.html"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg><span><strong data-portal-title>Последни новини</strong><small data-portal-description>Публикации от международни източници</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
-      <a class="portal-card" data-portal="map" href="#worldAtlas"><svg class="icon" aria-hidden="true"><use href="#i-globe"/></svg><span><strong data-portal-title>Световна карта</strong><small data-portal-description>Разгледай досиетата по район</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
-      <a class="portal-card" data-portal="archive" href="/archive.html"><svg class="icon" aria-hidden="true"><use href="#i-folder"/></svg><span><strong data-portal-title>Архив на случаи</strong><small data-portal-description>101 досиета с посочени източници</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
-      <a class="portal-card" data-portal="media" href="/media.html"><svg class="icon" aria-hidden="true"><use href="#i-image"/></svg><span><strong data-portal-title>Видео и медии</strong><small data-portal-description>Клипове, изображения и документи</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
-      <a class="portal-card" data-portal="report" href="/report.html"><svg class="icon" aria-hidden="true"><use href="#i-target"/></svg><span><strong data-portal-title>Подай наблюдение</strong><small data-portal-description>Провери дали приемът е отворен</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
-      <a class="portal-card" data-portal="about" href="#mission"><svg class="icon" aria-hidden="true"><use href="#i-eye"/></svg><span><strong data-portal-title>За AURORA</strong><small data-portal-description>Мисия и редакционен подход</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
-      <a class="portal-card" data-portal="support" href="/donate.html"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><span><strong data-portal-title>Дарения</strong><small data-portal-description>Виж как можеш да подкрепиш проекта</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
-      <a class="portal-card" data-portal="search" href="/archive.html#archiveSearch"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span><strong data-portal-title>Търси в архива</strong><small data-portal-description>Намери случай по място или източник</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
-    </nav>
   </section>
   <section class="world-atlas" id="worldAtlas" aria-labelledby="worldAtlasHeading">
     <div class="world-atlas-head">
