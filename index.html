@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="jarvis-hud.css">
   <link rel="stylesheet" href="register.css">
   <script defer src="i18n-extra.js"></script>
+  <script defer src="/home-portal-i18n.js"></script>
   <script defer src="script.js"></script>
   <script defer src="aurora-v1.js"></script>
   <script defer src="jarvis-hud.js"></script>
@@ -26,6 +27,7 @@
 <link rel="stylesheet" href="/world-atlas-orbital.css">
 <link rel="stylesheet" href="/report-home-callout.css">
 <link rel="stylesheet" href="/aurora-silence.css">
+<link rel="stylesheet" href="/home-portal.css">
 </head>
 <body class="gate-open">
 <noscript><style>#languageGate{display:none!important}body.gate-open{overflow:auto}.site-shell{pointer-events:auto!important}</style></noscript>
@@ -78,20 +80,21 @@
     </a>
     <nav class="desktop-nav" aria-label="Основна навигация">
       <a href="#home" data-i18n="navHome" class="active">Начало</a>
+      <a href="/news.html" data-i18n="navNews">Новини</a>
       <a href="/archive.html" data-i18n="navArchive">Архив</a>
       <a href="#worldAtlas" data-i18n="navMap">Карта</a>
-      <a href="/news.html" data-i18n="navNews">Новини</a>
       <a href="/media.html" data-i18n="navMedia">Видео</a>
       <a href="/report.html" data-i18n="reportButton" class="nav-report">Подай сигнал</a>
-      <a href="#methodology" data-i18n="methodNav">Методика</a>
+      <a href="#mission" data-portal-nav="about">За AURORA</a>
+      <a href="/donate.html" data-portal-nav="support">Подкрепа</a>
     </nav>
-    <div class="header-actions"><button type="button" class="gate-trigger" id="openLanguageGate" aria-label="Промени езика / Change language">LANGUAGE</button><label class="sr-only" for="langToggle">Language / Език</label><select class="lang-button lang-select" id="langToggle" aria-label="Language / Език"><option value="bg">Български</option><option value="en">English</option><option value="de">Deutsch</option><option value="ru">Русский</option><option value="zh-CN">中文</option></select><button type="button" class="menu-button" id="menuToggle" aria-label="Меню / Menu" aria-expanded="false"><svg class="icon"><use href="#i-menu"/></svg></button></div>
+    <div class="header-actions"><button type="button" class="gate-trigger" id="openLanguageGate" aria-label="Промени езика / Change language">LANGUAGE</button><label class="sr-only" for="langToggle">Language / Език</label><select class="lang-button lang-select" id="langToggle" aria-label="Language / Език"><option value="bg">Български</option><option value="en">English</option><option value="de">Deutsch</option><option value="ru">Русский</option><option value="zh-CN">中文</option><option value="fr">Français</option><option value="es">Español</option><option value="it">Italiano</option><option value="pt">Português</option><option value="tr">Türkçe</option><option value="ro">Română</option><option value="el">Ελληνικά</option><option value="sr">Српски</option><option value="uk">Українська</option><option value="pl">Polski</option><option value="ar">العربية</option><option value="ja">日本語</option><option value="ko">한국어</option></select><button type="button" class="menu-button" id="menuToggle" aria-label="Меню / Menu" aria-expanded="false"><svg class="icon"><use href="#i-menu"/></svg></button></div>
   </header>
   <nav class="mobile-nav" id="mobileNav" aria-label="Мобилна навигация" hidden>
-    <a href="#home" data-i18n="navHome">Начало</a><a href="/archive.html" data-i18n="navArchive">Архив</a>
-    <a href="#worldAtlas" data-i18n="navMap">Карта</a><a href="/news.html" data-i18n="navNews">Новини</a>
+    <a href="#home" data-i18n="navHome">Начало</a><a href="/news.html" data-i18n="navNews">Новини</a>
+    <a href="/archive.html" data-i18n="navArchive">Архив</a><a href="#worldAtlas" data-i18n="navMap">Карта</a>
     <a href="/media.html" data-i18n="navMedia">Видео</a><a href="/report.html" data-i18n="reportButton" class="nav-report">Подай сигнал</a>
-    <a class="nav-donate" href="/donate.html" data-i18n="navDonate">Дари</a>
+    <a href="#mission" data-portal-nav="about">За AURORA</a><a class="nav-donate" href="/donate.html" data-portal-nav="support">Подкрепа</a>
   </nav>
 
   <main id="main">
@@ -113,6 +116,7 @@
       <div class="hero-buttons silence-actions">
         <a href="/archive.html" class="button button-primary"><span data-i18n="heroArchiveCTA">Разгледай случаите</span><svg class="icon icon-arrow"><use href="#i-arrow"/></svg></a>
         <a href="/media.html" class="button button-secondary"><svg class="icon"><use href="#i-eye"/></svg><span data-i18n="navMedia">Видео</span></a>
+        <a href="/news.html" class="button button-secondary portal-news-cta"><svg class="icon"><use href="#i-book"/></svg><span data-i18n="navNews">Новини</span></a>
       </div>
     </div>
     <div class="silence-bottom">
@@ -140,6 +144,22 @@
       </a>
     </div>
     <canvas id="heroHudCanvas" class="system-canvas hero-hud-canvas" aria-hidden="true" hidden></canvas>
+  </section>
+  <section class="portal-hub" id="exploreAURORA" aria-labelledby="portalHeading">
+    <div class="portal-hub-heading">
+      <div><p class="portal-kicker">AURORA / DISCOVERY PORTAL</p><h2 id="portalHeading">Открий AURORA</h2></div>
+      <p id="portalIntro">Избери посока — новини, архив, карта или медии.</p>
+    </div>
+    <nav class="portal-grid" aria-label="Открий AURORA">
+      <a class="portal-card" data-portal="news" href="/news.html"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg><span><strong data-portal-title>Последни новини</strong><small data-portal-description>Публикации от международни източници</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+      <a class="portal-card" data-portal="map" href="#worldAtlas"><svg class="icon" aria-hidden="true"><use href="#i-globe"/></svg><span><strong data-portal-title>Световна карта</strong><small data-portal-description>Разгледай досиетата по район</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+      <a class="portal-card" data-portal="archive" href="/archive.html"><svg class="icon" aria-hidden="true"><use href="#i-folder"/></svg><span><strong data-portal-title>Архив на случаи</strong><small data-portal-description>101 досиета с посочени източници</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+      <a class="portal-card" data-portal="media" href="/media.html"><svg class="icon" aria-hidden="true"><use href="#i-image"/></svg><span><strong data-portal-title>Видео и медии</strong><small data-portal-description>Клипове, изображения и документи</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+      <a class="portal-card" data-portal="report" href="/report.html"><svg class="icon" aria-hidden="true"><use href="#i-target"/></svg><span><strong data-portal-title>Подай наблюдение</strong><small data-portal-description>Провери дали приемът е отворен</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+      <a class="portal-card" data-portal="about" href="#mission"><svg class="icon" aria-hidden="true"><use href="#i-eye"/></svg><span><strong data-portal-title>За AURORA</strong><small data-portal-description>Мисия и редакционен подход</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+      <a class="portal-card" data-portal="support" href="/donate.html"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><span><strong data-portal-title>Дарения</strong><small data-portal-description>Виж как можеш да подкрепиш проекта</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+      <a class="portal-card" data-portal="search" href="/archive.html#archiveSearch"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span><strong data-portal-title>Търси в архива</strong><small data-portal-description>Намери случай по място или източник</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+    </nav>
   </section>
   <section class="world-atlas" id="worldAtlas" aria-labelledby="worldAtlasHeading">
     <div class="world-atlas-head">

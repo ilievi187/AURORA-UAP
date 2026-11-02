@@ -1,8 +1,60 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
+import {runInNewContext} from "node:vm";
 
 const read=file=>readFileSync(new URL("../"+file,import.meta.url),"utf8");
+
+test("portal navigation copy is complete and authored for every interface locale",()=>{
+  const sandbox={window:{}};
+  runInNewContext(read("home-portal-i18n.js"),sandbox);
+  const copy=sandbox.window.AURORA_PORTAL_COPY;
+  const locales=["bg","en","de","ru","zh-CN","fr","es","it","pt","tr","ro","el","sr","uk","pl","ar","ja","ko"];
+  const cards=["news","map","archive","media","report","about","support","search"];
+  assert.deepEqual(Object.keys(copy).sort(),locales.sort());
+  for(const locale of locales){
+    assert.ok(copy[locale].heading&&copy[locale].intro&&copy[locale].navAbout&&copy[locale].navSupport,locale+" has localized portal chrome");
+    for(const name of cards){
+      const [title,description]=copy[locale].cards[name]||[];
+      assert.ok(title?.trim()&&description?.trim(),locale+" has authored "+name+" copy");
+    }
+  }
+});
+
+test("homepage language control supports every configured locale",()=>{
+  const html=read("index.html");
+  const start=html.indexOf('<select class="lang-button lang-select" id="langToggle"');
+  const bodyStart=html.indexOf(">",start)+1,bodyEnd=html.indexOf("</select>",bodyStart);
+  const select=html.slice(bodyStart,bodyEnd);
+  const options=[...select.matchAll(/<option value="([^"]+)"/g)].map(([,locale])=>locale);
+  assert.equal(options.length,18);
+  assert.equal(new Set(options).size,18);
+  assert.ok(options.includes("ar")&&options.includes("ko"),"RTL and East Asian locales remain directly selectable");
+});
+
+test("homepage portal exposes every primary destination as a working link",()=>{
+  const html=read("index.html");
+  const section=html.match(/<section class="portal-hub"[\s\S]*?<\/section>/)?.[0];
+  assert.ok(section,"homepage includes a compact navigation dashboard");
+  const destinations={
+    news:"/news.html",map:"#worldAtlas",archive:"/archive.html",media:"/media.html",
+    report:"/report.html",about:"#mission",support:"/donate.html",search:"/archive.html#archiveSearch"
+  };
+  const links=[...section.matchAll(/<a\b([^>]*)>/g)].map(([,attrs])=>({
+    name:attrs.match(/\bdata-portal="([^"]+)"/)?.[1],
+    href:attrs.match(/\bhref="([^"]+)"/)?.[1]
+  }));
+  for(const [name,href] of Object.entries(destinations))
+    assert.ok(links.some(link=>link.name===name&&link.href===href),name+" destination is present");
+  const nav=html.match(/<nav class="desktop-nav"[\s\S]*?<\/nav>/)?.[0]||"";
+  const mobileStart=html.indexOf('<nav class="mobile-nav"');
+  const mobile=html.slice(mobileStart,html.indexOf('</nav>',mobileStart)+6);
+  for(const href of ["/news.html","/archive.html","#worldAtlas","/media.html","/report.html","#mission","/donate.html"]){
+    assert.ok(nav.includes(`href="${href}"`),"primary navigation includes "+href);
+    assert.ok(mobile.includes(`href="${href}"`),"mobile navigation includes "+href);
+  }
+  assert.match(read("script.js"),/let reportPageSize=6;/,"homepage starts with a compact case preview");
+});
 
 test("home retains sourced atlas and archive, with no duplicate demo Mission Control",()=>{
   const html=read("index.html");

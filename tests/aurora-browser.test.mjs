@@ -763,6 +763,50 @@ try{
     await page.screenshot({path:"artifacts/aurora-silence-laptop.png",animations:"disabled"});
     await context.close();
   });
+  await test("homepage discovery portal localizes its routes and remains usable on desktop and mobile",async()=>{
+    const desktop=await browser.newContext({viewport:{width:1366,height:900},reducedMotion:"reduce"});
+    const page=await desktop.newPage(),errors=[];
+    page.on("pageerror",error=>errors.push(error.message));
+    await page.addInitScript(()=>localStorage.setItem("aurora-lang","bg"));
+    await page.goto("http://127.0.0.1:"+port+"/");
+    await page.waitForFunction(()=>document.querySelectorAll(".portal-card[data-portal]").length===8);
+    assert.equal(await page.locator("#portalHeading").textContent(),"Открий AURORA");
+    const destinations=await page.locator(".portal-card").evaluateAll(cards=>cards.map(card=>[card.dataset.portal,card.getAttribute("href")]));
+    assert.deepEqual(destinations,[
+      ["news","/news.html"],["map","#worldAtlas"],["archive","/archive.html"],["media","/media.html"],
+      ["report","/report.html"],["about","#mission"],["support","/donate.html"],["search","/archive.html#archiveSearch"]
+    ]);
+    await page.locator("#openLanguageGate").click();
+    await page.locator('#gateLanguageGrid button[data-language="es"]').click();
+    await page.locator("#gateContinue").click();
+    await page.waitForFunction(()=>document.documentElement.lang==="es"&&document.querySelector("[data-portal=\"news\"] [data-portal-title]")?.textContent==="Últimas noticias");
+    assert.equal(await page.locator("#portalHeading").textContent(),"Explora AURORA");
+    assert.equal(await page.locator(".desktop-nav [data-portal-nav=\"support\"]").textContent(),"Apoyar");
+    await page.reload();
+    assert.equal(await page.locator("html").getAttribute("lang"),"es","selected locale persists after reload");
+    assert.equal(await page.locator("[data-portal=\"archive\"] [data-portal-title]").textContent(),"Archivo UAP");
+    await page.locator("#exploreAURORA").scrollIntoViewIfNeeded();
+    mkdirSync("artifacts",{recursive:true});
+    await page.screenshot({path:"artifacts/aurora-final-portal-desktop.png",animations:"disabled"});
+    await desktop.close();
+
+    const mobile=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:"reduce"});
+    const mobilePage=await mobile.newPage();
+    mobilePage.on("pageerror",error=>errors.push(error.message));
+    await mobilePage.addInitScript(()=>localStorage.setItem("aurora-lang","ar"));
+    await mobilePage.goto("http://127.0.0.1:"+port+"/");
+    await mobilePage.waitForFunction(()=>document.querySelectorAll(".portal-card[data-portal]").length===8&&document.documentElement.dir==="rtl");
+    assert.equal(await mobilePage.locator("[data-portal=\"news\"] [data-portal-title]").textContent(),"أحدث الأخبار");
+    await mobilePage.locator("#menuToggle").click();
+    assert.equal(await mobilePage.locator("#mobileNav a").count(),8);
+    assert.equal(await mobilePage.locator("#mobileNav a[href=\"/donate.html\"]").textContent(),"الدعم");
+    await mobilePage.locator("#exploreAURORA").scrollIntoViewIfNeeded();
+    const overflow=await mobilePage.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+    assert.ok(overflow<=1,"mobile portal and RTL navigation do not overflow horizontally");
+    await mobilePage.screenshot({path:"artifacts/aurora-final-portal-mobile.png",animations:"disabled"});
+    assert.deepEqual(errors,[]);
+    await mobile.close();
+  });
   await test("all nine inner pages use the same real black skin, not old cyan layouts",async()=>{
     const context=await browser.newContext({viewport:{width:1280,height:900}});
     const page=await context.newPage();

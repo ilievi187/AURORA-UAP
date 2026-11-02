@@ -1,0 +1,94 @@
+/* Compact discovery dashboard; the AURORA archive remains the visual focus. */
+body:has(.portal-hub) .site-header .desktop-nav{
+  gap:clamp(7px,.75vw,12px);
+  margin-inline:clamp(8px,1.2vw,20px);
+}
+body:has(.portal-hub) .site-header .desktop-nav a{
+  font-size:clamp(8.5px,.68vw,10px);
+  letter-spacing:.025em;
+  white-space:nowrap;
+}
+body:has(.portal-hub) .site-header .desktop-nav .nav-report{color:#edf5fa;}
+body:has(.portal-hub) .silence-hero .silence-actions .portal-news-cta{
+  background:#03080f8c;
+  border-color:#71808e66;
+}
+body:has(.portal-hub) .portal-hub{
+  width:min(1440px,calc(100% - clamp(40px,8vw,152px)));
+  max-width:1440px;
+  margin:0 auto;
+  padding:clamp(27px,3.3vw,46px) 0 clamp(30px,3.8vw,52px);
+  border-top:1px solid #91a8b52b;
+  border-bottom:1px solid #91a8b522;
+  background:radial-gradient(ellipse at 15% 0%,#20364618,transparent 55%);
+}
+body:has(.portal-hub) .portal-hub-heading{
+  display:flex;align-items:end;justify-content:space-between;gap:28px;
+  margin-bottom:19px;
+}
+body:has(.portal-hub) .portal-kicker{
+  margin:0 0 7px;color:#9cabb7;
+  font:600 9px/1.5 ui-monospace,Consolas,monospace;letter-spacing:.16em;
+}
+body:has(.portal-hub) .portal-hub-heading h2{
+  margin:0;color:#edf2f6;font-size:clamp(22px,2.2vw,31px);
+  line-height:1.12;font-weight:480;letter-spacing:-.035em;
+}
+body:has(.portal-hub) #portalIntro{
+  max-width:430px;margin:0;color:#9eabb6;font-size:12px;line-height:1.65;
+}
+body:has(.portal-hub) .portal-grid{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;
+}
+body:has(.portal-hub) .portal-card{
+  min-width:0;min-height:78px;display:grid;
+  grid-template-columns:21px minmax(0,1fr) 12px;align-items:center;gap:12px;
+  padding:12px 13px;border:1px solid #71839138;border-radius:4px;
+  background:linear-gradient(115deg,#0a1017c9,#05080cb8);
+  color:#dbe4eb;text-decoration:none;
+  transition:border-color .18s ease,background-color .18s ease,transform .18s ease;
+}
+body:has(.portal-hub) .portal-card>.icon{width:18px;height:18px;color:#aab9c5;}
+body:has(.portal-hub) .portal-card>span:nth-child(2){min-width:0;}
+body:has(.portal-hub) .portal-card strong{
+  display:block;overflow-wrap:anywhere;color:#eef3f7;
+  font-size:12px;line-height:1.35;font-weight:620;
+}
+body:has(.portal-hub) .portal-card small{
+  display:block;margin-top:4px;overflow-wrap:anywhere;
+  color:#91a0ad;font-size:10px;line-height:1.4;
+}
+body:has(.portal-hub) .portal-arrow{color:#9fb4c2;font-size:12px;}
+body:has(.portal-hub) .portal-card:hover{
+  border-color:#b6cbd955;background:#101b25;transform:translateY(-1px);
+}
+body:has(.portal-hub) .portal-card:focus-visible{
+  outline:2px solid #cde7f5;outline-offset:3px;border-color:#cde7f5;
+}
+@media(max-width:1200px){
+  body:has(.portal-hub) .site-header .desktop-nav{gap:6px;margin-inline:8px;}
+  body:has(.portal-hub) .site-header .desktop-nav a{font-size:9px;}
+}
+@media(max-width:900px){
+  body:has(.portal-hub) .portal-hub{width:calc(100% - 48px);}
+  body:has(.portal-hub) .portal-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media(max-width:640px){
+  body:has(.portal-hub) .portal-hub{width:calc(100% - 32px);padding-block:27px 31px;}
+  body:has(.portal-hub) .portal-hub-heading{display:block;margin-bottom:14px;}
+  body:has(.portal-hub) #portalIntro{margin-top:8px;font-size:11px;}
+  body:has(.portal-hub) .portal-grid{gap:7px;}
+  body:has(.portal-hub) .portal-card{
+    min-height:84px;grid-template-columns:17px minmax(0,1fr);gap:8px;
+    padding:10px 9px;
+  }
+  body:has(.portal-hub) .portal-card>.icon{width:16px;height:16px;}
+  body:has(.portal-hub) .portal-card strong{font-size:11px;}
+  body:has(.portal-hub) .portal-card small{font-size:9px;line-height:1.35;}
+  body:has(.portal-hub) .portal-arrow{display:none;}
+  body:has(.portal-hub) .silence-hero .silence-actions{flex-wrap:wrap;}
+  body:has(.portal-hub) .silence-hero .silence-actions .button{flex:1 1 auto;}
+}
+@media(prefers-reduced-motion:reduce){
+  body:has(.portal-hub) .portal-card{transition:none;}
+}

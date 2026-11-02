@@ -5,7 +5,8 @@ const read=(f)=>readFileSync(new URL("../"+f,import.meta.url),"utf8");
 const pages=["index.html","archive.html","countries.html","country.html","donate.html","dossier.html","media.html","news.html","report.html","sources.html"];
 test("all pages share base tokens and interiors layer their unique editorial skin",()=>{
  const css=read("aurora-design-refresh.css");assert.match(css,/--aurora-border/);assert.match(css,/prefers-reduced-motion:reduce/);
- for(const page of pages){const html=read(page);const styles=[...html.matchAll(/<link\s+rel="stylesheet"\s+href="([^"]+)"/g)].map(m=>m[1]);assert.equal(styles.at(-1),page==="index.html"?"/aurora-silence.css":"/aurora-editorial-interiors.css",page);
+ for(const page of pages){const html=read(page);const styles=[...html.matchAll(/<link\s+rel="stylesheet"\s+href="([^"]+)"/g)].map(m=>m[1]);assert.equal(styles.at(-1),page==="index.html"?"/home-portal.css":"/aurora-editorial-interiors.css",page);
+  if(page==="index.html")assert.ok(styles.indexOf("/aurora-silence.css")<styles.indexOf("/home-portal.css"),"portal layer follows the approved homepage art direction");
   assert.ok(styles.includes("/aurora-design-refresh.css"),page+" must preserve shared tokens");
   if(page!=="index.html")assert.ok(styles.includes("/aurora-black-pages.css"),page+" keeps black base");}
 });
