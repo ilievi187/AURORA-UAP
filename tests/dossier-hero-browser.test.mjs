@@ -23,17 +23,18 @@ before(async()=>{
  browser=await chromium.launch({headless:true,...(process.env.AURORA_CHROMIUM_PATH?{executablePath:process.env.AURORA_CHROMIUM_PATH}:{})});
 });
 after(async()=>{await browser?.close();server?.closeAllConnections();if(server)await new Promise(resolve=>server.close(resolve))});
-async function pageFor(id,viewport={width:1280,height:860},caseOverrides=null){
+async function pageFor(id,viewport={width:1280,height:860},caseOverrides=null,archiveFixtureMutator=null){
  const ctx=await browser.newContext({viewport,reducedMotion:"reduce"});
  const page=await ctx.newPage();
  const errors=[];page.on("pageerror",e=>errors.push(e.message));
  await page.addInitScript(()=>localStorage.setItem("aurora-lang","bg"));
  await page.route("https://upload.wikimedia.org/**",route=>route.abort("failed"));
- if(caseOverrides){
+ if(caseOverrides||archiveFixtureMutator){
   const data=JSON.parse(await readFile(resolve(root,"data/cases.json"),"utf8"));
   const record=data.cases.find(item=>item.id===id);
   if(!record)throw new Error("Archive fixture not found: "+id);
-  Object.assign(record,caseOverrides);
+  if(caseOverrides)Object.assign(record,caseOverrides);
+  archiveFixtureMutator?.(data.cases);
   await page.route("**/data/cases.json",route=>route.fulfill({status:200,contentType:"application/json",body:JSON.stringify(data)}));
  }
  await page.goto("http://127.0.0.1:"+port+"/archive/"+id);
@@ -71,7 +72,13 @@ test("legacy Bulgarian source catalog narratives remain readable and are not pas
  }finally{await ctx.close()}
 });
 test("related case previews disclose English source titles when Bulgarian translation is missing",async()=>{
- const {page,ctx,errors}=await pageFor("disclosure-iraq-2022");
+ // Mosul is translated in the current archive; make only this preview untranslated in the isolated fixture.
+ const {page,ctx,errors}=await pageFor("disclosure-iraq-2022",{width:1280,height:860},null,archiveCases=>{
+  const mosul=archiveCases.find(item=>item.id==="disclosure-mosul-orb-2016");
+  assert.ok(mosul,"related Mosul fixture exists");
+  mosul.title={...mosul.title,bg:""};
+  mosul.summary={...mosul.summary,bg:""};
+ });
  try{
   const related=page.locator('#relatedCasesGrid a[href="/archive/disclosure-mosul-orb-2016"]');
   await related.waitFor({state:"visible"});

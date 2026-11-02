@@ -89,6 +89,7 @@ test("M1 batch two keeps ten BG narratives source-preserving and idempotent",()=
   assert.equal(enriched.editorial_review.existing_editorial_review,LEGACY_EDITORIAL_REVIEW,id+" preserves the prior editorial caveat");
   assert.equal(note.reviewed_at,"2026-11-02",id+" records the BG editorial review date");
   assert.equal(enriched.editorial_review.reviewed_at,note.reviewed_at,id+" materializes its own editorial review date");
+  assert.equal(note.story_bg[0],"Досие с посочен източник · disclosure.zone (CC BY 4.0). Датата и мястото са взети от този независим каталог; ако са посочени координати на картата, те са приблизителни ориентири.",id+" translates the source and coordinate-scope metadata");
   for(const field of ["date","date_precision","lat","lng","location_precision","country","city","category","status","media","provenance"])
    assert.deepEqual(enriched[field],original[field],id+" preserves source-owned "+field);
  }
