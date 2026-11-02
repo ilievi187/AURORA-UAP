@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#010305">
+  <title>AURORA — Защитена редакция на новини</title>
+  <link rel="stylesheet" href="/aurora-design-refresh.css">
+  <link rel="stylesheet" href="/aurora-black-pages.css">
+  <link rel="stylesheet" href="/news-editor.css">
+  <script defer src="/news-editor.js"></script>
+</head>
+<body class="news-editor-page">
+  <a class="news-editor-skip" href="#editorMain">Към редактора</a>
+  <main class="news-editor-shell" id="editorMain">
+    <header class="news-editor-header"><a href="/" aria-label="AURORA home">✦ AURORA</a><span>ACCESS-PROTECTED NEWSROOM</span></header>
+    <section class="news-editor-intro">
+      <p class="news-editor-kicker">EDITORIAL WORKSPACE / PRIVATE</p>
+      <h1>Редакция на новини</h1>
+      <p>Черновите не са публични. Публикуването е изрично действие. Предложенията на посетители остават отделно в опашката за модерация и не се публикуват автоматично.</p>
+    </section>
+    <p id="newsEditorStatus" class="news-editor-status" role="status" aria-live="polite">Зареждане на редакционната опашка…</p>
+    <nav class="news-editor-tabs" aria-label="Редакционни раздели">
+      <button type="button" id="showArticles" aria-pressed="true">Статии</button>
+      <button type="button" id="showTips" aria-pressed="false">Предложения за новини</button>
+    </nav>
+    <section id="articlesWorkspace" class="news-editor-workspace">
+      <aside class="news-editor-list-panel">
+        <div class="news-editor-list-head"><h2>Статии</h2><button type="button" id="newArticle">Нова чернова</button></div>
+        <label class="news-editor-filter">Филтър по статус<select id="articleStatus"><option value="all">Всички</option><option value="draft">Чернови</option><option value="published">Публикувани</option><option value="unpublished">Свалени</option></select></label>
+        <div id="articleList" class="news-editor-list" aria-live="polite"></div>
+        <nav class="news-editor-pager" aria-label="Страници със статии"><button id="articlePrev" type="button" disabled>Предишни</button><button id="articleNext" type="button" disabled>Следващи</button></nav>
+      </aside>
+      <div class="news-editor-main">
+        <form id="articleForm" class="news-editor-form">
+          <input id="articleId" type="hidden">
+          <div class="news-editor-form-head"><div><p class="news-editor-kicker">ARTICLE / SOURCE-ATTRIBUTED</p><h2 id="articleFormHeading">Нова статия</h2></div><span id="articleStatusBadge" class="news-editor-badge">DRAFT</span></div>
+          <div class="news-editor-grid">
+            <label>Език на оригиналната статия<select id="articleLanguage" required><option value="bg">Български</option><option value="en">English</option><option value="de">Deutsch</option><option value="ru">Русский</option><option value="zh-CN">中文</option><option value="fr">Français</option><option value="es">Español</option><option value="it">Italiano</option><option value="pt">Português</option><option value="tr">Türkçe</option><option value="ro">Română</option><option value="el">Ελληνικά</option><option value="sr">Српски</option><option value="uk">Українська</option><option value="pl">Polski</option><option value="ar">العربية</option><option value="ja">日本語</option><option value="ko">한국어</option></select></label>
+            <label>Категория<select id="articleCategory" required><option value="sightings">Наблюдения</option><option value="official">Официални документи</option><option value="research">Изследвания</option><option value="history">История</option><option value="policy">Политики и институции</option><option value="other">Друго</option></select></label>
+            <label class="span-all">Заглавие<input id="articleTitle" minlength="8" maxlength="200" required></label>
+            <label class="span-all">Кратко резюме<textarea id="articleSummary" minlength="30" maxlength="700" rows="3" required></textarea></label>
+            <label class="span-all">Съдържание — обикновен текст<textarea id="articleBody" minlength="120" maxlength="30000" rows="12" required></textarea></label>
+            <label>Издател / първоизточник<input id="articleSourceName" minlength="2" maxlength="160" required></label>
+            <label>Оригинален URL<input id="articleSourceUrl" type="url" maxlength="1200" placeholder="https://…" required></label>
+            <label>Дата на оригиналната публикация (ако е известна)<input id="articleSourceDate" type="date"></label>
+            <label>URL на изображение (ако има права)<input id="articleImageUrl" type="url" maxlength="1200" placeholder="https://…"></label>
+            <label class="span-all">URL на видео или оригиналния видеоматериал<input id="articleVideoUrl" type="url" maxlength="1200" placeholder="https://…"></label>
+            <label class="news-editor-rights span-all"><input id="mediaRightsConfirmed" type="checkbox"><span>Потвърждавам, че AURORA има право да показва посоченото изображение/видео, или връзката ще бъде обозначена само като външен източник.</span></label>
+            <label class="span-all">Бележка за произхода/правата на медията (изисква се при медия)<input id="mediaRightsNote" maxlength="500"></label>
+          </div>
+          <div class="news-editor-actions">
+            <button id="saveArticle" type="button">Запази чернова</button>
+            <button id="previewArticle" type="button" class="secondary">Преглед</button>
+            <button id="publishArticle" type="button" class="primary">Публикувай</button>
+            <button id="unpublishArticle" type="button" class="danger" hidden>Свали от сайта</button>
+          </div>
+        </form>
+        <section id="articlePreview" class="news-article-preview" aria-label="Предварителен преглед" hidden></section>
+        <section id="translationEditor" class="news-translation-editor">
+          <div><p class="news-editor-kicker">HUMAN-EDITED LOCALIZATION</p><h2>Превод на статия</h2><p>Въведи проверен от редактор превод. Липсващият превод се показва на оригиналния език, а не като фалшив превод.</p></div>
+          <label>Език на превода<select id="translationLanguage"><option value="bg">Български</option><option value="en">English</option><option value="de">Deutsch</option><option value="ru">Русский</option><option value="zh-CN">中文</option><option value="fr">Français</option><option value="es">Español</option><option value="it">Italiano</option><option value="pt">Português</option><option value="tr">Türkçe</option><option value="ro">Română</option><option value="el">Ελληνικά</option><option value="sr">Српски</option><option value="uk">Українська</option><option value="pl">Polski</option><option value="ar">العربية</option><option value="ja">日本語</option><option value="ko">한국어</option></select></label>
+          <label>Преведено заглавие<input id="translationTitle" maxlength="200"></label>
+          <label>Преведено резюме<textarea id="translationSummary" maxlength="700" rows="3"></textarea></label>
+          <label>Преведено съдържание<textarea id="translationBody" maxlength="30000" rows="8"></textarea></label>
+          <button type="button" id="saveTranslation">Запази превода</button>
+        </section>
+      </div>
+    </section>
+    <section id="tipsWorkspace" class="news-tips-workspace" hidden>
+      <div class="news-editor-list-head"><div><h2>Предложения от посетители</h2><p>Одобрението е само за редакционен преглед; то не създава и не публикува статия.</p></div></div>
+      <div id="tipQueue" class="news-editor-list" aria-live="polite"></div>
+      <nav class="news-editor-pager" aria-label="Страници с предложения"><button id="tipPrev" type="button" disabled>Предишни</button><button id="tipNext" type="button" disabled>Следващи</button></nav>
+    </section>
+  </main>
+</body>
+</html>

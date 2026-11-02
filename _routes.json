@@ -6,7 +6,9 @@
     "/archive/*",
     "/cases/*",
     "/moderation",
-    "/moderation.html"
+    "/moderation.html",
+    "/news-editor",
+    "/news-editor.html"
   ],
   "exclude": []
 }

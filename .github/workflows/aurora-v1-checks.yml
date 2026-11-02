@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: '22'
       - name: HTML, JavaScript and accessibility smoke
-        run: node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs tests/retired-aircraft-radar.test.mjs tests/archive-pagination-playable.test.mjs tests/archive-cache-freshness.test.mjs tests/inline-video-thumbnails.test.mjs tests/approximate-case-geography.test.mjs tests/design-system.test.mjs tests/black-edition-pages.test.mjs tests/aurora-odyssey.test.mjs
+        run: node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs tests/auto-archive-sync.test.mjs tests/retired-aircraft-radar.test.mjs tests/archive-pagination-playable.test.mjs tests/archive-cache-freshness.test.mjs tests/inline-video-thumbnails.test.mjs tests/approximate-case-geography.test.mjs tests/design-system.test.mjs tests/black-edition-pages.test.mjs tests/aurora-odyssey.test.mjs tests/homepage-demo-cleanup.test.mjs tests/news-nav.test.mjs tests/news-ui.test.mjs
   live-public-data:
     runs-on: ubuntu-latest
     steps:
@@ -43,8 +43,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Install project dependencies
+        run: npm ci
       - name: Migrations, idempotent import and real SQLite API tests
-        run: node --experimental-sqlite --test tests/database.test.mjs
+        run: node --experimental-sqlite --test tests/database.test.mjs tests/newsroom.test.mjs
   private-intake:
     runs-on: ubuntu-latest
     steps:

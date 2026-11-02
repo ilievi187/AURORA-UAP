@@ -158,6 +158,8 @@ export function parseFeedXml(xml, source, now = Date.now()) {
       url: url.toString(),
       source: source.publisher,
       source_id: source.id,
+      source_role: source.role || "other",
+      source_region: source.region || "global",
       feed_host: source.feed_host || "",
       published: new Date(ms).toISOString(),
       language: source.language

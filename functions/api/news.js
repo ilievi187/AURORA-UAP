@@ -2,6 +2,7 @@ import {NEWS_LANGUAGES,PAGE_SIZE,translateNewsPage} from "../_lib/news-translati
 import {DISCOVERY_TOTAL_LIMIT,discoverMatches} from "../_lib/discovery.js";
 import {dedupeHeadlines} from "../_lib/headline-dedup.js";
 import {SOURCE_CATALOG} from "../_lib/source-catalog.js";
+import {newsEditorEnabled,newsroomSchemaReady,readPublishedNewsArticles} from "../_lib/newsroom.js";
 // Public headlines from Google News and checked publisher feeds, NOT verified UAP cases.
 // Fixed upstream feeds, no arbitrary network URLs, no private user data.
 // Independent source regions improve global coverage without invented articles.
@@ -215,7 +216,7 @@ export async function fetchHeadlinesWithDiagnostics(edition,fetcher=fetch,parser
   const xml=await readLimitedResponseText(r);if(xml===null)return {items:[],kind:"invalid"};
   const document=tokenizeRss(xml);if(!document)return {items:[],kind:"invalid"};
   try{
-   const items=parser(xml,document).map(item=>({...item,language:f.hl.split("-")[0]}));
+   const items=parser(xml,document).map(item=>({...item,language:f.hl.split("-")[0],source_role:"news-search"}));
    return {items,kind:items.length?"parsed":"unverified"};
   }catch{return {items:[],kind:"parse_error"}}
  };
@@ -424,10 +425,21 @@ export async function onRequestGet({request,env,ctx,fetcher=fetch,catalogFetcher
  if(!/^(0|[1-9]\d{0,2})$/.test(offsetValue)||Number(offsetValue)>192||Number(offsetValue)%PAGE_SIZE!==0)
   return Response.json({error:"invalid_translation_offset"},{status:400});
  const original=await getRawNews({request,ctx,fetcher,catalogFetcher,timeoutMs,assets:env?.ASSETS});
- if(lang===null||original.status!==200)return original;
- const data=await original.clone().json(),offset=Number(offsetValue);
- if(!Array.isArray(data.items))return original;
  const edition=u.searchParams.get("edition")||"global";
+ let manual=[];
+ if(newsEditorEnabled(env,u.hostname)&&await newsroomSchemaReady(env.DB))manual=await readPublishedNewsArticles(env.DB,lang||"en");
+ if(original.status!==200&&original.status!==503)return original;
+ if(original.status!==200&&!manual.length)return original;
+ let data=original.status===200?await original.clone().json():{status:"live",edition,updated_at:new Date().toISOString(),count:0,items:[]};
+ if(!Array.isArray(data.items))data.items=[];
+ if(manual.length){
+  data.items=dedupeHeadlines([...manual,...data.items]).slice(0,200);
+  data.count=data.items.length;
+  data.editorial_count=manual.length;
+  data.updated_at=new Date().toISOString();
+ }
+ if(lang===null)return Response.json(data,{headers:{"Cache-Control":manual.length?"no-store":"public, max-age=60, s-maxage=900","X-Content-Type-Options":"nosniff"}});
+ const offset=Number(offsetValue);
  const key=new Request("https://aurora-cache.invalid/news/translated/v1/"+
   encodeURIComponent(edition)+"/"+encodeURIComponent(lang)+"/"+offset+"/"+encodeURIComponent(data.updated_at||"unknown"));
  let cache;
@@ -437,11 +449,11 @@ export async function onRequestGet({request,env,ctx,fetcher=fetch,catalogFetcher
  }catch{}
  const {items,translation}=await translateNewsPage(data.items,lang,offset,env?.AI);
  const out=Response.json({...data,items,translation},{headers:{
-  "Cache-Control":data.status==="cached"?"no-store":"public, max-age=60, s-maxage=900",
+  "Cache-Control":data.status==="cached"||manual.length?"no-store":"public, max-age=60, s-maxage=900",
   "X-Content-Type-Options":"nosniff"
  }});
  // Fail open: do not cache outages. When AI is connected later, it takes effect.
- if(cache&&data.status!=="cached"&&ctx?.waitUntil&&["translated","original"].includes(translation.status))
+ if(cache&&!manual.length&&data.status!=="cached"&&ctx?.waitUntil&&["translated","original"].includes(translation.status))
   ctx.waitUntil(cache.put(key,out.clone()).catch(()=>{}));
  return out;
 }

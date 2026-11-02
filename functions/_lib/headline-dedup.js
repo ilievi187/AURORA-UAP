@@ -44,7 +44,7 @@ function rank(item) {
     host = url.hostname.toLowerCase();
     params = [...url.searchParams.keys()].length;
   } catch { /* unusable urls sort last */ }
-  return {direct: host === "news.google.com" ? 0 : 1, params, published: Date.parse(item?.published) || 0};
+  return {editorial:item?.editorial===true?1:0,direct: host === "news.google.com" ? 0 : 1, params, published: Date.parse(item?.published) || 0};
 }
 
 export function dedupeHeadlines(items) {
@@ -52,6 +52,7 @@ export function dedupeHeadlines(items) {
   const ranked = items.map((item, index) => ({item, index})).sort((a, b) => {
     const left = rank(a.item);
     const right = rank(b.item);
+    if (left.editorial !== right.editorial) return right.editorial - left.editorial;
     if (left.direct !== right.direct) return right.direct - left.direct;
     if (left.params !== right.params) return left.params - right.params;
     if (left.published !== right.published) return right.published - left.published;

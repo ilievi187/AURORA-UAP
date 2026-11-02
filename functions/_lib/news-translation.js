@@ -63,6 +63,7 @@ export async function translateNewsPage(items,target,offset,ai){
   if(!rawTitle)continue;
   const source=detectHeadlineLanguage(rawTitle,item.language||"en");
   item.source_language=source;
+  if(item.editorial_translation===true){cachedHits++;continue}
   if(source===requested)continue;
   const rawSummary=typeof item.summary==="string"?item.summary.trim():"";
   const cachedTitle=getCachedTranslation(source,requested,"title",rawTitle.slice(0,240));

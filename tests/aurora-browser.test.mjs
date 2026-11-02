@@ -124,13 +124,44 @@ try{
     await page.waitForFunction(()=>document.querySelector(".live-card h2 a")?.textContent==="ПРЕВОД Special sighting 16");
     assert.equal(await page.locator(".live-card").count(),12);
     assert.ok(offsets.includes(12)&&offsets.includes(24),"search must translate matching source pages, not filtered positions");
-    await page.locator("#showMoreNews").click();
+    await page.locator("#nextNews").click();
     await page.waitForFunction(()=>[...document.querySelectorAll(".live-card h2 a")]
       .some(link=>link.textContent==="ПРЕВОД Special sighting 39"));
-    assert.equal(await page.locator(".live-card").count(),24);
-    assert.ok(offsets.includes(36),"filtered Show More must translate subsequent source pages");
+    assert.equal(await page.locator(".live-card").count(),12);
+    assert.equal(await page.locator("#newsPageStatus").textContent(),"Страница 2 / 3");
+    assert.ok(offsets.includes(36),"filtered page navigation must translate the matching source page");
     assert.equal(await page.locator(".live-card h2 a").last().getAttribute("href"),
       "https://publisher.example.test/story/39");
+    assert.deepEqual(errors,[]);
+    await ctx.close();
+  });
+  await test("news source-type filters and previous/next pagination operate on real result windows",async()=>{
+    const ctx=await browser.newContext({viewport:{width:1180,height:850},reducedMotion:"reduce"});
+    const page=await ctx.newPage(),errors=[];
+    page.on("pageerror",error=>errors.push(error.message));
+    const entries=Array.from({length:25},(_,index)=>({
+      title:(index%2===0?"Official source item ":"Specialist source item ")+index,
+      url:"https://publisher.example.test/story/"+index,
+      source:index%2===0?"Agency Desk":"Research Journal",
+      source_role:index%2===0?"official-institution":"specialist-press",
+      published:new Date(Date.now()-index*60000).toISOString(),language:"en"
+    }));
+    await page.route("**/api/news?*",route=>route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
+      status:"live",edition:"global",updated_at:new Date().toISOString(),count:entries.length,items:entries,
+      translation:{target:"bg",status:"unavailable",translated:0}
+    })}));
+    await page.goto("http://127.0.0.1:"+port+"/news.html");
+    await page.waitForFunction(()=>document.querySelectorAll(".live-card").length===12);
+    await page.locator("#newsSourceType").selectOption("official-institution");
+    await page.waitForFunction(()=>document.querySelectorAll(".live-card").length===12&&document.querySelector("#newsPageStatus")?.textContent==="Страница 1 / 2");
+    assert.equal(await page.locator(".live-card h2").first().textContent(),"Official source item 0");
+    await page.locator("#nextNews").click();
+    await page.waitForFunction(()=>document.querySelectorAll(".live-card").length===1&&document.querySelector("#newsPageStatus")?.textContent==="Страница 2 / 2");
+    assert.equal(await page.locator(".live-card h2").textContent(),"Official source item 24");
+    assert.equal(await page.locator("#nextNews").isDisabled(),true);
+    await page.locator("#previousNews").click();
+    await page.waitForFunction(()=>document.querySelectorAll(".live-card").length===12&&document.querySelector("#newsPageStatus")?.textContent==="Страница 1 / 2");
+    assert.equal(await page.locator("#previousNews").isDisabled(),true);
     assert.deepEqual(errors,[]);
     await ctx.close();
   });
@@ -437,15 +468,15 @@ try{
     assert.deepEqual(errors,[]);
     await ctx.close();
   });
-  await test('homepage lists the real 15-case archive rather than eight demo case cards',async()=>{
+  await test('homepage previews six sourced cases and full search remains available',async()=>{
     const context=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'reduce'});
     const page=await context.newPage(),errors=[];
     page.on('pageerror',e=>errors.push(e.message));
     await page.goto('http://127.0.0.1:'+port+'/');
     await page.locator('button[data-language="bg"]').click();
     await page.locator('#gateContinue').click();
-    await page.waitForFunction(()=>document.querySelectorAll('#reportGrid a.report-card').length===15);
-    assert.equal(await page.locator('#reportGrid a.report-card').count(),15);
+    await page.waitForFunction(()=>document.querySelectorAll('#reportGrid a.report-card').length===6);
+    assert.equal(await page.locator('#reportGrid a.report-card').count(),6);
     assert.equal(await page.locator('#reportGrid .report-badge').allTextContents().then(x=>x.includes('DEMO')),false);
     assert.equal(await page.locator('#reportGrid a[href="/archive/al-taqaddum-2017"]').count(),1);
     await page.locator('#reportSearch').fill('Техеран');
@@ -767,7 +798,7 @@ try{
     const desktop=await browser.newContext({viewport:{width:1366,height:900},reducedMotion:"reduce"});
     const page=await desktop.newPage(),errors=[];
     page.on("pageerror",error=>errors.push(error.message));
-    await page.addInitScript(()=>localStorage.setItem("aurora-lang","bg"));
+    await page.addInitScript(()=>{if(!sessionStorage.getItem('aurora-test-language-seeded')){localStorage.setItem('aurora-lang','bg');sessionStorage.setItem('aurora-test-language-seeded','1')}});
     await page.goto("http://127.0.0.1:"+port+"/");
     await page.waitForFunction(()=>document.querySelectorAll(".portal-card[data-portal]").length===8);
     assert.equal(await page.locator("#portalHeading").textContent(),"Открий AURORA");
@@ -806,6 +837,52 @@ try{
     await mobilePage.screenshot({path:"artifacts/aurora-final-portal-mobile.png",animations:"disabled"});
     assert.deepEqual(errors,[]);
     await mobile.close();
+  });
+  await test("newsroom UI previews, saves, localizes and explicitly publishes an article",async()=>{
+    const context=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:"reduce"});
+    const page=await context.newPage(),errors=[],actions=[];
+    page.on("pageerror",error=>errors.push(error.message));
+    await page.route("**/api/news-editor*",async route=>{
+      const request=route.request();
+      if(request.method()==="GET"){
+        const url=new URL(request.url()),kind=url.searchParams.get("kind")||"articles";
+        if(kind==="translation")return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({source_language:"en",translation:null})});
+        return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify(kind==="tips"?{tips:[],offset:0,has_more:false}:{articles:[],offset:0,has_more:false})});
+      }
+      const payload=request.postDataJSON();actions.push(payload.action);
+      if(payload.action==="save_article")return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({id:"aur-news-12345678-1234-1234-1234-123456789abc",status:payload.article.id?"updated":"draft",published:false})});
+      if(payload.action==="save_translation")return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({status:"localized",language:payload.translation.language_code})});
+      if(payload.action==="publish_article")return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({status:"published",published:true})});
+      return route.fulfill({status:400,contentType:"application/json",body:'{"error":"unsupported_test_action"}'});
+    });
+    await page.goto("http://127.0.0.1:"+port+"/news-editor.html");
+    assert.equal(await page.locator("#publishArticle").isDisabled(),true,"cannot publish an incomplete article");
+    await page.locator("#articleLanguage").selectOption("en");
+    await page.locator("#articleTitle").fill("A source-reviewed UAP policy update");
+    await page.locator("#articleSummary").fill("An attributed summary with context and explicit uncertainty for readers.");
+    await page.locator("#articleBody").fill("The source reports a policy update. AURORA preserves the publisher's account, context and uncertainty, and does not describe the claim as scientifically established. This longer body satisfies editorial minimum length.");
+    await page.locator("#articleSourceName").fill("Example Research Desk");
+    await page.locator("#articleSourceUrl").fill("https://publisher.example/story/123");
+    await page.locator("#previewArticle").click();
+    assert.equal(await page.locator("#articlePreview").isVisible(),true);
+    assert.equal(await page.locator("#articlePreview h2").textContent(),"A source-reviewed UAP policy update");
+    await page.locator("#saveArticle").click();
+    await page.waitForFunction(()=>document.querySelector("#newsEditorStatus")?.textContent==="Черновата е запазена.");
+    await page.locator("#translationLanguage").selectOption("es");
+    await page.locator("#translationTitle").fill("Actualización de política sobre UAP");
+    await page.locator("#translationSummary").fill("Resumen editorial revisado que atribuye claramente la información a su fuente.");
+    await page.locator("#translationBody").fill("El texto original se conserva, se atribuye al editor y distingue el informe de las conclusiones verificadas. Esta traducción fue redactada por una persona y revisada antes de publicarse.");
+    await page.locator("#saveTranslation").click();
+    await page.waitForFunction(()=>document.querySelector("#newsEditorStatus")?.textContent==="Редакторският превод е запазен.");
+    await page.locator("#publishArticle").click();
+    await page.waitForFunction(()=>document.querySelector("#newsEditorStatus")?.textContent==="Статията е публикувана в публичния новинарски поток.");
+    assert.deepEqual(actions,["save_article","save_translation","save_article","publish_article"]);
+    await page.setViewportSize({width:390,height:844});
+    const mobileOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+    assert.ok(mobileOverflow<=1,"private newsroom form fits a mobile viewport");
+    assert.equal(await page.locator("#articleForm").isVisible(),true);
+    assert.deepEqual(errors,[]);
+    await context.close();
   });
   await test("all nine inner pages use the same real black skin, not old cyan layouts",async()=>{
     const context=await browser.newContext({viewport:{width:1280,height:900}});

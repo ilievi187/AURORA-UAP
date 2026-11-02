@@ -69,9 +69,11 @@ test('Cloudflare Pages middleware gates canonical moderator HTML and redirect al
  const routes=JSON.parse((await import('node:fs')).readFileSync(new URL('../_routes.json',import.meta.url),'utf8'));
  assert.ok(routes.include.includes('/moderation'));
  assert.ok(routes.include.includes('/moderation.html'));
+ assert.ok(routes.include.includes('/news-editor'));
+ assert.ok(routes.include.includes('/news-editor.html'));
  let served=0;
  const next=async()=>{served++;return new Response('<html>Private moderation shell</html>',{headers:{'Content-Type':'text/html'}})};
- for(const path of ['/moderation','/moderation.html']){
+ for(const path of ['/moderation','/moderation.html','/news-editor','/news-editor.html']){
   const denied=await guardModeratorPage({request:new Request('https://aurorauap.org'+path),env,next});
   assert.equal(denied.status,403,path);
   assert.equal(denied.headers.get('cache-control').includes('no-store'),true);
@@ -92,7 +94,10 @@ test('Cloudflare Pages middleware gates canonical moderator HTML and redirect al
   assert.equal(allowed.headers.get('cache-control'),'private, no-store, max-age=0');
   assert.equal(allowed.headers.get('x-frame-options'),'DENY');
   assert.equal(allowed.headers.get('content-security-policy'),"frame-ancestors 'none'");
-  assert.equal(served,2);
+  const allowedNews=await guardModeratorPage({request:new Request('https://aurorauap.org/news-editor',{headers:{'Cf-Access-Jwt-Assertion':jwt}}),env:{...env,AURORA_NEWS_EDITOR_ENABLED:'enabled'},next});
+  assert.equal(allowedNews.status,200,'news editor requires its separate feature flag and valid Access identity');
+  assert.equal(allowedNews.headers.get('x-robots-tag'),'noindex, nofollow');
+  assert.equal(served,3);
   const preview=await guardModeratorPage({
    request:new Request('https://preview.pages.dev/moderation',{headers:{'Cf-Access-Jwt-Assertion':jwt}}),
    env,next
@@ -108,6 +113,6 @@ test('Cloudflare Pages middleware gates canonical moderator HTML and redirect al
    env,next
   });
   assert.equal(post.status,405);
-  assert.equal(served,2);
+  assert.equal(served,3);
  }finally{globalThis.fetch=original}
 });
