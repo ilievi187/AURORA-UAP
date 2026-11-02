@@ -364,3 +364,44 @@ body:has(.silence-hero) .hero-hud-canvas{
 /* The legacy .hero selector is display:flex; the reference hero's stacked mobile
    copy + metric cards must flow as block elements, not flex columns. */
 body:has(.silence-hero) .silence-hero{display:block!important;}
+
+
+/* Keep laptop-height CTA buttons and sourced metrics in the same vertical flow.
+   Absolute positioning let .silence-bottom cover the primary CTAs on short
+   desktop windows (observed on 2026-11-02). The hero may grow instead. */
+@media (min-width:641px){
+  body:has(.silence-hero) .silence-hero{
+    display:flex!important;
+    flex-direction:column;
+    height:auto;
+    min-height:max(760px,100svh);
+    max-height:none;
+  }
+  .silence-hero .silence-copy{
+    position:relative;
+    top:auto;left:auto;
+    flex:0 0 auto;
+    margin:clamp(165px,26svh,300px) 0 0 var(--silence-pad);
+  }
+  .silence-hero .silence-bottom{
+    position:relative;
+    left:auto;right:auto;bottom:auto;
+    flex:0 0 auto;
+    margin:auto clamp(24px,5.3vw,88px) clamp(35px,6vh,82px) var(--silence-pad);
+    padding-top:clamp(36px,5svh,70px);
+  }
+}
+@media (min-width:641px) and (max-width:900px){
+  .silence-hero .silence-copy{
+    margin-left:clamp(27px,6vw,60px);
+    margin-top:clamp(185px,30svh,300px);
+  }
+  .silence-hero .silence-bottom{
+    margin-left:clamp(27px,6vw,60px);
+    margin-right:24px;
+  }
+}
+@media (min-width:641px) and (max-height:800px){
+  .silence-hero .silence-copy{margin-top:clamp(130px,19svh,185px);}
+  .silence-hero .silence-bottom{padding-top:clamp(30px,5svh,54px);}
+}
