@@ -8,9 +8,16 @@ async function authenticate(request,env){
 }
 export async function onRequestGet({request,env}){
  if(!await authenticate(request,env))return reply({error:'unavailable'},403);
+ const params=new URL(request.url).searchParams;
+ const offsetValue=params.get('offset')??'0';
+ if(!/^(0|[1-9][0-9]{0,5})$/.test(offsetValue)||Number(offsetValue)>100000||
+    [...params.keys()].some(key=>key!=='offset'))return reply({error:'invalid_pagination'},400);
+ const offset=Number(offsetValue),limit=50;
  try{
-  const rows=await env.DB.prepare("SELECT id,country_code,region,approximate_location,occurred_local,time_zone,category,description,language_code,status,publication_status,created_at FROM intake_submissions ORDER BY created_at DESC LIMIT 100").all();
-  return reply({submissions:rows.results});
+  const rows=await env.DB.prepare("SELECT id,country_code,region,approximate_location,occurred_local,time_zone,category,description,language_code,status,publication_status,created_at FROM intake_submissions ORDER BY created_at DESC,id DESC LIMIT ? OFFSET ?").bind(limit+1,offset).all();
+  const records=rows.results||[];
+  return reply({submissions:records.slice(0,limit),offset,limit,has_more:records.length>limit,
+    next_offset:records.length>limit?offset+limit:null});
  }catch{return reply({error:'unavailable'},503)}
 }
 export async function onRequestPost({request,env}){
