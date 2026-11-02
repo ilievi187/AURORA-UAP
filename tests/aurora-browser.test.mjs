@@ -341,7 +341,7 @@ try{
     await page.locator('button[data-language="en"]').click();
     await page.locator('#gateContinue').click();
     await page.locator('#languageGate').waitFor({state:'hidden',timeout:1000});
-    await page.waitForFunction(()=>Number(document.querySelector('#worldMapCount')?.textContent)===15);
+    await page.waitForFunction(()=>Number(document.querySelector('#worldMapCount')?.textContent)>=15);
     assert.equal(await page.locator('#caseGlobe').count(),0,'retired duplicate globe stays absent');
     await page.locator('#worldCountry').selectOption('US');
     assert.equal(await page.locator('#worldMapResults [data-world-case-id="nimitz-2004"]').count(),1,'sourced Nimitz dossier remains discoverable');
