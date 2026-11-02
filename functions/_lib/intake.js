@@ -13,10 +13,22 @@ const normalizeCoordinate=(value,limit)=>{
  if(typeof value!=="number"||!Number.isFinite(value)||Math.abs(value)>limit)throw Error("Invalid approximate coordinates");
  return Math.round(value*10)/10; // Approximate to ~11km north/south; NEVER store exact GPS here.
 };
+// Do not accept real people’s reports unless the private moderator queue is configured.
+// This verifies configuration shape, not live Cloudflare Access policy or dashboard reachability.
+export function moderatorQueueConfigured(env){
+ return Boolean(env?.AURORA_MODERATION_ENABLED==="enabled"&&
+  typeof env.AURORA_ACCESS_TEAM==="string"&&
+  /^https:\/\/[a-z0-9-]+\.cloudflareaccess\.com$/.test(env.AURORA_ACCESS_TEAM)&&
+  typeof env.AURORA_ACCESS_AUD==="string"&&
+  /^[a-f0-9]{64}$/.test(env.AURORA_ACCESS_AUD)&&
+  typeof env.AURORA_MODERATOR_EMAIL==="string"&&
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(env.AURORA_MODERATOR_EMAIL));
+}
 export function intakeEnabled(env,hostname){
  return Boolean(env?.DB&&typeof env.DB.prepare==="function"&&typeof env.DB.batch==="function"&&
  // A private quarantined report is independent of the PUBLIC cases registry.
  env.AURORA_INTAKE_ENABLED==="enabled"&&
+ moderatorQueueConfigured(env)&&
  env.AURORA_INTAKE_LEGAL_APPROVED==="yes"&&
  env.AURORA_INTAKE_WAF_REVIEWED==="yes"&&
  env.AURORA_INTAKE_POLICY_VERSION==="intake-v1-reviewed"&&
