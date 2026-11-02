@@ -1,0 +1,11 @@
+/* Public reporting remains local-draft-only until the server explicitly enables safe intake. */
+.home-report-cta{position:relative;display:flex;align-items:center;justify-content:space-between;gap:2.4rem;margin:clamp(2rem,5vw,5rem) auto;padding:clamp(1.5rem,4vw,3.25rem);max-width:1400px;border:1px solid rgba(145,206,232,.24);border-radius:1.2rem;background:linear-gradient(120deg,rgba(19,43,58,.82),rgba(3,9,18,.93));box-shadow:0 20px 70px rgba(0,0,0,.25)}
+.home-report-cta-copy{min-width:0;max-width:760px}
+.home-report-cta h2{font-size:clamp(1.7rem,3.6vw,3.3rem);line-height:1.12;letter-spacing:.025em;margin:.6rem 0 1rem;color:#f1f7fa}
+.home-report-cta .console-kicker{color:#a3c7da;font-size:.8rem;letter-spacing:.2em}
+.home-report-note{font-size:clamp(.94rem,1.25vw,1.04rem);line-height:1.65;color:#c4d4dd;margin:0}
+.home-report-cta-link{display:inline-flex;align-items:center;justify-content:center;gap:1rem;flex:none;min-height:3.35rem;padding:.85rem 1.6rem;border:1px solid #b9eaff;background:#c9f0ff;color:#06121e;text-decoration:none;font-weight:750;border-radius:.35rem;text-align:center}
+.home-report-cta-link:hover,.home-report-cta-link:focus-visible{background:#fff;outline-offset:3px}
+.desktop-nav .nav-report,.mobile-nav .nav-report{font-weight:750}
+@media(max-width:800px){.home-report-cta{flex-direction:column;align-items:stretch;gap:1.4rem;margin:2rem 1rem}.home-report-cta-link{width:100%}}
+@media(prefers-reduced-motion:reduce){.home-report-cta-link{transition:none}}
