@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import {DatabaseSync} from "node:sqlite";
-import {intakeEnabled,normalizeSubmission,verifyTurnstile,storeSubmission,reviewSubmission} from "../functions/_lib/intake.js";
+import {intakeEnabled,moderatorQueueConfigured,normalizeSubmission,verifyTurnstile,storeSubmission,reviewSubmission} from "../functions/_lib/intake.js";
 import {onRequestGet as getStatus} from "../functions/api/intake/status.js";
 import {onRequestPost as submit} from "../functions/api/intake/submit.js";
 const read=path=>readFileSync(new URL("../"+path,import.meta.url),"utf8");
@@ -38,7 +38,11 @@ function environment(db){
   AURORA_INTAKE_POLICY_URL:"https://aurorauap.org/privacy",
   AURORA_INTAKE_HOSTNAME:"aurorauap.org",
   AURORA_TURNSTILE_SITE_KEY:"public-test-site-key-123",
-  AURORA_TURNSTILE_SECRET:"private-test-turnstile-secret-123"};
+  AURORA_TURNSTILE_SECRET:"private-test-turnstile-secret-123",
+  AURORA_MODERATION_ENABLED:"enabled",
+  AURORA_ACCESS_TEAM:"https://aurora-test.cloudflareaccess.com",
+  AURORA_ACCESS_AUD:"a".repeat(64),
+  AURORA_MODERATOR_EMAIL:"moderator@example.com"};
 }
 function body(){
  return {request_key:crypto.randomUUID(),country_code:"BG",region:"Shumen",approximate_location:"Shumen area",
@@ -70,7 +74,8 @@ test("public intake fails closed without every explicit policy, D1, WAF, hostnam
  assert.equal(intakeEnabled({...env,AURORA_REGISTRY_PUBLIC:undefined},"aurorauap.org"),true);
  for(const key of ["DB","AURORA_INTAKE_ENABLED","AURORA_INTAKE_LEGAL_APPROVED",
   "AURORA_INTAKE_WAF_REVIEWED","AURORA_INTAKE_POLICY_VERSION","AURORA_INTAKE_POLICY_URL",
-  "AURORA_INTAKE_HOSTNAME","AURORA_TURNSTILE_SECRET","AURORA_TURNSTILE_SITE_KEY"]){
+  "AURORA_INTAKE_HOSTNAME","AURORA_TURNSTILE_SECRET","AURORA_TURNSTILE_SITE_KEY",
+  "AURORA_MODERATION_ENABLED","AURORA_ACCESS_TEAM","AURORA_ACCESS_AUD","AURORA_MODERATOR_EMAIL"]){
   const invalid={...env};delete invalid[key];
   assert.equal(intakeEnabled(invalid,"aurorauap.org"),false,"missing "+key+" should reject");
  }
@@ -79,6 +84,20 @@ test("public intake fails closed without every explicit policy, D1, WAF, hostnam
  const response=await disabled.json();
  assert.equal(response.accepting,false);assert.equal(response.mode,"local_draft_only");
  assert.equal(response.site_key,undefined);assert.equal(response.automatic_publication,false);
+ sql.close();
+});
+test("intake cannot activate without a configured Access-protected moderator queue",()=>{
+ const {db,sql}=database();const env=environment(db);
+ assert.equal(moderatorQueueConfigured(env),true);
+ for(const bad of [
+  {...env,AURORA_MODERATION_ENABLED:"disabled"},
+  {...env,AURORA_ACCESS_TEAM:"https://untrusted.example.com"},
+  {...env,AURORA_ACCESS_AUD:"short"},
+  {...env,AURORA_MODERATOR_EMAIL:"not-an-email"}
+ ]){
+  assert.equal(moderatorQueueConfigured(bad),false);
+  assert.equal(intakeEnabled(bad,"aurorauap.org"),false);
+ }
  sql.close();
 });
 test("validation rejects new private identity/media fields, exact GPS, bad timestamps, missing consent, spam",()=>{
