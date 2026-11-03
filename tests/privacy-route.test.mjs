@@ -5,9 +5,8 @@ const read=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8');
 const privacy=read('privacy.html');
 const redirects=read('_redirects');
 const report=read('report.html');
-test('public /privacy and /privacy/ rewrite to an actual notice, not the homepage',()=>{
- assert.match(redirects,/^\/privacy \/privacy\.html 200$/m);
- assert.match(redirects,/^\/privacy\/ \/privacy\.html 200$/m);
+test('Pages clean-url canonical /privacy has an HTML asset and no rewrite loop',()=>{
+ assert.doesNotMatch(redirects,/^\/privacy(?:\/)?\s/m,'Do not rewrite Pages clean URLs to their .html paths');
  assert.match(privacy,/<link rel="canonical" href="https:\/\/aurorauap\.org\/privacy">/);
  assert.match(privacy,/<article id="bg" lang="bg">/);
  assert.match(privacy,/<article id="en" lang="en">/);
