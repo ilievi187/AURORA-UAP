@@ -16,7 +16,7 @@ const TEST_SECRETS=new Set([
 const SAFE_CATEGORY=new Set(["lights","object","instrument","other"]);
 const KEYS=new Set(["request_key","country_code","region","approximate_location","latitude",
  "longitude","occurred_local","time_zone","category","description","language_code",
- "consent_version","consent","turnstile_token","website"]);
+ "consent_version","consent","adult_confirmed","turnstile_token","website"]);
 const text=(value,min,max)=>typeof value==="string"&&value.trim().length>=min&&
  value.trim().length<=max&&!/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/.test(value)?value.trim():null;
 const isUuid=s=>typeof s==="string"&&/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(s);
@@ -67,6 +67,8 @@ export function normalizeSubmission(value,policyVersion){
  if(!isUuid(value.request_key))throw Error("Invalid submission key");
  if(value.website!==undefined&&value.website!=="")throw Error("Automated submission rejected");
  if(value.consent!==true||value.consent_version!==policyVersion)throw Error("Consent must match reviewed policy");
+ // Self-declared 18+ gate; do not collect dates of birth or ID documents.
+ if(value.adult_confirmed!==true)throw Error("Adult confirmation required");
  const country_code=typeof value.country_code==="string"?value.country_code.toUpperCase():"";
  if(!/^[A-Z]{2}$/.test(country_code))throw Error("Invalid country code");
  const region=text(value.region,2,80),approximate_location=text(value.approximate_location,2,120);

@@ -48,7 +48,7 @@ function fixture(){
   request_key:crypto.randomUUID(),country_code:'BG',region:'Shumen',approximate_location:'Fictional nearby area',
   occurred_local:'2025-07-20T20:15',time_zone:'Europe/Sofia',category:'lights',
   description:'Fictional demonstration: a few silent lights moved across an empty sky and disappeared after several minutes.',
-  language_code:'en',consent_version:'intake-v1-reviewed',consent:true,
+  language_code:'en',consent_version:'intake-v1-reviewed',consent:true,adult_confirmed:true,
   turnstile_token:'local-opaque-dummy-token',website:''
  });
  const post=(payload,opts={})=>onRequestPost({

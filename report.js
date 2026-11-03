@@ -684,7 +684,7 @@
   msg(t.msgCleared);
  }
  function refreshSubmitButton(){
-  $("sendReport").disabled=!enabled||!challenge||!$("consent").checked||pending||!authIdentity;
+  $("sendReport").disabled=!enabled||!challenge||!$("consent").checked||!$("adultConfirm").checked||pending||!authIdentity;
  }
  function renderChallenge(){
   if(!window.turnstile||!enabled)return;
@@ -782,6 +782,7 @@
    catch{msg(t.msgCopyManual,true)}
   });
   $("consent").addEventListener("change",refreshSubmitButton);
+  $("adultConfirm").addEventListener("change",refreshSubmitButton);
   $("observationForm").addEventListener("submit",send);
   try{
    const result=await fetch("/api/intake/status",{cache:"no-store"});
@@ -828,7 +829,7 @@
  async function send(event){
   event.preventDefault();
   const t=pack();
-  if(!enabled||pending||!challenge||!$("consent").checked||!authIdentity){msg(t.msgNotAllowed,true);return}
+  if(!enabled||pending||!challenge||!$("consent").checked||!$("adultConfirm").checked||!authIdentity){msg(t.msgNotAllowed,true);return}
   const form=$("observationForm");
   if(!form.reportValidity())return;
   const draft=getDraft();
@@ -836,7 +837,7 @@
    request_key:requestKey,country_code:draft.country,region:draft.region,
    approximate_location:draft.location,occurred_local:draft.occurred,
    time_zone:draft.timezone,category:draft.category,description:draft.description,
-   language_code:document.documentElement.lang||"bg",consent:true,consent_version:policyVersion,
+   language_code:document.documentElement.lang||"bg",consent:true,adult_confirmed:true,consent_version:policyVersion,
    turnstile_token:challenge,website:$("website").value
   };
   const {data:sessionData}=await authClient.auth.getSession();

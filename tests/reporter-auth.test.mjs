@@ -74,7 +74,7 @@ const payload=()=>normalizeSubmission({
  request_key:crypto.randomUUID(),country_code:"BG",region:"Shumen",approximate_location:"Shumen area",
  occurred_local:"2025-11-01T20:45",time_zone:"Europe/Sofia",category:"lights",
  description:"Three silent lights moved past a rural town for several minutes before vanishing into the eastern sky.",
- language_code:"bg",consent_version:"intake-v1-reviewed",consent:true,turnstile_token:"opaque-token",website:""
+ language_code:"bg",consent_version:"intake-v1-reviewed",consent:true,adult_confirmed:true,turnstile_token:"opaque-token",website:""
 },"intake-v1-reviewed");
 test("quarantined reports have private pseudonymous ownership; donation and email are not stored in D1",async()=>{
  const {db,sql}=sqlDb();
