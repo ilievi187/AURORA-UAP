@@ -1,6 +1,6 @@
 # AURORA — WAF, Turnstile, and emergency intake shutdown
 
-Operational draft, 4 November 2026. NOT authorization to enable public intake, and NOT proof of live WAF mitigation.
+Operational draft updated 4 November 2026. A bounded single-source live WAF block is now confirmed via Cloudflare Security Events. This does NOT authorize public intake and does not prove global protection against distributed abuse.
 
 ## Configured Cloudflare rate limit (dashboard-reviewed, not traffic-tested)
 
@@ -8,7 +8,12 @@ Operational draft, 4 November 2026. NOT authorization to enable public intake, a
 - Match: host aurorauap.org, method POST, exact path /api/intake/submit.
 - Source-IP counter: 10 requests per 10 seconds, action Block for 10 seconds.
 - The cloud dashboard showed one rule out of one available rate-limiting rule. No rate-limit burst was performed.
-- A rule shown as active is not sufficient evidence to mark AURORA_INTAKE_WAF_REVIEWED=yes.
+- VERIFIED LIVE on 4 November 2026 00:59 EET: exactly eleven synthetic invalid POSTs from the owner-controlled NightKnightPC to the correct path, completed in 310 ms. Requests 1-10 received origin HTTP 503; request 11 received HTTP 429 and testing stopped immediately.
+- Cloudflare GraphQL firewallEventsAdaptive independently returned a matching exact Ray ID and rule ID with action=block, source=ratelimit and correct path, at 2026-11-03T22:59:24Z.
+- After the mitigation window a 12th and FINAL invalid POST received origin HTTP 503, demonstrating recovery.
+- Production intake remained disabled; read-only D1 counts after test: 0 private submissions, 0 audit events, 0 reporter-account links. No writes were made.
+- This confirms one real single-source WAF block, not universal behavior across all Cloudflare colos or distributed abuse. Review flags are deliberately unchanged while other launch gates remain incomplete.
+- Raw Ray IDs are stored privately on the owner's workstation with file mode 0600 and MUST NOT be committed, disclosed or inserted into public logs.
 
 ## Origin-side protection
 
@@ -17,7 +22,7 @@ The submit handler now rejects noncanonical paths with 404 before reading JSON, 
 Cloudflare recommends matching origin URL normalization and edge-path configuration:
 https://developers.cloudflare.com/waf/rate-limiting-rules/best-practices/
 
-## Controlled LIVE rate-limit test — explicit owner approval required
+## Repeating a controlled LIVE rate-limit test — explicit owner approval required
 
 DO NOT run this through CI or scheduled checks.
 

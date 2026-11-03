@@ -78,3 +78,8 @@ The independently verified Supabase token allows only GET /api/account/privacy t
 ## 4 Nov 2026 — WAF path and emergency-off regression
 
 The submit handler rejects any route other than exact /api/intake/submit before Auth, Siteverify or D1. A separate isolated emergency-off test proves new submissions are denied while previously quarantined records stay private. No live WAF burst or production flag modification was made. Owner-controlled live test and rollback instructions are in docs/WAF-TURNSTILE-EMERGENCY-RUNBOOK-2026-11-04.md.
+
+
+## 4 Nov 2026: owner-approved live rate-limit proof
+
+Cloudflare Security Events GraphQL matched the test's 11th HTTP 429 response to an actual block/ratelimit event at 2026-11-03T22:59:24Z on exact POST /api/intake/submit. The first ten invalid requests received 503 (public intake disabled); a twelfth after the block expired again returned 503. All tests used synthetic invalid payloads, and read-only D1 counts stayed at zero. The single-source edge test is verified; production launch flags remain unchanged until all other readiness requirements are met. See docs/WAF-TURNSTILE-EMERGENCY-RUNBOOK-2026-11-04.md.
