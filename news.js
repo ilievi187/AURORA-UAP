@@ -99,7 +99,7 @@
   pageStatus.textContent=matches.length?(copy?.page||"Page")+" "+(currentPage+1)+" / "+pageCount:(copy?.page||"Page")+" 0 / 0";
   if(items.length){
    const end=Math.min(start+root.childElementCount,matches.length);
-   $("newsStatus").textContent=end+" / "+matches.length+" · "+(window.AURORA_SUBPAGES?.text("news")||"News");
+   $("newsStatus").textContent=end+" / "+matches.length+" · "+(window.AURORA_SUBPAGES?.text("headlines")||"headlines");
   }
  }
  // Translate only the visible source page; the stable provider offsets still refer
