@@ -20,4 +20,14 @@ window.AURORA_NEWS_UI = {
  ja:{sourceType:'情報源の種類',previous:'前へ',next:'次へ',page:'ページ',roles:{all:'すべての情報源','official-institution':'公的機関','public-broadcaster':'公共放送','international-desk':'国際ニュース編集部','specialist-press':'専門メディア','news-search':'Google ニュース検索','other':'その他 / アーカイブ済み情報源'}},
  ko:{sourceType:'출처 유형',previous:'이전',next:'다음',page:'페이지',roles:{all:'모든 출처','official-institution':'공식 기관','public-broadcaster':'공영 방송사','international-desk':'국제 뉴스 데스크','specialist-press':'전문 매체','news-search':'Google 뉴스 검색',other:'기타 / 보관된 출처'}}
 };
-for(const copy of Object.values(window.AURORA_NEWS_UI))copy.roles.editorial='AURORA Editorial';
+const archiveRecordLabels={
+ bg:'Запазен архивен запис',en:'Archived source record',de:'Archivierter Quellenhinweis',ru:'Архивная запись источника',
+ 'zh-CN':'已存档的来源记录',fr:'Notice source archivée',es:'Registro de fuente archivado',it:'Fonte archiviata',
+ pt:'Registro de fonte arquivado',tr:'Arşivlenmiş kaynak kaydı',ro:'Înregistrare de sursă arhivată',el:'Αρχειοθετημένη εγγραφή πηγής',
+ sr:'Архивирани запис извора',uk:'Архівний запис джерела',pl:'Zarchiwizowany wpis źródłowy',ar:'سجل مصدر مؤرشف',
+ ja:'保存された出典記録',ko:'보존된 출처 기록'
+};
+for(const [locale,copy] of Object.entries(window.AURORA_NEWS_UI)){
+ copy.roles.editorial='AURORA Editorial';
+ copy.archivedRecord=archiveRecordLabels[locale];
+}

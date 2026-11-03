@@ -55,6 +55,7 @@
    }
    const role=copy?.roles[item.source_role||"other"]||copy?.roles.other;
    if(role){const badge=document.createElement("span");badge.className="news-source-type";badge.textContent=role;meta.append(" · ",badge)}
+   if(item.archival===true){const badge=document.createElement("span");badge.className="news-archive-record";badge.textContent=copy?.archivedRecord||"Archived source record";meta.append(" · ",badge)}
    const h=document.createElement("h2"),link=document.createElement("a");
    link.href=sourceUrl.href;link.target="_blank";link.rel="noopener noreferrer";
    link.textContent=item.translated_title||item.title;h.append(link);card.append(meta,h);

@@ -46,7 +46,7 @@ jobs:
       - name: Install project dependencies
         run: npm ci
       - name: Migrations, idempotent import and real SQLite API tests
-        run: node --experimental-sqlite --test tests/database.test.mjs tests/newsroom.test.mjs
+        run: node --experimental-sqlite --test tests/database.test.mjs tests/newsroom.test.mjs tests/news-feed-archive.test.mjs
   private-intake:
     runs-on: ubuntu-latest
     steps:

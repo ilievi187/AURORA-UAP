@@ -25,7 +25,7 @@ test('news source roles, editorial categories, article labels and pagination are
  for(const locale of locales){
   assert.ok(copy[locale].sourceType&&copy[locale].topicCategory&&copy[locale].previous&&copy[locale].next&&copy[locale].page,locale+' has category, pagination and source filter labels');
   assert.deepEqual(Object.keys(copy[locale].categories).sort(),['all','history','official','other','policy','research','sightings']);
-  assert.ok(copy[locale].originalBody&&copy[locale].readArticle&&copy[locale].auroraPublished&&copy[locale].videoSource,locale+' has article-language and source labels');
+  assert.ok(copy[locale].originalBody&&copy[locale].readArticle&&copy[locale].auroraPublished&&copy[locale].videoSource&&copy[locale].archivedRecord,locale+' has article, attribution and archived-record labels');
   for(const role of roles)assert.ok(copy[locale].roles[role],locale+' has source type '+role);
  }
 });

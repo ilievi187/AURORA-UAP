@@ -1,4 +1,4 @@
-name: AURORA scheduled news cache refresh
+name: AURORA scheduled news archive refresh
 on:
   schedule:
     - cron: '27 */6 * * *'
@@ -6,28 +6,43 @@ on:
 permissions:
   contents: read
 jobs:
-  refresh-public-news:
+  refresh-source-backed-history:
     if: github.repository == 'ilievi187/AURORA-UAP'
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 6
+    env:
+      AURORA_NEWS_REFRESH_TOKEN: ${{ secrets.AURORA_NEWS_REFRESH_TOKEN }}
     steps:
-      - name: Refresh source-backed public editions
+      - name: Check owner-controlled archive configuration
+        id: archive-config
+        shell: bash
+        run: |
+          if [[ -z "${AURORA_NEWS_REFRESH_TOKEN:-}" ]]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "Durable refresh skipped; the owner has not configured the secret."
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Refresh source-backed editions into durable D1 history
+        if: steps.archive-config.outputs.enabled == 'true'
         shell: bash
         run: |
           set -euo pipefail
           for edition in global bulgaria official; do
-            response="$(curl --fail --silent --show-error --retry 1 --retry-all-errors --max-time 25 \
-              "https://aurorauap.org/api/news?edition=${edition}&lang=en")"
+            response="$(curl --fail --silent --show-error --retry 1 --retry-all-errors --max-time 60 \
+              --request POST \
+              --header "Authorization: Bearer ${AURORA_NEWS_REFRESH_TOKEN}" \
+              --header 'Content-Type: application/json' \
+              --data "{\"edition\":\"${edition}\"}" \
+              "https://aurorauap.org/api/news-refresh")"
             NEWS_EDITION="$edition" NEWS_RESPONSE="$response" node --input-type=module -e '
               const payload = JSON.parse(process.env.NEWS_RESPONSE);
-              if (payload.edition !== process.env.NEWS_EDITION) throw new Error("edition mismatch");
-              if (!["live", "cached"].includes(payload.status)) throw new Error("news status unavailable");
-              if (!Array.isArray(payload.items) || payload.items.length < 1) throw new Error("no source-backed items");
-              for (const item of payload.items) {
-                const url = new URL(item.url);
-                if (url.protocol !== "https:" || !item.title?.trim() || !item.source?.trim() || !Number.isFinite(Date.parse(item.published)))
-                  throw new Error("item missing title, publisher, HTTPS source, or publication date");
-              }
-              console.log(`${payload.edition}: ${payload.items.length} dated, attributed items (${payload.status})`);
+              if (payload.status !== "refreshed" || payload.edition !== process.env.NEWS_EDITION)
+                throw new Error("durable refresh did not complete for the requested edition");
+              if (!Number.isInteger(payload.fetched_count) || payload.fetched_count < 5 ||
+                  !Number.isInteger(payload.stored_count) || payload.stored_count < 1 ||
+                  payload.stored_count > payload.fetched_count)
+                throw new Error("durable refresh returned invalid source-backed counts");
+              console.log(`${payload.edition}: archived ${payload.stored_count} of ${payload.fetched_count} source-backed headlines`);
             '
           done

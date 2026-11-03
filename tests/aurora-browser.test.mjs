@@ -172,6 +172,23 @@ try{
     assert.deepEqual(errors,[]);
     await ctx.close();
   });
+  await test('durable fallback records are visibly labeled as archived source records',async()=>{
+    const ctx=await browser.newContext({viewport:{width:1180,height:850},reducedMotion:"reduce"});
+    const page=await ctx.newPage(),errors=[];
+    page.on("pageerror",error=>errors.push(error.message));
+    await page.route("**/api/news?*",route=>route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
+      status:"cached",edition:"global",updated_at:"2026-11-02T10:00:00.000Z",count:1,cache_source:"news_history_db",
+      items:[{title:"Preserved source-reported UAP bulletin",url:"https://publisher.example.test/archive/story-1",source:"Example Press",published:"2026-11-01T10:00:00.000Z",language:"en",source_role:"news-search",archival:true}],
+      translation:{target:"bg",status:"translated",translated:1}
+    })}));
+    await page.goto("http://127.0.0.1:"+port+"/news.html");
+    await page.waitForFunction(()=>document.querySelector(".news-archive-record")?.textContent==="Запазен архивен запис");
+    assert.equal(await page.locator(".news-archive-record").count(),1);
+    assert.equal(await page.locator("#newsStatus").getAttribute("data-state"),"cached");
+    assert.equal(await page.locator(".live-card h2 a").getAttribute("href"),"https://publisher.example.test/archive/story-1");
+    assert.deepEqual(errors,[]);
+    await ctx.close();
+  });
   await test('localized news and country archive keep language across navigation without reopening the welcome gate',async()=>{
     const ctx=await browser.newContext({viewport:{width:1280,height:850},reducedMotion:'reduce'});
     const page=await ctx.newPage(),errors=[];

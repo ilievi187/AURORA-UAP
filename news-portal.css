@@ -4,6 +4,7 @@
 #newsBrowse .live-toolbar label{display:grid;gap:7px;min-width:0}
 #newsBrowse .live-toolbar select,#newsBrowse .live-toolbar input{width:100%;min-width:0}
 .news-source-type{display:inline-block;margin-inline-start:5px;color:#9fb4c2;font-size:.82em}
+.news-archive-record{display:inline-block;margin-inline-start:5px;border:1px solid #7f99aa66;border-radius:3px;background:#111a22;color:#d2dee7;padding:1px 6px;font-size:.78em;line-height:1.35}
 .news-pagination{display:flex;align-items:center;justify-content:center;gap:14px;margin:22px auto 10px}
 .news-pagination button{min-width:112px;min-height:42px;border:1px solid #667c8d66;border-radius:4px;background:#080d13;color:#e3ebf0;padding:9px 14px}
 .news-pagination button:hover:not(:disabled){border-color:#c2d8e6;background:#111b24}
