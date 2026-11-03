@@ -743,6 +743,16 @@ try{
      return route.fulfill({status:404,body:'{}'});
     });
     await page.goto('http://127.0.0.1:'+port+'/moderation.html');
+    // Cloudflare Pages caches shared CSS for four hours. Version the moderator
+    // asset URL so newly released panels do not inherit stale report.css.
+    const sheet=await page.locator('link[rel="stylesheet"]').getAttribute('href');
+    assert.match(sheet,/^\/report\.css\?v=mod-20261103-r138$/);
+    const layout=await page.locator('.moderation-overview dl').evaluate(el=>({
+      display:getComputedStyle(el).display,
+      border:getComputedStyle(el.closest('.moderation-overview')).borderTopWidth
+    }));
+    assert.equal(layout.display,'grid');
+    assert.equal(layout.border,'1px');
     await page.waitForFunction(()=>document.querySelector('#moderationSummary')?.textContent.includes('180 дни'));
     assert.equal(await page.locator('#moderationSummary dd').first().textContent(),'1');
     assert.equal(await page.locator('#queue article').count(),1);
