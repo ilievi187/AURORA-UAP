@@ -163,5 +163,5 @@
  $("showArticles").addEventListener('click',()=>{$("articlesWorkspace").hidden=false;$("tipsWorkspace").hidden=true;$("showArticles").setAttribute('aria-pressed','true');$("showTips").setAttribute('aria-pressed','false');void loadArticles(articleOffset)});
  $("showTips").addEventListener('click',()=>{$("articlesWorkspace").hidden=true;$("tipsWorkspace").hidden=false;$("showArticles").setAttribute('aria-pressed','false');$("showTips").setAttribute('aria-pressed','true');void loadTips(0)});
  for(const field of articleForm.querySelectorAll('input,textarea,select'))field.addEventListener('input',refreshActionButtons);
- resetArticle();void loadArticles(0);void loadTips(0);
+ resetArticle();void loadArticles(0);
 })();

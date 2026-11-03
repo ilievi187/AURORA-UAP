@@ -885,18 +885,21 @@ try{
   await test("newsroom UI previews, saves, localizes and explicitly publishes an article",async()=>{
     const context=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:"reduce"});
     const page=await context.newPage(),errors=[],actions=[];
+    let tipReviewed=false;
     page.on("pageerror",error=>errors.push(error.message));
     await page.route("**/api/news-editor*",async route=>{
       const request=route.request();
       if(request.method()==="GET"){
         const url=new URL(request.url()),kind=url.searchParams.get("kind")||"articles";
         if(kind==="translation")return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({source_language:"en",translation:null})});
-        return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify(kind==="tips"?{tips:[],offset:0,has_more:false}:{articles:[],offset:0,has_more:false})});
+        if(kind==="tips")return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({tips:tipReviewed?[]:[{id:"aur-tip-12345678-1234-1234-1234-123456789abc",title:"A new source-backed UAP report",source_url:"https://publisher.example/story/456",status:"pending",submitted_at:"2026-10-30T12:00:00Z"}],offset:0,has_more:false})});
+        return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({articles:[],offset:0,has_more:false})});
       }
       const payload=request.postDataJSON();actions.push(payload.action);
       if(payload.action==="save_article")return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({id:"aur-news-12345678-1234-1234-1234-123456789abc",status:payload.article.id?"updated":"draft",published:false})});
       if(payload.action==="save_translation")return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({status:"localized",language:payload.translation.language_code})});
       if(payload.action==="publish_article")return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({status:"published",published:true})});
+      if(payload.action==="review_tip"){tipReviewed=true;return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({status:payload.decision,published:false})})}
       return route.fulfill({status:400,contentType:"application/json",body:'{"error":"unsupported_test_action"}'});
     });
     await page.goto("http://127.0.0.1:"+port+"/news-editor.html");
@@ -920,7 +923,13 @@ try{
     await page.waitForFunction(()=>document.querySelector("#newsEditorStatus")?.textContent==="Редакторският превод е запазен.");
     await page.locator("#publishArticle").click();
     await page.waitForFunction(()=>document.querySelector("#newsEditorStatus")?.textContent==="Статията е публикувана в публичния новинарски поток.");
-    assert.deepEqual(actions,["save_article","save_translation","save_article","publish_article"]);
+    await page.locator("#showTips").click();
+    await page.waitForFunction(()=>document.querySelectorAll(".news-tip-review-card").length===1);
+    await page.locator(".news-tip-review-actions textarea").fill("Source is relevant for editorial verification.");
+    await page.getByRole("button",{name:"Одобри за редакционен преглед"}).click();
+    await page.waitForFunction(()=>document.querySelector("#newsEditorStatus")?.textContent==="Предложението е одобрено само за редакционна употреба.");
+    assert.equal(await page.locator(".news-tip-review-card").count(),0,"review approval does not publish a visitor-submitted article");
+    assert.deepEqual(actions,["save_article","save_translation","save_article","publish_article","review_tip"]);
     await page.setViewportSize({width:390,height:844});
     const mobileOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
     assert.ok(mobileOverflow<=1,"private newsroom form fits a mobile viewport");
