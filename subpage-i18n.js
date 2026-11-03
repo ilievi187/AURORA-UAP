@@ -23,6 +23,7 @@
   "ko":{"home":"홈","news":"뉴스","report":"제보","countries":"국가별 목록","newsTitle":"세계 UAP 뉴스","search":"제목 검색","refresh":"새로고침","more":"더 보기","edition":"범위","region":"지역","loading":"불러오는 중…","offline":"정보원을 일시적으로 이용할 수 없습니다.","newsIntro":"전 세계 언론의 최신 제목을 날짜순으로 보여줍니다. 원문을 확인하세요.","edGlobal":"🌍 전 세계 피드","edBulgaria":"🇧🇬 불가리아","edOfficial":"공식 문서 및 기관","origHeadline":"원본 제목","headlines":"개의 헤드라인","translated":"개 번역됨","origUntranslated":"원본 제목 — 번역 사용 불가","cached":"캐시됨","newsWarning":"Google 뉴스 · RSS/Atom · 국제 언론과 공개 RSS 피드의 주요 기사입니다. 원문을 확인하고 다양한 관점을 탐색하세요.","openGoogleNews":"Google 뉴스 직접 열기 ↗","noHeadlines":"현재 표시할 헤드라인이 없습니다.","skipForm":"양식으로 건너뛰기"}
  },choices=["bg","en","de","ru","zh-CN","fr","es","it","pt","tr","ro","el","sr","uk","pl","ar","ja","ko"];
  function code(){
+  if(window.AURORA_PUBLIC_LANGUAGE==="en")return "en";
   try{
    const q=new URLSearchParams(location.search).get("lang");
    if(q&&choices.includes(q)){

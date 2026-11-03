@@ -133,6 +133,7 @@ const HOME_TITLES = {
   ko: 'AURORA — UAP Bulgaria | 미지의 현상을 탐구하다'
 };
 let lang = (()=>{
+  if(window.AURORA_PUBLIC_LANGUAGE==="en")return "en";
   try{
     const u=new URL(location.href);
     const q=u.searchParams.get('lang');

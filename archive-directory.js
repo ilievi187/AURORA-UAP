@@ -7,6 +7,7 @@ const PAGE_SIZE=10,$=id=>document.getElementById(id),storageKey="aurora-lang";
 const supported=new Set(["bg","en","de","ru","zh-CN","fr","es","it","pt","tr","ro","el","sr","uk","pl","ar","ja","ko"]);
 let language="bg";try{language=localStorage.getItem(storageKey)||"bg"}catch{}
 if(!supported.has(language))language="en";
+if(window.AURORA_PUBLIC_LANGUAGE==="en")language="en";
 let records=[],currentPage=1,search="",country="",mediaType="",sourceError=false;
 const packs={
  bg:{home:"Начало",countries:"Държави",news:"Новини",language:"Език",

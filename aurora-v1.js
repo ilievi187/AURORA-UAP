@@ -115,6 +115,7 @@
   const cancelButton=document.getElementById("gateCancel");
   const selectionStatus=document.getElementById("gateSelection");
   const getStored=()=>{
+    if(window.AURORA_PUBLIC_LANGUAGE==="en")return "en";
     try{
       const q=new URLSearchParams(location.search).get("lang");
       if(languages.some(item=>item[0]===q)){try{localStorage.setItem("aurora-lang",q)}catch(_){}return q;}

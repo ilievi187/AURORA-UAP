@@ -51,6 +51,7 @@
    document.querySelector(".live-header")?.append(dropdown);
   }
   let current;try{current=localStorage.getItem("aurora-lang")}catch{}
+  if(window.AURORA_PUBLIC_LANGUAGE==="en")current="en";
   document.documentElement.lang=langs.includes(current)?current:"bg";
   document.documentElement.dir=current==="ar"?"rtl":"ltr";
   dropdown.value=document.documentElement.lang;apply();

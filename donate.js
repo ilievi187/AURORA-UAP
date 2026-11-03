@@ -9,6 +9,7 @@ try{
   else if(options.includes(stored))lang=stored;
   else if(stored)lang='en';
 }catch(_){}
+if(window.AURORA_PUBLIC_LANGUAGE==="en")lang="en";
 const sel=document.getElementById('langSelect');
 const checkout=document.getElementById('donateCheckout');
 const status=document.getElementById('paymentStatus');

@@ -167,6 +167,7 @@
   }
  };
  function getLocale(){
+  if(window.AURORA_PUBLIC_LANGUAGE==="en")return "en";
   try{
    const q=new URLSearchParams(location.search).get("lang");
    if(q&&PACKS[q])return q;

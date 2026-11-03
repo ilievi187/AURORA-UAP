@@ -1,0 +1,25 @@
+/* Temporary public English-only rollout. Keep the language components and
+   translation data in source for staged re-enablement; never display them
+   during the public English edition. */
+html.aurora-english-launch #languageGate,
+html.aurora-english-launch #openLanguageGate,
+html.aurora-english-launch #footerLanguageGate,
+html.aurora-english-launch #langToggle,
+html.aurora-english-launch .archive-language,
+html.aurora-english-launch .page-language,
+html.aurora-english-launch #langSelect,
+html.aurora-english-launch label[for="langSelect"],
+html.aurora-english-launch label[for="langToggle"]{
+  display:none!important;
+}
+html.aurora-english-launch .silence-stat:has(#auroraLanguageCount){
+  display:none!important;
+}
+html.aurora-english-launch body .silence-hero .silence-stats{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+@media(max-width:640px){
+ html.aurora-english-launch body .silence-hero .silence-stats{
+   grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+}

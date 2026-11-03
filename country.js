@@ -224,6 +224,7 @@
  };
  let language=(()=>{try{return localStorage.getItem("aurora-lang")||"bg"}catch{return "bg"}})();
  if(!packs[language])language="bg";
+ if(window.AURORA_PUBLIC_LANGUAGE==="en")language="en";
  document.documentElement.lang=language;
  const getLocale=()=>language==="zh-CN"?"zh-Hans":language;
  const isBg=()=>language==="bg";
