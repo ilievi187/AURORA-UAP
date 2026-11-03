@@ -68,3 +68,8 @@ Offline tests confirm that noncanonical POST paths reach neither Supabase/Turnst
 - Public intake remained disabled; read-only D1 counts afterward showed zero submissions, audit records and reporter links, with no database writes.
 - This proves a single real rate-limiting block and later recovery. It does not establish universal distributed abuse resistance.
 - For safety, production AURORA_INTAKE_WAF_REVIEWED and all other launch flags were NOT changed. Separate privacy, legal, Turnstile and moderator checks remain pending.
+
+
+## Owner-only real Turnstile diagnostic (4 November)
+
+Added isolated signed-Access-protected /api/moderation/turnstile. It exposes only a public site key, requires a genuine action aurora_report challenge and uses Siteverify with the encrypted Pages secret. Its POST never accesses private reports or D1. The daily anonymous prelaunch monitor now includes this route as a twelfth GET check. The real challenge remains unverified until an owner successfully completes it in a browser, and public intake remains OFF. See docs/OWNER-TURNSTILE-DIAGNOSTIC-2026-11-04.md.

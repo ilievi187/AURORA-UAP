@@ -5,6 +5,11 @@
 <div id="moderationSummary" role="status" aria-live="polite">Зареждане на справката…</div>
 <p class="moderation-hint">Просрочените срокове са сигнали за проверка, не автоматични действия. Изтриването и публикуването не се извършват от този панел.</p>
 </section>
+<section class="report-section" aria-label="Private security diagnostic">
+<h2>Turnstile verification</h2>
+<p>Owner-only real challenge test. Checks the production Turnstile integration without accepting reports or changing D1.</p>
+<p><a href="/api/moderation/turnstile" target="_blank" rel="noopener">Open isolated Turnstile test</a></p>
+</section>
 <form id="receiptLookup" class="moderation-lookup" aria-label="Търсене по номер на сигнал">
 <label for="receiptQuery">Намери сигнал по номер</label>
 <div class="moderation-lookup-row"><input id="receiptQuery" autocomplete="off" spellcheck="false" maxlength="44" placeholder="aur-int-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" required>

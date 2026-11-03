@@ -83,3 +83,8 @@ The submit handler rejects any route other than exact /api/intake/submit before 
 ## 4 Nov 2026: owner-approved live rate-limit proof
 
 Cloudflare Security Events GraphQL matched the test's 11th HTTP 429 response to an actual block/ratelimit event at 2026-11-03T22:59:24Z on exact POST /api/intake/submit. The first ten invalid requests received 503 (public intake disabled); a twelfth after the block expired again returned 503. All tests used synthetic invalid payloads, and read-only D1 counts stayed at zero. The single-source edge test is verified; production launch flags remain unchanged until all other readiness requirements are met. See docs/WAF-TURNSTILE-EMERGENCY-RUNBOOK-2026-11-04.md.
+
+
+## Owner-only managed Turnstile preflight (4 November)
+
+The restricted /api/moderation/turnstile page provides an independent production-host Siteverify challenge and confirmation without enabling user submissions or touching D1. Access demands the normal signed Cloudflare owner JWT, so anonymous users or unauthorized accounts cannot view or POST. This is a safer proof step than prematurely switching on public intake. Test code and CSP isolation have automated coverage, but actual owner interaction is still required to mark the real Turnstile challenge PASSED. See docs/OWNER-TURNSTILE-DIAGNOSTIC-2026-11-04.md.

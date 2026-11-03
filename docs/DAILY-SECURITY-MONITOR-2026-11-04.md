@@ -6,7 +6,7 @@ Active once the associated GitHub Actions workflow is merged into main. This is 
 - Schedule: GitHub Actions at 04:42 UTC every day (approximately 06:42 winter / 07:42 summer Bulgarian time; actual scheduler execution can be delayed).
 - Optional manual trigger: GitHub Actions > AURORA prelaunch private-surface monitor > Run workflow.
 - Credentials: NONE. No Cloudflare API token, Supabase service-role key, personal user token or backup key is provided to the runner.
-- Scope: offline unit validation plus exactly eleven **anonymous GET** requests from a GitHub Actions runner to public production endpoints, covering closed private report intake, bilingual privacy notice, account receipt login gate, Cloudflare Access moderator redirects and denied private editor routes.
+- Scope: offline unit validation plus exactly twelve **anonymous GET** requests from a GitHub Actions runner to public production endpoints, covering closed private report intake, bilingual privacy notice, account receipt login gate, Cloudflare Access moderator redirects and denied private editor routes.
 - Fails if public intake unexpectedly turns on, a protected endpoint returns HTTP 200, the account-private route stops enforcing 401/no-store, a privacy processor disclosure disappears, or status cache policy weakens.
 - No POST, no WAF burst, no Turnstile test, no D1 mutation, no private login and no account deletion.
 - Check failed runs in GitHub Actions. GitHub notifications depend on repository/user notification settings; do not assume an immediate email or text alert.

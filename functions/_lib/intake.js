@@ -36,6 +36,14 @@ export function moderatorQueueConfigured(env){
   typeof env.AURORA_MODERATOR_EMAIL==="string"&&
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(env.AURORA_MODERATOR_EMAIL));
 }
+// Separate reusable gate for a real managed widget; official dummy credentials
+// must never be mistaken for production readiness in any endpoint.
+export function liveTurnstileConfigured(env){
+ return Boolean(typeof env?.AURORA_TURNSTILE_SECRET==="string"&&
+  env.AURORA_TURNSTILE_SECRET.length>10&&!TEST_SECRETS.has(env.AURORA_TURNSTILE_SECRET)&&
+  typeof env.AURORA_TURNSTILE_SITE_KEY==="string"&&
+  env.AURORA_TURNSTILE_SITE_KEY.length>10&&!TEST_SITEKEYS.has(env.AURORA_TURNSTILE_SITE_KEY));
+}
 export function intakeEnabled(env,hostname){
  return Boolean(env?.DB&&typeof env.DB.prepare==="function"&&typeof env.DB.batch==="function"&&
  // A private quarantined report is independent of the PUBLIC cases registry.
@@ -47,10 +55,7 @@ export function intakeEnabled(env,hostname){
  env.AURORA_INTAKE_POLICY_URL==="https://aurorauap.org/privacy"&&
  env.AURORA_INTAKE_HOSTNAME===hostname&&
  hostname==="aurorauap.org"&&
- typeof env.AURORA_TURNSTILE_SECRET==="string"&&env.AURORA_TURNSTILE_SECRET.length>10&&
- !TEST_SECRETS.has(env.AURORA_TURNSTILE_SECRET)&&
- typeof env.AURORA_TURNSTILE_SITE_KEY==="string"&&env.AURORA_TURNSTILE_SITE_KEY.length>10&&
- !TEST_SITEKEYS.has(env.AURORA_TURNSTILE_SITE_KEY));
+ liveTurnstileConfigured(env));
 }
 export async function intakeSchemaReady(db){
  if(!db||typeof db.prepare!=="function")return false;

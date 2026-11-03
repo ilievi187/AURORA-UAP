@@ -23,4 +23,9 @@ Reference: docs/RELEASE-SECURITY-EVIDENCE-2026-11-03.md and docs/WAF-TURNSTILE-E
 
 ## Additional continuous prelaunch control
 
-A daily GitHub Actions workflow now runs the anonymous eleven-route security preflight without credentials or requests that mutate the production app. It alerts through the normal GitHub Actions failed-run mechanism when a guarded route becomes public or intake changes unintentionally. The monitor expects prelaunch accepting:false; it must be updated to an authorized postlaunch profile before public submissions open. See docs/DAILY-SECURITY-MONITOR-2026-11-04.md.
+A daily GitHub Actions workflow now runs the anonymous twelve-route security preflight without credentials or requests that mutate the production app. It alerts through the normal GitHub Actions failed-run mechanism when a guarded route becomes public or intake changes unintentionally. The monitor expects prelaunch accepting:false; it must be updated to an authorized postlaunch profile before public submissions open. See docs/DAILY-SECURITY-MONITOR-2026-11-04.md.
+
+
+## Separate genuine Turnstile diagnostic now available
+
+Owner-only diagnostic: https://aurorauap.org/api/moderation/turnstile. The separate page requires a valid Cloudflare Access owner identity and allows one actual managed challenge without activating report intake or writing to D1. The diagnostic itself cannot automatically prove a user completed the challenge: a PASS is only established after the owner opens the page and completes it. See docs/OWNER-TURNSTILE-DIAGNOSTIC-2026-11-04.md.

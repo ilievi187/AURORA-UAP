@@ -5,6 +5,7 @@ import {readFileSync} from 'node:fs';
 import {accessIdentity} from '../functions/_lib/access.js';
 import {onRequest as guardModeratorPage} from '../functions/_middleware.js';
 import {onRequestGet,onRequestPost} from '../functions/api/moderation/index.js';
+import {onRequestGet as turnstileGet,onRequestPost as turnstilePost,onRequestDelete as turnstileDelete} from '../functions/api/moderation/turnstile.js';
 const env={AURORA_ACCESS_TEAM:'https://example.cloudflareaccess.com',AURORA_ACCESS_AUD:'a'.repeat(64),AURORA_MODERATOR_EMAIL:'reviewer@example.com',AURORA_MODERATION_ENABLED:'enabled',DB:{}};
 const b64=value=>Buffer.from(value).toString('base64url');
 const keys=await crypto.subtle.generateKey({name:'RSASSA-PKCS1-v1_5',modulusLength:2048,publicExponent:new Uint8Array([1,0,1]),hash:'SHA-256'},true,['sign','verify']);
@@ -166,4 +167,88 @@ test('private overview and individual audit require owner JWT and disclose no re
   const preview=await onRequestGet({request:new Request('https://staging.pages.dev/api/moderation/?receipt='+id,{headers:{'Cf-Access-Jwt-Assertion':signed}}),env:{...env,DB:db}});
   assert.equal(preview.status,403);
  }finally{globalThis.fetch=original;sql.close()}
+});
+
+
+test('owner-only real Turnstile diagnostic rejects anonymous and untrusted host without touching D1',async()=>{
+ const envWithKeys={...env,
+  AURORA_TURNSTILE_SITE_KEY:'real_site_key_1234567890',
+  AURORA_TURNSTILE_SECRET:'real_secret_1234567890',
+  DB:{prepare(){throw Error('D1 MUST NOT be accessed by diagnostic')}}
+ };
+ const noAuth=await turnstileGet({request:new Request('https://aurorauap.org/api/moderation/turnstile'),env:envWithKeys});
+ assert.equal(noAuth.status,403);
+ assert.equal(noAuth.headers.get('Cache-Control').includes('no-store'),true);
+ const noPost=await turnstilePost({request:new Request('https://aurorauap.org/api/moderation/turnstile',{method:'POST'}),env:envWithKeys});
+ assert.equal(noPost.status,403);
+ assert.equal((await turnstileDelete()).status,405);
+ const preview=await turnstileGet({request:new Request('https://preview.pages.dev/api/moderation/turnstile'),env:envWithKeys});
+ assert.equal(preview.status,403);
+});
+test('valid Access owner can open isolated real Turnstile diagnostic without disabling intake gate',async()=>{
+ const real={...env,AURORA_TURNSTILE_SITE_KEY:'real_site_key_1234567890',
+  AURORA_TURNSTILE_SECRET:'real_secret_1234567890',
+  AURORA_INTAKE_ENABLED:'off',
+  DB:{prepare(){throw Error('Diagnostic cannot query D1')}}
+ };
+ const original=globalThis.fetch;
+ globalThis.fetch=fetcher;
+ try{
+  const signed=await token();
+  const request=new Request('https://aurorauap.org/api/moderation/turnstile',{headers:{'Cf-Access-Jwt-Assertion':signed}});
+  const r=await turnstileGet({request,env:real});
+  assert.equal(r.status,200);
+  assert.match(r.headers.get('Content-Security-Policy'),/script-src 'self' https:\/\/challenges.cloudflare.com/);
+  assert.match(r.headers.get('Content-Security-Policy'),/frame-ancestors 'none'/);
+  const body=await r.text();
+  assert.match(body,/real_site_key_1234567890/);
+  assert.doesNotMatch(body,/real_secret_1234567890/);
+  assert.match(body,/No report was submitted|without submitting a report/);
+  assert.match(body,/turnstile-diagnostic.js/);
+  assert.equal((await turnstileGet({request,env:{...real,AURORA_TURNSTILE_SECRET:'1x0000000000000000000000000000000AA'}})).status,503);
+  assert.equal((await turnstileGet({request,env:{...real,AURORA_TURNSTILE_SITE_KEY:'1x00000000000000000000AA'}})).status,503);
+  const wrong=await turnstileGet({request:new Request(request.url,{headers:{'Cf-Access-Jwt-Assertion':await token({email:'outsider@example.com'})}}),env:real});
+  assert.equal(wrong.status,403);
+ }finally{globalThis.fetch=original}
+});
+test('owner real challenge diagnostic strictly verifies hostname/action and stores no data',async()=>{
+ const real={...env,AURORA_TURNSTILE_SITE_KEY:'real_site_key_1234567890',
+  AURORA_TURNSTILE_SECRET:'real_secret_1234567890',
+  AURORA_INTAKE_ENABLED:'off',
+  DB:{prepare(){throw Error('Diagnostic cannot query D1')}}
+ };
+ const signed=await token();
+ const original=globalThis.fetch;
+ let verified={success:true,hostname:'aurorauap.org',action:'aurora_report'};
+ const calls=[];
+ globalThis.fetch=async(url,opts)=>{
+  calls.push(url);
+  if(url===env.AURORA_ACCESS_TEAM+'/cdn-cgi/access/certs')return Response.json({keys:[jwk]});
+  assert.equal(url,'https://challenges.cloudflare.com/turnstile/v0/siteverify');
+  assert.equal(opts.method,'POST');
+  assert.ok(opts.body.includes('response='));
+  assert.ok(opts.body.includes('secret='));
+  return Response.json(verified);
+ };
+ const request=(origin='https://aurorauap.org',body={token:'opaque_valid_token'})=>
+  new Request('https://aurorauap.org/api/moderation/turnstile',{
+   method:'POST',headers:{'Cf-Access-Jwt-Assertion':signed,'Content-Type':'application/json','Origin':origin},
+   body:JSON.stringify(body)
+  });
+ try{
+  const ok=await turnstilePost({request:request(),env:real});
+  assert.equal(ok.status,200);
+  assert.deepEqual(await ok.json(),{verified:true,report_submitted:false,private_data_changed:false});
+  verified={success:true,hostname:'attacker.example',action:'aurora_report'};
+  assert.equal((await turnstilePost({request:request(),env:real})).status,403);
+  verified={success:true,hostname:'aurorauap.org',action:'signup'};
+  assert.equal((await turnstilePost({request:request(),env:real})).status,403);
+  verified={success:false,hostname:'aurorauap.org',action:'aurora_report'};
+  assert.equal((await turnstilePost({request:request(),env:real})).status,403);
+  const previous=calls.length;
+  assert.equal((await turnstilePost({request:request('https://attacker.example'),env:real})).status,403);
+  assert.equal((await turnstilePost({request:request('https://aurorauap.org',{token:'x'}),env:real})).status,400);
+  assert.equal((await turnstilePost({request:request('https://aurorauap.org',{token:'long_valid_token',extra:true}),env:real})).status,400);
+  assert.equal(calls.length,previous,'invalid requests must not call external Siteverify');
+ }finally{globalThis.fetch=original}
 });

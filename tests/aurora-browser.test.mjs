@@ -767,6 +767,7 @@ try{
      return route.fulfill({status:404,body:'{}'});
     });
     await page.goto('http://127.0.0.1:'+port+'/moderation.html');
+    assert.equal(await page.locator('a[href="/api/moderation/turnstile"]').count(),1,'owner-only diagnostic is linked but never auto-loaded');
     // Cloudflare Pages caches shared CSS for four hours. Version the moderator
     // asset URL so newly released panels do not inherit stale report.css.
     const sheet=await page.locator('link[rel="stylesheet"]').getAttribute('href');
@@ -789,7 +790,7 @@ try{
     await page.locator('#receiptQuery').fill(id);
     await page.locator('#receiptLookup button[type=submit]').click();
     await page.waitForFunction(()=>document.querySelector('.moderation-audit-entry')!==null);
-    assert.equal(await page.locator('a[href*="moderation"]').count(),0);
+    assert.equal(await page.locator('#queue a[href*="moderation"]').count(),0,'report text must never create an injected link');
     assert.deepEqual(errors,[]);
     await context.close();
   });
