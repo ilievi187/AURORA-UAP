@@ -11,6 +11,10 @@ test('Pages clean-url canonical /privacy has an HTML asset and no rewrite loop',
  assert.match(privacy,/<article id="bg" lang="bg">/);
  assert.match(privacy,/<article id="en" lang="en">/);
  assert.match(report,/<a id="privacyLink" href="\/privacy"/);
+ assert.match(report,/id="reportPrivacyTools"/);
+ assert.match(report,/id="reportPrivacyList"/);
+ assert.match(report,/id="reportDeleteRequest" href="mailto:blizzard9011@gmail.com\?subject=/);
+ assert.match(report,/report\.js\?v=privacy-20261104/);
 });
 test('privacy notice accurately describes privacy protections and local draft mode',()=>{
  for(const term of ['Cloudflare D1','Cloudflare Access','Turnstile','90','180','12','GDPR','quarantine','blizzard9011@gmail.com'])
@@ -26,8 +30,10 @@ test('privacy notice accurately describes privacy protections and local draft mo
  assert.match(privacy,/Изтриването на частен сигнал и изтриването на профила/);
  assert.match(privacy,/Само лица на 18 или повече години/);
  assert.match(privacy,/Only people aged 18 or older may submit reports/);
+ assert.match(privacy,/View my private reports/);
+ assert.match(privacy,/requests are handled manually after identity verification/);
  assert.match(privacy,/Self-declaration is not independent age verification/);
  assert.match(report,/id="adultConfirm" required/);
  assert.match(report,/Only people aged 18 or older may submit reports/);
- assert.match(report,/report\.js\?v=18plus-20261103/);
+ assert.match(report,/report\.js\?v=privacy-20261104/);
 });

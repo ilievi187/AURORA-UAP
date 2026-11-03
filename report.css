@@ -77,3 +77,13 @@ footer{padding:30px 0 50px;border-top:1px solid #45798255;font:10px Consolas,mon
 .moderation-audit-entry strong{font:11px/1.7 Consolas,monospace;color:#bff3e9;overflow-wrap:anywhere}
 .moderation-audit-entry p{white-space:pre-wrap;overflow-wrap:anywhere}
 @media(max-width:650px){.moderation-lookup-row{flex-direction:column}.moderation-lookup-row button{width:100%}}
+
+/* Signed-in, read-only privacy tools: never interpret report data as HTML. */
+.report-privacy-tools{margin:20px 0 0;padding:16px;border-top:1px solid #41747c}
+.report-privacy-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.report-privacy-actions button,.report-privacy-actions a,#reportPrivacyMore{font:12px/1.5 Consolas,monospace;padding:10px 12px;background:#173e48;color:#e8ffff;border:1px solid #52999c;cursor:pointer;text-decoration:none}
+.report-privacy-actions button:disabled,#reportPrivacyMore:disabled{cursor:wait;opacity:.5}
+#reportPrivateReceipts{padding-left:20px;font:12px/1.7 Consolas,monospace;color:#e6fbf8;overflow-wrap:anywhere}
+#reportPrivateReceipts li{padding:5px 0;border-bottom:1px solid #24515a}
+#reportPrivacyFeedback{overflow-wrap:anywhere}
+@media(max-width:650px){.report-privacy-actions{flex-direction:column;align-items:stretch}.report-privacy-actions button,.report-privacy-actions a,#reportPrivacyMore{width:100%}}

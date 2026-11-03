@@ -19,7 +19,7 @@ Run manually from network-connected machine:
 
     node scripts/check-private-release-readiness.mjs --live
 
-The checker makes exactly ten bounded, anonymous GET requests. It never submits reports, accesses private report data, bursts traffic or changes D1, Cloudflare, Supabase or backups. It fails if a protected page is HTTP 200, a redirect is not to Cloudflare Access, public intake becomes enabled, status caching violates no-store, or the bilingual privacy/processor notice disappears.
+The checker makes exactly eleven bounded, anonymous GET requests. It never submits reports, authenticates as a user, accesses private report data, bursts traffic or changes D1, Cloudflare, Supabase or backups. It fails if a protected page is HTTP 200, a redirect is not to Cloudflare Access, public intake becomes enabled, status caching violates no-store, or the bilingual privacy/processor notice disappears.
 
 Offline deterministic tests:
 
@@ -40,3 +40,10 @@ One warning: auth_leaked_password_protection — Leaked Password Protection Disa
 5. Actual wrong-account Cloudflare Access moderator denial verification; mock identity tests do not replace real denied-account testing.
 
 Do NOT set legal/WAF review flags or AURORA_INTAKE_ENABLED based on this read-only audit alone.
+
+
+## 4 November 2026 — signed-in reporter privacy inventory
+
+- New GET /api/account/privacy is scoped to the verified Supabase token; it returns only that UUID's private receipt references, statuses and timestamps with private/no-store. No POST/DELETE operation.
+- The anonymous prelaunch checker now makes exactly eleven bounded GET requests and requires unsigned access to the account privacy endpoint to return HTTP 401 with no-store.
+- This is not a completed data erasure workflow. Email requests are handled manually. See docs/ACCOUNT-PRIVACY-OPERATIONS-2026-11-04.md.

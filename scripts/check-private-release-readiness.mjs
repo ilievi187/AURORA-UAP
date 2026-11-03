@@ -52,6 +52,11 @@ export async function checkReadOnlyRelease(fetcher=fetch){
   if(fields.some(x=>!body.includes(x)))fail('privacy-notice','Missing bilingual or processor disclosure');
   else pass('privacy-notice','BG/EN and processors publicly disclosed');
  }
+ // A private account inventory must deny anonymous visitors even while intake is off.
+ const account=await get(fetcher,'/api/account/privacy');
+ if(account.status!==401||!(account.headers.get('cache-control')||'').includes('no-store'))
+  fail('account-privacy','Anonymous access must be denied and not cached: '+account.status);
+ else pass('account-privacy','private account inventory denies anonymous requests');
  for(const path of privateEndpoints){
   const response=await get(fetcher,path);
   const allowed=(response.status===403||legitimateAccessRedirect(response));
@@ -63,7 +68,7 @@ export async function checkReadOnlyRelease(fetcher=fetch){
 if(process.argv[1] && import.meta.url===new URL('file://'+process.argv[1]).href){
  if(process.argv.length!==3||process.argv[2]!=='--live'){
   console.error('Usage: node scripts/check-private-release-readiness.mjs --live');
-  console.error('Performs eight bounded public GET requests only; NEVER writes production data.');
+  console.error('Performs eleven bounded public GET requests only; NEVER writes production data.');
   process.exitCode=2;
  }else{
   try{
