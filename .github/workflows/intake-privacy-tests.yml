@@ -1,0 +1,38 @@
+name: Intake privacy and quarantine checks
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'privacy.html'
+      - '_redirects'
+      - 'functions/api/intake/**'
+      - 'functions/_lib/intake.js'
+      - 'worker/privacy-retention.js'
+      - 'tests/privacy-route.test.mjs'
+      - 'tests/intake.test.mjs'
+      - 'tests/moderation.test.mjs'
+      - 'tests/privacy-retention.test.mjs'
+      - '.github/workflows/intake-privacy-tests.yml'
+  pull_request:
+    paths:
+      - 'privacy.html'
+      - '_redirects'
+      - 'functions/api/intake/**'
+      - 'functions/_lib/intake.js'
+      - 'worker/privacy-retention.js'
+      - 'tests/privacy-route.test.mjs'
+      - 'tests/intake.test.mjs'
+      - 'tests/moderation.test.mjs'
+      - 'tests/privacy-retention.test.mjs'
+      - '.github/workflows/intake-privacy-tests.yml'
+jobs:
+  privacy-and-intake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci
+      - run: node --test tests/privacy-route.test.mjs
+      - run: node --experimental-sqlite --test tests/intake.test.mjs tests/moderation.test.mjs tests/privacy-retention.test.mjs

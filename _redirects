@@ -3,3 +3,7 @@
 /sky/ /countries.html 301
 /sky.html /countries.html 301
 /news-editor /news-editor.html 302
+
+/PRIVACY REWRITE
+/privacy /privacy.html 200
+/privacy/ /privacy.html 200
