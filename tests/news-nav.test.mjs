@@ -28,8 +28,10 @@ test('news page remains independently navigable and loads its client', () => {
   assert.match(news, /id="newsList"/);
 });
 
-test('news page supports source-type categories, bounded page navigation, and moderated tip submissions',()=>{
+test('news page supports editorial categories, source-type filters, pagination, and moderated tip submissions',()=>{
   assert.match(news,/id="newsSourceType"/);
+  assert.match(news,/id="newsTopicCategory"/);
+  assert.match(news,/src="\/news-category-i18n\.js"/);
   assert.match(news,/id="previousNews"/);
   assert.match(news,/id="nextNews"/);
   assert.match(news,/id="newsTipForm"/);

@@ -13,14 +13,17 @@
   $("newsSourceTypeLabel").textContent=copy.sourceType;
   for(const option of $("newsSourceType").options)
    option.textContent=copy.roles[option.value]||copy.roles.other;
+  $("newsTopicCategoryLabel").textContent=copy.topicCategory;
+  for(const option of $("newsTopicCategory").options)
+   option.textContent=copy.categories[option.value]||copy.categories.other;
   $("previousNews").textContent=copy.previous;
   $("nextNews").textContent=copy.next;
  }
  function filtered(){
-  const q=$("newsSearch").value.trim().toLocaleLowerCase(language()),sourceType=$("newsSourceType").value;
+  const q=$("newsSearch").value.trim().toLocaleLowerCase(language()),sourceType=$("newsSourceType").value,topic=$("newsTopicCategory").value;
   return items.filter(item=>{
    const role=item.source_role||"other";
-   return (!sourceType||sourceType==="all"||role===sourceType)&&
+   return (!sourceType||sourceType==="all"||role===sourceType)&&(!topic||topic==="all"||item.category===topic)&&
     (!q||[item.title,item.translated_title,item.summary,item.translated_summary,item.source].some(value=>String(value||"").toLocaleLowerCase(language()).includes(q)));
   });
  }
@@ -182,6 +185,7 @@
  updateControls();
  $("edition").addEventListener("change",load);
  $("newsSourceType").addEventListener("change",()=>{currentPage=0;searchVersion++;render(true);void translateVisible(searchVersion)});
+ $("newsTopicCategory").addEventListener("change",()=>{currentPage=0;searchVersion++;render(true);void translateVisible(searchVersion)});
  $("newsSearch").addEventListener("input",()=>{
   searchVersion++;clearTimeout(searchTimer);render(true);const version=searchVersion;
   searchTimer=setTimeout(()=>{void translateVisible(version)},180);

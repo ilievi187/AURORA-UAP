@@ -2,7 +2,7 @@
 <html lang="bg"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#010305"><meta name="description" content="AURORA UAP — световни новини и източници за UAP, AARO и астрономични наблюдения. Истории, свидетелства и репортажи от международни източници.">
 <title>Новини от света | AURORA UAP</title><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/live-tools.css"><link rel="stylesheet" href="/news-translation.css"><script defer src="/subpage-i18n.js"></script><script defer src="/news-ui-i18n.js"></script><script defer src="/news-article-i18n.js"></script><script defer src="/news-tips-i18n.js"></script><script defer src="/news.js"></script><script defer src="/news-tips.js"></script><link rel="stylesheet" href="/aurora-design-refresh.css">
+<link rel="stylesheet" href="/live-tools.css"><link rel="stylesheet" href="/news-translation.css"><script defer src="/subpage-i18n.js"></script><script defer src="/news-ui-i18n.js"></script><script defer src="/news-category-i18n.js"></script><script defer src="/news-article-i18n.js"></script><script defer src="/news-tips-i18n.js"></script><script defer src="/news.js"></script><script defer src="/news-tips.js"></script><link rel="stylesheet" href="/aurora-design-refresh.css">
 <link rel="stylesheet" href="/aurora-black-pages.css">
 <link rel="stylesheet" href="/aurora-editorial-interiors.css">
 <link rel="stylesheet" href="/news-portal.css">
@@ -14,6 +14,7 @@
 <section id="newsBrowse" aria-label="Филтри за новини"><div class="live-toolbar">
 <label>Обхват / Edition<select id="edition"><option value="global">🌍 Световен поток / Worldwide</option><option value="bulgaria">🇧🇬 България / Bulgaria</option><option value="official">Документи и институции / Official topics</option></select></label>
 <label><span id="newsSourceTypeLabel">Тип източник</span><select id="newsSourceType"><option value="all">Всички източници</option><option value="official-institution">Официални институции</option><option value="public-broadcaster">Обществени медии</option><option value="international-desk">Международни редакции</option><option value="specialist-press">Специализирани издания</option><option value="news-search">Google News търсене</option><option value="other">Други / архивни източници</option><option value="editorial">AURORA Editorial</option></select></label>
+<label><span id="newsTopicCategoryLabel">Редакторска категория</span><select id="newsTopicCategory"><option value="all">Всички категории</option><option value="sightings">Наблюдения</option><option value="official">Официални документи</option><option value="research">Изследвания</option><option value="history">История</option><option value="policy">Политики</option><option value="other">Друго / без категория</option></select></label>
 <label>Търси по заглавие или медия<input type="search" id="newsSearch" placeholder="UAP, AARO, НЛО…" maxlength="100"></label>
 <button type="button" id="refreshNews">Обнови</button></div>
 <p id="newsStatus" class="live-status" data-state="loading" role="status" aria-live="polite">Зареждане на заглавия…</p>

@@ -1,6 +1,6 @@
 /* Newsroom controls and moderated tip entry. */
 #newsBrowse{margin-top:28px}
-#newsBrowse .live-toolbar{display:grid;grid-template-columns:minmax(150px,.9fr) minmax(170px,1.05fr) minmax(220px,1.6fr) auto;align-items:end;gap:12px}
+#newsBrowse .live-toolbar{display:grid;grid-template-columns:minmax(130px,.85fr) minmax(150px,1fr) minmax(145px,1fr) minmax(220px,1.6fr) auto;align-items:end;gap:12px}
 #newsBrowse .live-toolbar label{display:grid;gap:7px;min-width:0}
 #newsBrowse .live-toolbar select,#newsBrowse .live-toolbar input{width:100%;min-width:0}
 .news-source-type{display:inline-block;margin-inline-start:5px;color:#9fb4c2;font-size:.82em}

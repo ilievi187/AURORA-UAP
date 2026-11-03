@@ -92,7 +92,7 @@ test('editorial article is draft until explicitly published, then appears in the
  const feed=await publicNews({request:new Request('https://aurorauap.org/api/news?edition=global&lang=en'),env,fetcher:async()=>{throw Error('offline')},catalogFetcher:async()=>{throw Error('offline')}});
  const payload=await feed.json();assert.ok(['live','cached'].includes(payload.status));
  const published=payload.items.find(item=>item.article_id===draft.id);
- assert.ok(published);assert.equal(published.title,article.title);assert.equal(published.article_body,article.body);assert.equal(published.source,article.source_name);
+ assert.ok(published);assert.equal(published.title,article.title);assert.equal(published.article_body,article.body);assert.equal(published.source,article.source_name);assert.equal(published.category,article.category);
  const localizedFeed=await publicNews({request:new Request('https://aurorauap.org/api/news?edition=global&lang=es'),env,fetcher:async()=>{throw Error('offline')},catalogFetcher:async()=>{throw Error('offline')}});
  const spanish=(await localizedFeed.json()).items.find(item=>item.article_id===draft.id);
  assert.equal(spanish.title,article.title,'the original title is retained for attribution');assert.equal(spanish.translated_title,translation.title);

@@ -145,6 +145,7 @@ try{
       url:"https://publisher.example.test/story/"+index,
       source:index%2===0?"Agency Desk":"Research Journal",
       source_role:index%2===0?"official-institution":"specialist-press",
+      category:index%7===0?"research":undefined,
       published:new Date(Date.now()-index*60000).toISOString(),language:"en"
     }));
     await page.route("**/api/news?*",route=>route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
@@ -152,6 +153,11 @@ try{
       translation:{target:"bg",status:"unavailable",translated:0}
     })}));
     await page.goto("http://127.0.0.1:"+port+"/news.html");
+    await page.waitForFunction(()=>document.querySelectorAll(".live-card").length===12);
+    await page.locator("#newsTopicCategory").selectOption("research");
+    await page.waitForFunction(()=>document.querySelectorAll(".live-card").length===4&&document.querySelector("#newsPageStatus")?.textContent==="Страница 1 / 1");
+    assert.deepEqual(await page.locator(".live-card h2").allTextContents(),["Official source item 0","Specialist source item 7","Official source item 14","Specialist source item 21"]);
+    await page.locator("#newsTopicCategory").selectOption("all");
     await page.waitForFunction(()=>document.querySelectorAll(".live-card").length===12);
     await page.locator("#newsSourceType").selectOption("official-institution");
     await page.waitForFunction(()=>document.querySelectorAll(".live-card").length===12&&document.querySelector("#newsPageStatus")?.textContent==="Страница 1 / 2");
@@ -831,6 +837,23 @@ try{
     await page.evaluate(()=>window.scrollTo(0,0));
     await page.screenshot({path:"artifacts/aurora-final-home-desktop.png",animations:"disabled"});
     await desktop.close();
+
+    const tablet=await browser.newContext({viewport:{width:768,height:1024},isMobile:true,reducedMotion:"reduce"});
+    const tabletPage=await tablet.newPage(),tabletErrors=[];
+    tabletPage.on("pageerror",error=>tabletErrors.push(error.message));
+    await tabletPage.addInitScript(()=>localStorage.setItem("aurora-lang","fr"));
+    await tabletPage.route("**/data/cases.json",route=>route.fulfill({status:200,contentType:"application/json",body:fullArchive}));
+    await tabletPage.route("**/api/stats",route=>route.fulfill({status:503,contentType:"application/json",body:'{"error":"database_unavailable"}'}));
+    await tabletPage.route("**/api/cases?*",route=>route.fulfill({status:503,contentType:"application/json",body:'{"error":"database_unavailable"}'}));
+    await tabletPage.goto("http://127.0.0.1:"+port+"/");
+    await tabletPage.waitForFunction(()=>document.querySelectorAll(".portal-card[data-portal]").length===8&&document.querySelector("#worldMapCount")?.textContent==="101");
+    const tabletLayout=await tabletPage.evaluate(()=>({width:document.documentElement.scrollWidth-document.documentElement.clientWidth,portalTop:document.querySelector(".portal-grid").getBoundingClientRect().top,viewport:innerHeight}));
+    assert.ok(tabletLayout.width<=1,"tablet layout has no horizontal overflow");
+    assert.ok(tabletLayout.portalTop<tabletLayout.viewport,"tablet shows the discovery dashboard in the first viewport");
+    assert.equal(await tabletPage.locator("#portalSubmitNews").textContent(),"Proposer une actualité");
+    await tabletPage.screenshot({path:"artifacts/aurora-final-home-tablet.png",animations:"disabled"});
+    assert.deepEqual(tabletErrors,[]);
+    await tablet.close();
 
     const mobile=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:"reduce"});
     const mobilePage=await mobile.newPage();
