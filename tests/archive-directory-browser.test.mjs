@@ -32,6 +32,11 @@ const server=createServer(async(req,res)=>{
  if(u.pathname==="/data/cases.json"){
   res.writeHead(200,{"Content-Type":"application/json"}).end(JSON.stringify(fixtures));return;
  }
+ // This suite specifically verifies pagination on its 105-record fixture.
+ // The separate bulk-data suite checks the 10K+ published source index.
+ if(u.pathname==="/data/bulk/index.json"){
+  res.writeHead(200,{"Content-Type":"application/json"}).end('{"cases":[]}');return;
+ }
  const file=resolve(root,"."+u.pathname);
  if(!file.startsWith(root+sep)){res.writeHead(403).end();return}
  try{
