@@ -98,7 +98,12 @@ test("anonymous, unverified and revoked accounts cannot inspect private receipts
   const {response:failed}=await run({env,failAuth:true});
   assert.equal(failed.status,503);
   assert.equal((await failed.json()).error,"identity_unavailable");
-  assert.equal((await run({env:{...env,AURORA_REPORT_AUTH_ENABLED:"disabled"}})).response.status,503);
+  // Privacy is independent of the submission-activation flag.
+  const inactive=await run({env:{...env,AURORA_REPORT_AUTH_ENABLED:undefined}});
+  assert.equal(inactive.response.status,200);
+  assert.equal((await inactive.response.json()).receipts.length,1);
+  const noAuthSetup=await run({env:{...env,AURORA_REPORT_AUTH_URL:undefined}});
+  assert.equal(noAuthSetup.response.status,503);
  }finally{sql.close()}
 });
 test("alternate host, nonsecure URL, cross-site requests and query pollution fail before contacting Auth",async()=>{
