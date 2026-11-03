@@ -22,3 +22,9 @@ h1{font-size:clamp(32px,5.4vw,70px);max-width:930px;letter-spacing:-.035em;line-
 .sourced-country-archive{margin-top:28px;padding:clamp(18px,3vw,36px);border:1px solid #397b86;background:linear-gradient(135deg,#0c2f3c,#061925);border-radius:15px}
 .sourced-country-archive h2{font-size:clamp(23px,3vw,36px);font-weight:600;margin:9px 0 17px}
 .sourced-country-archive p:not(.kicker){font-size:13px;color:#b5d8d9;line-height:1.65}
+
+/* The source-backed world archive is the primary public country directory. */
+.sourced-country-archive{margin:0 0 30px!important;background:linear-gradient(130deg,#0a1826,#0a2933)!important}
+.country-source-search{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font:11px/1.5 ui-monospace,Consolas,monospace;color:#c4e0e5}
+.country-source-search input{min-width:min(320px,80vw);padding:12px 14px;background:#091721;color:#f3ffff;border:1px solid #4c7883}
+.sourced-country-archive .country-grid{margin-top:20px}

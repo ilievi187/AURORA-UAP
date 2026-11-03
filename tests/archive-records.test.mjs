@@ -71,7 +71,10 @@ test("all historical views load the shared helper before their consumers", () =>
     assert.ok(html.indexOf('src="/archive-records.js"')<html.indexOf('src="/'+consumer+'"') ||
       (consumer==="world-atlas.js" && html.indexOf('src="/archive-records.js"')<html.indexOf('src="/world-atlas.js"')),
       page+" loads consumer before helper");
-    assert.match(read(consumer),/prepareArchiveCases/,consumer+" must use shared archive cases");
+    if(consumer==="countries.js")
+      assert.match(read(consumer),/data\/bulk\/countries\.json/,
+        "country directory uses a derived file-count index from all historical sources");
+    else assert.match(read(consumer),/prepareArchiveCases/,consumer+" must use shared archive cases");
   }
   assert.match(read("world-atlas.js"),/prepareArchiveCases/);
 });

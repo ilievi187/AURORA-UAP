@@ -176,7 +176,7 @@ async function start(){
   const [curatedResponse,bulkResponse]=await Promise.all([
     fetch("/data/cases.json",{cache:"no-cache"}),
     // The 10K+ metadata index is fetched once; full dossiers live in 64 lazy shards.
-    fetch("/data/bulk/index.json",{cache:"force-cache"}).catch(()=>null)
+    fetch("/data/bulk/index.json",{cache:"no-cache"}).catch(()=>null)
   ]);
   if(!curatedResponse.ok)throw Error("Archive HTTP "+curatedResponse.status);
   const data=await curatedResponse.json();if(!Array.isArray(data.cases))throw Error("Invalid cases payload");

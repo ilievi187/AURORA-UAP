@@ -6,6 +6,13 @@ on:
       - 'world-atlas*'
       - 'ui-locales.js'
       - 'data/cases.json'
+      - 'data/bulk/countries.json'
+      - 'data/bulk/geo-points.json'
+      - 'country.html'
+      - 'country.js'
+      - 'countries.html'
+      - 'countries.js'
+      - 'tests/country-navigation*'
       - 'data/earth-land.json'
       - 'functions/_lib/public.js'
       - 'functions/api/cases.js'
@@ -19,6 +26,13 @@ on:
       - 'world-atlas*'
       - 'ui-locales.js'
       - 'data/cases.json'
+      - 'data/bulk/countries.json'
+      - 'data/bulk/geo-points.json'
+      - 'country.html'
+      - 'country.js'
+      - 'countries.html'
+      - 'countries.js'
+      - 'tests/country-navigation*'
       - 'data/earth-land.json'
       - 'functions/_lib/public.js'
       - 'functions/api/cases.js'
@@ -37,10 +51,10 @@ jobs:
         with:
           node-version: '22'
       - name: Test search, filters, clustering, and localization model
-        run: node --test tests/world-atlas-model.test.mjs
+        run: node --test tests/world-atlas-model.test.mjs tests/country-navigation.test.mjs
       - name: Install browser test tooling
         run: |
           npm install --no-save --no-package-lock playwright@1.56.1
           npx playwright install --only-shell chromium
       - name: Verify atlas interactions and mobile layout
-        run: node --test tests/world-atlas-browser.test.mjs
+        run: node --test tests/world-atlas-browser.test.mjs tests/country-navigation-browser.test.mjs

@@ -218,7 +218,7 @@
  // The catalog can have several PDF translations and mirror links for one case.
  // Those are sources within one dossier, not separate video thumbnails.
  // Real videos remain individually playable and are shown first.
- let playbackFor=()=>null;
+ let playbackFor=()=>null,posterFor=()=>null;
  const titleFor=value=>typeof value==="string"?value:(value?.[locale]||value?.en||value?.bg||"");
  const rank=entry=>entry.m.type==="video"?(entry.playable?0:1):entry.m.type==="photo"?2:3;
  // Long government filenames belong in the source metadata, not in giant card headings.
@@ -258,12 +258,22 @@
    card.dataset.caseId=c.id;card.dataset.mediaKind=video?"video":documents?"documents":"photo";
    card.dataset.playable=String(Boolean(playable));
    const picture=document.createElement("div");picture.className="media-entry-image";
+   // Show authentic publisher-provided video posters where allowed. Do not repeat
+   // the same decorative UFO/folder illustration on unrelated source records.
+   const poster=video?posterFor(m):null;
    const img=document.createElement("img");img.loading="lazy";img.decoding="async";
-   img.src=video?"/assets/media-ufo-earth-preview.svg":documents?"/assets/media-document-preview.svg":
-    (/^\/assets\/[a-z0-9-]+\.webp$/.test(c.visual?.src||"")?c.visual.src:"/assets/media-document-preview.svg");
-   img.alt=video?"AURORA UFO artwork — illustrative video preview, not an original incident frame":documents?"AURORA archive documents illustration":words.illustration;
+   img.hidden=!poster;
+   if(poster)img.src=poster;
+   img.alt=poster?"Source-published video thumbnail: "+(titleFor(m.title)||titleFor(c.title)):"";
+   const cover=document.createElement("div");cover.className="media-source-cover";
+   cover.hidden=!!poster;
+   const type=document.createElement("strong");
+   type.textContent=video?"SOURCE VIDEO":documents?"ARCHIVE DOCUMENTS":"SOURCE PHOTOGRAPH";
+   const publisher=document.createElement("small");
+   publisher.textContent=c.source?.name||"ORIGINAL PUBLISHER";
+   cover.append(type,publisher);
    const badge=document.createElement("span");badge.textContent=video?words.video:documents?words.documents:words.photo;
-   picture.append(img,badge);
+   picture.append(img,cover,badge);
    const body=document.createElement("div");body.className="media-entry-body";
    const meta=document.createElement("small");meta.textContent=[c.date,c.country,titleFor(c.title),
     video?titleFor(m.title).match(/\b(?:FBI|DOW)-UAP-PR\d+\b/i)?.[0]:null,
@@ -312,6 +322,7 @@
    if(!r.ok)throw Error("source");
    const data=await r.json();if(!Array.isArray(data.cases))throw Error("archive");
    if(typeof playerModule?.resolveMediaPlayback==="function")playbackFor=playerModule.resolveMediaPlayback;
+   if(typeof playerModule?.resolveVideoPoster==="function")posterFor=playerModule.resolveVideoPoster;
    const safeCases=globalThis.AURORA_ARCHIVE?.prepareArchiveCases(data.cases)||data.cases;
    const entries=safeCases.flatMap(c=>(Array.isArray(c.media)?c.media:[])
     .filter(m=>m&&["video","documents","archive","photo"].includes(m.type)&&valid(m.url)&&/^[a-z0-9-]{3,90}$/.test(c.id))

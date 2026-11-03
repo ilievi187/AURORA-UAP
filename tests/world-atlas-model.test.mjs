@@ -28,7 +28,8 @@ test('orbital atlas uses local night-Earth imagery and preserves precise case co
  assert.match(source,/assets\/earth\/earth-day-4096\.jpg/);
  assert.match(source,/context\.drawImage\(satellite\.night/);
  assert.match(source,/Offline image fallback/);
- assert.match(source,/clusterMarkers\(filtered/,'clustering still uses real case records');
+ assert.match(source,/clusterMarkers\(countryCases/,'clustering retains real, country-grouped case coordinates');
+ assert.match(source,/clusterMarkers\(items/,'source city-level anchors are clustered without changing source coordinates');
  assert.match(orbital,/prefers-reduced-motion:reduce/);
  assert.match(orbital,/\.world-map-marker/);
  const night=readFileSync(new URL('../assets/earth/earth-night-4096.jpg',import.meta.url));

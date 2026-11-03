@@ -138,28 +138,29 @@ async function openMediaPage(viewport = { width: 1280, height: 860 }, options = 
   return { context, page, errors };
 }
 
-test('uses AURORA homepage UFO art as the real Play preview, never as footage', async()=>{
+test('video without licensed thumbnail uses an attributed source card and actual Play control', async()=>{
  const {context,page,errors}=await openMediaPage();
  try{
   const card=page.locator('#mediaGallery article').filter({hasText:'Authorized direct fixture'});
   const preview=card.locator('.media-entry-image img');
-  await preview.evaluate(image=>image.decode());
-  assert.equal(await preview.getAttribute('src'),'/assets/media-ufo-earth-preview.svg',
-   'gallery reuses the exact established homepage UFO asset');
-  assert.match(await preview.getAttribute('alt'),/not an original incident frame/i);
+  assert.equal(await preview.isHidden(),true,'no source image is displayed when none was published');
+  const cover=card.locator('.media-source-cover');
+  assert.equal(await cover.isVisible(),true);
+  assert.match(await cover.textContent(),/SOURCE VIDEO/);
+  assert.match(await cover.textContent(),/Authorized Test Publisher/);
   const play=card.locator('.media-inline-play');
   assert.equal(await play.count(),1,'one prominent Play action over the art');
   const bounds=await card.locator('.media-entry-image').boundingBox();
   const hit=await play.boundingBox();
-  assert.ok(bounds&&hit&&Math.abs(bounds.width-hit.width)<3,'the entire illustration is clickable');
+  assert.ok(bounds&&hit&&Math.abs(bounds.width-hit.width)<3,'the entire source cover is clickable');
   const caption=await card.locator('.media-caption').textContent();
-  assert.match(caption,/preview artwork|original frame/i,'creative artwork is not presented as a sourced video still');
+  assert.match(caption,/No publisher-provided preview image/i,'no unrelated poster is presented as a source image');
   await play.click();
   assert.equal(await card.locator('.media-entry-image video').count(),1,
-   'Play replaces artwork with the real in-place video player');
-  assert.equal(await preview.isHidden(),true,'art hides behind active playback');
+   'Play replaces the labeled source cover with the in-place video player');
+  assert.equal(await preview.isHidden(),true,'no unsupported image is shown during playback');
   await card.locator('.media-inline-close').click();
-  assert.equal(await preview.isVisible(),true,'closing returns the original UFO art');
+  assert.equal(await cover.isVisible(),true,'closing restores the source-labeled cover');
   assert.deepEqual(errors,[]);
  } finally { await context.close(); }
 });
@@ -172,13 +173,7 @@ test('media previews stay dark, cards share balanced 16:9 proportions, Play over
    const card=gallery.querySelector('.media-entry');
    const picture=gallery.querySelector('[data-case-id="authorized-direct-fixture"] .media-entry-image');
    const play=picture.querySelector('.media-inline-play');
-   const image=picture.querySelector('img');
-   await image.decode();
-   const canvas=document.createElement('canvas');
-   canvas.width=20;canvas.height=20;
-   const ctx=canvas.getContext('2d');
-   ctx.drawImage(image,0,0,20,20);
-   const pixel=ctx.getImageData(2,2,1,1).data;
+   const cover=picture.querySelector('.media-source-cover');
    return {
     columns:getComputedStyle(gallery).gridTemplateColumns.split(/\s+/).length,
     cardDisplay:getComputedStyle(card).display,
@@ -186,7 +181,8 @@ test('media previews stay dark, cards share balanced 16:9 proportions, Play over
     galleryWidth:gallery.getBoundingClientRect().width,
     aspect:picture.getBoundingClientRect().width/picture.getBoundingClientRect().height,
     playBg:getComputedStyle(play).backgroundColor,
-    imageBrightness:(pixel[0]+pixel[1]+pixel[2])/3,
+    coverText:cover.textContent.trim(),
+    coverBackground:getComputedStyle(cover).backgroundImage,
     headingSize:parseFloat(getComputedStyle(card.querySelector('h2')).fontSize)
    };
   });
@@ -195,7 +191,8 @@ test('media previews stay dark, cards share balanced 16:9 proportions, Play over
   assert.ok(result.cardWidth/result.galleryWidth<.6,'first card cannot swallow the page width');
   assert.ok(Math.abs(result.aspect-16/9)<.035,'all thumbnails use compact 16:9');
   assert.equal(result.playBg,'rgba(0, 0, 0, 0)','full-thumbnail Play overlay must NOT hide its dark poster');
-  assert.ok(result.imageBrightness<190,'AURORA cover is a real image, not the old opaque pale-blue button');
+  assert.match(result.coverText,/SOURCE VIDEO/i,'semantic media identity replaces generic art');
+  assert.match(result.coverBackground,/gradient/,'source cover retains the dark visual style');
   assert.ok(result.headingSize<=28,'long video headlines cannot become huge');
   mkdirSync('artifacts',{recursive:true});
   await page.locator('#mediaGallery').screenshot({path:'artifacts/media-sleek-gallery-desktop.png',animations:'disabled'});
@@ -222,7 +219,8 @@ test('archive mirrors appear once with source links and never advertise a fake P
   assert.equal(await card.getAttribute('data-media-kind'),'documents');
   assert.equal(await card.locator('a[target="_blank"]').count(),3,'original archive and PDF links retained');
   assert.equal(await card.locator('button[data-inline-player-action="play"]').count(),0);
-  assert.equal(await card.locator('.media-entry-image img').getAttribute('src'),'/assets/media-document-preview.svg');
+  assert.equal(await card.locator('.media-entry-image img').isHidden(),true);
+  assert.match(await card.locator('.media-source-cover').textContent(),/ARCHIVE DOCUMENTS/);
   assert.equal(await card.locator('.media-entry-image iframe,.media-entry-image video').count(),0);
   assert.equal(await page.locator('#mediaGallery .media-entry').first().getAttribute('data-playable'),'true',
    'available embedded recordings lead the full library');

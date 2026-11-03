@@ -8,6 +8,8 @@ const ui = {
   viewport: byId('worldMapViewport'),
   surface: byId('worldMapSurface'),
   pins: byId('worldMapPins'),
+  bulkPins: byId('worldBulkPins'),
+  countryLinks: byId('worldCountryLinks'),
   detail: byId('worldCaseDetail'),
   count: byId('worldMapCount'),
   countLabel: byId('worldMapCountLabel'),
@@ -43,6 +45,8 @@ ui.canvas.height = MAP_HEIGHT;
 
 let baseCases = [];
 let approvedCases = [];
+let sourceAnchors = [];
+let sourceCountryCounts = [];
 let cases = [];
 let filtered = [];
 let land = [];
@@ -55,7 +59,7 @@ let zoom = 1;
 let offsetX = 0;
 let offsetY = 0;
 let drag = null;
-const clusterCycle = new Map();
+
 
 const language = () => document.documentElement.lang || 'en';
 const t = (key) => labels[language()]?.[key] || labels.en[key] || key;
@@ -289,14 +293,10 @@ function renderDetails(item) {
   }
 }
 
-function selectCase(id, { center = false } = {}) {
+function selectCase(id) {
   const item = filtered.find((entry) => entry.id === id);
   if (!item) return;
   selected = item.id;
-  if (center && hasCoordinates(item)) {
-    const targetZoom = Math.max(zoom, 2.4);
-    zoomTo((item.lng + 180) / 360 * 100, (90 - item.lat) / 180 * 100, targetZoom);
-  }
   const selectedIndex = filtered.findIndex((entry) => entry.id === selected);
   const resultsNeedPageChange = selectedIndex >= 0 && (selectedIndex < resultsStart || selectedIndex >= resultsStart + RESULTS_PAGE_SIZE);
   if (resultsNeedPageChange) resultsStart = Math.floor(selectedIndex / RESULTS_PAGE_SIZE) * RESULTS_PAGE_SIZE;
@@ -304,6 +304,7 @@ function selectCase(id, { center = false } = {}) {
   if (resultsNeedPageChange) renderResults();
   renderResultsSelection();
   renderPins();
+  renderSourcePins();
 }
 
 function renderResultsSelection() {
@@ -349,7 +350,7 @@ function renderResults() {
     precision.className = precisionKind === 'unmapped' ? 'world-result-unknown' : 'world-result-place world-result-precision';
     precision.textContent = precisionKind === 'unmapped' ? t('notMapped') : precisionLabel(precisionKind);
     button.append(precision);
-    button.addEventListener('click', () => selectCase(item.id, { center: true }));
+    button.addEventListener('click', () => selectCase(item.id));
     row.append(button);
     ui.results.append(row);
   }
@@ -425,6 +426,112 @@ function focusResultPager(preferredId) {
   (document.getElementById(preferredId) || document.getElementById(fallbackId))?.focus();
 }
 
+function countryDisplayName(code) {
+  try { return new Intl.DisplayNames([language(), 'en'], { type: 'region' }).of(code) || code; }
+  catch { return code; }
+}
+
+// The supplementary layer contains 2,715 sourced GEIPAN city-level geographic
+// reference points. They are grouped by country before spatial clustering;
+// no Blue Book file is assigned a fabricated event coordinate.
+function renderSourcePins() {
+  if (!ui.bulkPins) return;
+  const width = ui.surface.clientWidth || MAP_WIDTH;
+  const height = ui.surface.clientHeight || MAP_HEIGHT;
+  const chosen = ui.country.value;
+  const year = ui.year.value;
+  const countryGroups = new Map();
+  for (const point of sourceAnchors) {
+    if (chosen && point.country !== chosen) continue;
+    if (year && !String(point.date).startsWith(year)) continue;
+    if (!countryGroups.has(point.country)) countryGroups.set(point.country, []);
+    countryGroups.get(point.country).push(point);
+  }
+  ui.bulkPins.replaceChildren();
+  const fragment = document.createDocumentFragment();
+  const allClusters = [];
+  for (const [code, items] of countryGroups) {
+    for (const cluster of clusterMarkers(items, { width, height, zoom, radius: 38 }))
+      allClusters.push({code,cluster});
+  }
+  // Monaco, Switzerland and France have nearby city anchors. Without a
+  // display-only offset, one country can physically obscure another's link.
+  // Preserve the actual coordinates in source data; move only the drawn circles.
+  allClusters.sort((a,b)=>b.cluster.count-a.cluster.count||a.code.localeCompare(b.code));
+  const occupied = [];
+  function place(left,top){
+    const originalX=left/100*width,originalY=top/100*height;
+    for(const distance of [0,26,47,68,89,110]){
+      const steps=distance===0?1:24;
+      for(let k=0;k<steps;k++){
+        const angle=k/steps*Math.PI*2;
+        const x=Math.max(19,Math.min(width-19,originalX+Math.cos(angle)*distance));
+        const y=Math.max(19,Math.min(height-19,originalY+Math.sin(angle)*distance));
+        if(occupied.every(p=>Math.hypot(p.x-x,p.y-y)>=39)){
+          occupied.push({x,y});return {left:x/width*100,top:y/height*100,shift:distance};
+        }
+      }
+    }
+    occupied.push({x:originalX,y:originalY});
+    return {left,top,shift:0};
+  }
+  for (const {code,cluster} of allClusters) {
+      const marker=place(cluster.left,cluster.top);
+      const link = document.createElement('a');
+      link.className = 'world-source-marker';
+      link.href = '/countries/' + encodeURIComponent(code);
+      link.dataset.country = code;
+      link.dataset.geoCount = String(cluster.count);
+      link.dataset.anchorShift = String(marker.shift);
+      link.style.left = marker.left + '%';
+      link.style.top = marker.top + '%';
+      link.textContent = cluster.count > 1 ? String(cluster.count) : '•';
+      const note=marker.shift ? ' · Marker offset for visibility' : '';
+      link.title = countryDisplayName(code) + ' · ' + cluster.count +
+        ' approximate city source records · Open country dossiers' + note;
+      link.setAttribute('aria-label', 'Open ' + countryDisplayName(code) + ' dossiers · ' +
+        cluster.count + ' approximate source locations');
+      fragment.append(link);
+  }
+  ui.bulkPins.append(fragment);
+}
+
+async function loadSourceNavigation() {
+  try {
+    const [geoResponse,countryResponse] = await Promise.all([
+      fetch('/data/bulk/geo-points.json',{cache:'no-cache'}),
+      fetch('/data/bulk/countries.json',{cache:'no-cache'})
+    ]);
+    if (!geoResponse.ok || !countryResponse.ok) return;
+    const [geo,landCounts] = await Promise.all([geoResponse.json(),countryResponse.json()]);
+    if (!Array.isArray(geo.points) || geo.points.length > 10000 ||
+        !Array.isArray(landCounts.countries) || landCounts.countries.length > 250) return;
+    sourceAnchors = geo.points.filter(point => /^[A-Z]{2}$/.test(point?.country||'') &&
+      point.precision === 'city' && hasCoordinates(point));
+    sourceCountryCounts = landCounts.countries.filter(entry => /^[A-Z]{2}$/.test(entry?.code||'') &&
+      Number.isSafeInteger(entry.count) && entry.count > 0);
+    renderSourcePins();
+    if (language() === 'en') ui.countLabel.textContent = 'CURATED CASES';
+    if (ui.countryLinks) {
+      ui.countryLinks.replaceChildren();
+      const caption = document.createElement('span');
+      caption.textContent = sourceAnchors.length.toLocaleString(language()) +
+        ' approximate city anchors · Open country dossiers:';
+      ui.countryLinks.append(caption);
+      for (const record of sourceCountryCounts.slice(0,6)) {
+        const a=document.createElement('a');
+        a.href='/countries/'+record.code;
+        a.textContent=countryDisplayName(record.code)+' · '+record.count.toLocaleString(language());
+        ui.countryLinks.append(a);
+      }
+      const all=document.createElement('a');
+      all.href='/countries.html';all.textContent='ALL COUNTRIES ↗';ui.countryLinks.append(all);
+    }
+  } catch(error) {
+    console.warn('Supplementary source map unavailable; curated markers remain visible',error);
+  }
+}
+
 function renderPins() {
   const mapHadFocus = ui.pins.contains(document.activeElement);
   const focusedCaseId = mapHadFocus
@@ -432,7 +539,18 @@ function renderPins() {
     : null;
   const width = ui.surface.clientWidth || MAP_WIDTH;
   const height = ui.surface.clientHeight || MAP_HEIGHT;
-  const clusters = clusterMarkers(filtered, { width, height, zoom, radius: 38 });
+  const clusters = [];
+  const byCountry = new Map();
+  for (const entry of filtered) {
+    const code = /^[A-Z]{2}$/.test(entry.country || '') && entry.country !== 'XZ'
+      ? entry.country : '__UNLOCATED_COUNTRY__';
+    if (!byCountry.has(code)) byCountry.set(code, []);
+    byCountry.get(code).push(entry);
+  }
+  for (const [country, countryCases] of byCountry) {
+    for (const cluster of clusterMarkers(countryCases, { width, height, zoom, radius: 38 }))
+      clusters.push({ ...cluster, country });
+  }
   ui.pins.replaceChildren();
   for (const cluster of clusters) {
     const button = document.createElement('button');
@@ -458,19 +576,18 @@ function renderPins() {
     const selectedInCluster = cluster.cases.some((item) => item.id === selected);
     if (selectedInCluster) button.dataset.selectedCaseId = selected;
     button.setAttribute('aria-pressed', String(selectedInCluster));
-    button.setAttribute('aria-label', cluster.count > 1
-      ? `${cluster.count} ${t('cluster')}. ${t('zoomIn')}. ${button.title}`
-      : `${caseText(cluster.cases[0], 'title')} · ${localized(cluster.cases[0].city) || t('unknownLocation')} · ${precisionLabels[0]}${needsTranslationDisclosure(cluster.cases[0]) ? ' · ' + translationDisclosure(language()) : ''}`);
+    // A marker is navigation, never an implicit zoom control. Mixed-country
+    // cells are separated before clustering so each dot has one destination.
+    const code = cluster.country;
+    const hasCountry = /^[A-Z]{2}$/.test(code) && code !== 'XZ';
+    const countryName = hasCountry ? countryDisplayName(code) : 'Location without an assigned country';
+    button.dataset.country = hasCountry ? code : '';
+    button.title = `${preview}${additional} · ${precisionLabels.join(', ')} · ${countryName} · Open ${hasCountry?'country dossiers':'case dossier'}`;
+    button.setAttribute('aria-label', `${countryName} · ${precisionLabels.join(', ')} · Open ${hasCountry?'country':'case'} files · ${cluster.count} map locations`);
     button.addEventListener('click', () => {
-      if (cluster.count > 1 && zoom < MAX_ZOOM) {
-        const representative = cluster.cases[0];
-        selectCase(representative.id);
-        zoomTo(cluster.left, cluster.top, Math.min(MAX_ZOOM, Math.max(zoom + .75, zoom * 1.85)));
-        return;
-      }
-      const index = cluster.count > 1 ? (clusterCycle.get(cluster.id) || 0) % cluster.count : 0;
-      clusterCycle.set(cluster.id, index + 1);
-      selectCase(cluster.cases[index].id);
+      const destination=hasCountry ? '/countries/' + encodeURIComponent(code)
+        : '/archive/' + encodeURIComponent(cluster.cases[0].id);
+      window.location.assign(destination);
     });
     ui.pins.append(button);
   }
@@ -482,18 +599,6 @@ function renderPins() {
   }
 }
 
-function zoomTo(leftPercent, topPercent, targetZoom) {
-  zoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, targetZoom));
-  const width = ui.surface.clientWidth || MAP_WIDTH;
-  const height = ui.surface.clientHeight || MAP_HEIGHT;
-  const x = leftPercent / 100 * width;
-  const y = topPercent / 100 * height;
-  offsetX = -(x - width / 2) * zoom;
-  offsetY = -(y - height / 2) * zoom;
-  applyViewport();
-  renderPins();
-}
-
 function zoomBy(factor) {
   const nextZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoom * factor));
   if (nextZoom === zoom) return;
@@ -503,6 +608,7 @@ function zoomBy(factor) {
   offsetY *= ratio;
   applyViewport();
   renderPins();
+  renderSourcePins();
 }
 
 function resetView() {
@@ -511,6 +617,7 @@ function resetView() {
   offsetY = 0;
   applyViewport();
   renderPins();
+  renderSourcePins();
 }
 
 function populateFilters() {
@@ -587,7 +694,9 @@ function updateLabels() {
   ui.category.setAttribute('aria-label', t('category'));
   ui.controls.setAttribute('aria-label', t('mapControls'));
   ui.filters.setAttribute('aria-label', t('search'));
-  const mapDescription = `${t('mapCaveat')} ${t('mapHelp')}`;
+  const mapDescription = `${t('mapCaveat')} ${language() === 'en'
+    ? 'Click any location circle to open its country dossiers. Drag to pan after manually zooming with the controls.'
+    : t('mapHelp')}`;
   ui.surface.setAttribute('aria-label', `${t('results')} map. ${mapDescription}`);
   ui.zoomIn.setAttribute('aria-label', t('zoomIn'));
   ui.zoomOut.setAttribute('aria-label', t('zoomOut'));
@@ -699,8 +808,8 @@ ui.zoomIn.addEventListener('click', () => updateZoomFromControls(1.5));
 ui.zoomOut.addEventListener('click', () => updateZoomFromControls(1 / 1.5));
 ui.zoomReset.addEventListener('click', resetView);
 ui.search.addEventListener('input', render);
-ui.country.addEventListener('change', render);
-ui.year.addEventListener('change', render);
+ui.country.addEventListener('change', () => { render(); renderSourcePins(); });
+ui.year.addEventListener('change', () => { render(); renderSourcePins(); });
 ui.category.addEventListener('change', render);
 
 ui.surface.addEventListener('keydown', (event) => {
@@ -720,7 +829,7 @@ ui.surface.addEventListener('keydown', (event) => {
 });
 
 ui.surface.addEventListener('pointerdown', (event) => {
-  if (event.button !== 0 || zoom <= 1 || event.target.closest('button')) return;
+  if (event.button !== 0 || zoom <= 1 || event.target.closest('button,a')) return;
   drag = { x: event.clientX, y: event.clientY, offsetX, offsetY, pointerId: event.pointerId };
   ui.surface.setPointerCapture(event.pointerId);
   ui.surface.classList.add('is-dragging');
@@ -739,7 +848,7 @@ function stopDrag(event) {
 ui.surface.addEventListener('pointerup', stopDrag);
 ui.surface.addEventListener('pointercancel', stopDrag);
 
-const resize = () => { applyViewport(); renderPins(); };
+const resize = () => { applyViewport(); renderPins(); renderSourcePins(); };
 if ('ResizeObserver' in window) new ResizeObserver(resize).observe(ui.surface);
 else window.addEventListener('resize', resize);
 new MutationObserver(updateLabels).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
@@ -775,6 +884,8 @@ async function start() {
   populateFilters();
   render();
   loadApprovedCases();
+  // Source geo/navigation is supplemental, so it never blocks the curated map.
+  void loadSourceNavigation();
 }
 
 start().catch((error) => {

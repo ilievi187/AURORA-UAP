@@ -730,12 +730,13 @@ try{
       const data=await (await fetch("/data/cases.json")).json();
       const cases=data.cases.filter(x=>x&&typeof x.id==="string");
       const bulk=await fetch("/data/bulk/manifest.json").then(r=>r.ok?r.json():null).catch(()=>null);
+      const geo=await fetch("/data/bulk/countries.json").then(r=>r.ok?r.json():null).catch(()=>null);
       return [cases.length+(bulk?.imported||0),
-        cases.filter(x=>Number.isFinite(x.lat)&&Number.isFinite(x.lng)&&Math.abs(x.lat)<=90&&Math.abs(x.lng)<=180).length];
+        cases.filter(x=>Number.isFinite(x.lat)&&Number.isFinite(x.lng)&&Math.abs(x.lat)<=90&&Math.abs(x.lng)<=180).length+(geo?.geo_anchors||0)];
     });
     assert.deepEqual([
       Number((await page.locator("#auroraArchiveCount").textContent()).replace(/[^0-9]/g,"")),
-      Number(await page.locator("#auroraMappedCount").textContent())
+      Number((await page.locator("#auroraMappedCount").textContent()).replace(/[^0-9]/g,""))
     ],expected);
     assert.equal(await page.locator("#auroraLanguageCount").textContent(),"18");
     assert.equal(await page.locator(".silence-actions a[href='/archive.html']").count(),1);
