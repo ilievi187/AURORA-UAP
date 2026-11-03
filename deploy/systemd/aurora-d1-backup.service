@@ -1,0 +1,12 @@
+[Unit]
+Description=AURORA encrypted D1 backup to private Google Drive
+Documentation=https://github.com/ilievi187/AURORA-UAP
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/aurora-d1-backup --production
+TimeoutStartSec=1800
+NoNewPrivileges=yes
+PrivateTmp=yes
