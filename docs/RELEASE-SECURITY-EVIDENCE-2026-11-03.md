@@ -1,3 +1,5 @@
+CURRENT UPDATE 4 NOV 2026: The bounded live WAF test has been confirmed via Cloudflare Security Events; historical statements below that the WAF was not tested refer to the earlier audit. Intake remains disabled. Full latest evidence is in docs/WAF-TURNSTILE-EMERGENCY-RUNBOOK-2026-11-04.md.
+
 # AURORA — prelaunch read-only security verification
 
 Date: 3 November 2026. Evidence only, NOT legal approval or permission to enable public intake.
@@ -55,3 +57,14 @@ Do NOT set legal/WAF review flags or AURORA_INTAKE_ENABLED based on this read-on
 ## 4 Nov — WAF path-scope and emergency shutdown tests
 
 Offline tests confirm that noncanonical POST paths reach neither Supabase/Turnstile nor D1, and that disabling the intake flag blocks future submissions while keeping old reports quarantined. This does NOT prove real Cloudflare WAF mitigation. An approved bounded live test must be correlated with Cloudflare Security Events; see docs/WAF-TURNSTILE-EMERGENCY-RUNBOOK-2026-11-04.md.
+
+
+## 4 November 2026: live owner-approved WAF block confirmed
+
+- Preflight: GET /api/intake/status returned accepting:false; the test used no user identity, personal data, real reports or Turnstile tokens.
+- From NightKnightPC, exactly 11 synthetic invalid POST requests to /api/intake/submit completed in 310 ms. Requests 1-10 returned 503; request 11 returned 429 and probing stopped.
+- Cloudflare GraphQL Security Events returned one exact Ray ID match, action=block, source=ratelimit, correct path, valid rule ID, UTC time 2026-11-03T22:59:24Z. No raw Ray IDs or source IP addresses are committed to GitHub.
+- After waiting beyond the mitigation timeout, a 12th and last invalid POST returned origin HTTP 503 again.
+- Public intake remained disabled; read-only D1 counts afterward showed zero submissions, audit records and reporter links, with no database writes.
+- This proves a single real rate-limiting block and later recovery. It does not establish universal distributed abuse resistance.
+- For safety, production AURORA_INTAKE_WAF_REVIEWED and all other launch flags were NOT changed. Separate privacy, legal, Turnstile and moderator checks remain pending.
