@@ -708,6 +708,9 @@
   }catch{/* unverified or inaccessible session */}
   $("reportAuthButtons").hidden=!!authIdentity;
   $("reportAuthLogout").hidden=!authIdentity;
+  $("reportAuthHeading").textContent=authIdentity
+   ?authCopy("YOUR VERIFIED ACCOUNT","ПОТВЪРДЕН АКАУНТ")
+   :authCopy("VERIFY YOUR EMAIL","ПОТВЪРДИ ИМЕЙЛА СИ");
   $("reportAuthFeedback").textContent=authIdentity
    ?authCopy("Verified email: ","Потвърден имейл: ")+authIdentity.email+
     authCopy(". Your identity will not appear in the published case.",". Самоличността ти няма да се показва в публичното досие.")
