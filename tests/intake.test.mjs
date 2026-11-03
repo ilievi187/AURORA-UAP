@@ -87,6 +87,13 @@ test("public intake fails closed without every explicit policy, D1, WAF, hostnam
   assert.equal(intakeEnabled(invalid,"aurorauap.org"),false,"missing "+key+" should reject");
  }
  assert.equal(intakeEnabled(env,"fake.aurora-uap.pages.dev"),false);
+ // Production rejects every official Cloudflare always-pass/fail/replay key.
+ for(const key of ["1x00000000000000000000AA","2x00000000000000000000AB","3x00000000000000000000FF"]){
+  assert.equal(intakeEnabled({...env,AURORA_TURNSTILE_SITE_KEY:key},"aurorauap.org"),false);
+ }
+ for(const key of ["1x0000000000000000000000000000000AA","2x0000000000000000000000000000000AA","3x0000000000000000000000000000000AA"]){
+  assert.equal(intakeEnabled({...env,AURORA_TURNSTILE_SECRET:key},"aurorauap.org"),false);
+ }
  const disabled=await getStatus({request:new Request("https://aurorauap.org/api/intake/status"),env:{...env,AURORA_INTAKE_ENABLED:"off"}});
  const response=await disabled.json();
  assert.equal(response.accepting,false);assert.equal(response.mode,"local_draft_only");
