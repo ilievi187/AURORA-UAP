@@ -68,6 +68,7 @@
   ko:{home:"← 홈",subtitle:"첫 증언부터 원본 영상까지, 목격 기록 뒤의 이야기를 탐구해 보세요.",loading:"사례 기록을 불러오는 중…",unavailable:"공개 D1 레지스트리가 아직 활성화되지 않았거나 일시적으로 사용할 수 없습니다. 역사적 참조 아카이브는 홈페이지에서 이용할 수 있습니다.",missing:"이 사례 기록은 사용할 수 없거나 게시 승인되지 않았습니다.",invalid:"유효하지 않은 사례 ID입니다.",error:"사례 기록을 불러올 수 없습니다. 지구본으로 돌아가 다시 시도하세요.",facts:"검증된 정보 / CASE FACTS",id:"식별자",date:"날짜",location:"지역",category:"분류",publication:"게시 상태",assessment:"출처 평가",precision:"위치 정확도",summary:"목격의 이야기",source:"출처 및 원본 자료",geography:"지리적 불확실성",related:"관련 아카이브 사례",openCase:"사례 열기 ↗",openSource:"원본 출처 열기 ↗",country:"국가 레지스트리 탐색 ↗",back:"← 지구본으로 돌아가기",skip:"본문으로 건너뛰기",reference:"역사 기록 보관소 · 공개 자료",approved:"편집 검토 후 게시",noCoords:"충분히 정확한 좌표가 공개되지 않았습니다. 임의의 지도 위치를 생성하지 않습니다.",approx:"좌표는 대략적인 표시 기준점이며 측정된 물체 위치가 아닙니다.",sourceMissing:"검증된 원본 HTTPS 출처가 없습니다.",categoryName:{lights:"불빛",object:"물체",instrument:"장비 기록",other:"기타"},statusName:{resolved:"인용 출처에 따라 해명됨",unresolved:"인용 출처에 따라 미해명",undetermined:"최종 평가 없음",disputed:"논란이 있는 평가",reported:"목격자 보고",official_record:"공식 문서 기록",explained:"알려진 설명 있음"},confidence:{high:"높음",moderate:"보통",low:"낮음",not_stated:"명시되지 않음"}}
  };
  let language=(()=>{try{return localStorage.getItem("aurora-lang")||"bg"}catch{return "bg"}})();
+ if(window.AURORA_PUBLIC_LANGUAGE==="en")language="en";
  document.documentElement.lang=language;
  const getPack=()=>{
   if(language==="bg")return base.bg;
