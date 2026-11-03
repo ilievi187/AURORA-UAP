@@ -7,6 +7,7 @@ const privateEndpoints=[
  '/moderation.html',
  '/api/moderation/',
  '/api/moderation/?view=overview',
+ '/api/moderation/turnstile',
  '/news-editor',
  '/news-editor/',
  '/news-editor.html'
@@ -68,7 +69,7 @@ export async function checkReadOnlyRelease(fetcher=fetch){
 if(process.argv[1] && import.meta.url===new URL('file://'+process.argv[1]).href){
  if(process.argv.length!==3||process.argv[2]!=='--live'){
   console.error('Usage: node scripts/check-private-release-readiness.mjs --live');
-  console.error('Performs eleven bounded public GET requests only; NEVER writes production data.');
+  console.error('Performs twelve bounded public GET requests only; NEVER writes production data.');
   process.exitCode=2;
  }else{
   try{

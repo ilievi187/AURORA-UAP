@@ -37,3 +37,15 @@ test('privacy notice accurately describes privacy protections and local draft mo
  assert.match(report,/Only people aged 18 or older may submit reports/);
  assert.match(report,/report\.js\?v=privacy-20261104/);
 });
+
+
+test('Turnstile diagnostic is a protected separate origin path with isolated CSP',()=>{
+ const page=read('moderation.html');
+ const headers=read('_headers');
+ const source=read('functions/api/moderation/turnstile.js');
+ assert.match(page,/href="\/api\/moderation\/turnstile"/);
+ assert.match(source,/accessIdentity/);
+ assert.match(source,/frame-ancestors 'none'/);
+ assert.match(source,/report_submitted:false/);
+ assert.match(headers,/\/moderation\.html[\s\S]*?Content-Security-Policy: default-src 'none'; script-src 'self';/);
+});

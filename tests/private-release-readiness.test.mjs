@@ -28,9 +28,9 @@ function mock(overrides={}){
 test('prelaunch proof only performs anonymous GET, requires Cloudflare Access or denied origin',async()=>{
  const m=mock();const result=await checkReadOnlyRelease(m.fetcher);
  assert.equal(result.ok,true);
- assert.equal(result.results.length,11);
- assert.equal(m.calls.length,11);
- assert.equal(new Set(m.calls.map(x=>x.url)).size,11);
+ assert.equal(result.results.length,12);
+ assert.equal(m.calls.length,12);
+ assert.equal(new Set(m.calls.map(x=>x.url)).size,12);
  assert.equal(m.calls.some(x=>x.init.body!==undefined),false);
 });
 test('GET 200 on any private route fails release preflight',async()=>{
