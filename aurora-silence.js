@@ -49,7 +49,16 @@
    const data=await response.json();
    if(!Array.isArray(data.cases))throw new Error("no public case collection");
    const filtered=data.cases.filter(c=>c&&typeof c.id==="string");
-   counters.cases.textContent=String(filtered.length);
+   let total=filtered.length;
+   try{
+     const bulkResponse=await fetch("/data/bulk/manifest.json",{cache:"force-cache"});
+     if(bulkResponse.ok){
+       const bulk=await bulkResponse.json();
+       if(Number.isInteger(bulk.imported)&&bulk.imported>=0&&bulk.imported<=25000)
+         total+=bulk.imported;
+     }
+   }catch(_){/* Legacy curated metrics remain accurate if bulk is offline. */}
+   counters.cases.textContent=new Intl.NumberFormat(document.documentElement.lang||"en").format(total);
    counters.mapped.textContent=String(filtered.filter(hasMapAnchor).length);
    hero.dataset.stats="sourced";
   }catch(_){
