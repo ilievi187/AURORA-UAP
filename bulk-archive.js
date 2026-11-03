@@ -8,7 +8,7 @@
  }
  async function load(id,fetcher=fetch){
   if(!/^(?:geipan|bluebook)-[1-9]\d{0,12}$/.test(id))return null;
-  const response=await fetcher("/data/bulk/shards/"+shardFor(id)+".json",{cache:"force-cache"});
+  const response=await fetcher("/data/bulk/shards/"+shardFor(id)+".json",{cache:"no-cache"});
   if(!response.ok)return null;
   const data=await response.json();
   if(!Array.isArray(data.cases)||data.cases.length>500)return null;

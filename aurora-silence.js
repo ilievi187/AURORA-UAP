@@ -51,7 +51,7 @@
    const filtered=data.cases.filter(c=>c&&typeof c.id==="string");
    let total=filtered.length;
    try{
-     const bulkResponse=await fetch("/data/bulk/manifest.json",{cache:"force-cache"});
+     const bulkResponse=await fetch("/data/bulk/manifest.json",{cache:"no-cache"});
      if(bulkResponse.ok){
        const bulk=await bulkResponse.json();
        if(Number.isInteger(bulk.imported)&&bulk.imported>=0&&bulk.imported<=25000)
@@ -60,7 +60,7 @@
    }catch(_){/* Legacy curated metrics remain accurate if bulk is offline. */}
    let additionalCityAnchors=0;
    try{
-     const countryResponse=await fetch("/data/bulk/countries.json",{cache:"force-cache"});
+     const countryResponse=await fetch("/data/bulk/countries.json",{cache:"no-cache"});
      if(countryResponse.ok){
        const countries=await countryResponse.json();
        if(Number.isInteger(countries.geo_anchors)&&countries.geo_anchors>=0&&countries.geo_anchors<=10000)

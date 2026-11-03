@@ -301,7 +301,7 @@
  }
  async function loadSourceCountries(){
   try{
-   const resp=await fetch("/data/bulk/countries.json",{cache:"force-cache"});
+   const resp=await fetch("/data/bulk/countries.json",{cache:"no-cache"});
    if(!resp.ok)throw Error("Country archive offline");
    const data=await resp.json();
    if(!Array.isArray(data.countries)||!data.countries.length||data.countries.length>250)

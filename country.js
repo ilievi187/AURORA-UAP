@@ -509,7 +509,7 @@
   try{
    const [curatedResponse,bulkResponse]=await Promise.all([
     fetch("/data/cases.json",{cache:"no-cache"}),
-    fetch("/data/bulk/index.json",{cache:"force-cache"}).catch(()=>null)
+    fetch("/data/bulk/index.json",{cache:"no-cache"}).catch(()=>null)
    ]);
    if(!curatedResponse.ok)throw Error("Source archive unavailable");
    const data=await curatedResponse.json();

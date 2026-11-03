@@ -12,7 +12,7 @@ test('published case dataset has over ten pages of sourced dossiers',()=>{
 });
 test('all public case collection consumers revalidate JSON instead of using stale force-cache',()=>{
  const consumers=[
-  'archive-directory.js','globe.js','countries.js','world-atlas.js',
+  'archive-directory.js','globe.js','world-atlas.js',
   'country.js','dossier.js','media.js'
  ];
  for(const name of consumers){
@@ -26,4 +26,15 @@ test('all public case collection consumers revalidate JSON instead of using stal
 test('immutable map geometry may still use force-cache without freezing case inventory',()=>{
  assert.match(src('world-atlas.js'),/earth-land\.json/);
  assert.match(src('archive-directory.js'),/cache:"no-cache"/);
+});
+
+
+test('derived country, source map and expanded archive indexes revalidate on later releases',()=>{
+ const file=src('countries.js');
+ assert.ok(file.includes('fetch("/data/bulk/countries.json",{cache:"no-cache"})'));
+ const world=src('world-atlas.js');
+ assert.ok(world.includes("fetch('/data/bulk/geo-points.json',{cache:'no-cache'})"));
+ assert.ok(world.includes("fetch('/data/bulk/countries.json',{cache:'no-cache'})"));
+ const country=src('country.js');
+ assert.ok(country.includes('fetch("/data/bulk/index.json",{cache:"no-cache"})'));
 });

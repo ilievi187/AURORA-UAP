@@ -499,8 +499,8 @@ function renderSourcePins() {
 async function loadSourceNavigation() {
   try {
     const [geoResponse,countryResponse] = await Promise.all([
-      fetch('/data/bulk/geo-points.json',{cache:'force-cache'}),
-      fetch('/data/bulk/countries.json',{cache:'force-cache'})
+      fetch('/data/bulk/geo-points.json',{cache:'no-cache'}),
+      fetch('/data/bulk/countries.json',{cache:'no-cache'})
     ]);
     if (!geoResponse.ok || !countryResponse.ok) return;
     const [geo,landCounts] = await Promise.all([geoResponse.json(),countryResponse.json()]);
