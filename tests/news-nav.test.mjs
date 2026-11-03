@@ -28,6 +28,17 @@ test('news page remains independently navigable and loads its client', () => {
   assert.match(news, /id="newsList"/);
 });
 
+test('news page supports editorial categories, source-type filters, pagination, and moderated tip submissions',()=>{
+  assert.match(news,/id="newsSourceType"/);
+  assert.match(news,/id="newsTopicCategory"/);
+  assert.match(news,/src="\/news-category-i18n\.js"/);
+  assert.match(news,/id="previousNews"/);
+  assert.match(news,/id="nextNews"/);
+  assert.match(news,/id="newsTipForm"/);
+  assert.match(news,/id="newsTipSubmit"[^>]+disabled/);
+  assert.match(news,/name="newsTipUrl"/);
+});
+
 test('news menu has an explicit nonempty label for every locale', () => {
   const codes = ['bg','en','de','ru','zh-CN','fr','es','it','pt','tr','ro','el','sr','uk','pl','ar','ja','ko'];
   const block = script.match(/const navNewsLabels = \{([\s\S]*?)\n\};/);

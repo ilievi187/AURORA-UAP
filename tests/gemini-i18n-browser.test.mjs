@@ -75,7 +75,7 @@ const ALL_LOCALES=['bg','en','de','ru','zh-CN','fr','es','it','pt','tr','ro','el
 
 let browser;
 try{
-  browser=await chromium.launch({headless:true});
+  browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{})});
 
   await test('homepage and report entry support all 18 languages, ?lang= entry, reload, back/forward history, and mobile viewport fit',async()=>{
     const ctx=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:'reduce'});

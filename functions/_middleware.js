@@ -2,7 +2,7 @@
 // Cloudflare Access must ALSO protect both routes in the Cloudflare dashboard.
 import { accessIdentity } from './_lib/access.js';
 
-const PRIVATE_PAGES = new Set(['/moderation', '/moderation/', '/moderation.html']);
+const PRIVATE_PAGES = new Set(['/moderation', '/moderation/', '/moderation.html', '/news-editor', '/news-editor/', '/news-editor.html']);
 const privateHeaders = {
   'Cache-Control': 'private, no-store, max-age=0',
   'X-Content-Type-Options': 'nosniff',
@@ -21,8 +21,11 @@ export async function onRequest(context) {
     return new Response(null, { status: 405, headers: { ...privateHeaders, Allow: 'GET, HEAD' } });
   }
   // Fail closed on previews, missing deployment bindings or missing Access identity.
-  if (url.protocol !== 'https:' || url.hostname !== 'aurorauap.org' ||
-      env?.AURORA_MODERATION_ENABLED !== 'enabled' || !env?.DB ||
+  const newsEditor = url.pathname === '/news-editor' || url.pathname === '/news-editor/' || url.pathname === '/news-editor.html';
+  const enabled = newsEditor
+    ? env?.AURORA_NEWS_EDITOR_ENABLED === 'enabled' && env?.AURORA_MODERATION_ENABLED === 'enabled'
+    : env?.AURORA_MODERATION_ENABLED === 'enabled';
+  if (url.protocol !== 'https:' || url.hostname !== 'aurorauap.org' || !enabled || !env?.DB ||
       !await accessIdentity(request, env)) {
     return new Response('Forbidden', { status: 403, headers: privateHeaders });
   }

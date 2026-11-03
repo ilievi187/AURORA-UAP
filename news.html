@@ -2,20 +2,36 @@
 <html lang="bg"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#010305"><meta name="description" content="AURORA UAP — световни новини и източници за UAP, AARO и астрономични наблюдения. Истории, свидетелства и репортажи от международни източници.">
 <title>Новини от света | AURORA UAP</title><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/live-tools.css"><link rel="stylesheet" href="/news-translation.css"><script defer src="/subpage-i18n.js"></script><script defer src="/news.js"></script><link rel="stylesheet" href="/aurora-design-refresh.css">
+<link rel="stylesheet" href="/live-tools.css"><link rel="stylesheet" href="/news-translation.css"><script defer src="/subpage-i18n.js"></script><script defer src="/news-ui-i18n.js"></script><script defer src="/news-category-i18n.js"></script><script defer src="/news-article-i18n.js"></script><script defer src="/news-tips-i18n.js"></script><script defer src="/news.js"></script><script defer src="/news-tips.js"></script><link rel="stylesheet" href="/aurora-design-refresh.css">
 <link rel="stylesheet" href="/aurora-black-pages.css">
 <link rel="stylesheet" href="/aurora-editorial-interiors.css">
+<link rel="stylesheet" href="/news-portal.css">
 </head>
 <body class="live-page" data-aurora-page="news"><main class="live-shell">
 <header class="live-header"><a class="live-logo" href="/">✦ AURORA</a><nav class="live-links" aria-label="Навигация"><a href="/">Начало</a><a href="/countries.html">Държави</a><a href="/report.html">Подготви сигнал</a></nav></header>
-<section class="live-hero"><p class="live-eyebrow">◉ SOURCE MONITOR / WORLDWIDE</p><h1>СВЕТОВНИ UAP НОВИНИ</h1>
+<section class="live-hero" id="newsTop"><p class="live-eyebrow">◉ SOURCE MONITOR / WORLDWIDE</p><h1>СВЕТОВНИ UAP НОВИНИ</h1>
 <p>Истории от цял свят. Наблюдения, документи, видеозаписи и репортажи — подбрани по дата, с директен път към първоизточника. Изследвай това, което привлича вниманието ти.</p></section>
-<section aria-label="Филтри за новини"><div class="live-toolbar">
+<section id="newsBrowse" aria-label="Филтри за новини"><div class="live-toolbar">
 <label>Обхват / Edition<select id="edition"><option value="global">🌍 Световен поток / Worldwide</option><option value="bulgaria">🇧🇬 България / Bulgaria</option><option value="official">Документи и институции / Official topics</option></select></label>
+<label><span id="newsSourceTypeLabel">Тип източник</span><select id="newsSourceType"><option value="all">Всички източници</option><option value="official-institution">Официални институции</option><option value="public-broadcaster">Обществени медии</option><option value="international-desk">Международни редакции</option><option value="specialist-press">Специализирани издания</option><option value="news-search">Google News търсене</option><option value="other">Други / архивни източници</option><option value="editorial">AURORA Editorial</option></select></label>
+<label><span id="newsTopicCategoryLabel">Редакторска категория</span><select id="newsTopicCategory"><option value="all">Всички категории</option><option value="sightings">Наблюдения</option><option value="official">Официални документи</option><option value="research">Изследвания</option><option value="history">История</option><option value="policy">Политики</option><option value="other">Друго / без категория</option></select></label>
 <label>Търси по заглавие или медия<input type="search" id="newsSearch" placeholder="UAP, AARO, НЛО…" maxlength="100"></label>
 <button type="button" id="refreshNews">Обнови</button></div>
 <p id="newsStatus" class="live-status" data-state="loading" role="status" aria-live="polite">Зареждане на заглавия…</p>
-<div id="newsList" class="live-grid"></div><button id="showMoreNews" class="live-more" type="button" hidden>ПОКАЖИ ОЩЕ НОВИНИ ↓</button></section>
+<div id="newsList" class="live-grid"></div>
+<nav id="newsPagination" class="news-pagination" aria-label="Страници с новини"><button id="previousNews" type="button" disabled>Предишна</button><span id="newsPageStatus" aria-live="polite">Страница 1</span><button id="nextNews" type="button" disabled>Следваща</button></nav></section>
 <p class="live-warning">Международни публикации и отворени източници. Избери история, виж оригиналния материал и проследи темата.</p>
 <p><a href="https://news.google.com/search?q=UAP%20UFO" target="_blank" rel="noopener noreferrer">Отвори Google News директно ↗</a></p>
+<section class="news-tip-panel" id="newsTips" aria-labelledby="newsTipsHeading">
+ <div><p class="live-eyebrow">AURORA / COMMUNITY DESK</p><h2 id="newsTipsHeading">Предложи новина за проверка</h2><p id="newsTipsIntro">Изпратените връзки влизат в редакционна модерация и никога не се публикуват автоматично. Не изпращай лични или поверителни данни.</p></div>
+ <p id="newsTipsStatus" class="live-status" role="status" aria-live="polite">Проверка на защитения канал…</p>
+ <form id="newsTipForm">
+  <label><span id="newsTipTitleLabel">Заглавие</span><input name="newsTipTitle" maxlength="200" required disabled></label>
+  <label><span id="newsTipUrlLabel">Оригинален URL</span><input name="newsTipUrl" type="url" maxlength="1200" placeholder="https://…" required disabled></label>
+  <label class="news-tip-consent"><input type="checkbox" name="newsTipConsent" required disabled><span id="newsTipConsentLabel">Разбирам, че предложението се проверява от редактор и не се публикува автоматично.</span></label>
+  <label class="news-tip-honeypot" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
+  <div id="newsTipChallenge" class="news-tip-challenge" hidden></div>
+  <button id="newsTipSubmit" type="submit" disabled>Изпрати за модерация</button>
+ </form>
+</section>
 </main></body></html>

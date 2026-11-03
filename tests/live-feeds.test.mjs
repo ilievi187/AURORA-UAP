@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import {parseFeedXml} from "../functions/_lib/feed-parse.js";
 import {parseNewsRss,fetchHeadlines,fetchHeadlinesWithDiagnostics,onRequestGet as newsRoute} from "../functions/api/news.js";
 import {SOURCE_CATALOG} from "../functions/_lib/source-catalog.js";
 import {selectDiscoveryFeeds} from "../functions/_lib/discovery.js";
@@ -10,6 +11,13 @@ test("news RSS preserves attribution, validates URLs and date",()=>{
  const result=parseNewsRss(xml);assert.equal(result.length,1);assert.equal(result[0].title,"UAP briefing & research");
  assert.equal(result[0].source,"Example Press");
  assert.equal(parseNewsRss(xml.replace("https://news.google.com","javascript://news.google.com")).length,0);
+});
+test("publisher feed results preserve exact publisher role for source-type filtering",()=>{
+ const source={id:"official-test",publisher:"Agency News",language:"en",region:"europe",role:"official-institution",link_hosts:["agency.example"]};
+ const xml='<rss><channel><item><title>UAP policy briefing from agency</title><link>https://agency.example/story</link><pubDate>'+new Date().toUTCString()+'</pubDate></item></channel></rss>';
+ const [item]=parseFeedXml(xml,source);
+ assert.equal(item.source_role,"official-institution");
+ assert.equal(item.source_region,"europe");
 });
 test("RSS parser ignores item-like markup inside comments and CDATA",()=>{
  const item='<item><title>UAP briefing &amp; research</title><link>https://news.google.com/rss/articles/test</link><pubDate>'+new Date().toUTCString()+'</pubDate><source>Example Press</source></item>';

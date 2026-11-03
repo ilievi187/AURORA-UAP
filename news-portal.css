@@ -1,0 +1,41 @@
+/* Newsroom controls and moderated tip entry. */
+#newsBrowse{margin-top:28px}
+#newsBrowse .live-toolbar{display:grid;grid-template-columns:minmax(130px,.85fr) minmax(150px,1fr) minmax(145px,1fr) minmax(220px,1.6fr) auto;align-items:end;gap:12px}
+#newsBrowse .live-toolbar label{display:grid;gap:7px;min-width:0}
+#newsBrowse .live-toolbar select,#newsBrowse .live-toolbar input{width:100%;min-width:0}
+.news-source-type{display:inline-block;margin-inline-start:5px;color:#9fb4c2;font-size:.82em}
+.news-archive-record{display:inline-block;margin-inline-start:5px;border:1px solid #7f99aa66;border-radius:3px;background:#111a22;color:#d2dee7;padding:1px 6px;font-size:.78em;line-height:1.35}
+.news-pagination{display:flex;align-items:center;justify-content:center;gap:14px;margin:22px auto 10px}
+.news-pagination button{min-width:112px;min-height:42px;border:1px solid #667c8d66;border-radius:4px;background:#080d13;color:#e3ebf0;padding:9px 14px}
+.news-pagination button:hover:not(:disabled){border-color:#c2d8e6;background:#111b24}
+.news-pagination button:focus-visible,#newsTipForm :focus-visible{outline:2px solid #cde7f5;outline-offset:3px}
+.news-pagination button:disabled{opacity:.45;cursor:not-allowed}
+#newsPageStatus{min-width:120px;text-align:center;color:#aab9c5;font-variant-numeric:tabular-nums}
+.news-tip-panel{margin:55px 0 24px;padding:clamp(20px,3vw,34px);border:1px solid #71839138;border-radius:5px;background:linear-gradient(120deg,#0b1118,#04070b)}
+.news-tip-panel h2{margin:0 0 8px;font-size:clamp(22px,3vw,34px);font-weight:480;letter-spacing:-.03em;color:#edf2f6}
+.news-tip-panel .live-eyebrow{margin:0 0 8px;color:#9cabb7;font:600 10px/1.5 ui-monospace,Consolas,monospace;letter-spacing:.14em}
+.news-tip-panel>div>p:last-child{max-width:760px;color:#a8b5bf;line-height:1.65}
+#newsTipsStatus{margin:16px 0;color:#b8c6d0}
+#newsTipForm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+#newsTipForm>label{display:grid;gap:6px;min-width:0;color:#c6d1da;font-size:13px}
+#newsTipForm>.news-tip-consent,#newsTipChallenge,#newsTipSubmit{grid-column:1/-1}
+#newsTipForm input:not([type=checkbox]),#newsTipForm textarea{width:100%;min-width:0;border:1px solid #70849365;border-radius:4px;background:#05080c;color:#edf3f7;padding:11px 12px}
+#newsTipForm textarea{resize:vertical;min-height:90px}
+#newsTipForm input:disabled,#newsTipForm textarea:disabled{opacity:.58;cursor:not-allowed}
+#newsTipForm .news-tip-consent{display:flex;align-items:flex-start;gap:10px;line-height:1.5;color:#aebbc5}
+#newsTipForm .news-tip-consent input{margin-top:4px;flex:none}
+#newsTipSubmit{justify-self:start;min-height:44px;border:1px solid #9ab8ca;border-radius:4px;background:#0c1822;color:#f0f5f8;padding:10px 18px;font-weight:650}
+#newsTipSubmit:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:850px){
+ #newsBrowse .live-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #newsBrowse .live-toolbar>button{min-height:42px}
+}
+@media(max-width:600px){
+ #newsBrowse .live-toolbar{grid-template-columns:minmax(0,1fr)}
+ .news-pagination{gap:8px}
+ .news-pagination button{min-width:0;flex:1;padding-inline:9px}
+ #newsPageStatus{min-width:86px;font-size:12px}
+ #newsTipForm{grid-template-columns:minmax(0,1fr)}
+ #newsTipForm>.news-tip-consent,#newsTipChallenge,#newsTipSubmit{grid-column:1}
+}
+@media(prefers-reduced-motion:reduce){.news-thumb img{transition:none!important}.news-card:hover .news-thumb img{transform:none!important}}

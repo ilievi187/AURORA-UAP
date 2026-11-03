@@ -150,7 +150,7 @@ let editorialCases=[];
 let editorialLoaded=false;
 let editorialError=false;
 let archiveLocalization=null;
-let reportPageSize=24;
+let reportPageSize=6;
 const $ = selector => document.querySelector(selector);
 const txt = key => translations[lang]?.[key] || translations.en[key] || key;
 function syncHomeSeo() {
@@ -165,13 +165,35 @@ function syncHomeSeo() {
   if (desc && txt('heroBody')) desc.setAttribute('content', txt('heroBody'));
 }
 
+function renderPortalCopy(){
+  const copy=window.AURORA_PORTAL_COPY?.[lang];
+  if(!copy)return;
+  const heading=$('#portalHeading'),intro=$('#portalIntro'),grid=$('.portal-grid');
+  if(heading)heading.textContent=copy.heading;
+  if(intro)intro.textContent=copy.intro;
+  if(grid)grid.setAttribute('aria-label',copy.heading);
+  document.querySelectorAll('[data-portal]').forEach(card=>{
+    const entry=copy.cards?.[card.dataset.portal];
+    if(!entry)return;
+    const title=card.querySelector('[data-portal-title]'),description=card.querySelector('[data-portal-description]');
+    if(title)title.textContent=entry[0];
+    if(description)description.textContent=entry[1];
+  });
+  document.querySelectorAll('[data-portal-nav]').forEach(link=>{
+    const labelKey={about:'navAbout',support:'navSupport',submitNews:'submitNews'}[link.dataset.portalNav];
+    const label=copy[labelKey];
+    if(label)link.textContent=label;
+  });
+}
 function translate() {
   document.documentElement.lang = lang;
+  document.documentElement.dir = lang==='ar'?'rtl':'ltr';
   document.title = HOME_TITLES[lang] || HOME_TITLES.en;
   document.querySelectorAll('[data-i18n]').forEach(el => {const key=el.dataset.i18n;if (txt(key) !== key) el.textContent=txt(key);});
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {el.placeholder=txt(el.dataset.i18nPlaceholder);});
   $('#langToggle').value = lang;
   syncHomeSeo();
+  renderPortalCopy();
   renderMap();renderReports();
 }
 function renderMap(){
@@ -253,7 +275,7 @@ function renderReports(){
  const count=document.createElement('span');count.textContent=visible.length+' / '+filtered.length+' '+editorialLang().count;note.append(count);
  if(filtered.length>visible.length){
   const button=document.createElement('button');button.type='button';button.className='show-all';button.textContent=editorialLang().more+' ↓';
-  button.addEventListener('click',()=>{reportPageSize+=24;renderReports()});note.append(button);
+  button.addEventListener('click',()=>{reportPageSize+=6;renderReports()});note.append(button);
  }
 }
 async function loadEditorialCases(){
@@ -288,7 +310,7 @@ function setup(){
   };
   $('#mobileNav').addEventListener('keydown',dismissMobileNav);
   $('#menuToggle').addEventListener('keydown',dismissMobileNav);
-  $('#reportSearch').addEventListener('input',()=>{reportPageSize=24;renderReports()});
+  $('#reportSearch').addEventListener('input',()=>{reportPageSize=6;renderReports()});
   $('#tooltipRead')?.addEventListener('click',()=>{location.hash='#worldAtlas';});
   // Keep the selected interface language private to this browser.
   translate();

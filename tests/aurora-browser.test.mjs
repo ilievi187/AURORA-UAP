@@ -17,7 +17,8 @@ import {onRequestGet as oneCase} from '../functions/api/cases/[id].js';
 const root=resolve(fileURLToPath(new URL('..',import.meta.url)));
 // Legacy globe/navigation suites intentionally use the 15 curated editorial fixtures.
 // The full licensed multi-provider archive is verified in archive-directory tests.
-const curatedArchive=(()=>{const {cases,...meta}=JSON.parse(readFileSync(new URL('../data/cases.json',import.meta.url)));return JSON.stringify({...meta,cases:cases.filter(c=>!c.provenance?.automated).sort((a,b)=>a.id==='phoenix-1997'?-1:b.id==='phoenix-1997'?1:0)});})();
+const fullArchive=readFileSync(new URL('../data/cases.json',import.meta.url),'utf8');
+const curatedArchive=(()=>{const {cases,...meta}=JSON.parse(fullArchive);return JSON.stringify({...meta,cases:cases.filter(c=>!c.provenance?.automated).sort((a,b)=>a.id==='phoenix-1997'?-1:b.id==='phoenix-1997'?1:0)});})();
 const mime={'.html':'text/html','.css':'text/css','.js':'application/javascript','.webp':'image/webp','.svg':'image/svg+xml','.txt':'text/plain'};
 const sqlite=new DatabaseSync(':memory:');
 sqlite.exec(await readFile(join(root,'migrations/0001_init.sql'),'utf8'));
@@ -124,13 +125,67 @@ try{
     await page.waitForFunction(()=>document.querySelector(".live-card h2 a")?.textContent==="ПРЕВОД Special sighting 16");
     assert.equal(await page.locator(".live-card").count(),12);
     assert.ok(offsets.includes(12)&&offsets.includes(24),"search must translate matching source pages, not filtered positions");
-    await page.locator("#showMoreNews").click();
+    await page.locator("#nextNews").click();
     await page.waitForFunction(()=>[...document.querySelectorAll(".live-card h2 a")]
       .some(link=>link.textContent==="ПРЕВОД Special sighting 39"));
-    assert.equal(await page.locator(".live-card").count(),24);
-    assert.ok(offsets.includes(36),"filtered Show More must translate subsequent source pages");
+    assert.equal(await page.locator(".live-card").count(),12);
+    assert.equal(await page.locator("#newsPageStatus").textContent(),"Страница 2 / 3");
+    assert.ok(offsets.includes(36),"filtered page navigation must translate the matching source page");
     assert.equal(await page.locator(".live-card h2 a").last().getAttribute("href"),
       "https://publisher.example.test/story/39");
+    assert.deepEqual(errors,[]);
+    await ctx.close();
+  });
+  await test("news source-type filters and previous/next pagination operate on real result windows",async()=>{
+    const ctx=await browser.newContext({viewport:{width:1180,height:850},reducedMotion:"reduce"});
+    const page=await ctx.newPage(),errors=[];
+    page.on("pageerror",error=>errors.push(error.message));
+    const entries=Array.from({length:25},(_,index)=>({
+      title:(index%2===0?"Official source item ":"Specialist source item ")+index,
+      url:"https://publisher.example.test/story/"+index,
+      source:index%2===0?"Agency Desk":"Research Journal",
+      source_role:index%2===0?"official-institution":"specialist-press",
+      category:index%7===0?"research":undefined,
+      published:new Date(Date.now()-index*60000).toISOString(),language:"en"
+    }));
+    await page.route("**/api/news?*",route=>route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
+      status:"live",edition:"global",updated_at:new Date().toISOString(),count:entries.length,items:entries,
+      translation:{target:"bg",status:"unavailable",translated:0}
+    })}));
+    await page.goto("http://127.0.0.1:"+port+"/news.html");
+    await page.waitForFunction(()=>document.querySelectorAll(".live-card").length===12);
+    await page.locator("#newsTopicCategory").selectOption("research");
+    await page.waitForFunction(()=>document.querySelectorAll(".live-card").length===4&&document.querySelector("#newsPageStatus")?.textContent==="Страница 1 / 1");
+    assert.deepEqual(await page.locator(".live-card h2").allTextContents(),["Official source item 0","Specialist source item 7","Official source item 14","Specialist source item 21"]);
+    await page.locator("#newsTopicCategory").selectOption("all");
+    await page.waitForFunction(()=>document.querySelectorAll(".live-card").length===12);
+    await page.locator("#newsSourceType").selectOption("official-institution");
+    await page.waitForFunction(()=>document.querySelectorAll(".live-card").length===12&&document.querySelector("#newsPageStatus")?.textContent==="Страница 1 / 2");
+    assert.equal(await page.locator(".live-card h2").first().textContent(),"Official source item 0");
+    await page.locator("#nextNews").click();
+    await page.waitForFunction(()=>document.querySelectorAll(".live-card").length===1&&document.querySelector("#newsPageStatus")?.textContent==="Страница 2 / 2");
+    assert.equal(await page.locator(".live-card h2").textContent(),"Official source item 24");
+    assert.equal(await page.locator("#nextNews").isDisabled(),true);
+    await page.locator("#previousNews").click();
+    await page.waitForFunction(()=>document.querySelectorAll(".live-card").length===12&&document.querySelector("#newsPageStatus")?.textContent==="Страница 1 / 2");
+    assert.equal(await page.locator("#previousNews").isDisabled(),true);
+    assert.deepEqual(errors,[]);
+    await ctx.close();
+  });
+  await test('durable fallback records are visibly labeled as archived source records',async()=>{
+    const ctx=await browser.newContext({viewport:{width:1180,height:850},reducedMotion:"reduce"});
+    const page=await ctx.newPage(),errors=[];
+    page.on("pageerror",error=>errors.push(error.message));
+    await page.route("**/api/news?*",route=>route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
+      status:"cached",edition:"global",updated_at:"2026-11-02T10:00:00.000Z",count:1,cache_source:"news_history_db",
+      items:[{title:"Preserved source-reported UAP bulletin",url:"https://publisher.example.test/archive/story-1",source:"Example Press",published:"2026-11-01T10:00:00.000Z",language:"en",source_role:"news-search",archival:true}],
+      translation:{target:"bg",status:"translated",translated:1}
+    })}));
+    await page.goto("http://127.0.0.1:"+port+"/news.html");
+    await page.waitForFunction(()=>document.querySelector(".news-archive-record")?.textContent==="Запазен архивен запис");
+    assert.equal(await page.locator(".news-archive-record").count(),1);
+    assert.equal(await page.locator("#newsStatus").getAttribute("data-state"),"cached");
+    assert.equal(await page.locator(".live-card h2 a").getAttribute("href"),"https://publisher.example.test/archive/story-1");
     assert.deepEqual(errors,[]);
     await ctx.close();
   });
@@ -437,15 +492,15 @@ try{
     assert.deepEqual(errors,[]);
     await ctx.close();
   });
-  await test('homepage lists the real 15-case archive rather than eight demo case cards',async()=>{
+  await test('homepage previews six sourced cases and full search remains available',async()=>{
     const context=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'reduce'});
     const page=await context.newPage(),errors=[];
     page.on('pageerror',e=>errors.push(e.message));
     await page.goto('http://127.0.0.1:'+port+'/');
     await page.locator('button[data-language="bg"]').click();
     await page.locator('#gateContinue').click();
-    await page.waitForFunction(()=>document.querySelectorAll('#reportGrid a.report-card').length===15);
-    assert.equal(await page.locator('#reportGrid a.report-card').count(),15);
+    await page.waitForFunction(()=>document.querySelectorAll('#reportGrid a.report-card').length===6);
+    assert.equal(await page.locator('#reportGrid a.report-card').count(),6);
     assert.equal(await page.locator('#reportGrid .report-badge').allTextContents().then(x=>x.includes('DEMO')),false);
     assert.equal(await page.locator('#reportGrid a[href="/archive/al-taqaddum-2017"]').count(),1);
     await page.locator('#reportSearch').fill('Техеран');
@@ -761,6 +816,142 @@ try{
     await page.setViewportSize({width:1366,height:700});
     mkdirSync("artifacts",{recursive:true});
     await page.screenshot({path:"artifacts/aurora-silence-laptop.png",animations:"disabled"});
+    await context.close();
+  });
+  await test("homepage discovery portal localizes its routes and remains usable on desktop and mobile",async()=>{
+    const desktop=await browser.newContext({viewport:{width:1366,height:900},reducedMotion:"reduce"});
+    const page=await desktop.newPage(),errors=[];
+    page.on("pageerror",error=>errors.push(error.message));
+    await page.addInitScript(()=>{if(!sessionStorage.getItem('aurora-test-language-seeded')){localStorage.setItem('aurora-lang','bg');sessionStorage.setItem('aurora-test-language-seeded','1')}});
+    await page.route("**/data/cases.json",route=>route.fulfill({status:200,contentType:"application/json",body:fullArchive}));
+    await page.route("**/api/stats",route=>route.fulfill({status:503,contentType:"application/json",body:'{"error":"database_unavailable"}'}));
+    await page.route("**/api/cases?*",route=>route.fulfill({status:503,contentType:"application/json",body:'{"error":"database_unavailable"}'}));
+    await page.goto("http://127.0.0.1:"+port+"/");
+    await page.waitForFunction(()=>document.querySelectorAll(".portal-card[data-portal]").length===8&&document.querySelector("#worldMapCount")?.textContent==="101");
+    assert.equal(await page.locator("#portalHeading").textContent(),"Открий AURORA");
+    assert.equal(await page.locator("#portalSubmitNews").getAttribute("href"),"/news.html#newsTips");
+    assert.equal(await page.locator("#portalSubmitNews").textContent(),"Изпрати новина");
+    const desktopEntry=await page.locator(".portal-grid").evaluate(grid=>({viewport:innerHeight,top:grid.getBoundingClientRect().top,fullyVisible:[...grid.querySelectorAll('.portal-card')].filter(card=>card.getBoundingClientRect().top>=0&&card.getBoundingClientRect().bottom<=innerHeight).length}));
+    assert.ok(desktopEntry.top<desktopEntry.viewport&&desktopEntry.fullyVisible===8,"all discovery destinations should be visible on the first desktop screen: "+JSON.stringify(desktopEntry));
+    const destinations=await page.locator(".portal-card").evaluateAll(cards=>cards.map(card=>[card.dataset.portal,card.getAttribute("href")]));
+    assert.deepEqual(destinations,[
+      ["news","/news.html"],["map","#worldAtlas"],["archive","/archive.html"],["media","/media.html"],
+      ["report","/report.html"],["about","#mission"],["support","/donate.html"],["search","/archive.html#archiveSearch"]
+    ]);
+    await page.locator("#openLanguageGate").click();
+    await page.locator('#gateLanguageGrid button[data-language="es"]').click();
+    await page.locator("#gateContinue").click();
+    await page.waitForFunction(()=>document.documentElement.lang==="es"&&document.querySelector("[data-portal=\"news\"] [data-portal-title]")?.textContent==="Últimas noticias");
+    assert.equal(await page.locator("#portalHeading").textContent(),"Explora AURORA");
+    assert.equal(await page.locator("#portalSubmitNews").textContent(),"Enviar una noticia");
+    assert.equal(await page.locator(".desktop-nav [data-portal-nav=\"support\"]").textContent(),"Apoyar");
+    await page.reload();
+    assert.equal(await page.locator("html").getAttribute("lang"),"es","selected locale persists after reload");
+    assert.equal(await page.locator("[data-portal=\"archive\"] [data-portal-title]").textContent(),"Archivo UAP");
+    await page.locator("#exploreAURORA").scrollIntoViewIfNeeded();
+    mkdirSync("artifacts",{recursive:true});
+    await page.screenshot({path:"artifacts/aurora-final-portal-desktop-section.png",animations:"disabled"});
+    await page.evaluate(()=>window.scrollTo(0,0));
+    await page.screenshot({path:"artifacts/aurora-final-home-desktop.png",animations:"disabled"});
+    await desktop.close();
+
+    const tablet=await browser.newContext({viewport:{width:768,height:1024},isMobile:true,reducedMotion:"reduce"});
+    const tabletPage=await tablet.newPage(),tabletErrors=[];
+    tabletPage.on("pageerror",error=>tabletErrors.push(error.message));
+    await tabletPage.addInitScript(()=>localStorage.setItem("aurora-lang","fr"));
+    await tabletPage.route("**/data/cases.json",route=>route.fulfill({status:200,contentType:"application/json",body:fullArchive}));
+    await tabletPage.route("**/api/stats",route=>route.fulfill({status:503,contentType:"application/json",body:'{"error":"database_unavailable"}'}));
+    await tabletPage.route("**/api/cases?*",route=>route.fulfill({status:503,contentType:"application/json",body:'{"error":"database_unavailable"}'}));
+    await tabletPage.goto("http://127.0.0.1:"+port+"/");
+    await tabletPage.waitForFunction(()=>document.querySelectorAll(".portal-card[data-portal]").length===8&&document.querySelector("#worldMapCount")?.textContent==="101");
+    const tabletLayout=await tabletPage.evaluate(()=>({width:document.documentElement.scrollWidth-document.documentElement.clientWidth,portalTop:document.querySelector(".portal-grid").getBoundingClientRect().top,viewport:innerHeight}));
+    assert.ok(tabletLayout.width<=1,"tablet layout has no horizontal overflow");
+    assert.ok(tabletLayout.portalTop<tabletLayout.viewport,"tablet shows the discovery dashboard in the first viewport");
+    assert.equal(await tabletPage.locator("#portalSubmitNews").textContent(),"Proposer une actualité");
+    await tabletPage.screenshot({path:"artifacts/aurora-final-home-tablet.png",animations:"disabled"});
+    assert.deepEqual(tabletErrors,[]);
+    await tablet.close();
+
+    const mobile=await browser.newContext({viewport:{width:390,height:844},isMobile:true,reducedMotion:"reduce"});
+    const mobilePage=await mobile.newPage();
+    mobilePage.on("pageerror",error=>errors.push(error.message));
+    await mobilePage.addInitScript(()=>localStorage.setItem("aurora-lang","ar"));
+    await mobilePage.route("**/data/cases.json",route=>route.fulfill({status:200,contentType:"application/json",body:fullArchive}));
+    await mobilePage.route("**/api/stats",route=>route.fulfill({status:503,contentType:"application/json",body:'{"error":"database_unavailable"}'}));
+    await mobilePage.route("**/api/cases?*",route=>route.fulfill({status:503,contentType:"application/json",body:'{"error":"database_unavailable"}'}));
+    await mobilePage.goto("http://127.0.0.1:"+port+"/");
+    await mobilePage.waitForFunction(()=>document.querySelectorAll(".portal-card[data-portal]").length===8&&document.documentElement.dir==="rtl"&&document.querySelector("#worldMapCount")?.textContent==="101");
+    assert.equal(await mobilePage.locator("[data-portal=\"news\"] [data-portal-title]").textContent(),"أحدث الأخبار");
+    assert.equal(await mobilePage.locator("#portalSubmitNews").textContent(),"أرسل خبراً");
+    const mobileEntry=await mobilePage.locator(".portal-grid").evaluate(grid=>({viewport:innerHeight,top:grid.getBoundingClientRect().top,visible:[...grid.querySelectorAll('.portal-card')].filter(card=>card.getBoundingClientRect().top<innerHeight&&card.getBoundingClientRect().bottom>0).length,fullyVisible:[...grid.querySelectorAll('.portal-card')].filter(card=>card.getBoundingClientRect().top>=0&&card.getBoundingClientRect().bottom<=innerHeight).length}));
+    assert.ok(mobileEntry.top<mobileEntry.viewport&&mobileEntry.fullyVisible===8,"all discovery destinations should fit the first mobile screen: "+JSON.stringify(mobileEntry));
+    await mobilePage.locator("#menuToggle").click();
+    assert.equal(await mobilePage.locator("#mobileNav a").count(),8);
+    assert.equal(await mobilePage.locator("#mobileNav a[href=\"/donate.html\"]").textContent(),"الدعم");
+    await mobilePage.locator("#menuToggle").click();
+    await mobilePage.locator("#exploreAURORA").scrollIntoViewIfNeeded();
+    const overflow=await mobilePage.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+    assert.ok(overflow<=1,"mobile portal and RTL navigation do not overflow horizontally");
+    mkdirSync("artifacts",{recursive:true});
+    await mobilePage.screenshot({path:"artifacts/aurora-final-portal-mobile-section.png",animations:"disabled"});
+    await mobilePage.evaluate(()=>window.scrollTo(0,0));
+    await mobilePage.screenshot({path:"artifacts/aurora-final-home-mobile.png",animations:"disabled"});
+    assert.deepEqual(errors,[]);
+    await mobile.close();
+  });
+  await test("newsroom UI previews, saves, localizes and explicitly publishes an article",async()=>{
+    const context=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:"reduce"});
+    const page=await context.newPage(),errors=[],actions=[];
+    let tipReviewed=false;
+    page.on("pageerror",error=>errors.push(error.message));
+    await page.route("**/api/news-editor*",async route=>{
+      const request=route.request();
+      if(request.method()==="GET"){
+        const url=new URL(request.url()),kind=url.searchParams.get("kind")||"articles";
+        if(kind==="translation")return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({source_language:"en",translation:null})});
+        if(kind==="tips")return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({tips:tipReviewed?[]:[{id:"aur-tip-12345678-1234-1234-1234-123456789abc",title:"A new source-backed UAP report",source_url:"https://publisher.example/story/456",status:"pending",submitted_at:"2026-10-30T12:00:00Z"}],offset:0,has_more:false})});
+        return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({articles:[],offset:0,has_more:false})});
+      }
+      const payload=request.postDataJSON();actions.push(payload.action);
+      if(payload.action==="save_article")return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({id:"aur-news-12345678-1234-1234-1234-123456789abc",status:payload.article.id?"updated":"draft",published:false})});
+      if(payload.action==="save_translation")return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({status:"localized",language:payload.translation.language_code})});
+      if(payload.action==="publish_article")return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({status:"published",published:true})});
+      if(payload.action==="review_tip"){tipReviewed=true;return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({status:payload.decision,published:false})})}
+      return route.fulfill({status:400,contentType:"application/json",body:'{"error":"unsupported_test_action"}'});
+    });
+    await page.goto("http://127.0.0.1:"+port+"/news-editor.html");
+    assert.equal(await page.locator("#publishArticle").isDisabled(),true,"cannot publish an incomplete article");
+    await page.locator("#articleLanguage").selectOption("en");
+    await page.locator("#articleTitle").fill("A source-reviewed UAP policy update");
+    await page.locator("#articleSummary").fill("An attributed summary with context and explicit uncertainty for readers.");
+    await page.locator("#articleBody").fill("The source reports a policy update. AURORA preserves the publisher's account, context and uncertainty, and does not describe the claim as scientifically established. This longer body satisfies editorial minimum length.");
+    await page.locator("#articleSourceName").fill("Example Research Desk");
+    await page.locator("#articleSourceUrl").fill("https://publisher.example/story/123");
+    await page.locator("#previewArticle").click();
+    assert.equal(await page.locator("#articlePreview").isVisible(),true);
+    assert.equal(await page.locator("#articlePreview h2").textContent(),"A source-reviewed UAP policy update");
+    await page.locator("#saveArticle").click();
+    await page.waitForFunction(()=>document.querySelector("#newsEditorStatus")?.textContent==="Черновата е запазена.");
+    await page.locator("#translationLanguage").selectOption("es");
+    await page.locator("#translationTitle").fill("Actualización de política sobre UAP");
+    await page.locator("#translationSummary").fill("Resumen editorial revisado que atribuye claramente la información a su fuente.");
+    await page.locator("#translationBody").fill("El texto original se conserva, se atribuye al editor y distingue el informe de las conclusiones verificadas. Esta traducción fue redactada por una persona y revisada antes de publicarse.");
+    await page.locator("#saveTranslation").click();
+    await page.waitForFunction(()=>document.querySelector("#newsEditorStatus")?.textContent==="Редакторският превод е запазен.");
+    await page.locator("#publishArticle").click();
+    await page.waitForFunction(()=>document.querySelector("#newsEditorStatus")?.textContent==="Статията е публикувана в публичния новинарски поток.");
+    await page.locator("#showTips").click();
+    await page.waitForFunction(()=>document.querySelectorAll(".news-tip-review-card").length===1);
+    await page.locator(".news-tip-review-actions textarea").fill("Source is relevant for editorial verification.");
+    await page.getByRole("button",{name:"Одобри за редакционен преглед"}).click();
+    await page.waitForFunction(()=>document.querySelector("#newsEditorStatus")?.textContent==="Предложението е одобрено само за редакционна употреба.");
+    assert.equal(await page.locator(".news-tip-review-card").count(),0,"review approval does not publish a visitor-submitted article");
+    assert.deepEqual(actions,["save_article","save_translation","save_article","publish_article","review_tip"]);
+    await page.setViewportSize({width:390,height:844});
+    const mobileOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+    assert.ok(mobileOverflow<=1,"private newsroom form fits a mobile viewport");
+    assert.equal(await page.locator("#articleForm").isVisible(),true);
+    assert.deepEqual(errors,[]);
     await context.close();
   });
   await test("all nine inner pages use the same real black skin, not old cyan layouts",async()=>{

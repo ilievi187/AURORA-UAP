@@ -90,6 +90,12 @@ test("keyword filter keeps UAP terms and rejects ordinary science headlines", ()
   assert.equal(titleMatchesTopic("جسم طائر مجهول فوق الساحل"), true);
 });
 
+test("manual editorial articles win dedup against matching syndicated headlines",()=>{
+ const syndicated={title:'AARO publishes UAP report',url:'https://publisher.example/report',source:'Publisher',published:'2026-11-02T12:00:00.000Z'};
+ const editorial={...syndicated,article_id:'aur-news-example',editorial:true,source:'AURORA Editorial',article_body:'A longer reviewed article.'};
+ assert.deepEqual(dedupeHeadlines([syndicated,editorial]),[editorial]);
+});
+
 test("dedup fixtures", () => {
   for (const fixture of headlineCases) {
     const urls = dedupeHeadlines(fixture.items).map((item) => item.url);

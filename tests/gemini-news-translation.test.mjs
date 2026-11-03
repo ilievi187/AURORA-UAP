@@ -25,6 +25,18 @@ test("detectHeadlineLanguage identifies Cyrillic, Japanese, Korean, Chinese, Ara
  assert.equal(normalizeTargetLanguage("pt-BR"),"pt");
 });
 
+test("human-authored article localizations are preserved and never overwritten by machine translation",async()=>{
+ clearTranslationCache();let calls=0;
+ const result=await translateNewsPage([{
+  title:'Original source headline',summary:'Original source summary that remains attributed and intact.',translated_title:'Редакторски преведено заглавие',translated_summary:'Редакторски преведено резюме.',editorial_translation:true,
+  language:'en',source_language:'en',url:'https://publisher.example.test/article',source:'AURORA Editorial',published:'2026-11-02T12:00:00Z'
+ }],'bg',0,{async run(){calls++;return {translated_text:'Machine translation'}}});
+ assert.equal(calls,0);
+ assert.equal(result.items[0].translated_title,'Редакторски преведено заглавие');
+ assert.equal(result.items[0].translated_summary,'Редакторски преведено резюме.');
+ assert.equal(result.items[0].title,'Original source headline');
+});
+
 test("translateNewsPage translates headlines and summaries, caches results, and falls back gracefully on errors",async()=>{
  clearTranslationCache();
  const calls=[];

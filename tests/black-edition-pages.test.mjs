@@ -8,8 +8,9 @@ test("all nine subpages have page-specific SILENCE composition layered over Blac
  for(const name of pages){
   const html=read(name+".html");
   const styles=[...html.matchAll(/<link\s+rel="stylesheet"\s+href="([^"]+)"/g)].map(m=>m[1]);
-  assert.equal(styles.at(-2),"/aurora-black-pages.css",name);
-  assert.equal(styles.at(-1),"/aurora-editorial-interiors.css",name);
+  assert.ok(styles.includes("/aurora-black-pages.css"),name+" retains Black Edition base");
+  assert.ok(styles.includes("/aurora-editorial-interiors.css"),name+" retains the editorial page skin");
+  assert.ok(styles.indexOf("/aurora-black-pages.css")<styles.indexOf("/aurora-editorial-interiors.css"),name+" layers the editorial skin over the black base");
   assert.match(html,new RegExp(`data-aurora-page="${name}"`));
   assert.ok(html.includes("/aurora-design-refresh.css"),"shared base retained: "+name);
  }
