@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {configuredProviders,reporterAuthAvailable,reporterAuthConfigured,verifiedReporter} from "../functions/_lib/reporter-auth.js";
+import {configuredProviders,reporterAuthAvailable,reporterAuthConfigured,verifiedReporter,verifiedAccount} from "../functions/_lib/reporter-auth.js";
 import {DatabaseSync} from "node:sqlite";
 import {readFileSync} from "node:fs";
 import {storeSubmission,normalizeSubmission,intakeSchemaReady} from "../functions/_lib/intake.js";
@@ -49,6 +49,9 @@ test("only Auth-server-confirmed email gets report identity, never browser-submi
  assert.deepEqual(await invoke({...confirmed,app_metadata:{provider:"x"},identities:[{provider:"x"},{provider:"email"}]}),{id:GOOD_ID});
  assert.equal(await invoke(confirmed,401),null);
  assert.equal(await verifiedReporter(req("short"),CONFIG,async()=>{throw Error("Must not call backend")}),null);
+ const inactive={...CONFIG,AURORA_REPORT_AUTH_ENABLED:undefined};
+ assert.equal(await verifiedReporter(req(),inactive,async()=>{throw Error("Submission must remain disabled")}),null);
+ assert.deepEqual(await verifiedAccount(req(),inactive,async()=>Response.json(confirmed)),{id:GOOD_ID});
  assert.equal(await verifiedReporter(new Request("https://aurorauap.org"),CONFIG,async()=>{throw Error("No auth")}),null);
 });
 function sqlDb(){

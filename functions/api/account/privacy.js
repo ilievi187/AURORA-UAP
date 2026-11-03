@@ -1,6 +1,6 @@
 // Verified reporters can view only their own quarantined receipt references.
 // This is a READ-ONLY self-service inventory, not an account deletion endpoint.
-import {verifiedReporter,reporterAuthConfigured} from "../../_lib/reporter-auth.js";
+import {verifiedAccount,reporterAuthAvailable} from "../../_lib/reporter-auth.js";
 
 const headers={
  "Cache-Control":"private, no-store, max-age=0",
@@ -24,10 +24,10 @@ export async function onRequestGet({request,env}){
  const raw=url.searchParams.get("offset")??"0";
  if(!/^(0|[1-9][0-9]{0,4})$/.test(raw)||Number(raw)>10000)
   return reply({error:"invalid_pagination"},400);
- if(!env?.DB?.prepare||!reporterAuthConfigured(env))
+ if(!env?.DB?.prepare||!reporterAuthAvailable(env))
   return reply({error:"unavailable"},503);
  let user;
- try{user=await verifiedReporter(request,env)}
+ try{user=await verifiedAccount(request,env)}
  catch{return reply({error:"identity_unavailable"},503)}
  if(!user)return reply({error:"verified_email_required"},401);
  try{

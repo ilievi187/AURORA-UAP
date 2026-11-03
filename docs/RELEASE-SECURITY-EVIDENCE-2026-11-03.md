@@ -47,3 +47,6 @@ Do NOT set legal/WAF review flags or AURORA_INTAKE_ENABLED based on this read-on
 - New GET /api/account/privacy is scoped to the verified Supabase token; it returns only that UUID's private receipt references, statuses and timestamps with private/no-store. No POST/DELETE operation.
 - The anonymous prelaunch checker now makes exactly eleven bounded GET requests and requires unsigned access to the account privacy endpoint to return HTTP 401 with no-store.
 - This is not a completed data erasure workflow. Email requests are handled manually. See docs/ACCOUNT-PRIVACY-OPERATIONS-2026-11-04.md.
+
+
+4 Nov follow-up: authenticated privacy inventory was initially tied to the disabled submission Auth flag and yielded HTTP 503. A fix separates read-only account verification from submission enablement. The after-deploy read-only preflight must show 401 (no token) while report intake stays disabled; do not claim this until verified.

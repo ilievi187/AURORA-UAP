@@ -5,7 +5,7 @@ Date: 4 November 2026. This is partial technical readiness, not automatic deleti
 ## Reporter-facing workflow
 
 - After verified-email sign-in, the visitor may select View my private reports on the report page, even while public submission is disabled.
-- The browser sends the access token only to same-origin GET /api/account/privacy. The server verifies the token with the Supabase /auth/v1/user endpoint before accessing D1.
+- The browser sends the access token only to same-origin GET /api/account/privacy. The server verifies the token with the Supabase /auth/v1/user endpoint before accessing D1. The read-only check uses reporterAuthAvailable, not the independent reporterAuthConfigured submission switch, so it remains accessible with intake disabled.
 - Only that verified UUID's private report receipt IDs, statuses, and creation timestamps are returned; at most 50 per page. No email, private description, full report, public dossier, other person's receipt, audit trail or donor information.
 - Auth revocation and unconfirmed identities are rejected. Alternate hosts, wrong Origin, cross-site requests, polluted queries, and POST or DELETE fail closed. Responses are private/no-store.
 - View results are created using textContent and cleared on sign-out or identity change, never saved in browser localStorage.
@@ -34,3 +34,8 @@ Date: 4 November 2026. This is partial technical readiness, not automatic deleti
 This is NOT self-service report-body export or automated account removal. Processor retention, controlled real deletion, legal review and response handling remain required before public intake launch.
 
 Supabase official documentation: https://supabase.com/docs/guides/auth/managing-user-data
+
+
+## Production follow-up 4 November 2026
+
+Initial release preflight detected HTTP 503 on anonymous GET /api/account/privacy while the public Auth configuration remained available but the separate submission activation switch was unset. The follow-up change splits verifiedAccount (read-only, needs configured Supabase sign-in) from verifiedReporter (submission, also requires explicit AURORA_REPORT_AUTH_ENABLED=enabled). This must be checked live after deployment: anonymous GET should respond HTTP 401 and no-store, and the public intake status must continue accepting:false.

@@ -20,8 +20,10 @@ export function reporterAuthConfigured(env){
  return env?.AURORA_REPORT_AUTH_ENABLED==="enabled"&&reporterAuthAvailable(env);
 }
 // Verify a fresh access token against the Auth service. Never rely on JWT decoding or an untrusted email claim.
-export async function verifiedReporter(request,env,fetcher=fetch){
- if(!reporterAuthConfigured(env))return null;
+// Read-only account/privacy features remain available whenever verified-email
+// sign-in is configured, even while public report intake is disabled.
+export async function verifiedAccount(request,env,fetcher=fetch){
+ if(!reporterAuthAvailable(env))return null;
  const header=request.headers.get("Authorization")||"";
  const match=/^Bearer ([A-Za-z0-9._-]{30,4096})$/.exec(header);
  if(!match)return null;
@@ -41,4 +43,12 @@ export async function verifiedReporter(request,env,fetcher=fetch){
   if(!Array.isArray(user.identities)||!user.identities.some(identity=>identity?.provider==="email"))return null;
  }
  return {id:user.id};
+}
+
+
+// Submission uses a separate operator-controlled switch. Do NOT bypass it merely
+// because the same Auth service can verify accounts for read-only privacy access.
+export async function verifiedReporter(request,env,fetcher=fetch){
+ if(!reporterAuthConfigured(env))return null;
+ return verifiedAccount(request,env,fetcher);
 }
