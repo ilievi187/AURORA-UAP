@@ -54,3 +54,7 @@ Use `docs/V1.7-LIVE-SUBMISSION-ACTIVATION.md` and `docs/PRIVACY-NOTICE-REVIEW.md
 - **WAF**: zone rule `AURORA intake rate limit` is active, matches exact host `aurorauap.org`, method `POST`, path `/api/intake/submit`, source IP, 10 requests/10 seconds, Block for 10 seconds. **No load/burst test has been run**; do not mark WAF reviewed merely from the configuration.
 - **Privacy/deletion improvement**: bilingual notice now names Brevo as the transactional email provider and accurately discloses that Auth operates even while reports are disabled. Local tests cover private retention and owner-approved erasure of a matching quarantined report and its ownership/audit records. **No erasure has run in production.** Supabase account erasure, backup handling, authorization, request tracking, provider transfer terms, and final legal review remain operator tasks.
 - **Never activate prematurely**: leave `AURORA_INTAKE_ENABLED` disabled, and do not set WAF/legal readiness flags until their real-world verification is complete.
+
+## Read-only prelaunch release verification (3 Nov 2026)
+
+The reproducible, bounded checker scripts/check-private-release-readiness.mjs --live and offline CI tests confirm closed intake, no-store status, private Access routes, and BG/EN processor disclosures. See docs/RELEASE-SECURITY-EVIDENCE-2026-11-03.md for limitations and the Supabase password protection warning. These tests do not prove real WAF burst mitigation, full Turnstile challenge acceptance, denied-account access or legal compliance.
