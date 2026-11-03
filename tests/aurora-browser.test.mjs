@@ -688,12 +688,18 @@ try{
     await page.goto('http://127.0.0.1:'+port+'/report.html');
     await page.locator('#reportAuthLogout').waitFor({state:'visible',timeout:4000});
     assert.equal((await page.locator('#reportAuthFeedback').textContent()).includes('verified@example.com'),true);
+    assert.equal(await page.locator('#reportAuthButtons').isVisible(),false,'signed-in account must not show the email sign-in form');
+    assert.equal(await page.locator('#reportAuthEmailBox').isVisible(),false);
+    assert.ok(['YOUR VERIFIED ACCOUNT','ПОТВЪРДЕН АКАУНТ'].includes(await page.locator('#reportAuthHeading').textContent()));
     assert.equal(await page.locator('#sendReport').isDisabled(),true);
     assert.equal(await page.locator('#activationControls').isVisible(),false);
     assert.ok(['Описание','Description'].includes(await page.locator('[data-report-label="description"]').textContent()));
     await page.locator('#reportAuthLogout').click();
     await page.locator('#reportAuthLogout').waitFor({state:'hidden'});
+    assert.equal(await page.locator('#reportAuthButtons').isVisible(),true,'sign-in form should return after logout');
     assert.equal(await page.locator('#reportAuthEmailBox').isVisible(),true);
+    assert.equal(await page.locator('#reportAuthEmailSend').isVisible(),true);
+    assert.ok(['VERIFY YOUR EMAIL','ПОТВЪРДИ ИМЕЙЛА СИ'].includes(await page.locator('#reportAuthHeading').textContent()));
     assert.equal(await page.locator('#sendReport').isDisabled(),true);
     assert.deepEqual(posts,[]);
     assert.deepEqual(errors,[]);
