@@ -69,3 +69,7 @@ The reproducible, bounded checker scripts/check-private-release-readiness.mjs --
 - The age declaration is not included in browser drafts or stored as a separate D1 field. No birth date, ID document or other proof is collected.
 - BG/EN privacy notice is updated for disclosure and remains subject to legal review. Do not treat self-declaration as proof of age or a substitute for appropriate privacy safeguards.
 - Production intake remains disabled until independent go/no-go approvals.
+
+## Account privacy boundary — 4 November 2026
+
+The independently verified Supabase token allows only GET /api/account/privacy to list an authenticated account's own private receipt metadata with no-store. POST and DELETE return 405. The contact link is manual, not automatic deletion. See docs/ACCOUNT-PRIVACY-OPERATIONS-2026-11-04.md. Owner-reviewed account erasure, processor retention and legal clearance are still blockers; public intake stays off.

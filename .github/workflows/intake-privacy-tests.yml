@@ -6,6 +6,7 @@ on:
       - 'privacy.html'
       - '_redirects'
       - 'functions/api/intake/**'
+      - 'functions/api/account/**'
       - 'functions/_lib/intake.js'
       - 'functions/_lib/reporter-auth.js'
       - 'migrations/0005_reporter_ownership.sql'
@@ -14,6 +15,8 @@ on:
       - 'report.html'
       - 'report.js'
       - 'tests/reporter-auth.test.mjs'
+      - 'tests/account-privacy.test.mjs'
+      - 'docs/ACCOUNT-PRIVACY-OPERATIONS-2026-11-04.md'
       - 'tests/intake-auth-gate.test.mjs'
       - 'tests/isolated-intake-security.test.mjs'
       - 'scripts/turnstile-dummy-smoke.mjs'
@@ -39,6 +42,7 @@ on:
       - 'privacy.html'
       - '_redirects'
       - 'functions/api/intake/**'
+      - 'functions/api/account/**'
       - 'functions/_lib/intake.js'
       - 'functions/_lib/reporter-auth.js'
       - 'migrations/0005_reporter_ownership.sql'
@@ -47,6 +51,8 @@ on:
       - 'report.html'
       - 'report.js'
       - 'tests/reporter-auth.test.mjs'
+      - 'tests/account-privacy.test.mjs'
+      - 'docs/ACCOUNT-PRIVACY-OPERATIONS-2026-11-04.md'
       - 'tests/intake-auth-gate.test.mjs'
       - 'tests/isolated-intake-security.test.mjs'
       - 'scripts/turnstile-dummy-smoke.mjs'
@@ -79,4 +85,4 @@ jobs:
       - run: npm run build:report-auth
       - run: git diff --exit-code -- report-auth.bundle.js
       - run: node --test tests/privacy-route.test.mjs tests/private-release-readiness.test.mjs
-      - run: node --experimental-sqlite --test tests/intake.test.mjs tests/reporter-auth.test.mjs tests/intake-auth-gate.test.mjs tests/isolated-intake-security.test.mjs tests/moderation.test.mjs tests/privacy-retention.test.mjs tests/backup-recovery.test.mjs tests/backup-drive.test.mjs
+      - run: node --experimental-sqlite --test tests/intake.test.mjs tests/reporter-auth.test.mjs tests/account-privacy.test.mjs tests/intake-auth-gate.test.mjs tests/isolated-intake-security.test.mjs tests/moderation.test.mjs tests/privacy-retention.test.mjs tests/backup-recovery.test.mjs tests/backup-drive.test.mjs

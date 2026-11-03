@@ -15,7 +15,10 @@ function mock(overrides={}){
   assert.equal(init.headers.Authorization,undefined);
   if(overrides[new URL(url).pathname])return overrides[new URL(url).pathname];
   if(url.endsWith('/api/intake/status'))return Response.json(STATE,{headers:{'Cache-Control':'no-store'}});
-  if(url.endsWith('/privacy'))return new Response(notice,{status:200});
+  if(url.endsWith('/api/account/privacy'))return Response.json(
+   {error:'verified_email_required'},
+   {status:401,headers:{'Cache-Control':'private, no-store, max-age=0'}});
+  if(url===BASE+'/privacy')return new Response(notice,{status:200});
   if(url.includes('/moderation'))return Response.redirect('https://aurora.cloudflareaccess.com/cdn-cgi/access/login',302);
   if(url.includes('/news-editor'))return new Response('Forbidden',{status:403});
   throw Error('Unexpected '+url);
@@ -25,9 +28,9 @@ function mock(overrides={}){
 test('prelaunch proof only performs anonymous GET, requires Cloudflare Access or denied origin',async()=>{
  const m=mock();const result=await checkReadOnlyRelease(m.fetcher);
  assert.equal(result.ok,true);
- assert.equal(result.results.length,10);
- assert.equal(m.calls.length,10);
- assert.equal(new Set(m.calls.map(x=>x.url)).size,10);
+ assert.equal(result.results.length,11);
+ assert.equal(m.calls.length,11);
+ assert.equal(new Set(m.calls.map(x=>x.url)).size,11);
  assert.equal(m.calls.some(x=>x.init.body!==undefined),false);
 });
 test('GET 200 on any private route fails release preflight',async()=>{
@@ -37,6 +40,12 @@ test('GET 200 on any private route fails release preflight',async()=>{
   assert.equal(result.ok,false,path);
   assert.ok(result.results.some(x=>x.name===path&&!x.ok),path);
  }
+});
+test('accidentally public receipt endpoint fails prelaunch verification',async()=>{
+ const m=mock({'/api/account/privacy':Response.json({receipts:[{receipt_id:'secret'}]},{status:200})});
+ const result=await checkReadOnlyRelease(m.fetcher);
+ assert.equal(result.ok,false);
+ assert.ok(result.results.some(item=>item.name==='account-privacy'&&!item.ok));
 });
 test('redirect to unsafe external domain cannot masquerade as Access protection',async()=>{
  const m=mock({'/moderation':Response.redirect('https://attacker.example/login',302)});

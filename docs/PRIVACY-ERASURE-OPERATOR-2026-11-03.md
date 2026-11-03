@@ -1,6 +1,6 @@
 # AURORA — privacy rights and retention operating safeguards (draft)
 
-**Not a public self-service feature, not an automated GDPR compliance claim, and not an authorization to enable intake.**
+**Owner-operated deletion only. A separate authenticated, read-only reporter receipt inventory is now available; it is NOT automated erasure, GDPR compliance or authorization to enable intake.**
 
 ## Receiving a rights request
 
@@ -24,3 +24,7 @@ Run:
 `node --test tests/privacy-retention.test.mjs tests/privacy-route.test.mjs`
 
 The owner should review the workflow and all local/legal prerequisites before ever using `execute:true` or setting `AURORA_INTAKE_LEGAL_APPROVED=yes`.
+
+## Account privacy update — 4 November 2026
+
+A verified user may read only their own private receipt references and statuses through GET /api/account/privacy while public intake is disabled. The visible email link allows an individual to initiate a manual deletion request, but no request is sent until they send the email, and no data is deleted automatically. See docs/ACCOUNT-PRIVACY-OPERATIONS-2026-11-04.md for the required operator checks and residual risks.

@@ -674,15 +674,23 @@ try{
   });
   await test('verified account controls remain available while report submission is closed',async()=>{
     const context=await browser.newContext({viewport:{width:1150,height:820},reducedMotion:'reduce'});
-    const page=await context.newPage(),errors=[],posts=[];
+    const page=await context.newPage(),errors=[],posts=[],privacyViews=[];
     page.on('pageerror',e=>errors.push(e.message));
     await page.route('**/api/intake/status',route=>route.fulfill({status:200,contentType:'application/json',
      body:JSON.stringify({accepting:false,mode:'local_draft_only',
       auth_required:true,auth_url:'https://aurora-test.supabase.co',
       auth_key:'sb_publishable_testing_public_key_123456789',auth_providers:['email']})}));
+    await page.route('**/api/account/privacy',route=>{
+     privacyViews.push({method:route.request().method(),auth:route.request().headers().authorization});
+     return route.fulfill({status:200,contentType:'application/json',
+      body:JSON.stringify({receipts:[{receipt_id:'aur-int-123e4567-e89b-42d3-a456-426614174000',
+       status:'pending',created_at:'2026-11-04T12:00:00.000Z'}],
+       next_offset:null,published:false,deletion_process:'manual_owner_review'})});
+    });
     await page.route('**/report-auth.bundle.js',route=>route.fulfill({status:200,contentType:'application/javascript',
      body:`window.__testSignedIn=true;window.AURORAReportAuth={create:()=>({auth:{
       getUser:async()=>({data:{user:window.__testSignedIn?{id:"123e4567-e89b-42d3-a456-426614174000",email:"verified@example.com",email_confirmed_at:"2026-01-01T00:00:00Z"}:null}}),
+      getSession:async()=>({data:{session:{access_token:"verified_test_token_123456789012345678901"}}}),
       onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}}),
       signOut:async()=>{window.__testSignedIn=false;return {error:null}},
       signInWithOtp:async()=>({error:null})}})};`}));
@@ -696,8 +704,22 @@ try{
     assert.equal(await page.locator('#sendReport').isDisabled(),true);
     assert.equal(await page.locator('#activationControls').isVisible(),false);
     assert.ok(['Описание','Description'].includes(await page.locator('[data-report-label="description"]').textContent()));
+    assert.equal(await page.locator('#reportPrivacyTools').isVisible(),true);
+    assert.match(await page.locator('#reportDeleteRequest').getAttribute('href'),/^mailto:blizzard9011@gmail.com\?subject=/);
+    await page.locator('#reportPrivacyList').click();
+    await page.waitForFunction(()=>document.querySelector('#reportPrivateReceipts li')!==null);
+    assert.equal(await page.locator('#reportPrivateReceipts li').count(),1);
+    assert.match(await page.locator('#reportPrivateReceipts li').first().textContent(),/aur-int-123e4567-e89b-42d3-a456-426614174000 — pending/);
+    assert.equal(privacyViews.length,1);
+    assert.equal(privacyViews[0].method,'GET');
+    assert.match(privacyViews[0].auth||'',/^Bearer verified_test_token_/);
+    await page.locator('#reportPrivacyList').click();
+    await page.waitForFunction(()=>document.querySelector('#reportPrivacyList')?.disabled===false);
+    assert.equal(await page.locator('#reportPrivateReceipts li').count(),1,'refresh must not duplicate private receipts');
     await page.locator('#reportAuthLogout').click();
     await page.locator('#reportAuthLogout').waitFor({state:'hidden'});
+    assert.equal(await page.locator('#reportPrivacyTools').isVisible(),false,'private report controls must disappear on logout');
+    assert.equal(await page.locator('#reportPrivateReceipts li').count(),0,'private receipts must be removed on logout');
     assert.equal(await page.locator('#reportAuthButtons').isVisible(),true,'sign-in form should return after logout');
     assert.equal(await page.locator('#reportAuthEmailBox').isVisible(),true);
     assert.equal(await page.locator('#reportAuthEmailSend').isVisible(),true);

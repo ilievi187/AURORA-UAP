@@ -7,6 +7,7 @@
  const fields=["country","region","location","occurred","timezone","category","description"];
  let enabled=false,siteKey="",policyVersion="",challenge="",widget=null,pending=false;
  let authClient=null,authIdentity=null,authInit=false;
+ let privacyOffset=0,privacyBusy=false;
  let requestKey=crypto.randomUUID(),widgetApi=null,statusState="checking";
  const I18N={
   "bg":{
@@ -698,8 +699,53 @@
  }
 
  const authCopy=(en,bg)=>document.documentElement.lang?.toLowerCase().startsWith("bg")?bg:en;
+ function resetPrivacyReceipts(){
+  privacyOffset=0;
+  $("reportPrivateReceipts").replaceChildren();
+  $("reportPrivateReceipts").hidden=true;
+  $("reportPrivacyMore").hidden=true;
+  $("reportPrivacyFeedback").textContent="";
+ }
+ async function loadPrivacyReceipts(){
+  if(privacyBusy||!authClient||!authIdentity)return;
+  privacyBusy=true;
+  const accountId=authIdentity.id,button=$("reportPrivacyList"),more=$("reportPrivacyMore");
+  button.disabled=true;more.disabled=true;
+  try{
+   const {data}=await authClient.auth.getSession();
+   const accessToken=data?.session?.access_token;
+   if(!accessToken){$("reportPrivacyFeedback").textContent="Please sign in again.";return}
+   const path="/api/account/privacy"+(privacyOffset?"?offset="+privacyOffset:"");
+   const response=await fetch(path,{method:"GET",
+    headers:{Authorization:"Bearer "+accessToken},credentials:"same-origin",cache:"no-store"});
+   if(!response.ok)throw Error("Private report data unavailable");
+   const payload=await response.json();
+   if(accountId!==authIdentity?.id)return;
+   if(!Array.isArray(payload.receipts)||payload.published!==false||
+    !payload.receipts.every(entry=>/^aur-int-[a-f0-9-]{36}$/.test(entry.receipt_id||"")&&
+    ["pending","needs_clarification","approved","rejected"].includes(entry.status)))
+    throw Error("Invalid private report response");
+   const list=$("reportPrivateReceipts");
+   for(const entry of payload.receipts){
+    const item=document.createElement("li");
+    item.textContent=entry.receipt_id+" — "+entry.status;
+    list.append(item);
+   }
+   list.hidden=!list.children.length;
+   privacyOffset=payload.next_offset??0;
+   more.hidden=!payload.next_offset;
+   $("reportPrivacyFeedback").textContent=list.children.length
+    ?"Only your private receipt references are shown. Deletion requests are reviewed manually."
+    :"No private reports linked to this verified account.";
+  }catch{
+   if(accountId===authIdentity?.id)$("reportPrivacyFeedback").textContent="Unable to retrieve private reports right now. No data was changed.";
+  }finally{
+   privacyBusy=false;button.disabled=false;more.disabled=false;
+  }
+ }
  async function refreshAuth(){
   if(!authClient)return;
+  const previousId=authIdentity?.id;
   authIdentity=null;
   try{
    const {data,error}=await authClient.auth.getUser();
@@ -708,6 +754,8 @@
   }catch{/* unverified or inaccessible session */}
   $("reportAuthButtons").hidden=!!authIdentity;
   $("reportAuthLogout").hidden=!authIdentity;
+  if(previousId!==authIdentity?.id)resetPrivacyReceipts();
+  $("reportPrivacyTools").hidden=!authIdentity;
   $("reportAuthHeading").textContent=authIdentity
    ?authCopy("YOUR VERIFIED ACCOUNT","ПОТВЪРДЕН АКАУНТ")
    :authCopy("VERIFY YOUR EMAIL","ПОТВЪРДИ ИМЕЙЛА СИ");
@@ -783,6 +831,12 @@
   });
   $("consent").addEventListener("change",refreshSubmitButton);
   $("adultConfirm").addEventListener("change",refreshSubmitButton);
+  $("reportPrivacyList").addEventListener("click",()=>{
+   if(privacyBusy)return;
+   resetPrivacyReceipts();
+   loadPrivacyReceipts();
+  });
+  $("reportPrivacyMore").addEventListener("click",loadPrivacyReceipts);
   $("observationForm").addEventListener("submit",send);
   try{
    const result=await fetch("/api/intake/status",{cache:"no-store"});
