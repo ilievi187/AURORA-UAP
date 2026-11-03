@@ -2,7 +2,7 @@ import {resolveMediaPlayback} from "./media-player.js";
 import {addArchivePlayback,resetArchivePlayback} from "./archive-inline-player.js";
 import {translatePublicCase,translationDisclosure,isFullTranslation,isLegacyPlaceholder} from "./archive-localization.js";
 import {ARCHIVE_PACKS} from "./archive-ui-packs.js";
-// 10 records per page; 101 published dossiers provide 11 navigable pages.
+// 10 cases per page; source-linked bulk metadata loads separately from full dossiers.
 const PAGE_SIZE=10,$=id=>document.getElementById(id),storageKey="aurora-lang";
 const supported=new Set(["bg","en","de","ru","zh-CN","fr","es","it","pt","tr","ro","el","sr","uk","pl","ar","ja","ko"]);
 let language="bg";try{language=localStorage.getItem(storageKey)||"bg"}catch{}
@@ -173,11 +173,30 @@ async function start(){
  $("archiveCountry").addEventListener("change",filterChanged);
  $("archiveMedia").addEventListener("change",filterChanged);
  try{
-  const response=await fetch("/data/cases.json",{cache:"no-cache"});
-  if(!response.ok)throw Error("Archive HTTP "+response.status);
-  const data=await response.json();if(!Array.isArray(data.cases))throw Error("Invalid cases payload");
-  records=globalThis.AURORA_ARCHIVE?.prepareArchiveCases(data.cases)||data.cases;
-  records=records.filter(c=>c?.id&&local(c.title)&&safeUrl(c.source?.url));
+  const [curatedResponse,bulkResponse]=await Promise.all([
+    fetch("/data/cases.json",{cache:"no-cache"}),
+    // The 10K+ metadata index is fetched once; full dossiers live in 64 lazy shards.
+    fetch("/data/bulk/index.json",{cache:"force-cache"}).catch(()=>null)
+  ]);
+  if(!curatedResponse.ok)throw Error("Archive HTTP "+curatedResponse.status);
+  const data=await curatedResponse.json();if(!Array.isArray(data.cases))throw Error("Invalid cases payload");
+  const curated=globalThis.AURORA_ARCHIVE?.prepareArchiveCases(data.cases)||data.cases;
+  let bulk=[];
+  if(bulkResponse?.ok){
+    try{
+      const body=await bulkResponse.json();
+      if(!Array.isArray(body.cases)||body.cases.length>25000)throw Error("Invalid bulk archive index");
+      bulk=body.cases;
+    }catch(error){
+      // Keep the 101 curated files readable if the optional large index is unavailable.
+      console.warn("Supplementary archive index unavailable",error);
+    }
+  }
+  const unique=new Set();
+  records=[...curated,...bulk].filter(c=>{
+    if(!c?.id||!local(c.title)||!safeUrl(c.source?.url)||unique.has(c.id))return false;
+    unique.add(c.id);return true;
+  });
   records.sort((a,b)=>String(b.date).localeCompare(String(a.date))||String(a.id).localeCompare(String(b.id)));
   const requested=Number(new URL(location.href).searchParams.get("page"));
   currentPage=Number.isInteger(requested)&&requested>0?requested:1;

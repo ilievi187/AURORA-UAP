@@ -1,4 +1,4 @@
-# AURORA — UAP Bulgaria 🛸
+# AURORA — International UAP Research Archive (IURA) 🛸
 
 Multilingual static website for the independent AURORA UAP initiative.
 Domain: **aurorauap.org** on Cloudflare Pages. Current release: public design preview.

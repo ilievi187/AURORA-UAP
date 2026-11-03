@@ -3,7 +3,7 @@
 const translations = {
   bg: {
     navHome:'Начало',navMission:'Мисия',navResearch:'Изследвания',navMap:'Карта',navReports:'Сигнали',navJoin:'Участвай',joinButton:'Включи се',
-    heroKicker:'ОТВОРЕНИ ДАННИ. КРИТИЧНО МИСЛЕНЕ. НЕПОЗНАТОТО НИ ОЧАКВА.',heroTitle1:'ДА ИЗСЛЕДВАМЕ',heroTitle2:'НЕОБЯСНИМОТО',heroBody:'AURORA е проект на UAP Bulgaria за независимо документиране и анализ на необяснени въздушни явления — чрез факти, технологии и общност.',reportButton:'Подай сигнал',exploreButton:'Виж изследванията',heroTag:'ЕДНО НЕБЕ. МНОГО ВЪПРОСИ.',
+    heroKicker:'ОТВОРЕНИ ДАННИ. КРИТИЧНО МИСЛЕНЕ. НЕПОЗНАТОТО НИ ОЧАКВА.',heroTitle1:'ДА ИЗСЛЕДВАМЕ',heroTitle2:'НЕОБЯСНИМОТО',heroBody:'AURORA е международен архив на публикувани наблюдения, свидетелства, документи и видеоматериали от посочени източници.',reportButton:'Подай сигнал',exploreButton:'Виж изследванията',heroTag:'ЕДНО НЕБЕ. МНОГО ВЪПРОСИ.',
     statSignals:'Примерни сигнали',statDemo:'Демо данни',statTopics:'Изследователски направления',statMission:'Обща мисия',statMissionNote:'Наука и прозрачност',statVerified:'Потвърдени случая',statHonest:'Без измислени доказателства',
     whatDo:'КАКВО ПРАВИМ',researchTitle:'НАБЛЮДАВАМЕ. ПРОВЕРЯВАМЕ. ИЗСЛЕДВАМЕ.',researchIntro:'За да разберем непознатото, първо изключваме познатото. Всеки сигнал заслужава уважение и внимателна проверка.',
     feature1:'Карта на наблюденията',feature1desc:'Географски преглед на постъпилите сигнали и тяхната проверка.',feature2:'Архив на случаите',feature2desc:'Свидетелства, материали, ход на проверката и ясни заключения.',feature3:'Изследователска лаборатория',feature3desc:'Методика, проверки за самолети, сателити, дронове и метеори.',feature4:'Медиен архив',feature4desc:'Фото, видео и аудио материали с проследим произход.',
@@ -16,7 +16,7 @@ const translations = {
   },
   en: {
     navHome:'Home',navMission:'Mission',navResearch:'Research',navMap:'Map',navReports:'Sightings',navJoin:'Join',joinButton:'Join us',
-    heroKicker:'OPEN DATA. OPEN MINDS. A CLEARER TOMORROW.',heroTitle1:'UNCOVERING THE',heroTitle2:'UNEXPLAINED',heroBody:'AURORA is a UAP Bulgaria project for independent documentation and analysis of unidentified aerial phenomena — through evidence, technology, and community.',reportButton:'Submit a sighting',exploreButton:'Explore the research',heroTag:'ONE SKY. MANY QUESTIONS.',
+    heroKicker:'OPEN DATA. OPEN MINDS. A CLEARER TOMORROW.',heroTitle1:'UNCOVERING THE',heroTitle2:'UNEXPLAINED',heroBody:'AURORA is an independent international UAP research archive. We preserve published sightings, historical reports, source documents and media so readers can examine the record and draw their own conclusions.',reportButton:'Submit a sighting',exploreButton:'Explore the research',heroTag:'ONE SKY. MANY QUESTIONS.',
     statSignals:'Sample sightings',statDemo:'Demo data',statTopics:'Research themes',statMission:'Shared mission',statMissionNote:'Science & transparency',statVerified:'Verified cases',statHonest:'No invented evidence',
     whatDo:'WHAT WE DO',researchTitle:'OBSERVE. QUESTION. INVESTIGATE.',researchIntro:'To understand the unknown, we first rule out what is known. Every report deserves respect and careful examination.',
     feature1:'Sightings map',feature1desc:'Explore geographic patterns and the status of submitted reports.',feature2:'Case files',feature2desc:'Witness accounts, source materials, investigative steps, and conclusions.',feature3:'Research lab',feature3desc:'Methods for ruling out aircraft, satellites, drones, and meteors.',feature4:'Media archive',feature4desc:'Photographs, videos, and audio with traceable provenance.',
@@ -113,24 +113,24 @@ for(const [locale,note] of Object.entries(reportDraftNotes))translations[locale]
 
 const SUPPORTED_LOCALES = ['bg','en','de','ru','zh-CN','fr','es','it','pt','tr','ro','el','sr','uk','pl','ar','ja','ko'];
 const HOME_TITLES = {
-  bg: 'AURORA — UAP Bulgaria | Изследвай неизвестното',
-  en: 'AURORA — UAP Bulgaria | Uncovering the unexplained',
-  de: 'AURORA — UAP Bulgaria | Dem Unerklärlichen auf der Spur',
-  ru: 'AURORA — UAP Bulgaria | Исследуем необъяснимое',
-  'zh-CN': 'AURORA — UAP Bulgaria | 探索未解之谜',
-  fr: "AURORA — UAP Bulgaria | Explorer l'inexpliqué",
-  es: 'AURORA — UAP Bulgaria | Explorar lo inexplicable',
-  it: "AURORA — UAP Bulgaria | Esplorare l'inspiegabile",
-  pt: 'AURORA — UAP Bulgaria | Explorar o inexplicável',
-  tr: 'AURORA — UAP Bulgaria | Açıklanamayanı araştır',
-  ro: 'AURORA — UAP Bulgaria | Explorăm neexplicatul',
-  el: 'AURORA — UAP Bulgaria | Εξερευνούμε το ανεξήγητο',
-  sr: 'AURORA — UAP Bulgaria | Истражујемо необјашњено',
-  uk: 'AURORA — UAP Bulgaria | Досліджуємо непояснене',
-  pl: 'AURORA — UAP Bulgaria | Odkrywamy niewyjaśnione',
-  ar: 'AURORA — UAP Bulgaria | نستكشف ما لا تفسير له',
-  ja: 'AURORA — UAP Bulgaria | 未解明を探究する',
-  ko: 'AURORA — UAP Bulgaria | 미지의 현상을 탐구하다'
+  bg: 'AURORA — IURA | Изследвай неизвестното',
+  en: 'AURORA — IURA | Uncovering the unexplained',
+  de: 'AURORA — IURA | Dem Unerklärlichen auf der Spur',
+  ru: 'AURORA — IURA | Исследуем необъяснимое',
+  'zh-CN': 'AURORA — IURA | 探索未解之谜',
+  fr: "AURORA — IURA | Explorer l'inexpliqué",
+  es: 'AURORA — IURA | Explorar lo inexplicable',
+  it: "AURORA — IURA | Esplorare l'inspiegabile",
+  pt: 'AURORA — IURA | Explorar o inexplicável',
+  tr: 'AURORA — IURA | Açıklanamayanı araştır',
+  ro: 'AURORA — IURA | Explorăm neexplicatul',
+  el: 'AURORA — IURA | Εξερευνούμε το ανεξήγητο',
+  sr: 'AURORA — IURA | Истражујемо необјашњено',
+  uk: 'AURORA — IURA | Досліджуємо непояснене',
+  pl: 'AURORA — IURA | Odkrywamy niewyjaśnione',
+  ar: 'AURORA — IURA | نستكشف ما لا تفسير له',
+  ja: 'AURORA — IURA | 未解明を探究する',
+  ko: 'AURORA — IURA | 미지의 현상을 탐구하다'
 };
 let lang = (()=>{
   if(window.AURORA_PUBLIC_LANGUAGE==="en")return "en";

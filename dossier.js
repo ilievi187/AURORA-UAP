@@ -459,6 +459,9 @@
     const data=await res.json();
     archiveCases=globalThis.AURORA_ARCHIVE?.prepareArchiveCases(data.cases)??(Array.isArray(data.cases)?data.cases:[]);
     c=archiveCases.find(x=>x.id===id);
+    if(!c&&/^(?:geipan|bluebook)-[1-9]\d{0,12}$/.test(id)){
+      c=await globalThis.AURORA_BULK_ARCHIVE?.load(id);
+    }
    }else{
     const res=await fetch("/api/cases/"+encodeURIComponent(id),{cache:"no-store"});
     if(res.status===503){feedback("unavailable");return}

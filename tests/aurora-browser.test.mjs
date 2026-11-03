@@ -729,10 +729,12 @@ try{
     const expected=await page.evaluate(async()=>{
       const data=await (await fetch("/data/cases.json")).json();
       const cases=data.cases.filter(x=>x&&typeof x.id==="string");
-      return [cases.length,cases.filter(x=>Number.isFinite(x.lat)&&Number.isFinite(x.lng)&&Math.abs(x.lat)<=90&&Math.abs(x.lng)<=180).length];
+      const bulk=await fetch("/data/bulk/manifest.json").then(r=>r.ok?r.json():null).catch(()=>null);
+      return [cases.length+(bulk?.imported||0),
+        cases.filter(x=>Number.isFinite(x.lat)&&Number.isFinite(x.lng)&&Math.abs(x.lat)<=90&&Math.abs(x.lng)<=180).length];
     });
     assert.deepEqual([
-      Number(await page.locator("#auroraArchiveCount").textContent()),
+      Number((await page.locator("#auroraArchiveCount").textContent()).replace(/[^0-9]/g,"")),
       Number(await page.locator("#auroraMappedCount").textContent())
     ],expected);
     assert.equal(await page.locator("#auroraLanguageCount").textContent(),"18");
