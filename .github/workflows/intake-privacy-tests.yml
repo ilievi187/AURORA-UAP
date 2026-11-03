@@ -24,6 +24,11 @@ on:
       - 'tests/moderation.test.mjs'
       - 'tests/privacy-retention.test.mjs'
       - 'tests/backup-recovery.test.mjs'
+      - 'tests/backup-drive.test.mjs'
+      - 'scripts/backup-d1-drive.sh'
+      - 'deploy/systemd/aurora-d1-backup.service'
+      - 'deploy/systemd/aurora-d1-backup.timer'
+      - 'docs/GOOGLE-DRIVE-BACKUP-SETUP-2026-11-03.md'
       - 'docs/BACKUP-RECOVERY-PRIVACY-2026-11-03.md'
       - '.github/workflows/intake-privacy-tests.yml'
   pull_request:
@@ -49,6 +54,11 @@ on:
       - 'tests/moderation.test.mjs'
       - 'tests/privacy-retention.test.mjs'
       - 'tests/backup-recovery.test.mjs'
+      - 'tests/backup-drive.test.mjs'
+      - 'scripts/backup-d1-drive.sh'
+      - 'deploy/systemd/aurora-d1-backup.service'
+      - 'deploy/systemd/aurora-d1-backup.timer'
+      - 'docs/GOOGLE-DRIVE-BACKUP-SETUP-2026-11-03.md'
       - 'docs/BACKUP-RECOVERY-PRIVACY-2026-11-03.md'
       - '.github/workflows/intake-privacy-tests.yml'
 jobs:
@@ -63,4 +73,4 @@ jobs:
       - run: npm run build:report-auth
       - run: git diff --exit-code -- report-auth.bundle.js
       - run: node --test tests/privacy-route.test.mjs
-      - run: node --experimental-sqlite --test tests/intake.test.mjs tests/reporter-auth.test.mjs tests/intake-auth-gate.test.mjs tests/isolated-intake-security.test.mjs tests/moderation.test.mjs tests/privacy-retention.test.mjs tests/backup-recovery.test.mjs
+      - run: node --experimental-sqlite --test tests/intake.test.mjs tests/reporter-auth.test.mjs tests/intake-auth-gate.test.mjs tests/isolated-intake-security.test.mjs tests/moderation.test.mjs tests/privacy-retention.test.mjs tests/backup-recovery.test.mjs tests/backup-drive.test.mjs
