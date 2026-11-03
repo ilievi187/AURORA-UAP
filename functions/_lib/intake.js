@@ -2,6 +2,17 @@
 // Never import the quarantine schema into the read-only public cases API.
 import {reporterAuthConfigured} from "./reporter-auth.js";
 const ACTION="aurora_report";
+// Cloudflare's public testing credentials must never activate real intake.
+const TEST_SITEKEYS=new Set([
+ "1x00000000000000000000AA","2x00000000000000000000AB",
+ "1x00000000000000000000BB","2x00000000000000000000BB",
+ "3x00000000000000000000FF"
+]);
+const TEST_SECRETS=new Set([
+ "1x0000000000000000000000000000000AA",
+ "2x0000000000000000000000000000000AA",
+ "3x0000000000000000000000000000000AA"
+]);
 const SAFE_CATEGORY=new Set(["lights","object","instrument","other"]);
 const KEYS=new Set(["request_key","country_code","region","approximate_location","latitude",
  "longitude","occurred_local","time_zone","category","description","language_code",
@@ -37,7 +48,9 @@ export function intakeEnabled(env,hostname){
  env.AURORA_INTAKE_HOSTNAME===hostname&&
  hostname==="aurorauap.org"&&
  typeof env.AURORA_TURNSTILE_SECRET==="string"&&env.AURORA_TURNSTILE_SECRET.length>10&&
- typeof env.AURORA_TURNSTILE_SITE_KEY==="string"&&env.AURORA_TURNSTILE_SITE_KEY.length>10);
+ !TEST_SECRETS.has(env.AURORA_TURNSTILE_SECRET)&&
+ typeof env.AURORA_TURNSTILE_SITE_KEY==="string"&&env.AURORA_TURNSTILE_SITE_KEY.length>10&&
+ !TEST_SITEKEYS.has(env.AURORA_TURNSTILE_SITE_KEY));
 }
 export async function intakeSchemaReady(db){
  if(!db||typeof db.prepare!=="function")return false;

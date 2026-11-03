@@ -15,6 +15,9 @@ on:
       - 'report.js'
       - 'tests/reporter-auth.test.mjs'
       - 'tests/intake-auth-gate.test.mjs'
+      - 'tests/isolated-intake-security.test.mjs'
+      - 'scripts/turnstile-dummy-smoke.mjs'
+      - 'docs/ISOLATED-INTAKE-SECURITY-QA-2026-11-03.md'
       - 'worker/privacy-retention.js'
       - 'tests/privacy-route.test.mjs'
       - 'tests/intake.test.mjs'
@@ -35,6 +38,9 @@ on:
       - 'report.js'
       - 'tests/reporter-auth.test.mjs'
       - 'tests/intake-auth-gate.test.mjs'
+      - 'tests/isolated-intake-security.test.mjs'
+      - 'scripts/turnstile-dummy-smoke.mjs'
+      - 'docs/ISOLATED-INTAKE-SECURITY-QA-2026-11-03.md'
       - 'worker/privacy-retention.js'
       - 'tests/privacy-route.test.mjs'
       - 'tests/intake.test.mjs'
@@ -53,4 +59,4 @@ jobs:
       - run: npm run build:report-auth
       - run: git diff --exit-code -- report-auth.bundle.js
       - run: node --test tests/privacy-route.test.mjs
-      - run: node --experimental-sqlite --test tests/intake.test.mjs tests/reporter-auth.test.mjs tests/intake-auth-gate.test.mjs tests/moderation.test.mjs tests/privacy-retention.test.mjs
+      - run: node --experimental-sqlite --test tests/intake.test.mjs tests/reporter-auth.test.mjs tests/intake-auth-gate.test.mjs tests/isolated-intake-security.test.mjs tests/moderation.test.mjs tests/privacy-retention.test.mjs
