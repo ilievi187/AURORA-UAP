@@ -43,3 +43,14 @@ Use `docs/V1.7-LIVE-SUBMISSION-ACTIVATION.md` and `docs/PRIVACY-NOTICE-REVIEW.md
 - Production requires `AURORA_REPORT_AUTH_ENABLED=enabled`, a Supabase project `AURORA_REPORT_AUTH_URL`, a **publishable/anon-only** `AURORA_REPORT_AUTH_PUBLISHABLE_KEY`, and comma-separated enabled `AURORA_REPORT_AUTH_PROVIDERS` in addition to all previous release gates. Do not set a privileged `service_role` key in client code.
 - The public privacy notice has been updated to disclose account email/identity and Supabase, but provider processors/transfers, account deletion, hosting terms, and an independent privacy review remain blockers. Details: `docs/VERIFIED-REPORTERS-SETUP-2026-11-03.md`.
 - Test account and migration must be configured in a private staging environment first. No real account login or public submission may be claimed based on CI mocks.
+
+
+## Safety evidence update (3 November 2026, after original audit)
+
+- **Verified email and SMTP**: an owner test invite was delivered by Brevo to the Gmail inbox, and the Supabase identity was subsequently recognized as verified in the live report page. Public report submission remains disabled.
+- **Private schema**: production migration `0005_reporter_ownership.sql` has since been applied and verified; D1 read-only `PRAGMA foreign_keys` returned `1` and count-only queries found 0 submissions, 0 audit events and 0 reporter links. Do not rerun migrations.
+- **Moderator**: the authorized owner opened the Access-protected dashboard and received an empty, styled queue. Anonymous page/API requests redirected to Access; wrong-account login has not been independently demonstrated.
+- **Turnstile**: production Pages has a public `AURORA_TURNSTILE_SITE_KEY` text value and an encrypted `AURORA_TURNSTILE_SECRET`. This proves the variables were configured, **not** that a real siteverify challenge has passed.
+- **WAF**: zone rule `AURORA intake rate limit` is active, matches exact host `aurorauap.org`, method `POST`, path `/api/intake/submit`, source IP, 10 requests/10 seconds, Block for 10 seconds. **No load/burst test has been run**; do not mark WAF reviewed merely from the configuration.
+- **Privacy/deletion improvement**: bilingual notice now names Brevo as the transactional email provider and accurately discloses that Auth operates even while reports are disabled. Local tests cover private retention and owner-approved erasure of a matching quarantined report and its ownership/audit records. **No erasure has run in production.** Supabase account erasure, backup handling, authorization, request tracking, provider transfer terms, and final legal review remain operator tasks.
+- **Never activate prematurely**: leave `AURORA_INTAKE_ENABLED` disabled, and do not set WAF/legal readiness flags until their real-world verification is complete.
