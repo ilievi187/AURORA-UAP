@@ -48,7 +48,7 @@
    "location":"Approximate location","locationPh":"city or area, without personal address",
    "occurred":"Local date and time","timezone":"Time zone",
    "category":"Category","catLights":"Lights","catObject":"Object","catInstrument":"Instrument recording","catOther":"Other",
-   "description":"Your account","descPh":"What did you observe, in which direction, how long did it last, and what were the sky conditions? Do not include names, addresses, or personal data.",
+   "description":"Description","descPh":"What did you observe, in which direction, how long did it last, and what were the sky conditions? Do not include names, addresses, or personal data.",
    "advisory":"No names, emails, personal addresses, exact GPS coordinates, or files. When enabled, only the description, date/time, time zone, and approximate area are recorded.",
    "consentPrefix":"I confirm that I have read the","privacyLink":"privacy notice and terms","consentSuffix":"and consent to processing this report for human moderation.",
    "saveDraft":"SAVE DRAFT","downloadDraft":"DOWNLOAD DRAFT (JSON)","clearDraft":"CLEAR DRAFT","sendReport":"SUBMIT OBSERVATION",
@@ -784,6 +784,17 @@
    const result=await fetch("/api/intake/status",{cache:"no-store"});
    if(!result.ok)throw Error("status");
    const state=await result.json();
+   // Login, identity feedback and logout work independently of the intake switch.
+   // A failed auth setup never turns a closed intake into an open one.
+   if(state.auth_required===true){
+    try{await setupAuth(state)}
+    catch{
+     $("reportAuth").hidden=false;
+     $("reportAuthFeedback").textContent=authCopy(
+      "Sign-in is temporarily unavailable. Your draft stays on this device.",
+      "Входът временно не е достъпен. Черновата остава на устройството.");
+    }
+   }
    if(state.accepting!==true){
     statusState="draft";
     $("reportStatus").classList.add("disabled");
@@ -791,8 +802,7 @@
     msg(pack().msgDisabledNote);
     return;
    }
-   if(!state.site_key||!state.policy_version)throw Error("incomplete");
-   await setupAuth(state);
+   if(!state.site_key||!state.policy_version||!authInit)throw Error("incomplete");
    if(state.policy_url!=="https://aurorauap.org/privacy")throw Error("missing reviewed privacy URL");
    enabled=true;siteKey=state.site_key;policyVersion=state.policy_version;
    $("privacyLink").href=state.policy_url;

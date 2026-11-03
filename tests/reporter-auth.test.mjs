@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {configuredProviders,reporterAuthConfigured,verifiedReporter} from "../functions/_lib/reporter-auth.js";
+import {configuredProviders,reporterAuthAvailable,reporterAuthConfigured,verifiedReporter} from "../functions/_lib/reporter-auth.js";
 import {DatabaseSync} from "node:sqlite";
 import {readFileSync} from "node:fs";
 import {storeSubmission,normalizeSubmission,intakeSchemaReady} from "../functions/_lib/intake.js";
@@ -13,6 +13,9 @@ const CONFIG={AURORA_REPORT_AUTH_ENABLED:"enabled",
 const req=(token="valid_token_".repeat(4))=>new Request("https://aurorauap.org/api/intake/submit",{headers:{Authorization:"Bearer "+token}});
 test("reporter auth fails closed unless configured with constrained origin and known providers",()=>{
  assert.equal(reporterAuthConfigured(CONFIG),true);
+ assert.equal(reporterAuthAvailable(CONFIG),true);
+ assert.equal(reporterAuthAvailable({...CONFIG,AURORA_REPORT_AUTH_ENABLED:undefined}),true);
+ assert.equal(reporterAuthConfigured({...CONFIG,AURORA_REPORT_AUTH_ENABLED:undefined}),false);
  assert.deepEqual(configuredProviders(CONFIG),["email","google","apple","x"]);
  for(const changed of [
   {...CONFIG,AURORA_REPORT_AUTH_ENABLED:"disabled"},

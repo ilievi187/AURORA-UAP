@@ -670,6 +670,44 @@ try{
     assert.deepEqual(errors,[]);
     await context.close();
   });
+  await test('verified account controls remain available while report submission is closed',async()=>{
+    const context=await browser.newContext({viewport:{width:1150,height:820},reducedMotion:'reduce'});
+    const page=await context.newPage(),errors=[],posts=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    await page.route('**/api/intake/status',route=>route.fulfill({status:200,contentType:'application/json',
+     body:JSON.stringify({accepting:false,mode:'local_draft_only',
+      auth_required:true,auth_url:'https://aurora-test.supabase.co',
+      auth_key:'sb_publishable_testing_public_key_123456789',auth_providers:['email']})}));
+    await page.route('**/report-auth.bundle.js',route=>route.fulfill({status:200,contentType:'application/javascript',
+     body:`window.__testSignedIn=true;window.AURORAReportAuth={create:()=>({auth:{
+      getUser:async()=>({data:{user:window.__testSignedIn?{id:"123e4567-e89b-42d3-a456-426614174000",email:"verified@example.com",email_confirmed_at:"2026-01-01T00:00:00Z"}:null}}),
+      onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}}),
+      signOut:async()=>{window.__testSignedIn=false;return {error:null}},
+      signInWithOtp:async()=>({error:null})}})};`}));
+    await page.route('**/api/intake/submit',route=>{posts.push(1);return route.abort()});
+    await page.goto('http://127.0.0.1:'+port+'/report.html');
+    await page.locator('#reportAuthLogout').waitFor({state:'visible',timeout:4000});
+    assert.equal((await page.locator('#reportAuthFeedback').textContent()).includes('verified@example.com'),true);
+    assert.equal(await page.locator('#sendReport').isDisabled(),true);
+    assert.equal(await page.locator('#activationControls').isVisible(),false);
+    assert.ok(['Описание','Description'].includes(await page.locator('[data-report-label="description"]').textContent()));
+    await page.locator('#reportAuthLogout').click();
+    await page.locator('#reportAuthLogout').waitFor({state:'hidden'});
+    assert.equal(await page.locator('#reportAuthEmailBox').isVisible(),true);
+    assert.equal(await page.locator('#sendReport').isDisabled(),true);
+    assert.deepEqual(posts,[]);
+    assert.deepEqual(errors,[]);
+    await context.close();
+  });
+  await test('Supabase invitation hash on homepage transfers to the report callback only',async()=>{
+    const ctx=await browser.newContext({viewport:{width:1024,height:768},reducedMotion:'reduce'});
+    const page=await ctx.newPage();
+    const hash='#access_token=test-token&refresh_token=test-refresh&type=invite';
+    await page.goto('http://127.0.0.1:'+port+'/'+hash);
+    await page.waitForURL('**/report.html#*',{timeout:4000});
+    assert.ok(page.url().endsWith('/report.html'+hash));
+    await ctx.close();
+  });
   await test('V1.5 simulated fully-approved private intake submits a text-only pending report',async()=>{
     const context=await browser.newContext({viewport:{width:1250,height:950},reducedMotion:'reduce'});
     const page=await context.newPage(),errors=[],sent=[];

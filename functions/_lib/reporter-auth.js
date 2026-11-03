@@ -8,12 +8,16 @@ export function configuredProviders(env){
  const list=raw.split(",").map(s=>s.trim().toLowerCase());
  return list.length>0&&list.every(p=>PROVIDERS.has(p))&&new Set(list).size===list.length?list:[];
 }
-export function reporterAuthConfigured(env){
- return env?.AURORA_REPORT_AUTH_ENABLED==="enabled"&&
-  /^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(env.AURORA_REPORT_AUTH_URL||"")&&
-  typeof env.AURORA_REPORT_AUTH_PUBLISHABLE_KEY==="string"&&
+// Public login can be available while public report submission remains disabled.
+export function reporterAuthAvailable(env){
+ return /^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(env?.AURORA_REPORT_AUTH_URL||"")&&
+  typeof env?.AURORA_REPORT_AUTH_PUBLISHABLE_KEY==="string"&&
   /^(?:sb_publishable_[A-Za-z0-9_-]{12,}|eyJ[A-Za-z0-9_.-]{30,})$/.test(env.AURORA_REPORT_AUTH_PUBLISHABLE_KEY)&&
   configuredProviders(env).length>0;
+}
+// Submission authorization requires a separate, explicit production switch.
+export function reporterAuthConfigured(env){
+ return env?.AURORA_REPORT_AUTH_ENABLED==="enabled"&&reporterAuthAvailable(env);
 }
 // Verify a fresh access token against the Auth service. Never rely on JWT decoding or an untrusted email claim.
 export async function verifiedReporter(request,env,fetcher=fetch){
