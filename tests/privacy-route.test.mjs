@@ -24,4 +24,10 @@ test('privacy notice accurately describes privacy protections and local draft mo
  assert.match(privacy,/Входът с потвърден имейл вече е достъпен/,"BG notice must disclose active registration");
  assert.match(privacy,/backup-retention procedures remain under review/);
  assert.match(privacy,/Изтриването на частен сигнал и изтриването на профила/);
+ assert.match(privacy,/Само лица на 18 или повече години/);
+ assert.match(privacy,/Only people aged 18 or older may submit reports/);
+ assert.match(privacy,/Self-declaration is not independent age verification/);
+ assert.match(report,/id="adultConfirm" required/);
+ assert.match(report,/Only people aged 18 or older may submit reports/);
+ assert.match(report,/report\.js\?v=18plus-20261103/);
 });

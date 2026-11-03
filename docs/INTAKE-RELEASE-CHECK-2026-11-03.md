@@ -58,3 +58,14 @@ Use `docs/V1.7-LIVE-SUBMISSION-ACTIVATION.md` and `docs/PRIVACY-NOTICE-REVIEW.md
 ## Read-only prelaunch release verification (3 Nov 2026)
 
 The reproducible, bounded checker scripts/check-private-release-readiness.mjs --live and offline CI tests confirm closed intake, no-store status, private Access routes, and BG/EN processor disclosures. See docs/RELEASE-SECURITY-EVIDENCE-2026-11-03.md for limitations and the Supabase password protection warning. These tests do not prove real WAF burst mitigation, full Turnstile challenge acceptance, denied-account access or legal compliance.
+
+
+## Owner decision — age 18+ reporting (3 November 2026)
+
+- Report submissions require explicit self-declaration that the submitter is 18 or older. This is self-attestation, not independent age verification.
+- The new notice and checkbox label are **English only**, by owner request. Existing translations of unrelated report UI remain unchanged.
+- Public news, dossiers and map are unrestricted; local drafts remain available even while submission is disabled.
+- Both the browser and server require the exact adult_confirmed:true boolean plus existing separate consent, verified email and Turnstile checks. Without it, the report must not be saved.
+- The age declaration is not included in browser drafts or stored as a separate D1 field. No birth date, ID document or other proof is collected.
+- BG/EN privacy notice is updated for disclosure and remains subject to legal review. Do not treat self-declaration as proof of age or a substitute for appropriate privacy safeguards.
+- Production intake remains disabled until independent go/no-go approvals.

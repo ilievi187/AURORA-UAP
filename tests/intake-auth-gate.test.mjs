@@ -23,7 +23,7 @@ function env(){
 const payload=()=>({
  request_key:crypto.randomUUID(),country_code:"BG",region:"Shumen",approximate_location:"Nearby town",occurred_local:"2025-11-01T19:10",
  time_zone:"Europe/Sofia",category:"lights",description:"Multiple silent lights crossed the open sky above a town and disappeared behind the trees after several minutes.",
- language_code:"en",consent_version:"intake-v1-reviewed",consent:true,turnstile_token:"fake-turnstile-token",website:""
+ language_code:"en",consent_version:"intake-v1-reviewed",consent:true,adult_confirmed:true,turnstile_token:"fake-turnstile-token",website:""
 });
 function request(authorization){
  return new Request("https://aurorauap.org/api/intake/submit",{method:"POST",

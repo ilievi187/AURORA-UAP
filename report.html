@@ -5,7 +5,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#010305">
 <title>AURORA UAP | Report an Observation</title>
-<link rel="stylesheet" href="/report.css"><script defer src="/subpage-i18n.js"></script><script defer src="/report.js"></script>
+<link rel="stylesheet" href="/report.css"><script defer src="/subpage-i18n.js"></script><script defer src="/report.js?v=18plus-20261103"></script>
 <link rel="stylesheet" href="/aurora-design-refresh.css">
 <link rel="stylesheet" href="/aurora-black-pages.css">
 <link rel="stylesheet" href="/aurora-editorial-interiors.css">
@@ -52,7 +52,9 @@
 <textarea id="description" rows="8" minlength="50" maxlength="5000" required placeholder="Какво видя, в каква посока, колко време продължи и какви бяха условията? Не споделяй имена, адреси или други лични данни."></textarea></label>
 <input id="website" type="text" tabindex="-1" autocomplete="off" class="trap" aria-hidden="true">
 <p class="form-advisory" id="reportAdvisory">Без имена, имейли, лични адреси, точни GPS координати или файлове. При активиране ще се записват само описанието, дата/час, часова зона и приблизителен район.</p>
+<p class="form-advisory" id="reportAgeNotice">Only people aged 18 or older may submit reports. Anyone can save a local draft.</p>
 <div id="activationControls" hidden>
+<label class="consent"><input type="checkbox" id="adultConfirm" required> <span id="adultConfirmLabel">I confirm that I am 18 or older. No date of birth or identity document is required.</span></label>
 <label class="consent"><input type="checkbox" id="consent"> <span id="consentPrefix">Потвърждавам, че съм прочел/а</span> <a id="privacyLink" href="/privacy" target="_blank" rel="noopener noreferrer">информацията за личните данни и условията</a> <span id="consentSuffix">и разрешавам обработката на този сигнал за модерация.</span></label>
 <div id="turnstileMount"></div>
 </div>

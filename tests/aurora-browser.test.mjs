@@ -355,6 +355,8 @@ try{
     await page.waitForURL('**/report.html?country=PR');
     await page.waitForFunction(()=>document.querySelector('#country')?.value==='PR');
     assert.equal(await page.locator('#sendReport').isDisabled(),true,'public intake remains disabled');
+    assert.equal(await page.locator('#reportAgeNotice').isVisible(),true);
+    assert.equal(await page.locator('#adultConfirm').isVisible(),false,"18+ checkbox is only needed for active submission");
     assert.deepEqual(errors,[]);
     await context.close();
   });
@@ -798,6 +800,8 @@ try{
     await page.locator('#description').fill('Several silent moving lights were visible above the region for more than three minutes before they disappeared.');
     await page.locator('#consent').check();
     await page.locator('#sendReport').waitFor({state:'visible'});
+    assert.equal(await page.locator('#sendReport').isDisabled(),true,"cannot submit without explicit 18+ declaration");
+    await page.locator('#adultConfirm').check();
     await page.waitForFunction(()=>!document.querySelector('#sendReport').disabled);
     await page.locator('#sendReport').click();
     await page.waitForFunction(()=>document.querySelector('#formFeedback')?.textContent.includes('aur-int-123e4567-e89b-42d3-a456-426614174000'));
@@ -807,9 +811,12 @@ try{
     assert.equal((await page.locator('#reportAuthFeedback').textContent()).includes('verified@example.com'),true);
     assert.equal(sent[0].country_code,'BG');
     assert.equal(sent[0].consent,true);
+    assert.equal(sent[0].adult_confirmed,true);
     assert.equal(sent[0].consent_version,'intake-v1-reviewed');
     assert.equal(sent[0].turnstile_token,'fake-widget-token');
     assert.equal('contact_email' in sent[0],false);
+    assert.equal('birth_date' in sent[0],false);
+    assert.equal('identity_document' in sent[0],false);
     assert.equal('media' in sent[0],false);
     assert.equal('latitude' in sent[0],false);
     assert.deepEqual(errors,[]);

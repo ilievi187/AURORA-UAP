@@ -54,7 +54,7 @@ function body(){
  return {request_key:crypto.randomUUID(),country_code:"BG",region:"Shumen",approximate_location:"Shumen area",
   occurred_local:"2025-10-23T21:30",time_zone:"Europe/Sofia",category:"lights",
   description:"Several silent lights moved across the night sky over an approximate area. They appeared for a few minutes, then disappeared beyond the horizon.",
-  language_code:"bg",consent_version:"intake-v1-reviewed",consent:true,
+  language_code:"bg",consent_version:"intake-v1-reviewed",consent:true,adult_confirmed:true,
   turnstile_token:"token-opaque",website:""};
 }
 function request(data,opts={}){
@@ -71,6 +71,8 @@ test("second schema creates quarantine and audit without publishing or storing c
  const cols=sql.prepare("PRAGMA table_info(intake_submissions)").all().map(x=>x.name);
  for(const secret of ["email","name","ip_address","raw_ip","object_key","media"])assert.equal(cols.includes(secret),false,secret);
  assert.ok(cols.includes("consent_version"));assert.ok(cols.includes("publication_status"));
+ assert.equal(cols.includes("birth_date"),false);
+ assert.equal(cols.includes("adult_confirmed"),false,"D1 should not store a separate age declaration");
  sql.close();
 });
 test("public intake fails closed without every explicit policy, D1, WAF, hostname and Turnstile gate",async()=>{
@@ -140,12 +142,19 @@ test("validation rejects new private identity/media fields, exact GPS, bad times
   {...good,occurred_local:"2026-02-30T08:12"},
   {...good,time_zone:"Wrong/Zone"},
   {...good,consent:false},
+  {...good,adult_confirmed:false},
+  {...good,adult_confirmed:null},
+  {...good,adult_confirmed:0},
+  {...good,adult_confirmed:"true"},
   {...good,consent_version:"outdated"},
   {...good,website:"robot"},
   {...good,latitude:12.1,longitude:undefined},
   {...good,category:"aliens"},
   {...good,turnstile_token:""}
  ])assert.throws(()=>normalizeSubmission(bad,"intake-v1-reviewed"));
+ const missingAge={...good};delete missingAge.adult_confirmed;
+ assert.throws(()=>normalizeSubmission(missingAge,"intake-v1-reviewed"),/Adult confirmation required/);
+ assert.equal(normalizeSubmission(good,"intake-v1-reviewed").adult_confirmed,undefined,"age declaration is checked but not persisted as extra report metadata");
  const coarse=normalizeSubmission({...good,latitude:42.15647,longitude:26.82458},"intake-v1-reviewed");
  assert.equal(coarse.latitude,42.2);assert.equal(coarse.longitude,26.8);
 });
@@ -271,4 +280,25 @@ test("private text report works while the separate public registry is disabled",
   assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM intake_submissions").get().n,1);
   assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM cases").get().n,0);
  }finally{globalThis.fetch=original;sql.close()}
+});
+
+test("18+ declaration is mandatory at API boundary, before auth, Turnstile and D1",async()=>{
+ const {db,sql}=database(),env=environment(db),source=body();
+ const oldFetch=globalThis.fetch;
+ let externalCalls=0;
+ globalThis.fetch=async()=>{externalCalls++;throw Error("should not verify outsiders on invalid age")};
+ try{
+  for(const variant of [undefined,false,null,"true",0,17]){
+   const payload={...source};
+   if(variant===undefined)delete payload.adult_confirmed;
+   else payload.adult_confirmed=variant;
+   const response=await submit({request:request(payload),env});
+   assert.equal(response.status,400,JSON.stringify(variant));
+   assert.equal((await response.json()).error,"invalid_report");
+  }
+  assert.equal(externalCalls,0);
+  assert.equal(sql.prepare("SELECT count(*) n FROM intake_submissions").get().n,0);
+  assert.equal(sql.prepare("SELECT count(*) n FROM intake_review_events").get().n,0);
+  assert.equal(sql.prepare("SELECT count(*) n FROM intake_reporter_links").get().n,0);
+ }finally{globalThis.fetch=oldFetch;sql.close()}
 });
