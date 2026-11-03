@@ -1,0 +1,30 @@
+name: AURORA prelaunch private-surface monitor
+
+on:
+  schedule:
+    - cron: '42 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aurora-prelaunch-security-monitor
+  cancel-in-progress: false
+
+jobs:
+  read-only-security-monitor:
+    name: Daily anonymous access and intake-off proof
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - name: Get site source
+        uses: actions/checkout@v4
+      - name: Setup Node.js (no private credentials)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate monitoring logic offline
+        run: node --test tests/private-release-readiness.test.mjs
+      - name: Verify anonymous access boundary on live production
+        run: node scripts/check-private-release-readiness.mjs --live

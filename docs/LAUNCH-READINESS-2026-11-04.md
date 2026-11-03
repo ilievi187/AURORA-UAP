@@ -19,3 +19,8 @@ This operator ledger is not legal certification or permission to activate the pr
 Important: The owner approved the live WAF test; it was completed safely. This is not approval to claim GDPR compliance or activate public reporting. Keep production environment flags off until qualified review and actual remaining live checks are done. No public auto-publication or D1 deletion is permitted.
 
 Reference: docs/RELEASE-SECURITY-EVIDENCE-2026-11-03.md and docs/WAF-TURNSTILE-EMERGENCY-RUNBOOK-2026-11-04.md.
+
+
+## Additional continuous prelaunch control
+
+A daily GitHub Actions workflow now runs the anonymous eleven-route security preflight without credentials or requests that mutate the production app. It alerts through the normal GitHub Actions failed-run mechanism when a guarded route becomes public or intake changes unintentionally. The monitor expects prelaunch accepting:false; it must be updated to an authorized postlaunch profile before public submissions open. See docs/DAILY-SECURITY-MONITOR-2026-11-04.md.
