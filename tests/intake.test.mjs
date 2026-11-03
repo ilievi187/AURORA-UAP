@@ -187,6 +187,36 @@ test("intake rejects requests from other origins or content types before token v
  assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM intake_submissions").get().n,0);
  sql.close();
 });
+test("WAF path-scope safety: noncanonical POST routes cannot submit or call Auth/Siteverify",async()=>{
+ const {db,sql}=database(),env=environment(db),data=body();
+ const previous=globalThis.fetch;
+ let external=0;
+ globalThis.fetch=async()=>{external++;throw Error("Unsafe route reached external verification")};
+ try{
+  for(const path of [
+   "/api/intake/submit/",
+   "/api/intake/submit.json",
+   "/api/intake/submit%2F",
+   "/api/intake/submit/anything",
+   "/API/intake/submit",
+   "/api/intake/submission"
+  ]){
+   const req=new Request("https://aurorauap.org"+path,{
+    method:"POST",headers:{"Origin":"https://aurorauap.org","Content-Type":"application/json",
+     Authorization:"Bearer "+"test_token_".repeat(6)},
+    body:JSON.stringify(data)
+   });
+   const response=await submit({request:req,env});
+   assert.equal(response.status,404,path);
+   assert.equal((await response.json()).error,"route_not_found");
+   assert.match(response.headers.get("Cache-Control"),/no-store/);
+  }
+  assert.equal(external,0);
+  assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM intake_submissions").get().n,0);
+  assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM intake_review_events").get().n,0);
+  assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM intake_reporter_links").get().n,0);
+ }finally{globalThis.fetch=previous;sql.close()}
+});
 test("accepted text-only report is stored once, under private pending review, never public",async()=>{
  const {db,sql}=database();const env=environment(db),payload=body();
  const oldFetch=globalThis.fetch;let verified=0;

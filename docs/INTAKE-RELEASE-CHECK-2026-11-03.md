@@ -73,3 +73,8 @@ The reproducible, bounded checker scripts/check-private-release-readiness.mjs --
 ## Account privacy boundary — 4 November 2026
 
 The independently verified Supabase token allows only GET /api/account/privacy to list an authenticated account's own private receipt metadata with no-store. POST and DELETE return 405. The contact link is manual, not automatic deletion. See docs/ACCOUNT-PRIVACY-OPERATIONS-2026-11-04.md. Owner-reviewed account erasure, processor retention and legal clearance are still blockers; public intake stays off.
+
+
+## 4 Nov 2026 — WAF path and emergency-off regression
+
+The submit handler rejects any route other than exact /api/intake/submit before Auth, Siteverify or D1. A separate isolated emergency-off test proves new submissions are denied while previously quarantined records stay private. No live WAF burst or production flag modification was made. Owner-controlled live test and rollback instructions are in docs/WAF-TURNSTILE-EMERGENCY-RUNBOOK-2026-11-04.md.
