@@ -1,3 +1,13 @@
 <!doctype html>
 <html lang="bg"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>AURORA — Модерация</title><link rel="stylesheet" href="report.css"><script defer src="moderation.js"></script></head>
-<body><main class="report-shell"><header><a href="/">✦ AURORA</a></header><h1>Преглед на сигнали</h1><p>Сигналите остават поверителни. Одобрението за преглед не ги публикува.</p><p id="notice" role="status">Зареждане…</p><section id="queue" aria-label="Сигнали"></section></main></body></html>
+<body><main class="report-shell"><header><a href="/">✦ AURORA</a></header><h1>Преглед на сигнали</h1><p>Сигналите остават поверителни. Одобрението за преглед не ги публикува.</p><section class="moderation-overview" aria-labelledby="overviewTitle">
+<h2 id="overviewTitle">Състояние на частната опашка</h2>
+<div id="moderationSummary" role="status" aria-live="polite">Зареждане на справката…</div>
+<p class="moderation-hint">Просрочените срокове са сигнали за проверка, не автоматични действия. Изтриването и публикуването не се извършват от този панел.</p>
+</section>
+<form id="receiptLookup" class="moderation-lookup" aria-label="Търсене по номер на сигнал">
+<label for="receiptQuery">Намери сигнал по номер</label>
+<div class="moderation-lookup-row"><input id="receiptQuery" autocomplete="off" spellcheck="false" maxlength="44" placeholder="aur-int-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" required>
+<button type="submit">Намери</button><button type="button" id="allReports">Всички сигнали</button><button type="button" id="reloadReports">Обнови</button></div>
+</form>
+<p id="notice" role="status">Зареждане…</p><section id="queue" aria-label="Сигнали"></section></main></body></html>

@@ -714,6 +714,51 @@ try{
     assert.ok(page.url().endsWith('/report.html'+hash));
     await ctx.close();
   });
+
+  await test('owner moderation overview, receipt lookup and audit history render as private text',async()=>{
+    const context=await browser.newContext({viewport:{width:1080,height:820},reducedMotion:'reduce'});
+    const page=await context.newPage(),errors=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    const id='aur-int-123e4567-e89b-42d3-a456-426614174000';
+    const report={id,description:'Witness text <img src=x onerror=alert(1)>',status:'pending',
+     country_code:'BG',region:'Shumen',approximate_location:'Shumen area',occurred_local:'2026-10-20T21:00',
+     time_zone:'Europe/Sofia',category:'lights',created_at:'2026-11-01T11:00:00Z'};
+    await page.route('**/api/moderation/*',route=>{
+     const url=new URL(route.request().url());
+     const query=url.searchParams;
+     if(route.request().method()==='POST')
+      return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({status:'approved'})});
+     if(query.get('view')==='overview')
+      return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({
+       counts:{pending:1,needs_clarification:0,approved:0,rejected:0},total:1,
+       due:{rejected_expired:0,awaiting_review:1,approved_reassessment:0}})});
+     if(query.get('receipt')===id)
+      return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({
+       submission:report,events:[{id:1,action:'received',actor_type:'system',previous_status:null,
+        new_status:'pending',rationale:'Kept private for review <script>alert(9)</script>',created_at:'2026-11-01T11:00:00Z'}],
+       events_truncated:false})});
+     if(query.get('offset')==='0')
+      return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({
+       offset:0,limit:50,has_more:false,next_offset:null,submissions:[report]})});
+     return route.fulfill({status:404,body:'{}'});
+    });
+    await page.goto('http://127.0.0.1:'+port+'/moderation.html');
+    await page.waitForFunction(()=>document.querySelector('#moderationSummary')?.textContent.includes('180 дни'));
+    assert.equal(await page.locator('#moderationSummary dd').first().textContent(),'1');
+    assert.equal(await page.locator('#queue article').count(),1);
+    assert.equal(await page.locator('#queue img').count(),0,'reported HTML is never interpreted');
+    await page.locator('#queue button').first().click();
+    await page.waitForFunction(()=>document.querySelector('.moderation-audit-entry')?.textContent.includes('Kept private'));
+    assert.equal(await page.locator('.moderation-audit-entry script').count(),0);
+    await page.locator('#queue button').first().click();
+    await page.waitForFunction(()=>document.querySelector('#notice')?.textContent.includes('страница'));
+    await page.locator('#receiptQuery').fill(id);
+    await page.locator('#receiptLookup button[type=submit]').click();
+    await page.waitForFunction(()=>document.querySelector('.moderation-audit-entry')!==null);
+    assert.equal(await page.locator('a[href*="moderation"]').count(),0);
+    assert.deepEqual(errors,[]);
+    await context.close();
+  });
   await test('V1.5 simulated fully-approved private intake submits a text-only pending report',async()=>{
     const context=await browser.newContext({viewport:{width:1250,height:950},reducedMotion:'reduce'});
     const page=await context.newPage(),errors=[],sent=[];
