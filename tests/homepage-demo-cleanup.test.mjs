@@ -90,3 +90,12 @@ test("country-specific reports route to same safe draft form",()=>{
   assert.match(read("country.js"),/el\("reportLink"\)\.href="\/report\.html\?country="\+code/);
   assert.match(read("index.html"),/href="\/report\.html" data-i18n="reportButton" id="openIntakeCenter"/);
 });
+
+
+test("homepage directory avoids duplicated stock thumbnails and preserves attributed links",()=>{
+ const script=readFileSync(new URL("../script.js",import.meta.url),"utf8");
+ const portal=readFileSync(new URL("../home-portal.css",import.meta.url),"utf8");
+ assert.doesNotMatch(script,/img\.src=[^;]*feature-cases\.webp/,"no repetitive fallback dossier image");
+ assert.match(script,/source\.className='report-source'/,"published case cards retain source attribution");
+ assert.match(portal,/\.world-case-detail\s*\{[^}]*max-height:[^}]*overflow-y:auto/s,"long detail panel does not stretch map section");
+});

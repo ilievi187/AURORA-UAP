@@ -10,7 +10,8 @@ test("AURORA opens with one black full-screen UFO-over-Earth scene, not a carous
  assert.match(page,/UNIDENTIFIED AERIAL PHENOMENA/);
  assert.match(page,/href="\/archive\.html" class="button button-primary"/);
  assert.match(page,/href="\/media\.html" class="button button-secondary"/);
- assert.match(page,/href="#worldAtlas" class="silence-micro-map"/);
+ assert.doesNotMatch(page,/class="silence-micro-map"/,"redundant orbit badge must not return");
+ assert.match(page,/data-portal="map" href="#worldAtlas"/,"portal map link remains");
  assert.match(visual,/\/assets\/hero-ufo\.webp/);
  assert.match(visual,/\/assets\/earth\/earth-night-4096\.jpg/);
  assert.match(visual,/\/assets\/earth\/moon-1024\.jpg/);

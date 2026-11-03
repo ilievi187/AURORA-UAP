@@ -107,3 +107,71 @@ body:has(.portal-hub) .portal-card:focus-visible{
 @media(prefers-reduced-motion:reduce){
   body:has(.portal-hub) .portal-card{transition:none;}
 }
+
+
+/* Owner-requested cleanup: the portal itself links to the world atlas; remove
+   redundant orbit CTA, tall empty hero space, and repeated stock dossier art. */
+@media(min-width:641px){
+  body:has(.portal-hub) .silence-hero{
+    height:auto;
+    min-height:0;
+    max-height:none;
+  }
+  body:has(.portal-hub) .silence-hero .silence-copy{
+    margin-top:clamp(112px,13svh,155px);
+    margin-bottom:clamp(24px,3svh,40px);
+  }
+  body:has(.portal-hub) .silence-hero .silence-bottom{
+    width:min(1440px,calc(100% - clamp(40px,8vw,152px)));
+    left:auto;right:auto;bottom:auto;
+    margin:clamp(22px,2.5svh,36px) auto clamp(30px,4svh,50px);
+    padding-top:0;
+  }
+  body:has(.portal-hub) .silence-hero .silence-stats{
+    width:100%;
+  }
+}
+/* The orbit map's detail sidebar can be much taller than the map due to
+   source links. Keep it independently scrollable so it cannot produce a
+   large empty rectangle under the map before the next section. */
+body:has(.portal-hub) .world-map-layout{align-items:start;}
+body:has(.portal-hub) .world-case-detail{
+  max-height:clamp(320px,29vw,565px);
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-color:#445e70 #07101a;
+}
+body:has(.portal-hub) #reports .report-grid{align-items:stretch;}
+body:has(.portal-hub) #reports .report-card{
+  display:flex;flex-direction:column;
+  min-height:245px;padding:clamp(18px,2vw,26px);
+  background:linear-gradient(150deg,#0c1820,#06100f);
+  border:1px solid #6b938554;
+}
+body:has(.portal-hub) #reports .report-card h3{
+  font-size:clamp(16px,1.25vw,22px);
+  line-height:1.32;
+  margin:13px 0 11px;
+}
+body:has(.portal-hub) #reports .report-card .desc{
+  margin-bottom:12px;
+  display:-webkit-box;
+  -webkit-line-clamp:4;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+body:has(.portal-hub) #reports .report-card .report-source{
+  display:block;
+  margin:auto 0 10px;
+  color:#9ab6b3;
+  font:500 11px/1.5 ui-monospace,Consolas,monospace;
+  overflow-wrap:anywhere;
+}
+body:has(.portal-hub) #reports .report-card .report-bottom{margin-top:auto;}
+@media(max-width:1000px){
+  body:has(.portal-hub) .world-case-detail{max-height:none;overflow-y:visible;}
+}
+@media(max-width:640px){
+  body:has(.portal-hub) .silence-hero{min-height:0;}
+  body:has(.portal-hub) #reports .report-card{min-height:220px;}
+}

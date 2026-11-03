@@ -244,20 +244,18 @@ function renderReports(){
  for(const c of visible){
   const card=document.createElement('a');
   card.className='report-card';card.href='/archive/'+encodeURIComponent(c.id);
-  const img=document.createElement('img');
-  // No remote images or unverified footage: artwork is visibly identified.
-  img.src=/^\/assets\/[a-z0-9-]+\.webp$/.test(c.visual?.src||'')?c.visual.src:'/assets/feature-cases.webp';
-  img.alt=(c.visual?.caption?.[lang]||c.visual?.caption?.en||editorialLang().art);
-  img.loading='lazy';img.decoding='async';
-  const attribution=document.createElement('span');attribution.className='editorial-image-credit';
-  attribution.textContent=editorialLang().art;
+  // This compact directory intentionally uses text-first dossiers. The imported
+  // records have no case-specific photography; repeating a stock folder image
+  // on every card adds visual noise and misleads visitors.
   const meta=document.createElement('span');meta.className='date';
   meta.textContent=[c.date,c.country].filter(Boolean).join(' · ');
   const contentLanguage=archiveLocalization.caseTextLanguage(c,lang);
   const title=document.createElement('h3');title.textContent=c.title?.[contentLanguage]||c.title?.en||'';
   const desc=document.createElement('p');desc.className='desc';
   desc.textContent=c.summary?.[contentLanguage]||c.summary?.en||'';
-  const cardContent=[img,attribution,meta,title,desc];
+  const source=document.createElement('small');
+  source.className='report-source';source.textContent=c.source?.name||'';
+  const cardContent=[meta,title,desc,source];
   if(lang!=='en'&&contentLanguage!==lang){
    const disclosure=document.createElement('small');
    disclosure.className='archive-translation-disclosure';
