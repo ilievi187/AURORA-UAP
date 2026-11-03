@@ -25,6 +25,9 @@ on:
       - 'tests/privacy-retention.test.mjs'
       - 'tests/backup-recovery.test.mjs'
       - 'tests/backup-drive.test.mjs'
+      - 'tests/private-release-readiness.test.mjs'
+      - 'scripts/check-private-release-readiness.mjs'
+      - 'docs/RELEASE-SECURITY-EVIDENCE-2026-11-03.md'
       - 'scripts/backup-d1-drive.sh'
       - 'deploy/systemd/aurora-d1-backup.service'
       - 'deploy/systemd/aurora-d1-backup.timer'
@@ -55,6 +58,9 @@ on:
       - 'tests/privacy-retention.test.mjs'
       - 'tests/backup-recovery.test.mjs'
       - 'tests/backup-drive.test.mjs'
+      - 'tests/private-release-readiness.test.mjs'
+      - 'scripts/check-private-release-readiness.mjs'
+      - 'docs/RELEASE-SECURITY-EVIDENCE-2026-11-03.md'
       - 'scripts/backup-d1-drive.sh'
       - 'deploy/systemd/aurora-d1-backup.service'
       - 'deploy/systemd/aurora-d1-backup.timer'
@@ -72,5 +78,5 @@ jobs:
       - run: npm ci
       - run: npm run build:report-auth
       - run: git diff --exit-code -- report-auth.bundle.js
-      - run: node --test tests/privacy-route.test.mjs
+      - run: node --test tests/privacy-route.test.mjs tests/private-release-readiness.test.mjs
       - run: node --experimental-sqlite --test tests/intake.test.mjs tests/reporter-auth.test.mjs tests/intake-auth-gate.test.mjs tests/isolated-intake-security.test.mjs tests/moderation.test.mjs tests/privacy-retention.test.mjs tests/backup-recovery.test.mjs tests/backup-drive.test.mjs
