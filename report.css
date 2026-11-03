@@ -43,3 +43,13 @@ footer{padding:30px 0 50px;border-top:1px solid #45798255;font:10px Consolas,mon
 @media(max-width:650px){.report-english{display:block;margin-top:12px}}
 
 .moderation-description{white-space:pre-wrap;overflow-wrap:anywhere}
+
+.report-auth{margin:0 0 22px;padding:20px;border:1px solid #65b7b3;background:linear-gradient(135deg,#102b32,#071b24)}
+.report-auth h3{font:700 13px/1.5 Consolas,monospace;letter-spacing:.1em;color:#befff2;margin:0 0 10px}
+.report-auth p{font:12px/1.65 Consolas,monospace;color:#c5e5e3}
+.report-auth-buttons{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.report-auth-buttons button,#reportAuthLogout{background:#173e48;border:1px solid #52999c;color:#e8ffff;padding:12px 15px;cursor:pointer;font:12px Consolas,monospace}
+.report-auth-buttons button:hover,#reportAuthLogout:hover{background:#22636d}
+#reportAuthEmailBox{flex:1 1 210px}#reportAuthEmail{min-height:45px}
+#reportAuthFeedback{margin:12px 0;overflow-wrap:anywhere}
+@media(max-width:650px){.report-auth-buttons{flex-direction:column;align-items:stretch}.report-auth-buttons button{width:100%}#reportAuthEmailBox{width:100%}}

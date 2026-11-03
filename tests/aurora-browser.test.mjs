@@ -676,7 +676,12 @@ try{
     page.on('pageerror',e=>errors.push(e.message));
     await page.route('**/api/intake/status',route=>route.fulfill({status:200,contentType:'application/json',
       body:JSON.stringify({accepting:true,mode:'text_only_quarantine',site_key:'testing-site-key',
-       policy_version:'intake-v1-reviewed',policy_url:'https://aurorauap.org/privacy',automatic_publication:false})}));
+       policy_version:'intake-v1-reviewed',policy_url:'https://aurorauap.org/privacy',automatic_publication:false,
+       auth_required:true,auth_url:'https://aurora-test.supabase.co',
+       auth_key:'sb_publishable_testing_public_key_123456789',auth_providers:['email','google','apple','x']})}));
+    await page.route('**/report-auth.bundle.js',route=>route.fulfill({status:200,contentType:'application/javascript',
+     body:'window.AURORAReportAuth={create:()=>({auth:{getUser:async()=>({data:{user:{id:"123e4567-e89b-42d3-a456-426614174000",email:"verified@example.com",email_confirmed_at:"2026-01-01T00:00:00Z"}}}),getSession:async()=>({data:{session:{access_token:"test_verified_access_token_12345678901234567890"}}}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}}),signOut:async()=>({error:null})}})};' }));
+
     await page.route('https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',route=>
       route.fulfill({status:200,contentType:'application/javascript',
        body:'window.turnstile={render:function(s,opts){queueMicrotask(()=>opts.callback("fake-widget-token"));return 1},reset:function(){}}'}));
@@ -700,6 +705,7 @@ try{
     assert.equal(await page.locator('#receiptPanel').isVisible(),true);
     assert.equal(await page.locator('#receiptValue').textContent(),'aur-int-123e4567-e89b-42d3-a456-426614174000');
     assert.equal(sent.length,1);
+    assert.equal((await page.locator('#reportAuthFeedback').textContent()).includes('verified@example.com'),true);
     assert.equal(sent[0].country_code,'BG');
     assert.equal(sent[0].consent,true);
     assert.equal(sent[0].consent_version,'intake-v1-reviewed');

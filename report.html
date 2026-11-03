@@ -27,6 +27,19 @@
 <section class="report-section">
 <div class="report-form-head"><span>01 / FIELD REPORT</span><h2 id="reportFormTitle">Подготви своя сигнал</h2></div>
 <form id="observationForm" novalidate>
+<section id="reportAuth" class="report-auth" hidden aria-labelledby="reportAuthHeading">
+<h3 id="reportAuthHeading">VERIFY YOUR EMAIL / ПОТВЪРДИ ИМЕЙЛА СИ</h3>
+<p id="reportAuthIntro">Free reporting. Donations are optional. Verify your email before submitting; your account is never published with your report.</p>
+<div id="reportAuthButtons" class="report-auth-buttons">
+<button type="button" data-auth-provider="google" hidden>Continue with Google</button>
+<button type="button" data-auth-provider="apple" hidden>Continue with Apple</button>
+<button type="button" data-auth-provider="x" hidden>Continue with X</button>
+<label id="reportAuthEmailBox" hidden><span>Email / Имейл</span><input type="email" id="reportAuthEmail" autocomplete="email" inputmode="email" placeholder="you@example.com"></label>
+<button type="button" id="reportAuthEmailSend" hidden>Send sign-in link / Изпрати линк</button>
+</div>
+<p id="reportAuthFeedback" role="status" aria-live="polite">Sign-in is required for submission.</p>
+<button type="button" id="reportAuthLogout" hidden>Sign out / Изход</button>
+</section>
 <div class="report-grid">
 <label><span data-report-label="country">Държава / Country</span> <input id="country" maxlength="2" minlength="2" pattern="[A-Za-z]{2}" placeholder="BG" required autocomplete="off"></label>
 <label><span data-report-label="region">Регион / Region</span> <input id="region" maxlength="80" minlength="2" placeholder="напр. Шуменска област" required autocomplete="off"></label>
