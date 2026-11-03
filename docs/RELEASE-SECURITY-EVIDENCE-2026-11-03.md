@@ -50,3 +50,8 @@ Do NOT set legal/WAF review flags or AURORA_INTAKE_ENABLED based on this read-on
 
 
 4 Nov follow-up: authenticated privacy inventory was initially tied to the disabled submission Auth flag and yielded HTTP 503. A fix separates read-only account verification from submission enablement. The after-deploy read-only preflight must show 401 (no token) while report intake stays disabled; do not claim this until verified.
+
+
+## 4 Nov — WAF path-scope and emergency shutdown tests
+
+Offline tests confirm that noncanonical POST paths reach neither Supabase/Turnstile nor D1, and that disabling the intake flag blocks future submissions while keeping old reports quarantined. This does NOT prove real Cloudflare WAF mitigation. An approved bounded live test must be correlated with Cloudflare Security Events; see docs/WAF-TURNSTILE-EMERGENCY-RUNBOOK-2026-11-04.md.

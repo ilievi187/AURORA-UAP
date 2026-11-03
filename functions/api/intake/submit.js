@@ -8,6 +8,9 @@ export async function onRequestPost({request,env}){
  const url=new URL(request.url),origin=request.headers.get("Origin");
  // The origin must be exact and secure. Refuse generic cross-origin requests.
  if(url.protocol!=="https:"||origin!==url.origin)return respond({error:"origin_rejected"},403);
+ // Defense in depth: WAF rate limiting only covers this EXACT method/path.
+ // Reject non-canonical routes before consuming JSON, Auth, Turnstile or D1.
+ if(url.pathname!=="/api/intake/submit")return respond({error:"route_not_found"},404);
  if(!intakeEnabled(env,url.hostname)||!await intakeSchemaReady(env.DB))return respond({error:"intake_disabled"},503);
  if(!/^application\/json(?:\s*;|$)/i.test(request.headers.get("Content-Type")||""))
   return respond({error:"unsupported_media_type"},415);

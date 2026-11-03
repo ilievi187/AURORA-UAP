@@ -159,3 +159,27 @@ test('anonymous and cross-origin requests never reach Siteverify or D1',async()=
   assert.equal(a.count('intake_submissions'),0);
  }finally{mock.restore();a.sql.close()}
 });
+
+test('emergency-off deployment flag stops NEW reports before auth, Turnstile and storage, preserving prior private data',async()=>{
+ const a=fixture(),mock=mockAuthAndTurnstile();
+ try{
+  const first=await a.post(a.data());
+  assert.equal(first.status,202);
+  assert.equal(a.count('intake_submissions'),1);
+  const beforeCalls=mock.calls.length;
+  for(const override of [
+   {...a.config,AURORA_INTAKE_ENABLED:'off'},
+   {...a.config,AURORA_INTAKE_ENABLED:undefined},
+   {...a.config,AURORA_INTAKE_LEGAL_APPROVED:undefined}
+  ]){
+   const response=await a.post(a.data(),{env:override});
+   assert.equal(response.status,503);
+   assert.equal((await response.json()).error,'intake_disabled');
+   assert.equal(a.count('intake_submissions'),1);
+   assert.equal(a.count('intake_review_events'),1);
+   assert.equal(a.count('intake_reporter_links'),1);
+  }
+  assert.equal(mock.calls.length,beforeCalls,'emergency-off must not call Auth or Turnstile');
+  assert.equal(a.count('cases'),0,'shutdown does not publish quarantined reports');
+ }finally{mock.restore();a.sql.close()}
+});
