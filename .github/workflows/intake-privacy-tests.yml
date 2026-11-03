@@ -7,6 +7,14 @@ on:
       - '_redirects'
       - 'functions/api/intake/**'
       - 'functions/_lib/intake.js'
+      - 'functions/_lib/reporter-auth.js'
+      - 'migrations/0005_reporter_ownership.sql'
+      - 'report-auth.entry.js'
+      - 'report-auth.bundle.js'
+      - 'report.html'
+      - 'report.js'
+      - 'tests/reporter-auth.test.mjs'
+      - 'tests/intake-auth-gate.test.mjs'
       - 'worker/privacy-retention.js'
       - 'tests/privacy-route.test.mjs'
       - 'tests/intake.test.mjs'
@@ -19,6 +27,14 @@ on:
       - '_redirects'
       - 'functions/api/intake/**'
       - 'functions/_lib/intake.js'
+      - 'functions/_lib/reporter-auth.js'
+      - 'migrations/0005_reporter_ownership.sql'
+      - 'report-auth.entry.js'
+      - 'report-auth.bundle.js'
+      - 'report.html'
+      - 'report.js'
+      - 'tests/reporter-auth.test.mjs'
+      - 'tests/intake-auth-gate.test.mjs'
       - 'worker/privacy-retention.js'
       - 'tests/privacy-route.test.mjs'
       - 'tests/intake.test.mjs'
@@ -34,5 +50,7 @@ jobs:
         with:
           node-version: '24'
       - run: npm ci
+      - run: npm run build:report-auth
+      - run: git diff --exit-code -- report-auth.bundle.js
       - run: node --test tests/privacy-route.test.mjs
-      - run: node --experimental-sqlite --test tests/intake.test.mjs tests/moderation.test.mjs tests/privacy-retention.test.mjs
+      - run: node --experimental-sqlite --test tests/intake.test.mjs tests/reporter-auth.test.mjs tests/intake-auth-gate.test.mjs tests/moderation.test.mjs tests/privacy-retention.test.mjs

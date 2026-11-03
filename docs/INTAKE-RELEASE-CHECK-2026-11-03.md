@@ -33,3 +33,13 @@ The implemented intake is **text only**. Files and media uploads will require pr
 - Verify deployed `https://aurorauap.org/privacy` actually contains bilingual notice rather than the homepage.
 
 Use `docs/V1.7-LIVE-SUBMISSION-ACTIVATION.md` and `docs/PRIVACY-NOTICE-REVIEW.md` for additional configuration and legal details.
+
+## Architecture update (owner direction, 3 Nov 2026) — free reports with verified email
+
+- Donations are optional. No payment, donor record or minimum donation may be required to submit a report. Do not create a donor-email allowlist for reports.
+- Reporting now has an additional **mandatory verified-email identity gate**, configured separately from owner-only Cloudflare Access moderation, via Supabase Auth. Google, Apple, X and email magic link/OTP are supported by staged code; only expose providers actually configured and tested.
+- Auth-server verification of email confirmation is mandatory on every submit; X sign-in alone without an email confirmation is not enough. Apple relay email addresses are allowed.
+- New D1 migration `0005_reporter_ownership.sql` adds only a pseudonymous private identity-to-report link. It has **not** been applied to production by the code merge. `intakeSchemaReady` refuses to activate until it exists.
+- Production requires `AURORA_REPORT_AUTH_ENABLED=enabled`, a Supabase project `AURORA_REPORT_AUTH_URL`, a **publishable/anon-only** `AURORA_REPORT_AUTH_PUBLISHABLE_KEY`, and comma-separated enabled `AURORA_REPORT_AUTH_PROVIDERS` in addition to all previous release gates. Do not set a privileged `service_role` key in client code.
+- The public privacy notice has been updated to disclose account email/identity and Supabase, but provider processors/transfers, account deletion, hosting terms, and an independent privacy review remain blockers. Details: `docs/VERIFIED-REPORTERS-SETUP-2026-11-03.md`.
+- Test account and migration must be configured in a private staging environment first. No real account login or public submission may be claimed based on CI mocks.

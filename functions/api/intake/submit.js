@@ -1,4 +1,5 @@
 import {intakeEnabled,intakeSchemaReady,normalizeSubmission,verifyTurnstile,storeSubmission} from "../../_lib/intake.js";
+import {verifiedReporter} from "../../_lib/reporter-auth.js";
 const respond=(body,status)=>Response.json(body,{status,headers:{
  "Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer",
  "Content-Security-Policy":"default-src 'none'"
@@ -21,6 +22,11 @@ export async function onRequestPost({request,env}){
  let data;
  try{data=normalizeSubmission(input,env.AURORA_INTAKE_POLICY_VERSION)}
  catch{return respond({error:"invalid_report"},400)}
+ // Every submission requires a freshly verified email-based identity, independent of donations.
+ let reporter=null;
+ try{reporter=await verifiedReporter(request,env)}
+ catch{return respond({error:"identity_unavailable"},503)}
+ if(!reporter)return respond({error:"verified_email_required"},401);
  // Challenge is mandatory for every request and verified by Cloudflare's Siteverify.
  let valid=false;
  try{valid=await verifyTurnstile(data.turnstile_token,env,url.hostname)}
@@ -28,7 +34,7 @@ export async function onRequestPost({request,env}){
  if(!valid)return respond({error:"turnstile_rejected"},403);
  // No request IP, email, name, file or private address is written to D1.
  try{
-  const saved=await storeSubmission(env.DB,data);
+  const saved=await storeSubmission(env.DB,data,reporter.id);
   return respond({receipt_id:saved.receipt_id,status:"pending",published:false},202);
  }catch(error){
   console.error("AURORA intake transactional storage failed",error?.name||"Error");

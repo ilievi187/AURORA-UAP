@@ -6,9 +6,14 @@
     "test:db": "node --experimental-sqlite --test tests/database.test.mjs tests/newsroom.test.mjs tests/news-feed-archive.test.mjs",
     "test:static": "node --test tests/aurora-v1.test.mjs",
     "test:browser": "node --test tests/aurora-browser.test.mjs",
-    "test:feeds": "node --test tests/live-feeds.test.mjs"
+    "test:feeds": "node --test tests/live-feeds.test.mjs",
+    "build:report-auth": "esbuild report-auth.entry.js --bundle --format=iife --minify --target=es2022 --outfile=report-auth.bundle.js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "2.118.0",
     "jose": "6.1.1"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
   }
 }

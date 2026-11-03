@@ -6,6 +6,7 @@
  const LEGACY_STORAGE="aurora-demo-draft";
  const fields=["country","region","location","occurred","timezone","category","description"];
  let enabled=false,siteKey="",policyVersion="",challenge="",widget=null,pending=false;
+ let authClient=null,authIdentity=null,authInit=false;
  let requestKey=crypto.randomUUID(),widgetApi=null,statusState="checking";
  const I18N={
   "bg":{
@@ -683,7 +684,7 @@
   msg(t.msgCleared);
  }
  function refreshSubmitButton(){
-  $("sendReport").disabled=!enabled||!challenge||!$("consent").checked||pending;
+  $("sendReport").disabled=!enabled||!challenge||!$("consent").checked||pending||!authIdentity;
  }
  function renderChallenge(){
   if(!window.turnstile||!enabled)return;
@@ -695,6 +696,71 @@
    "error-callback":()=>{challenge="";refreshSubmitButton()}
   });
  }
+
+ const authCopy=(en,bg)=>document.documentElement.lang?.toLowerCase().startsWith("bg")?bg:en;
+ async function refreshAuth(){
+  if(!authClient)return;
+  authIdentity=null;
+  try{
+   const {data,error}=await authClient.auth.getUser();
+   const user=error?null:data?.user;
+   if(user?.id&&user.email&&user.email_confirmed_at)authIdentity={id:user.id,email:user.email};
+  }catch{/* unverified or inaccessible session */}
+  $("reportAuthButtons").hidden=!!authIdentity;
+  $("reportAuthLogout").hidden=!authIdentity;
+  $("reportAuthFeedback").textContent=authIdentity
+   ?authCopy("Verified email: ","Потвърден имейл: ")+authIdentity.email+
+    authCopy(". Your identity will not appear in the published case.",". Самоличността ти няма да се показва в публичното досие.")
+   :authCopy("Sign in with a verified email before sending. Donations are never required.",
+    "Влез с потвърден имейл, за да изпратиш сигнал. Дарение никога не е задължително.");
+  refreshSubmitButton();
+ }
+ async function setupAuth(state){
+  if(state.auth_required!==true||!/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(state.auth_url||"")||
+   typeof state.auth_key!=="string"||!Array.isArray(state.auth_providers)||!state.auth_providers.length)
+   throw Error("Report identity is not configured");
+  await new Promise((resolve,reject)=>{
+   if(window.AURORAReportAuth){resolve();return}
+   const script=document.createElement("script");
+   script.src="/report-auth.bundle.js";script.async=true;
+   script.onload=resolve;script.onerror=reject;document.head.append(script);
+  });
+  if(!window.AURORAReportAuth)throw Error("Report identity unavailable");
+  authClient=window.AURORAReportAuth.create(state.auth_url,state.auth_key);
+  $("reportAuth").hidden=false;
+  for(const button of document.querySelectorAll("[data-auth-provider]")){
+   const provider=button.dataset.authProvider;
+   button.hidden=!state.auth_providers.includes(provider);
+   button.addEventListener("click",async()=>{
+    button.disabled=true;
+    const {error}=await authClient.auth.signInWithOAuth({
+     provider,options:{redirectTo:location.origin+"/report.html"}
+    });
+    if(error){$("reportAuthFeedback").textContent=error.message;button.disabled=false}
+   });
+  }
+  $("reportAuthEmailBox").hidden=!state.auth_providers.includes("email");
+  $("reportAuthEmailSend").hidden=!state.auth_providers.includes("email");
+  $("reportAuthEmailSend").addEventListener("click",async()=>{
+   const email=$("reportAuthEmail").value.trim();
+   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    $("reportAuthFeedback").textContent=authCopy("Enter a valid email.","Въведи валиден имейл.");return
+   }
+   const b=$("reportAuthEmailSend");b.disabled=true;
+   try{
+    const {error}=await authClient.auth.signInWithOtp({
+     email,options:{emailRedirectTo:location.origin+"/report.html"}
+    });
+    $("reportAuthFeedback").textContent=error?error.message:
+     authCopy("Check your inbox for the sign-in link.","Провери пощата си за линк за вход.");
+   }finally{b.disabled=false}
+  });
+  $("reportAuthLogout").addEventListener("click",async()=>{await authClient.auth.signOut();await refreshAuth()});
+  authClient.auth.onAuthStateChange(()=>{queueMicrotask(()=>refreshAuth())});
+  authInit=true;
+  await refreshAuth();
+ }
+
  async function initialize(){
   applyReportTranslations();
   window.addEventListener("aurora:language-changed",applyReportTranslations);
@@ -726,6 +792,7 @@
     return;
    }
    if(!state.site_key||!state.policy_version)throw Error("incomplete");
+   await setupAuth(state);
    if(state.policy_url!=="https://aurorauap.org/privacy")throw Error("missing reviewed privacy URL");
    enabled=true;siteKey=state.site_key;policyVersion=state.policy_version;
    $("privacyLink").href=state.policy_url;
@@ -748,7 +815,7 @@
  async function send(event){
   event.preventDefault();
   const t=pack();
-  if(!enabled||pending||!challenge||!$("consent").checked){msg(t.msgNotAllowed,true);return}
+  if(!enabled||pending||!challenge||!$("consent").checked||!authIdentity){msg(t.msgNotAllowed,true);return}
   const form=$("observationForm");
   if(!form.reportValidity())return;
   const draft=getDraft();
@@ -759,10 +826,13 @@
    language_code:document.documentElement.lang||"bg",consent:true,consent_version:policyVersion,
    turnstile_token:challenge,website:$("website").value
   };
+  const {data:sessionData}=await authClient.auth.getSession();
+  const token=sessionData?.session?.access_token;
+  if(!token){authIdentity=null;refreshSubmitButton();msg(t.msgNotAllowed,true);return}
   pending=true;refreshSubmitButton();msg(t.msgSending);
   try{
    const response=await fetch("/api/intake/submit",{
-    method:"POST",headers:{"Content-Type":"application/json"},
+    method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+token},
     credentials:"same-origin",body:JSON.stringify(payload)
    });
    const result=await response.json();

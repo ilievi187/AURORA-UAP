@@ -1,5 +1,6 @@
 // AURORA V1.5: text-only intake, intentionally PRIVATE and opt-in.
 // Never import the quarantine schema into the read-only public cases API.
+import {reporterAuthConfigured} from "./reporter-auth.js";
 const ACTION="aurora_report";
 const SAFE_CATEGORY=new Set(["lights","object","instrument","other"]);
 const KEYS=new Set(["request_key","country_code","region","approximate_location","latitude",
@@ -27,7 +28,7 @@ export function moderatorQueueConfigured(env){
 export function intakeEnabled(env,hostname){
  return Boolean(env?.DB&&typeof env.DB.prepare==="function"&&typeof env.DB.batch==="function"&&
  // A private quarantined report is independent of the PUBLIC cases registry.
- env.AURORA_INTAKE_ENABLED==="enabled"&&
+ env.AURORA_INTAKE_ENABLED==="enabled"&&reporterAuthConfigured(env)&&
  moderatorQueueConfigured(env)&&
  env.AURORA_INTAKE_LEGAL_APPROVED==="yes"&&
  env.AURORA_INTAKE_WAF_REVIEWED==="yes"&&
@@ -43,7 +44,8 @@ export async function intakeSchemaReady(db){
  try{
   const record=await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='intake_submissions'").first();
   const events=await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='intake_review_events'").first();
-  return record?.name==="intake_submissions"&&events?.name==="intake_review_events";
+  const ownership=await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='intake_reporter_links'").first();
+  return record?.name==="intake_submissions"&&events?.name==="intake_review_events"&&ownership?.name==="intake_reporter_links";
  }catch{return false}
 }
 export function normalizeSubmission(value,policyVersion){
@@ -87,21 +89,27 @@ export async function verifyTurnstile(token,env,hostname,fetcher=fetch){
  // Fail closed on hostname or action mismatch and on replay/expired challenges.
  return result.success===true&&result.hostname===hostname&&result.action===ACTION;
 }
-export async function storeSubmission(db,s){
+export async function storeSubmission(db,s,reporterId){
+ if(typeof reporterId!=="string"||!/^[a-f0-9-]{36}$/i.test(reporterId))throw Error("Verified reporter required");
  if(typeof db.batch!=="function")throw Error("Transactional D1 required");
  // Opaque random receipt ID cannot be guessed and is NOT a public case URL.
  const id="aur-int-"+crypto.randomUUID();
- const existing=await db.prepare("SELECT id FROM intake_submissions WHERE request_key=?").bind(s.request_key).first();
- if(existing)return {receipt_id:existing.id,status:"pending",duplicate:true};
+ const existing=await db.prepare("SELECT s.id,l.auth_user_id FROM intake_submissions s LEFT JOIN intake_reporter_links l ON l.submission_id=s.id WHERE s.request_key=?").bind(s.request_key).first();
+ if(existing){
+  if(existing.auth_user_id!==reporterId)throw Error("Report request belongs to a different account");
+  return {receipt_id:existing.id,status:"pending",duplicate:true};
+ }
  const batch=[
   db.prepare("INSERT INTO intake_submissions(id,request_key,country_code,region,approximate_location,approximate_latitude,approximate_longitude,occurred_local,time_zone,category,description,language_code,consent_version) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(request_key) DO NOTHING")
    .bind(id,s.request_key,s.country_code,s.region,s.approximate_location,s.latitude,s.longitude,s.occurred_local,s.time_zone,s.category,s.description,s.language_code,s.consent_version),
   db.prepare("INSERT INTO intake_review_events(submission_id,actor_type,actor_id,action,new_status,rationale) SELECT id,'system','intake','received','pending','Quarantined text-only submission; requires human review' FROM intake_submissions WHERE id=?")
-   .bind(id)
+   .bind(id),
+  db.prepare("INSERT INTO intake_reporter_links(submission_id,auth_user_id) SELECT id,? FROM intake_submissions WHERE id=?")
+   .bind(reporterId,id)
  ];
  await db.batch(batch);
- const actual=await db.prepare("SELECT id FROM intake_submissions WHERE request_key=?").bind(s.request_key).first();
- if(!actual)throw Error("Submission storage failure");
+ const actual=await db.prepare("SELECT s.id,l.auth_user_id FROM intake_submissions s LEFT JOIN intake_reporter_links l ON l.submission_id=s.id WHERE s.request_key=?").bind(s.request_key).first();
+ if(!actual||actual.auth_user_id!==reporterId)throw Error("Submission ownership mismatch");
  return {receipt_id:actual.id,status:"pending",duplicate:actual.id!==id};
 }
 // Internal moderation domain function only; NOT exported via a public route.

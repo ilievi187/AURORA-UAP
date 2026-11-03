@@ -5,11 +5,13 @@ import {DatabaseSync} from "node:sqlite";
 import {intakeEnabled,moderatorQueueConfigured,normalizeSubmission,verifyTurnstile,storeSubmission,reviewSubmission} from "../functions/_lib/intake.js";
 import {onRequestGet as getStatus} from "../functions/api/intake/status.js";
 import {onRequestPost as submit} from "../functions/api/intake/submit.js";
+const TEST_REPORTER="123e4567-e89b-42d3-a456-426614174000";
 const read=path=>readFileSync(new URL("../"+path,import.meta.url),"utf8");
 function database(){
  const sql=new DatabaseSync(":memory:");
  sql.exec(read("migrations/0001_init.sql"));
  sql.exec(read("migrations/0002_intake_quarantine.sql"));
+ sql.exec(read("migrations/0005_reporter_ownership.sql"));
  const db={
   prepare(query){
    const stmt=sql.prepare(query);
@@ -39,6 +41,10 @@ function environment(db){
   AURORA_INTAKE_HOSTNAME:"aurorauap.org",
   AURORA_TURNSTILE_SITE_KEY:"public-test-site-key-123",
   AURORA_TURNSTILE_SECRET:"private-test-turnstile-secret-123",
+  AURORA_REPORT_AUTH_ENABLED:"enabled",
+  AURORA_REPORT_AUTH_URL:"https://aurora-test.supabase.co",
+  AURORA_REPORT_AUTH_PUBLISHABLE_KEY:"sb_publishable_test_key_this_is_not_a_secret",
+  AURORA_REPORT_AUTH_PROVIDERS:"email,google,apple,x",
   AURORA_MODERATION_ENABLED:"enabled",
   AURORA_ACCESS_TEAM:"https://aurora-test.cloudflareaccess.com",
   AURORA_ACCESS_AUD:"a".repeat(64),
@@ -54,7 +60,7 @@ function body(){
 function request(data,opts={}){
  const origin=opts.origin??"https://aurorauap.org";
  return new Request("https://aurorauap.org/api/intake/submit",{
-  method:"POST",headers:{"Content-Type":opts.type??"application/json",...(origin?{Origin:origin}:{})},
+  method:"POST",headers:{"Content-Type":opts.type??"application/json",...(origin?{Origin:origin}:{}),...(!opts.noAuth?{Authorization:"Bearer "+"test_token_".repeat(6)}:{})},
   body:JSON.stringify(data)
  });
 }
@@ -75,7 +81,8 @@ test("public intake fails closed without every explicit policy, D1, WAF, hostnam
  for(const key of ["DB","AURORA_INTAKE_ENABLED","AURORA_INTAKE_LEGAL_APPROVED",
   "AURORA_INTAKE_WAF_REVIEWED","AURORA_INTAKE_POLICY_VERSION","AURORA_INTAKE_POLICY_URL",
   "AURORA_INTAKE_HOSTNAME","AURORA_TURNSTILE_SECRET","AURORA_TURNSTILE_SITE_KEY",
-  "AURORA_MODERATION_ENABLED","AURORA_ACCESS_TEAM","AURORA_ACCESS_AUD","AURORA_MODERATOR_EMAIL"]){
+  "AURORA_MODERATION_ENABLED","AURORA_ACCESS_TEAM","AURORA_ACCESS_AUD","AURORA_MODERATOR_EMAIL",
+  "AURORA_REPORT_AUTH_ENABLED","AURORA_REPORT_AUTH_URL","AURORA_REPORT_AUTH_PUBLISHABLE_KEY","AURORA_REPORT_AUTH_PROVIDERS"]){
   const invalid={...env};delete invalid[key];
   assert.equal(intakeEnabled(invalid,"aurorauap.org"),false,"missing "+key+" should reject");
  }
@@ -153,7 +160,11 @@ test("intake rejects requests from other origins or content types before token v
 test("accepted text-only report is stored once, under private pending review, never public",async()=>{
  const {db,sql}=database();const env=environment(db),payload=body();
  const oldFetch=globalThis.fetch;let verified=0;
- globalThis.fetch=async (url)=>{assert.equal(url,"https://challenges.cloudflare.com/turnstile/v0/siteverify");verified++;return Response.json({success:true,hostname:"aurorauap.org",action:"aurora_report"})};
+ globalThis.fetch=async (url)=>{
+   if(url==="https://aurora-test.supabase.co/auth/v1/user")return Response.json({id:TEST_REPORTER,email:"verified@example.com",email_confirmed_at:"2026-01-01T00:00:00Z"});
+   assert.equal(url,"https://challenges.cloudflare.com/turnstile/v0/siteverify");verified++;
+   return Response.json({success:true,hostname:"aurorauap.org",action:"aurora_report"});
+  };
  try{
   const res=await submit({request:request(payload),env});
   assert.equal(res.status,202);
@@ -176,7 +187,7 @@ test("accepted text-only report is stored once, under private pending review, ne
 test("human review updates private status with audit; even approval never publishes",async()=>{
  const {db,sql}=database();
  const s=normalizeSubmission(body(),"intake-v1-reviewed");
- const {receipt_id}=await storeSubmission(db,s);
+ const {receipt_id}=await storeSubmission(db,s,TEST_REPORTER);
  const updated=await reviewSubmission(db,receipt_id,{decision:"approved",actor_id:"admin@aurorauap.org",
   rationale:"Reviewed the reported facts and source context. Further verification before any publication."});
  assert.equal(updated.status,"approved");assert.equal(updated.publication_status,"quarantined");
@@ -190,7 +201,7 @@ test("human review updates private status with audit; even approval never publis
 });
 test("a concurrent identical review cannot create a false audit event",async()=>{
  const {db,sql}=database();
- const {receipt_id}=await storeSubmission(db,normalizeSubmission(body(),"intake-v1-reviewed"));
+ const {receipt_id}=await storeSubmission(db,normalizeSubmission(body(),"intake-v1-reviewed"),TEST_REPORTER);
  const batch=db.batch.bind(db);
  db.batch=async statements=>{
   // Simulate another moderator committing after this request read pending status.
@@ -205,7 +216,7 @@ test("a concurrent identical review cannot create a false audit event",async()=>
 test("D1-like transactional batch aborts receipt and audit together on storage error",async()=>{
  const {db,sql}=database();
  sql.exec("CREATE TRIGGER fail_first_intake_review BEFORE INSERT ON intake_review_events BEGIN SELECT RAISE(ABORT,'audit trigger failure'); END;");
- await assert.rejects(()=>storeSubmission(db,normalizeSubmission(body(),"intake-v1-reviewed")) ,/audit trigger failure/);
+ await assert.rejects(()=>storeSubmission(db,normalizeSubmission(body(),"intake-v1-reviewed"),TEST_REPORTER) ,/audit trigger failure/);
  assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM intake_submissions").get().n,0);
  assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM intake_review_events").get().n,0);
  sql.close();
@@ -229,7 +240,9 @@ test("private text report works while the separate public registry is disabled",
  const status=await getStatus({request:new Request("https://aurorauap.org/api/intake/status"),env});
  assert.equal((await status.json()).accepting,true);
  const original=globalThis.fetch;
- globalThis.fetch=async()=>Response.json({success:true,hostname:"aurorauap.org",action:"aurora_report"});
+ globalThis.fetch=async url=>url==="https://aurora-test.supabase.co/auth/v1/user"
+   ?Response.json({id:TEST_REPORTER,email:"verified@example.com",email_confirmed_at:"2026-01-01T00:00:00Z"})
+   :Response.json({success:true,hostname:"aurorauap.org",action:"aurora_report"});
  try{
   const response=await submit({request:request(body()),env});
   assert.equal(response.status,202);
