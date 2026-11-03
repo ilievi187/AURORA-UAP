@@ -91,6 +91,20 @@ test("public intake fails closed without every explicit policy, D1, WAF, hostnam
  const response=await disabled.json();
  assert.equal(response.accepting,false);assert.equal(response.mode,"local_draft_only");
  assert.equal(response.site_key,undefined);assert.equal(response.automatic_publication,false);
+ assert.equal(response.auth_required,true,"Login is available while intake is disabled");
+ assert.equal(response.auth_url,env.AURORA_REPORT_AUTH_URL);
+ assert.equal(response.auth_key,env.AURORA_REPORT_AUTH_PUBLISHABLE_KEY);
+ assert.equal(response.auth_providers.includes("email"),true);
+ const missingLogin=await getStatus({request:new Request("https://aurorauap.org/api/intake/status"),
+  env:{...env,AURORA_INTAKE_ENABLED:"off",AURORA_REPORT_AUTH_PUBLISHABLE_KEY:""}});
+ assert.equal((await missingLogin.json()).auth_required,undefined);
+ // Exact production staging state: SMTP/auth configured, intake auth switch still off.
+ const staged=await getStatus({request:new Request("https://aurorauap.org/api/intake/status"),
+  env:{...env,AURORA_INTAKE_ENABLED:"off",AURORA_REPORT_AUTH_ENABLED:undefined}});
+ const stagedState=await staged.json();
+ assert.equal(stagedState.auth_required,true);
+ assert.equal(stagedState.accepting,false);
+ assert.equal(stagedState.site_key,undefined);
  sql.close();
 });
 test("intake cannot activate without a configured Access-protected moderator queue",()=>{
