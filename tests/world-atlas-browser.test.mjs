@@ -91,7 +91,7 @@ try {
   if (process.env.AURORA_CHROMIUM_PATH) options.executablePath = process.env.AURORA_CHROMIUM_PATH;
   browser = await chromium.launch(options);
 
-  await test('world atlas searches and filters cases, zooms clusters, and handles unknown locations on mobile', async () => {
+  await test('world atlas searches cases, opens country routes from markers and stays responsive on mobile', async () => {
     const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce' });
     const page = await context.newPage();
     const errors = [];
@@ -136,11 +136,10 @@ try {
     });
     assert.ok(Math.abs(alignment.dx) <= 2 && Math.abs(alignment.dy) <= 2, `marker drift: ${JSON.stringify(alignment)}`);
     await page.locator('#worldMapPins button[data-marker-case-id="westall-1966"]').focus();
-    await page.keyboard.press('Enter');
     assert.deepEqual(await page.evaluate(() => ({
       insidePins: document.querySelector('#worldMapPins').contains(document.activeElement),
       caseId: document.activeElement.dataset.markerCaseId
-    })), { insidePins: true, caseId: 'westall-1966' }, 'keyboard marker activation should retain map focus');
+    })), { insidePins: true, caseId: 'westall-1966' }, 'map marker receives keyboard focus before country navigation');
     assert.equal(await page.locator('#worldMapPins [aria-label*="test-location-not-reported"]').count(), 0);
 
     await page.locator('#worldSearch').fill('Australia');
@@ -166,15 +165,11 @@ try {
     assert.equal(await page.locator('#worldCaseDetail .world-media-links a').getAttribute('rel'), 'noopener noreferrer');
     assert.equal(await page.locator('#worldMapPins [aria-label*="Test record without coordinates"]').count(), 0);
 
+    // Explicit +/- controls still work. Activating a marker must NEVER zoom:
+    // a single-country cluster opens the corresponding country dossier route.
     await page.locator('#worldZoomReset').click();
-    const clusterButton = page.locator('#worldMapPins button.is-cluster').first();
-    await clusterButton.focus();
-    await page.keyboard.press('Enter');
+    await page.locator('#worldZoomIn').click();
     assert.notEqual(await page.locator('#worldZoomLevel').textContent(), '100%');
-    assert.equal(await page.evaluate(() => document.querySelector('#worldMapPins').contains(document.activeElement)), true, 'cluster zoom should preserve keyboard focus on the map');
-    const selectedId = await page.locator('#worldMapResults [aria-current="true"]').getAttribute('data-world-case-id');
-    assert.ok(selectedId, 'cluster zoom should select a case from that cluster');
-    assert.equal(await page.locator('#worldCaseDetail h3').textContent(), await page.locator(`#worldMapResults [data-world-case-id="${selectedId}"] strong`).textContent());
     await page.locator('#worldZoomReset').click();
     assert.equal(await page.locator('#worldZoomLevel').textContent(), '100%');
 
@@ -188,6 +183,11 @@ try {
     assert.ok(mobile.scrollWidth - mobile.width <= 1, `mobile page overflow: ${mobile.scrollWidth - mobile.width}px`);
     assert.ok(mobile.mapWidth > 250, 'map remains usable on a narrow screen');
     assert.equal(await page.locator('#worldZoomIn').isVisible(), true);
+    const marker=page.locator('#worldMapPins button[data-country="AU"]').first();
+    await marker.focus();
+    await page.keyboard.press('Enter');
+    await page.waitForURL(/\/countries\/AU$/);
+    assert.equal(new URL(page.url()).pathname,'/countries/AU');
     assert.deepEqual(errors, []);
     await context.close();
   });

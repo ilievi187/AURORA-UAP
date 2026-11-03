@@ -60,3 +60,29 @@ Review rights and data drift before updating public files. Keep the resulting
 data under version control and deploy only after testing.
 
 This is an independent archive/project, not a legally registered federation.
+
+
+## Country navigation and geographic map
+
+- `data/bulk/countries.json` contains counts grouped by actual ISO country
+  codes, combining the existing curated sources with new records. Records with
+  no recognized country remain accessible through the world archive.
+- `data/bulk/geo-points.json` contains **2,715 source-provided GEIPAN city
+  anchors**. These are approximate city references, not exact measured sighting
+  positions; the Blue Book catalogue records supply no reliable event points
+  and are not assigned invented map coordinates.
+- The map clusters these source anchors and renders **clickable country links**.
+  Selecting a map circle opens a country dossier page; only the separate manual
+  +/− controls change scale. Closely spaced country links are offset **visually
+  only** for clickability; their original coordinates are unchanged.
+- Country lists show up to 24 source-linked dossiers per page with text search,
+  source metadata and case-specific links. No generic photo is repeated as
+  purported footage; actual publisher videos remain in the existing curated
+  media pages.
+
+Rebuild navigation assets after any approved bulk reimport:
+
+```bash
+node scripts/build-archive-navigation.mjs
+node --test tests/country-navigation.test.mjs
+```

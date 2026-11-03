@@ -769,15 +769,16 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
       if(picture){
         const thumb=resolveVideoPoster(media),img=picture.querySelector("img");
         if(img){
-          img.src=thumb||"/assets/media-ufo-earth-preview.svg";
-          img.alt=thumb?
-            ("Published video thumbnail: "+title):
-            ("AURORA UFO artwork, not an original incident frame");
+          img.hidden=!thumb;
+          if(thumb){img.src=thumb;img.alt="Published video thumbnail: "+title}
+          else{img.removeAttribute("src");img.alt=""}
         }
+        const sourceCover=card.querySelector(".media-source-cover");
+        if(sourceCover)sourceCover.hidden=!!thumb;
         const credit=card.querySelector(".media-caption");
         if(credit)credit.textContent=thumb?
           "Preview from the credited video provider.":
-          "AURORA preview artwork · not an original frame from the incident.";
+          "No publisher-provided preview image. Original source linked below.";
         const inline=documentRef.createElement("button");
         inline.type="button";inline.className="media-inline-play";
         inline.dataset.inlinePlayerAction="play";

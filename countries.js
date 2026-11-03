@@ -15,7 +15,7 @@
    histFiles:"АРХИВНИ ДОСИЕТА",histTitle:"ИСТОРИЧЕСКИ СЛУЧАИ ПО ДЪРЖАВИ",histListed:"Държави с исторически досиета: ",histOffline:"Архивът е временно недостъпен."
   },
   en:{
-   docTitle:"Country Directory",title:"EXPLORE THE WORLD REGISTER",intro:"Explore countries with approved, published observations. Figures come only from the public registry, never from demonstration cases.",
+   docTitle:"Country Directory",title:"EXPLORE THE WORLD REGISTER",intro:"Explore source-linked UAP reports and historical archives worldwide. Choose a country to browse its actual case files; the separate public submissions register appears below.",
    home:"HOME",cases:"PUBLISHED OBSERVATIONS",countries:"COUNTRIES WITH RECORDS",sync:"LAST SYNC",
    indexLabel:"PUBLIC DATA / COUNTRY INDEX",browse:"CHOOSE A COUNTRY",search:"SEARCH COUNTRIES",placeholder:"US / United States",loading:"Checking the public registry…",
    offline:"The public registry is offline or not yet active. We do not invent country counts. Explore the separate sourced historical archive instead.",
@@ -209,6 +209,7 @@
  const getLocale=()=>language==="zh-CN"?"zh-Hans":language;
  const msg=()=>packs[language]||packs.en;
  const status=$("countryDirectoryStatus"),grid=$("countryGrid"),search=$("countrySearch");
+ const sourceSearch=$("sourceCountrySearch");
  let rawCountries=[],rawSourceCounts=new Map(),sourceError=false;
  function displayNames(){
   const loc=getLocale();
@@ -246,9 +247,9 @@
  function renderSourceCountries(){
   const m=msg(),loc=getLocale(),dn=displayNames();
   const nameOf=c=>dn.of(c)||c;
-  const host=$("sourcedCountryGrid"),q=search.value.trim().toLocaleLowerCase(loc);
+  const host=$("sourcedCountryGrid"),q=(sourceSearch?.value||"").trim().toLocaleLowerCase(loc);
   host.replaceChildren();
-  $("sourcedCountryTitle").textContent=m.histTitle;
+  $("sourcedCountryTitle").textContent=language==="en"?"WORLDWIDE ARCHIVE BY COUNTRY":m.histTitle;
   if(sourceError){$("sourcedCountryStatus").textContent=m.histOffline;return}
   const sourceCountries=[...rawSourceCounts].map(([code,count])=>({code,count,name:nameOf(code)})).sort((a,b)=>a.name.localeCompare(b.name,loc));
   const visible=sourceCountries.filter(x=>(x.name+" "+x.code).toLocaleLowerCase(loc).includes(q));
@@ -257,12 +258,15 @@
    const label=document.createElement("span"),name=document.createElement("strong"),iso=document.createElement("small");
    name.textContent=c.name;iso.textContent=c.code+" · "+m.histFiles;
    label.append(name,iso);
-   const number=document.createElement("span");number.className="count";number.textContent=c.count;
+   const number=document.createElement("span");number.className="count";number.textContent=c.count.toLocaleString(loc);
    a.append(label,number);host.append(a);
   }
-  $("sourcedCountryStatus").textContent=m.histListed+visible.length;
+  const total=[...rawSourceCounts.values()].reduce((a,b)=>a+b,0);
+  $("sourcedCountryStatus").textContent=visible.length+" countries · "+
+    total.toLocaleString(loc)+" linked country records. Select a country to browse its dossiers.";
  }
- search.addEventListener("input",()=>{render();renderSourceCountries()});
+ search.addEventListener("input",render);
+ sourceSearch?.addEventListener("input",renderSourceCountries);
  window.addEventListener("aurora:language-changed",e=>{
   const next=e?.detail?.language||document.documentElement.lang||"bg";
   language=packs[next]?next:"en";
@@ -297,13 +301,14 @@
  }
  async function loadSourceCountries(){
   try{
-   const res=await fetch("/data/cases.json",{cache:"no-cache"});if(!res.ok)throw Error("Archive offline");
-   const json=await res.json(),counts=new Map();
-   if(!Array.isArray(json.cases))throw Error("Bad archive");
-   const sourceCases=globalThis.AURORA_ARCHIVE?.prepareArchiveCases(json.cases)??json.cases;
-   for(const c of sourceCases)if(/^[A-Z]{2}$/.test(c.country||"")&&c.title?.en&&c.source?.url?.startsWith("https://"))
-    counts.set(c.country,(counts.get(c.country)||0)+1);
-   rawSourceCounts=counts;sourceError=false;
+   const resp=await fetch("/data/bulk/countries.json",{cache:"force-cache"});
+   if(!resp.ok)throw Error("Country archive offline");
+   const data=await resp.json();
+   if(!Array.isArray(data.countries)||!data.countries.length||data.countries.length>250)
+    throw Error("Invalid country data");
+   rawSourceCounts=new Map(data.countries.filter(c=>/^[A-Z]{2}$/.test(c?.code||"")&&
+     Number.isSafeInteger(c.count)&&c.count>0).map(c=>[c.code,c.count]));
+   sourceError=false;
    renderSourceCountries();
   }catch{
    sourceError=true;$("sourcedCountryStatus").textContent=msg().histOffline;

@@ -25,7 +25,7 @@
    loading:"Loading registered cases…",error:"D1 is not connected or temporarily unavailable. No fabricated statistics are shown.",
    empty:"No published cases match these filters.",more:"LOAD MORE ↓",source:"ORIGINAL SOURCE",
    approx:"Coordinates are approximate anchors, not verified observation points.",
-   intro:n=>"Public registry for "+n+". Counts come from D1; demonstration cases are excluded.",
+   intro:n=>"Published source-linked UAP archive dossiers from "+n+". Browse original reports and documents below; the separate public submissions register remains optional.",
    groups:"marker groups",published:"published cases",openDossier:"OPEN FULL DOSSIER ↗",openCase:"OPEN CASE DOSSIER ↗",
    histTitle:n=>"HISTORICAL CASES FROM "+n.toUpperCase(),histCount:"Source-linked archive cases: ",histEmpty:"No historical cases for this country yet.",histError:"Historical archive temporarily unavailable."
   },
@@ -426,13 +426,15 @@
     fetch("/data/earth-land.json").then(r=>r.ok?r.json():{polygons:[]})
    ]);
    land=world.polygons||[];paint();
+   el("registryCountryMetrics").hidden=false;
    el("countryTotal").textContent=region.total;
    el("countryYears").textContent=region.years.length;
    el("countryRegions").textContent=region.regions.length;
    for(const item of region.years){const op=document.createElement("option");op.value=item.year;op.textContent=item.year+" ("+item.n+")";el("yearFilter").append(op)}
    for(const item of region.regions){const op=document.createElement("option");op.value=item.region;op.textContent=item.region+" ("+item.n+")";el("regionFilter").append(op)}
   }catch{
-   feedbackState="error";status.classList.add("error");status.textContent=label("error");paint();
+   feedbackState="error";status.classList.add("error");status.textContent=label("error");
+   el("registryCountryMetrics").hidden=true;paint();
   }
   await load();
  }
@@ -443,36 +445,90 @@
  window.addEventListener("resize",renderPins,{passive:true});
  // Historical dossiers do not depend on D1 activation or moderation and keep
  // their own provenance, separate from the protected registry statistics.
- let historyCases=[],historyError=false;
- function renderCountryHistory(){
-  const host=el("countryHistoryGrid"),message=el("countryHistoryStatus"),bg=isBg();
-  el("countryHistoryTitle").textContent=pack().histTitle(countryName);
-  if(historyError){message.textContent=label("histError");return}
-  host.replaceChildren();
-  for(const c of historyCases){
-   const a=document.createElement("a");a.className="country-history-card";a.href="/archive/"+encodeURIComponent(c.id);
-   const img=document.createElement("img");img.loading="lazy";
-   img.src=/^\/assets\/[a-z0-9-]+\.webp$/.test(c.visual?.src||"")?c.visual.src:"/assets/feature-cases.webp";
-   img.alt=bg?"Художествена илюстрация, не оригинална снимка":"Thematic illustration, not original incident photography";
-   const body=document.createElement("div");
-   const meta=document.createElement("small");meta.textContent=c.date+" · "+c.source.name;
-   const title=document.createElement("strong");title.textContent=c.title[language]||c.title.en;
-   const p=document.createElement("p");p.textContent=c.summary[language]||c.summary.en;
-   const more=document.createElement("span");more.textContent=label("openCase");
-   body.append(meta,title,p,more);a.append(img,body);host.append(a);
-  }
-  message.textContent=historyCases.length?label("histCount")+historyCases.length:label("histEmpty");
+ let historyCases=[],historyError=false,historyPage=0;
+ const HISTORY_PAGE_SIZE=24;
+ const historySearch=el("countryHistorySearch"),historyPager=el("countryHistoryPager");
+ function historyResults(){
+  const q=historySearch.value.trim().toLocaleLowerCase(language);
+  if(!q)return historyCases;
+  return historyCases.filter(c=>
+   [c.id,c.date,c.city?.[language]||c.city?.en,c.title?.[language]||c.title?.en,
+    c.summary?.[language]||c.summary?.en,c.source?.name]
+   .filter(Boolean).join(" ").toLocaleLowerCase(language).includes(q));
  }
+ function renderCountryHistory(){
+  const host=el("countryHistoryGrid"),message=el("countryHistoryStatus");
+  el("countryHistoryTitle").textContent=pack().histTitle(countryName);
+  host.replaceChildren();historyPager.replaceChildren();
+  if(historyError){message.textContent=label("histError");return}
+  const results=historyResults();
+  const pages=Math.ceil(results.length/HISTORY_PAGE_SIZE);
+  historyPage=Math.max(0,Math.min(historyPage,Math.max(0,pages-1)));
+  const visible=results.slice(historyPage*HISTORY_PAGE_SIZE,(historyPage+1)*HISTORY_PAGE_SIZE);
+  for(const c of visible){
+   const a=document.createElement("a");
+   a.className="country-history-card";a.href="/archive/"+encodeURIComponent(c.id);
+   const art=document.createElement("div");
+   art.className="country-history-art";
+   const media=(Array.isArray(c.media)?c.media:[]).filter(m=>m?.type==="video").length;
+   const kind=c.id.startsWith("bluebook-")?"PROJECT BLUE BOOK":
+     c.id.startsWith("geipan-")?"CNES GEIPAN":media?"VIDEO & DOCUMENTS":"HISTORICAL ARCHIVE";
+   art.dataset.archiveKind=c.id.startsWith("bluebook-")?"nara":c.id.startsWith("geipan-")?"geipan":"curated";
+   art.textContent=kind;
+   const body=document.createElement("div");
+   const meta=document.createElement("small");meta.textContent=[c.date,c.city?.[language]||c.city?.en,c.source?.name].filter(Boolean).join(" · ");
+   const title=document.createElement("strong");title.textContent=c.title?.[language]||c.title?.en||c.id;
+   const paragraph=document.createElement("p");paragraph.textContent=c.summary?.[language]||c.summary?.en||"";
+   const more=document.createElement("span");more.textContent=label("openCase");
+   body.append(meta,title,paragraph,more);a.append(art,body);host.append(a);
+  }
+  const from=visible.length?historyPage*HISTORY_PAGE_SIZE+1:0;
+  const to=historyPage*HISTORY_PAGE_SIZE+visible.length;
+  message.textContent=results.length?
+   `${from.toLocaleString(language)}–${to.toLocaleString(language)} of ${results.length.toLocaleString(language)} source-linked country dossiers`:
+   label("histEmpty");
+  function pageButton(labelText,page,disabled=false){
+   const button=document.createElement("button");
+   button.type="button";button.textContent=labelText;button.disabled=disabled;
+   button.addEventListener("click",()=>{
+    historyPage=page;renderCountryHistory();
+    el("sourcedCountryCases").scrollIntoView({behavior:"instant",block:"start"});
+   });
+   historyPager.append(button);
+  }
+  if(pages>1){
+   pageButton("← PREVIOUS",historyPage-1,historyPage===0);
+   const indicator=document.createElement("span");
+   indicator.textContent=`PAGE ${historyPage+1} / ${pages}`;
+   historyPager.append(indicator);
+   pageButton("NEXT →",historyPage+1,historyPage>=pages-1);
+  }
+ }
+ historySearch.addEventListener("input",()=>{historyPage=0;renderCountryHistory()});
  async function loadCountryHistory(){
   try{
-   const res=await fetch("/data/cases.json",{cache:"no-cache"});if(!res.ok)throw Error("Source archive unavailable");
-   const data=await res.json();if(!Array.isArray(data.cases))throw Error("Invalid source data");
-   const sourceCases=globalThis.AURORA_ARCHIVE?.prepareArchiveCases(data.cases)??data.cases;
-   historyCases=sourceCases.filter(c=>c.country===code&&/^[a-z0-9-]{3,90}$/.test(c.id)&&c.title?.en&&c.summary?.en&&c.source?.url?.startsWith("https://"))
-    .sort((a,b)=>String(b.date).localeCompare(String(a.date)));
-   historyError=false;
-   renderCountryHistory();
-  }catch{historyError=true;renderCountryHistory()}
+   const [curatedResponse,bulkResponse]=await Promise.all([
+    fetch("/data/cases.json",{cache:"no-cache"}),
+    fetch("/data/bulk/index.json",{cache:"force-cache"}).catch(()=>null)
+   ]);
+   if(!curatedResponse.ok)throw Error("Source archive unavailable");
+   const data=await curatedResponse.json();
+   if(!Array.isArray(data.cases))throw Error("Invalid source data");
+   const curated=globalThis.AURORA_ARCHIVE?.prepareArchiveCases(data.cases)??data.cases;
+   let extra=[];
+   if(bulkResponse?.ok){
+    try{const payload=await bulkResponse.json();
+     if(Array.isArray(payload.cases)&&payload.cases.length<=25000)extra=payload.cases;
+    }catch(error){console.warn("Supplemental country index unavailable",error)}
+   }
+   const seen=new Set();
+   historyCases=[...curated,...extra].filter(c=>{
+    if(c.country!==code||!/^[a-z0-9-]{3,90}$/.test(c.id||"")||!c.title?.en||
+      !c.source?.url?.startsWith("https://")||seen.has(c.id))return false;
+    seen.add(c.id);return true;
+   }).sort((a,b)=>String(b.date).localeCompare(String(a.date))||a.id.localeCompare(b.id));
+   historyPage=0;historyError=false;renderCountryHistory();
+  }catch(error){historyError=true;renderCountryHistory()}
  }
  window.addEventListener("aurora:language-changed",e=>{
   const next=e?.detail?.language||document.documentElement.lang||"bg";

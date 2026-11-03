@@ -220,3 +220,23 @@ body:has(.silence-hero) .world-map-orbital-legend span:last-child::before{
 @media(prefers-reduced-motion:reduce){
  body:has(.silence-hero) .world-map-marker{transition:none!important}
 }
+
+/* Source-catalog city anchors: links to country dossiers, not zoom controls. */
+.world-bulk-pins{pointer-events:none;z-index:5!important}
+.world-bulk-pins .world-source-marker{
+ position:absolute;display:grid;place-items:center;transform:translate(-50%,-50%);
+ min-width:26px;min-height:26px;padding:4px 6px;border-radius:999px;
+ border:1px solid #e8c58d;background:#402d1be8;color:#ffdeab;
+ font:700 11px/1 ui-monospace,Consolas,monospace;box-shadow:0 0 0 3px #9f754326,0 0 20px #deae6b69;
+ text-decoration:none;cursor:pointer;pointer-events:auto;white-space:nowrap
+}
+.world-bulk-pins .world-source-marker:is(:hover,:focus-visible){
+ background:#f5dbb6;color:#26170e;outline:2px solid white;outline-offset:3px;z-index:8
+}
+.world-country-links{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:12px 0 5px}
+.world-country-links span{font:11px/1.7 ui-monospace,Consolas,monospace;color:#b2c7d6}
+.world-country-links a{
+ padding:7px 10px;border:1px solid #536d7b;background:#0e1c28;
+ color:#dceaf1;text-decoration:none;font:600 11px/1.5 ui-monospace,Consolas,monospace
+}
+.world-country-links a:is(:hover,:focus-visible){background:#1a3648;border-color:#c0e9ff;color:#fff}

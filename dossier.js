@@ -241,10 +241,14 @@
   const videoReferences=Array.isArray(c.media)&&c.media.some(m=>m?.type==="video"&&sourceUrl(m.url));
   // All dossiers have a cinematic reading cover. Only source-cleared visuals
   // are described as incident photographs; the generic cover is labelled art.
-  visualBox.hidden=false;
-  visualImage.hidden=!!videoReferences;
-  $("caseVisualCaption").hidden=!!videoReferences;
-  if(!videoReferences){
+  // Thousands of imported catalogue entries carry no licensed case photograph.
+  // Do not repeat a decorative UFO image as if it added meaningful evidence.
+  const sourceOnlyRecord=c.record_kind==="published_archive";
+  visualBox.hidden=sourceOnlyRecord&&!videoReferences;
+  visualImage.hidden=!!videoReferences||sourceOnlyRecord;
+  $("caseVisualCaption").hidden=!!videoReferences||sourceOnlyRecord;
+  if(sourceOnlyRecord&&!videoReferences){visualImage.removeAttribute("src")}
+  else if(!videoReferences){
    visualImage.src=allowedVisual?visual.src:"/assets/media-ufo-earth-preview.svg";
    visualImage.alt=allowedVisual?(local(visual.caption)||"Published source illustration"):
     (language==="bg"?"Илюстрация на AURORA — не е кадър от наблюдението":"AURORA illustration — not an image of the incident");

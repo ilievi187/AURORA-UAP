@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#010305">
 <meta name="robots" content="index,follow">
-<meta name="description" content="AURORA UAP — explore countries with public, approved observations from the live research registry.">
-<title>AURORA — Държави / Country Directory</title>
+<meta name="description" content="AURORA / IURA — browse 10,133 source-linked archival records by country, including Project Blue Book and GEIPAN.">
+<title>AURORA — Country Case Archives</title>
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/countries.css">
 <script defer src="/subpage-i18n.js"></script>
@@ -36,6 +36,13 @@
 <div><strong id="directoryLastSync">—</strong><span data-t="sync">ПОСЛЕДНО ОБНОВЯВАНЕ</span></div>
 </div>
 </section>
+<section id="sourcedCountryArchive" class="sourced-country-archive" aria-labelledby="sourcedCountryTitle">
+ <p class="kicker">AURORA / ORIGINAL SOURCES / WORLDWIDE</p>
+ <h2 id="sourcedCountryTitle">WORLDWIDE ARCHIVE BY COUNTRY</h2>
+ <label class="country-source-search"><span>FIND A COUNTRY</span><input type="search" id="sourceCountrySearch" placeholder="United States / France / US" maxlength="80" aria-controls="sourcedCountryGrid"></label>
+ <p id="sourcedCountryStatus" role="status" aria-live="polite">Зареждане на архивните досиета…</p>
+ <div id="sourcedCountryGrid" class="country-grid"></div>
+</section>
 <section class="directory-panel" aria-labelledby="browseTitle">
 <div class="panel-top"><div><span class="kicker" data-t="indexLabel">PUBLIC DATA / COUNTRY INDEX</span><h2 id="browseTitle" data-t="browse">ИЗБЕРИ ДЪРЖАВА</h2></div>
 <label class="search-label"><span data-t="search">ТЪРСИ ДЪРЖАВА</span><input id="countrySearch" type="search" maxlength="80" autocomplete="off" placeholder="BG / България" aria-controls="countryGrid"></label>
@@ -44,12 +51,7 @@
 <div id="countryGrid" class="country-grid" aria-label="Countries with published observations"></div>
 <div class="empty-help"><a href="/archive.html" data-t="archive">Исторически архив с източници ↗</a><a href="/report.html" data-t="prepare">Подготви сигнал (локална чернова) ↗</a></div>
 </section>
-<section id="sourcedCountryArchive" class="sourced-country-archive" aria-labelledby="sourcedCountryTitle">
- <p class="kicker">AURORA / ORIGINAL SOURCES / WORLDWIDE</p>
- <h2 id="sourcedCountryTitle">ИСТОРИЧЕСКИ СЛУЧАИ ПО ДЪРЖАВИ</h2>
- <p id="sourcedCountryStatus" role="status" aria-live="polite">Зареждане на архивните досиета…</p>
- <div id="sourcedCountryGrid" class="country-grid"></div>
-</section>
+
 <p class="footnote" data-t="privacy">Не показваме лични адреси, точни координати или непубликувани сигнали. DEMO записите са изключени.</p>
 </main>
 <footer>SCIENCE FIRST · OPEN SKIES · AURORA / IURA</footer>

@@ -24,12 +24,22 @@
 <section class="country-hero">
 <div class="eyebrow">◉ / EARTH NETWORK / COUNTRY NODE / <span id="countryCode">--</span></div>
 <h1 id="countryName">COUNTRY EXPLORER</h1>
-<p id="countryIntro">Исторически наблюдения с проверени източници и ясен статус на прегледа.</p>
-<div class="country-kpis">
+<p id="countryIntro">Explore archived reports, documents and witness accounts with original source links.</p>
+<div class="country-kpis" id="registryCountryMetrics" hidden>
 <div><strong id="countryTotal">—</strong><span id="sightingsLabel">РЕГИСТРИРАНИ СЛУЧАИ</span></div>
 <div><strong id="countryYears">—</strong><span id="yearsLabel">ГОДИНИ СЪС СЛУЧАИ</span></div>
 <div><strong id="countryRegions">—</strong><span id="regionsLabel">РЕГИОНИ</span></div>
 </div></section>
+<section class="country-history" id="sourcedCountryCases" aria-labelledby="countryHistoryTitle">
+ <p class="eyebrow">AURORA / HISTORICAL WORLD ARCHIVE</p>
+ <h2 id="countryHistoryTitle">PUBLISHED CASE FILES</h2>
+ <div class="country-source-toolbar"><label for="countryHistorySearch">SEARCH COUNTRY DOSSIERS
+  <input type="search" id="countryHistorySearch" maxlength="130" placeholder="City, year, source or case name">
+ </label><a href="/archive.html">FULL WORLD ARCHIVE ↗</a></div>
+ <p id="countryHistoryStatus" role="status">Зареждане на архивни случаи…</p>
+ <div id="countryHistoryGrid" class="country-history-grid"></div>
+ <nav id="countryHistoryPager" class="country-history-pager" aria-label="Country case pages"></nav>
+</section>
 <section class="country-content">
 <div class="controls">
 <label><span id="chooseCountryLabel">ДЪРЖАВА</span><select id="chooseCountry"></select></label>
@@ -52,12 +62,7 @@
 <div id="countryCases" class="country-cases"></div>
 <button type="button" id="loadMore" hidden>ПОКАЖИ ОЩЕ ↓</button>
 </div></div>
-<section class="country-history" id="sourcedCountryCases" aria-labelledby="countryHistoryTitle">
- <p class="eyebrow">AURORA / HISTORICAL WORLD ARCHIVE</p>
- <h2 id="countryHistoryTitle">ИСТОРИЧЕСКИ СЛУЧАИ ОТ ТАЗИ ДЪРЖАВА</h2>
- <p id="countryHistoryStatus" role="status">Зареждане на архивни случаи…</p>
- <div id="countryHistoryGrid" class="country-history-grid"></div>
-</section>
+
 <a id="reportLink" class="report-cta" href="/report.html"><span id="reportLabel">✦ ПОДАЙ НАБЛЮДЕНИЕ</span><small id="reportNotice">Засега само локална чернова — публичното изпращане не е активно.</small></a>
 </section>
 </main><footer>THE SKY BELONGS TO EVERYONE · FREE PUBLIC ACCESS · AURORA UAP</footer>

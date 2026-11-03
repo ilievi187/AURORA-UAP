@@ -179,6 +179,7 @@
           <div class="world-map-orbital-label" aria-hidden="true">AURORA / ORBITAL ATLAS<span>EARTH AFTER DARK · SOURCE ARCHIVE</span></div>
           <div class="world-map-viewport" id="worldMapViewport">
             <canvas id="worldMapCanvas" aria-hidden="true"></canvas>
+            <div id="worldBulkPins" class="world-map-pins world-bulk-pins" role="group" aria-label="Geolocated published source records by country"></div>
             <div id="worldMapPins" class="world-map-pins" role="group" aria-label="Маркери и клъстери на досиета"></div>
           </div>
           <div class="world-map-orbital-legend" aria-hidden="true"><span>CASE LOCATION</span><span>APPROXIMATE AREA</span></div>
@@ -189,7 +190,8 @@
             <button id="worldZoomReset" type="button" aria-label="Покажи целия свят">↺</button>
           </div>
         </div>
-        <p class="world-map-caption" id="worldMapHelp">Маркерите показват описан район, не измерена траектория. Плъзни картата; използвай +/− за мащаб.</p>
+        <p class="world-map-caption" id="worldMapHelp">Click a marker to open its country's dossiers. Coordinates are approximate source locations. Manual +/− zoom remains available.</p>
+        <nav class="world-country-links" id="worldCountryLinks" aria-label="Browse source-linked dossiers by country"><a href="/countries.html">ALL COUNTRIES ↗</a></nav>
       </div>
       <aside class="world-case-detail" id="worldCaseDetail" aria-live="polite">Зареждане на световния архив…</aside>
     </div>

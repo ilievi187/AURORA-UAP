@@ -58,8 +58,18 @@
          total+=bulk.imported;
      }
    }catch(_){/* Legacy curated metrics remain accurate if bulk is offline. */}
-   counters.cases.textContent=new Intl.NumberFormat(document.documentElement.lang||"en").format(total);
-   counters.mapped.textContent=String(filtered.filter(hasMapAnchor).length);
+   let additionalCityAnchors=0;
+   try{
+     const countryResponse=await fetch("/data/bulk/countries.json",{cache:"force-cache"});
+     if(countryResponse.ok){
+       const countries=await countryResponse.json();
+       if(Number.isInteger(countries.geo_anchors)&&countries.geo_anchors>=0&&countries.geo_anchors<=10000)
+         additionalCityAnchors=countries.geo_anchors;
+     }
+   }catch(_){/* Offline source counts never remove the curated geolocated cases. */}
+   const format=new Intl.NumberFormat(document.documentElement.lang||"en");
+   counters.cases.textContent=format.format(total);
+   counters.mapped.textContent=format.format(filtered.filter(hasMapAnchor).length+additionalCityAnchors);
    hero.dataset.stats="sourced";
   }catch(_){
    counters.cases.textContent="—";
