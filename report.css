@@ -56,3 +56,24 @@ footer{padding:30px 0 50px;border-top:1px solid #45798255;font:10px Consolas,mon
 #reportAuthEmailBox{flex:1 1 210px}#reportAuthEmail{min-height:45px}
 #reportAuthFeedback{margin:12px 0;overflow-wrap:anywhere}
 @media(max-width:650px){.report-auth-buttons{flex-direction:column;align-items:stretch}.report-auth-buttons button{width:100%}#reportAuthEmailBox{width:100%}}
+
+
+/* Private moderator dashboard: summary and audit remain inside Access-protected routes. */
+.moderation-overview{border:1px solid #477e89;background:#09181f;padding:20px;margin:22px 0}
+.moderation-overview h2{margin:0 0 16px;font-weight:550}
+.moderation-overview dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:10px;margin:0}
+.moderation-overview dl>div{border:1px solid #325f69;padding:12px;background:#0b252c}
+.moderation-overview dt{font:11px/1.5 Consolas,monospace;color:#9bcacb}
+.moderation-overview dd{font-size:24px;margin:8px 0 0;color:#e7fffa}
+.moderation-hint{font-size:12px;line-height:1.65;color:#bbd6d5}
+.moderation-lookup{margin:25px 0}
+.moderation-lookup-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:9px}
+.moderation-lookup-row input{flex:1 1 300px}
+.moderation-lookup-row button,#queue button{border:1px solid #4e9295;background:#11343d;color:#d1ffff;padding:12px;cursor:pointer}
+#queue button{margin:10px 10px 10px 0}
+#queue article h2{overflow-wrap:anywhere;font-size:18px}
+.moderation-audit{border:1px solid #3f6e75;padding:14px;margin-top:18px}
+.moderation-audit-entry{border-top:1px solid #2d5960;padding:12px 0}
+.moderation-audit-entry strong{font:11px/1.7 Consolas,monospace;color:#bff3e9;overflow-wrap:anywhere}
+.moderation-audit-entry p{white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:650px){.moderation-lookup-row{flex-direction:column}.moderation-lookup-row button{width:100%}}
