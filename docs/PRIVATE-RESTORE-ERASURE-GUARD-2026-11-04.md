@@ -35,3 +35,8 @@ Tests use fictional reports and a real temporary SQLite snapshot, detect resurre
 The daily backup timer is NOT proof of a legally approved archival retention or erasure procedure.
 
 See docs/BACKUP-RECOVERY-PRIVACY-2026-11-03.md and docs/ACCOUNT-PRIVACY-OPERATIONS-2026-11-04.md.
+
+
+## 4 Nov — multi-report, multi-account synthetic restore
+
+The isolated suite in tests/privacy-auth-restore-rehearsal.test.mjs now backs up a real synthetic SQLite database with two owner-linked reports and one unrelated account, then simulates D1 and Supabase deletion. Restoring the old snapshot causes the read-only guard to detect exactly two resurrections; isolated reconciliation clears them without removing the other account. A clean guard report remains explicitly insufficient for public launch. This does not read an actual production D1 archive or use the real Supabase Auth administrator API. See docs/AUTH-ERASURE-ISOLATED-RESTORE-REHEARSAL-2026-11-04.md.
