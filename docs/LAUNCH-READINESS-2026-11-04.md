@@ -11,7 +11,7 @@ This operator ledger is not legal certification or permission to activate the pr
 | Cloudflare WAF | LIVE block and recovery verified, matching Ray ID with GraphQL action block/source ratelimit on exact intake endpoint | Retain private Ray evidence; record final owner go/no-go before setting review flag |
 | Moderator access | Anonymous Access redirect and private API tests green | Real unauthorized DIFFERENT account denial test |
 | D1 quarantine | All migrations, privacy regression tests green; 0 real reports | Keep disabled until all remaining gates completed |
-| Encrypted backup | Actual encrypted Google Drive backup, isolated restore and daily timer work | Sign off backup rotation/retention, rights erasure reconciliation and device-off behavior |
+| Encrypted backup | Encrypted Google Drive backup and isolated restore passed; daily timer works; **new read-only guard detects erased reports resurrected by older backups in synthetic restore tests** | Independently approve backup retention, verified erasure ledger custody/completeness, restore owner procedure and device-off behavior |
 | Personal data deletion | Private D1 single-report erasure tested, authenticated read-only receipts available, new account-wide D1 dry-run inventory with dual-account isolation tests | Independently test actual Supabase deletion, legal retention, Drive/D1 backup reconciliation and restricted rights-request log; no auto-delete |
 | Privacy/legal | Public BG/EN notice, working draft with open details | Qualified BG/EU GDPR review of Art. 6 legal basis, controller details, processors, transfer terms, minors and third-party information |
 | Go/live | Production GET still says accepting:false, automatic_publication:false | Explicit final decision after all blockers, with emergency-off playbook ready |
@@ -41,3 +41,8 @@ The owner completed the real Cloudflare Turnstile widget (browser showed Success
 The owner completed the genuine managed Turnstile challenge after PR #153 and supplied a screenshot displaying **PASS: real Turnstile Siteverify succeeded. No report was submitted.** This closes the separate owner-only challenge diagnostic check. Earlier FAIL / retry notes above describe the previous state and are no longer the latest result.
 
 **Still required before intake activation:** independently approved privacy/processor/retention and erasure process, actual unauthorized-different-account Cloudflare Access denial test, and later a distinct controlled reporter-to-moderator end-to-end flow. The 18+ checkbox is self-attestation, not legal age verification. No production intake, legal or WAF flags were changed by this evidence update.
+
+
+## Private restore safety: isolated erasure reconciliation
+
+A read-only helper now compares restored D1 contents with an owner-only erasure ledger. Synthetic real SQLite snapshot tests confirm it identifies resurrected private records before reconciliation. This does not constitute a complete lawful erasure process: ledger provenance and custody, Supabase/processor deletion, backup retention, and owner legal sign-off remain unverified. See docs/PRIVATE-RESTORE-ERASURE-GUARD-2026-11-04.md.

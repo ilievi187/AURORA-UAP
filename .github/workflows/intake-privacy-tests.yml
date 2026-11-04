@@ -33,6 +33,9 @@ on:
       - 'tests/moderation.test.mjs'
       - 'tests/privacy-retention.test.mjs'
       - 'tests/backup-recovery.test.mjs'
+      - 'tests/privacy-restore-guard.test.mjs'
+      - 'worker/privacy-restore-guard.js'
+      - 'docs/PRIVATE-RESTORE-ERASURE-GUARD-2026-11-04.md'
       - 'tests/backup-drive.test.mjs'
       - 'tests/private-release-readiness.test.mjs'
       - 'scripts/check-private-release-readiness.mjs'
@@ -77,6 +80,9 @@ on:
       - 'tests/moderation.test.mjs'
       - 'tests/privacy-retention.test.mjs'
       - 'tests/backup-recovery.test.mjs'
+      - 'tests/privacy-restore-guard.test.mjs'
+      - 'worker/privacy-restore-guard.js'
+      - 'docs/PRIVATE-RESTORE-ERASURE-GUARD-2026-11-04.md'
       - 'tests/backup-drive.test.mjs'
       - 'tests/private-release-readiness.test.mjs'
       - 'scripts/check-private-release-readiness.mjs'
@@ -101,4 +107,4 @@ jobs:
       - run: npm run build:report-auth
       - run: git diff --exit-code -- report-auth.bundle.js
       - run: node --test tests/privacy-route.test.mjs tests/private-release-readiness.test.mjs
-      - run: node --experimental-sqlite --test tests/intake.test.mjs tests/workers-fetch-redirect-compat.test.mjs tests/reporter-auth.test.mjs tests/account-privacy.test.mjs tests/intake-auth-gate.test.mjs tests/isolated-intake-security.test.mjs tests/moderation.test.mjs tests/privacy-retention.test.mjs tests/backup-recovery.test.mjs tests/backup-drive.test.mjs
+      - run: node --experimental-sqlite --test tests/intake.test.mjs tests/workers-fetch-redirect-compat.test.mjs tests/reporter-auth.test.mjs tests/account-privacy.test.mjs tests/intake-auth-gate.test.mjs tests/isolated-intake-security.test.mjs tests/moderation.test.mjs tests/privacy-retention.test.mjs tests/backup-recovery.test.mjs tests/privacy-restore-guard.test.mjs tests/backup-drive.test.mjs

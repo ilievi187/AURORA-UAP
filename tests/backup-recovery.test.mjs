@@ -5,6 +5,7 @@ import {readFileSync,mkdtempSync,rmSync,statSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {eraseQuarantinedReport} from '../worker/privacy-rights.js';
+import {inspectRestoredPrivateErasures} from '../worker/privacy-restore-guard.js';
 const read=file=>readFileSync(new URL('../migrations/'+file,import.meta.url),'utf8');
 const RECEIPT='aur-int-123e4567-e89b-42d3-a456-426614174000';
 const OTHER='aur-int-123e4567-e89b-42d3-a456-426614174001';
@@ -70,6 +71,11 @@ test('synthetic recovery proves an old snapshot can resurrect erased data until 
   assert.equal(restored.prepare('PRAGMA integrity_check').get().integrity_check,'ok');
   assert.equal(restored.prepare('PRAGMA foreign_key_check').all().length,0);
   assert.deepEqual(stats(restored,RECEIPT),{reports:1,events:1,owner_links:1,public_cases:0});
+  const erasureRegister={version:1,entries:[{receiptId:RECEIPT,authUserId:OWNER}]};
+  const before=await inspectRestoredPrivateErasures(facade(restored),{register:erasureRegister});
+  assert.equal(before.erasure_reconciliation_clean,false,'restored private erased record must stop release');
+  assert.equal(before.counts.resurrected,1);
+  assert.equal(before.sufficient_for_public_launch,false);
   // An operator must reconcile already-approved erasure BEFORE any restored
   // production copy may begin serving requests.
   const again=await eraseQuarantinedReport(facade(restored),{
@@ -77,6 +83,10 @@ test('synthetic recovery proves an old snapshot can resurrect erased data until 
   });
   assert.equal(again.deleted,1);
   assert.deepEqual(stats(restored,RECEIPT),{reports:0,events:0,owner_links:0,public_cases:0});
+  const after=await inspectRestoredPrivateErasures(facade(restored),{register:erasureRegister});
+  assert.equal(after.erasure_reconciliation_clean,true,'synthetic reconciled restore has no known erasure resurrection');
+  assert.equal(after.counts.absent,1);
+  assert.equal(after.sufficient_for_public_launch,false,'even clean reconciliation is not launch approval');
   assert.deepEqual(stats(restored,OTHER),{reports:1,events:1,owner_links:1,public_cases:0});
   assert.equal(restored.prepare('PRAGMA foreign_key_check').all().length,0);
  }finally{
