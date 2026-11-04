@@ -7,7 +7,7 @@ This operator ledger is not legal certification or permission to activate the pr
 | Public content website | Existing live site and 42 automated browser tests green | Continue editorial QA without publishing any private report |
 | Reporter identity | Verified Supabase email sign-in deployed | Manually test signed-in receipt list with a real owner account; never extract tokens |
 | Adult reporting only | English 18+ self-declaration checked in frontend and backend | Legal review, because self-attestation does not verify actual age |
-| Turnstile | Production keys configured; synthetic Siteverify success/fail/replay tests green | One real owner-approved managed challenge, only after independent privacy and retention clearance |
+| Turnstile | **PASS: real owner-only production managed challenge and server Siteverify confirmed by owner screenshot after PR #153**; hostname/action enforcement remains in code and tests | Later, a distinct staged end-to-end private-report test with an actual verified reporter (only after legal/retention release gates) |
 | Cloudflare WAF | LIVE block and recovery verified, matching Ray ID with GraphQL action block/source ratelimit on exact intake endpoint | Retain private Ray evidence; record final owner go/no-go before setting review flag |
 | Moderator access | Anonymous Access redirect and private API tests green | Real unauthorized DIFFERENT account denial test |
 | D1 quarantine | All migrations, privacy regression tests green; 0 real reports | Keep disabled until all remaining gates completed |
@@ -34,3 +34,10 @@ Owner-only diagnostic: https://aurorauap.org/api/moderation/turnstile. The separ
 ## 4 November — real Turnstile browser outcome and instrumented follow-up
 
 The owner completed the real Cloudflare Turnstile widget (browser showed Success), but the AURORA owner-only diagnostic reported server FAIL. This is NOT a verified end-to-end Siteverify pass. A code change now provides safe, finite diagnostic categories for rejected server secrets, tokens, expired/reused challenges, hostname/action mismatches and upstream availability. The client offers a fresh challenge retry without submitting reports or modifying D1. Retest on the live Access-protected diagnostic only after this change is deployed, then confirm and address the actual reason. Do not activate public intake based on a browser widget Success alone.
+
+
+## 4 Nov 2026 — real Siteverify PASS after Worker compatibility fix
+
+The owner completed the genuine managed Turnstile challenge after PR #153 and supplied a screenshot displaying **PASS: real Turnstile Siteverify succeeded. No report was submitted.** This closes the separate owner-only challenge diagnostic check. Earlier FAIL / retry notes above describe the previous state and are no longer the latest result.
+
+**Still required before intake activation:** independently approved privacy/processor/retention and erasure process, actual unauthorized-different-account Cloudflare Access denial test, and later a distinct controlled reporter-to-moderator end-to-end flow. The 18+ checkbox is self-attestation, not legal age verification. No production intake, legal or WAF flags were changed by this evidence update.
