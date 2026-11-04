@@ -163,6 +163,7 @@ test("Turnstile requires siteverify success AND matching expected hostname and a
  const invoke=async result=>verifyTurnstile("secret-token",env,"aurorauap.org",async(url,init)=>{
   assert.equal(url,"https://challenges.cloudflare.com/turnstile/v0/siteverify");
   assert.equal(init.method,"POST");
+  assert.equal(init.redirect,"manual");
   assert.ok(init.body.includes("secret=")&&init.body.includes("response="));
   assert.ok(!init.body.includes("remoteip"));
   return Response.json(result);

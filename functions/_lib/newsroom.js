@@ -86,7 +86,7 @@ export function normalizeNewsTranslation(input){
 export async function verifyNewsTipTurnstile(token,env,hostname,fetcher=fetch){
  const params=new URLSearchParams({secret:env.AURORA_NEWS_TIPS_SECRET,response:token});
  const response=await fetcher('https://challenges.cloudflare.com/turnstile/v0/siteverify',{
-  method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:params.toString(),redirect:'error',signal:AbortSignal.timeout(9000)
+  method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:params.toString(),redirect:'manual',signal:AbortSignal.timeout(9000)
  });
  if(!response.ok)throw Error('turnstile_unavailable');
  const result=await response.json();

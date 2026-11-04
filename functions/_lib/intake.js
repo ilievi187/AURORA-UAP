@@ -104,7 +104,8 @@ export async function inspectTurnstile(token,env,hostname,fetcher=fetch){
  const params=new URLSearchParams({secret:env.AURORA_TURNSTILE_SECRET,response:token});
  const response=await fetcher("https://challenges.cloudflare.com/turnstile/v0/siteverify",{
   method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},
-  body:params.toString(),redirect:"error",signal:AbortSignal.timeout(9000)
+  // Workers does not implement redirect:"error"; manual prevents following redirects.
+  body:params.toString(),redirect:"manual",signal:AbortSignal.timeout(9000)
  });
  if(!response.ok)throw Error("Turnstile verification unavailable");
  const result=await response.json();

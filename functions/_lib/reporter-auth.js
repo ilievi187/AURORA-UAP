@@ -29,7 +29,7 @@ export async function verifiedAccount(request,env,fetcher=fetch){
  if(!match)return null;
  const response=await fetcher(env.AURORA_REPORT_AUTH_URL+"/auth/v1/user",{
   method:"GET",headers:{Authorization:"Bearer "+match[1],apikey:env.AURORA_REPORT_AUTH_PUBLISHABLE_KEY,Accept:"application/json"},
-  cache:"no-store",redirect:"error",signal:AbortSignal.timeout(7000)
+  cache:"no-store",redirect:"manual",signal:AbortSignal.timeout(7000)
  });
  if(!response.ok)return null;
  const body=await response.json();

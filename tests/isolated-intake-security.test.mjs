@@ -72,7 +72,7 @@ function mockAuthAndTurnstile(getChallenge=()=>({success:true,hostname:'auroraua
   }
   assert.equal(url,SITEVERIFY);
   assert.equal(options.method,'POST');
-  assert.equal(options.redirect,'error');
+  assert.equal(options.redirect,'manual');
   assert.ok(options.body.includes('response='));
   assert.equal(options.body.includes('remoteip='),false);
   return Response.json(getChallenge());
