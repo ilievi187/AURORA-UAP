@@ -11,7 +11,7 @@ This operator ledger is not legal certification or permission to activate the pr
 | Cloudflare WAF | LIVE block and recovery verified, matching Ray ID with GraphQL action block/source ratelimit on exact intake endpoint | Retain private Ray evidence; record final owner go/no-go before setting review flag |
 | Moderator access | Anonymous Access redirect and private API tests green | Real unauthorized DIFFERENT account denial test |
 | D1 quarantine | All migrations, privacy regression tests green; 0 real reports | Keep disabled until all remaining gates completed |
-| Encrypted backup | Historical encrypted Drive/local backup and isolated restore verified; **daily timer enabled but latest unattended export FAILED** due missing scoped Cloudflare API token; read-only erasure guard tested | Owner must install a scoped D1 Read token securely, verify successful new encrypted export, and independently approve retention, erasure ledger and device-off behavior |
+| Encrypted backup | **PASS 4 Nov:** owner-installed account-scoped API token enabled successful real production D1 export, age encryption, private Drive upload, download/decrypt verification and local encrypted copy; systemd exit 0, daily timer active | Verify the next unattended timer run, protect the broader D1 Edit token, approve retention, external erasure-ledger reconciliation and device-off behavior |
 | Personal data deletion | Private D1 single-report erasure tested, authenticated read-only receipts available, new account-wide D1 dry-run inventory with dual-account isolation tests | Independently test actual Supabase deletion, legal retention, Drive/D1 backup reconciliation and restricted rights-request log; no auto-delete |
 | Privacy/legal | Public BG/EN notice, working draft with open details | Qualified BG/EU GDPR review of Art. 6 legal basis, controller details, processors, transfer terms, minors and third-party information |
 | Go/live | Production GET still says accepting:false, automatic_publication:false | Explicit final decision after all blockers, with emergency-off playbook ready |
@@ -51,3 +51,10 @@ A read-only helper now compares restored D1 contents with an owner-only erasure 
 ## 4 Nov: automation backup authentication blocker
 
 Read-only inspection of the user systemd service found that the 4 Nov 04:13 job failed (exit code 5) before encrypt/upload. Noninteractive Wrangler needs CLOUDFLARE_API_TOKEN; the prior interactive login is insufficient for the service. A least-privilege systemd credential-store integration and a local interactive setup helper are now included, but a real scoped token must still be created privately by the owner. Until a new real export/download/decrypt passes, **automated backups are NOT verified as healthy**. See docs/BACKUP-UNATTENDED-CLOUDFLARE-AUTH-2026-11-04.md.
+
+
+## 4 Nov evening — backup incident recovery confirmed
+
+The owner created an account-scoped Cloudflare API token and supplied the matching Account ID. D1 Read scope allowed database listing but Wrangler export was rejected with HTTP 403 / code 10000. Owner upgraded to D1 Edit; the real production service run then completed successfully at 21:09 EET 4 Nov 2026: Result=success, ExecMainStatus=0. The newly encrypted local file AURORA-D1-20261104T190946Z.sql.age was saved mode 0600. The private Google Drive upload and downloaded decryption verification in RAM passed. No plaintext SQL file remained in the encrypted archive folder.
+
+The systemd timer is enabled and active; next run is scheduled for about 04:16 EET 5 Nov and is NOT YET observed. D1 Edit has broader write privileges, so the machine-private account-scoped token needs careful custody, periodic review and rotation. Encrypted backup success does not certify legal retention, full account erasure or GDPR compliance. Public intake remains OFF.
