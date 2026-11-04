@@ -21,15 +21,26 @@ export async function eraseQuarantinedReport(db,{
  if(!ownerApproved)throw Error("Independent owner approval required");
  // D1.batch is atomic; deleting private records never edits public cases.
  // The owner match is repeated in the SQL to guard against stale verification.
- const owned="SELECT submission_id FROM intake_reporter_links WHERE submission_id=? AND auth_user_id=?";
+ // Check ownership + quarantine state *inside the batch*, not only in the
+ // preceding read. A report could change state between the first SELECT and
+ // starting the transaction. With a stale owner check, an earlier revision
+ // could delete audit events and the account link even if the report DELETE
+ // itself affected zero rows. D1.batch commits successful zero-row statements;
+ // a post-batch changes check cannot retroactively roll back that work.
+ const owned="SELECT l.submission_id FROM intake_reporter_links l "+
+  "JOIN intake_submissions s ON s.id=l.submission_id "+
+  "WHERE l.submission_id=? AND l.auth_user_id=? AND s.publication_status='quarantined'";
  const result=await db.batch([
   db.prepare("DELETE FROM intake_review_events WHERE submission_id IN ("+owned+")")
    .bind(receiptId,authUserId),
   db.prepare("DELETE FROM intake_submissions WHERE id=? AND publication_status='quarantined' AND id IN ("+owned+")")
    .bind(receiptId,receiptId,authUserId),
-  // Explicit cleanup as defense in depth if a database disables FK cascades.
-  db.prepare("DELETE FROM intake_reporter_links WHERE submission_id=? AND auth_user_id=?")
-   .bind(receiptId,authUserId)
+  // If FKs are disabled in a restoration exercise, remove the link ONLY
+  // after the submission row is really absent. A stale account/visibility
+  // check must never orphan a live report by removing the ownership link.
+  db.prepare("DELETE FROM intake_reporter_links WHERE submission_id=? AND auth_user_id=? "+
+   "AND NOT EXISTS(SELECT 1 FROM intake_submissions WHERE id=?)")
+   .bind(receiptId,authUserId,receiptId)
  ]);
  if(Number(result?.[1]?.meta?.changes??0)!==1)throw Error("Deletion transaction conflict");
  return {dry_run:false,matched:true,deleted:1};

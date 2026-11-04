@@ -185,3 +185,78 @@ test("full-account privacy preview does not imply Supabase account/backup deleti
   assert.ok(result.next_steps.includes("approved_backup_restore_reconciliation"));
  }finally{sql.close()}
 });
+
+// A D1.batch transaction is atomic, but a zero-rows-affected statement does
+// not roll back preceding successful statements. Test a race where scope
+// changes AFTER the read-only eligibility lookup and BEFORE the delete batch.
+test("stale preflight never erases audit or account link when report becomes non-quarantined",async()=>{
+ const {db,sql,seed,OWNER}=setup();
+ const id=seed("pending","2026-01-01T00:00:00Z","2026-11-01T00:00:00Z");
+ sql.exec("PRAGMA ignore_check_constraints=ON"); // synthetic invalid publication state only
+ let changed=false;
+ const racingDb={
+  ...db,
+  prepare(query){
+   const stmt=db.prepare(query);
+   if(!query.startsWith("SELECT s.id FROM intake_submissions"))return stmt;
+   return {
+    bind(...args){
+     const bound=stmt.bind(...args);
+     return {
+      async first(){
+       const found=await bound.first();
+       if(found){
+        sql.prepare("UPDATE intake_submissions SET publication_status='published' WHERE id=?").run(id);
+        changed=true;
+       }
+       return found;
+      }
+     };
+    }
+   };
+  }
+ };
+ try{
+  await assert.rejects(()=>eraseQuarantinedReport(racingDb,{
+   receiptId:id,authUserId:OWNER,execute:true,ownerApproved:true
+  }),/Deletion transaction conflict/);
+  assert.equal(changed,true,"simulate report state change between preflight and write");
+  assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM intake_submissions WHERE id=?").get(id).n,1);
+  assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM intake_review_events WHERE submission_id=?").get(id).n,1,
+   "audit evidence must survive stale state conflict");
+  assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM intake_reporter_links WHERE submission_id=?").get(id).n,1,
+   "owner association must survive stale state conflict");
+ }finally{sql.close()}
+});
+
+test("stale owner identity never erases report, events or reassigned ownership",async()=>{
+ const {db,sql,seed,OWNER}=setup();
+ const id=seed("pending","2026-01-01T00:00:00Z","2026-11-01T00:00:00Z");
+ const OTHER="123e4567-e89b-42d3-a456-426614174999";
+ let changed=false;
+ const racingDb={
+  ...db,
+  prepare(query){
+   const stmt=db.prepare(query);
+   if(!query.startsWith("SELECT s.id FROM intake_submissions"))return stmt;
+   return {bind(...args){const bound=stmt.bind(...args);return {async first(){
+    const found=await bound.first();
+    if(found){
+     sql.prepare("UPDATE intake_reporter_links SET auth_user_id=? WHERE submission_id=?").run(OTHER,id);
+     changed=true;
+    }
+    return found;
+   }}}};
+  }
+ };
+ try{
+  await assert.rejects(()=>eraseQuarantinedReport(racingDb,{
+   receiptId:id,authUserId:OWNER,execute:true,ownerApproved:true
+  }),/Deletion transaction conflict/);
+  assert.equal(changed,true);
+  for(const [table,column] of [
+   ["intake_submissions","id"],["intake_review_events","submission_id"],["intake_reporter_links","submission_id"]
+  ])assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM "+table+" WHERE "+column+"=?").get(id).n,1,table);
+  assert.equal(sql.prepare("SELECT auth_user_id FROM intake_reporter_links WHERE submission_id=?").get(id).auth_user_id,OTHER);
+ }finally{sql.close()}
+});

@@ -33,3 +33,8 @@ A verified user may read only their own private receipt references and statuses 
 ## 4 Nov 2026: private account-wide count-only dry-run
 
 Internal previewPrivateAccountErasure(db,{authUserId}) counts only private D1 reports linked to a separately verified Supabase UUID and related private review events. No email, report text, receipt IDs or direct account identifier are returned. It has no write path, public API endpoint or automatic schedule. Synthetic two-account tests demonstrate that other accounts cannot be included and that D1 remains unchanged. This is a preparatory inventory step, NOT full-account deletion or legal approval. See docs/ACCOUNT-PRIVACY-OPERATIONS-2026-11-04.md.
+
+
+## 4 Nov — stale-state deletion guard and integrated synthetic account exercise
+
+An eligibility read can become stale before the D1 transaction. All destructive D1 statements now check current ownership and quarantine state, and owner-link cleanup is additionally conditional on the report really being absent. Synthetic tests show no partial audit/link deletion when a report changes publication state or is reassigned to another account between the read and the batch. The isolated full-account rehearsal simulates a Supabase session, two owned reports, old SQLite backup resurrection and reconciliation; it also covers incomplete external registers and an unavailable Auth provider. **No real Supabase user was deleted.** See docs/AUTH-ERASURE-ISOLATED-RESTORE-REHEARSAL-2026-11-04.md.

@@ -12,7 +12,7 @@ This operator ledger is not legal certification or permission to activate the pr
 | Moderator access | Anonymous 17-route Access preflight green; synthetic signed second-email denial matrix for moderator/editor/Turnstile UI and APIs, no D1 reads before auth | Real different-email Access deny remains untested; current Cloudflare Access policy inventory API returned 401/403 |
 | D1 quarantine | All migrations, privacy regression tests green; 0 real reports | Keep disabled until all remaining gates completed |
 | Encrypted backup | **PASS 4 Nov:** owner-installed account-scoped API token enabled successful real production D1 export, age encryption, private Drive upload, download/decrypt verification and local encrypted copy; systemd exit 0, daily timer active | Verify the next unattended timer run, protect the broader D1 Edit token, approve retention, external erasure-ledger reconciliation and device-off behavior |
-| Personal data deletion | Private D1 single-report erasure, verified read-only receipts, account-wide count preview AND a read-only external ledger coverage check with synthetic dual-account isolation | Independently test real Supabase deletion, register provenance, historic Drive/D1 backup reconciliation and restricted rights-request log; no auto-delete |
+| Personal data deletion | D1 owner-approved report deletion hardened against stale-state/ownership races; full offline fake-Supabase Auth + two-user D1 deletion + old SQLite restore/reconciliation rehearsal passed, including incomplete ledger and external Auth failure scenarios | Real approved disposable Supabase test-account deletion and token rejection, external ledger provenance and historic encrypted backup reconciliation, legal/processor retention and rights-request log; no auto-delete |
 | Privacy/legal | Public BG/EN notice, working draft with open details | Qualified BG/EU GDPR review of Art. 6 legal basis, controller details, processors, transfer terms, minors and third-party information |
 | Go/live | Production GET still says accepting:false, automatic_publication:false | Explicit final decision after all blockers, with emergency-off playbook ready |
 
@@ -23,7 +23,7 @@ Reference: docs/RELEASE-SECURITY-EVIDENCE-2026-11-03.md and docs/WAF-TURNSTILE-E
 
 ## Additional continuous prelaunch control
 
-A daily GitHub Actions workflow now runs the anonymous twelve-route security preflight without credentials or requests that mutate the production app. It alerts through the normal GitHub Actions failed-run mechanism when a guarded route becomes public or intake changes unintentionally. The monitor expects prelaunch accepting:false; it must be updated to an authorized postlaunch profile before public submissions open. See docs/DAILY-SECURITY-MONITOR-2026-11-04.md.
+A daily GitHub Actions workflow now runs the anonymous seventeen-route security preflight without credentials or requests that mutate the production app. It alerts through the normal GitHub Actions failed-run mechanism when a guarded route becomes public or intake changes unintentionally. The monitor expects prelaunch accepting:false; it must be updated to an authorized postlaunch profile before public submissions open. See docs/DAILY-SECURITY-MONITOR-2026-11-04.md.
 
 
 ## Separate genuine Turnstile diagnostic now available
@@ -68,3 +68,8 @@ An offline RSA/JWKS test proves that an otherwise correctly signed different-ema
 ## 4 Nov — private account erasure-register coverage (no deletion)
 
 The internal owner-only read-only private-account ledger coverage inspector now matches every currently linked D1 report for one independently verified Auth account against the external register. Synthetic SQLite two-account tests prove the missing-entry, orphaned/nonquarantined state and over-500 overflow cases fail closed. It exposes no identifiers. This does not prove historical register completeness, actual Supabase Auth deletion, provider erasure or compliance. See docs/PRIVATE-ACCOUNT-LEDGER-COVERAGE-2026-11-04.md.
+
+
+## 4 Nov — end-to-end isolated Auth / D1 deletion / old-restore rehearsal
+
+The new offline synthetic suite integrates the authenticated receipt endpoint, two fictional account identities, owner-scoped D1 erasure and a pre-erasure SQLite snapshot; a fake Auth admin deletion revokes the test session, and the guard finds two restored/resurrected records until the operator removes them in the isolated copy. A forced provider-failure scenario correctly leaves account-erasure status incomplete, and incomplete ledger coverage blocks progression. Additionally, the real owner-only single-report erasure batch now revalidates owner and quarantine status for audit deletion and does not remove an ownership link while its submission still exists; regression tests simulate both publication and owner reassignment between preflight and batch. NO REAL SUPABASE ACCOUNT was deleted. See docs/AUTH-ERASURE-ISOLATED-RESTORE-REHEARSAL-2026-11-04.md.
