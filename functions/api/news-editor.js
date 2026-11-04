@@ -5,8 +5,13 @@ const headers={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Co
 const reply=(body,status=200)=>Response.json(body,{status,headers});
 async function authenticate(request,env,accessFetcher){
  const url=new URL(request.url);
- if(url.protocol!=='https:'||!newsEditorEnabled(env,url.hostname)||!await newsroomSchemaReady(env.DB))return null;
- return accessIdentity(request,env,accessFetcher);
+ // Verify the owner's signed Access identity BEFORE touching even the
+ // private newsroom schema. Anonymous or different-account attempts must
+ // not cause any D1 query, including an otherwise harmless introspection.
+ if(url.protocol!=='https:'||!newsEditorEnabled(env,url.hostname))return null;
+ const identity=await accessIdentity(request,env,accessFetcher);
+ if(!identity||!await newsroomSchemaReady(env.DB))return null;
+ return identity;
 }
 export async function onRequestGet({request,env,accessFetcher=fetch}){
  const user=await authenticate(request,env,accessFetcher);if(!user)return reply({error:'unavailable'},403);
