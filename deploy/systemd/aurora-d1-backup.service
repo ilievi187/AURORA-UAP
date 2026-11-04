@@ -6,6 +6,9 @@ After=network-online.target
 
 [Service]
 Type=oneshot
+# systemd user credential store; credentials are never written in the unit.
+LoadCredential=aurora_cloudflare_token
+LoadCredential=aurora_cloudflare_account_id
 ExecStart=%h/.local/bin/aurora-d1-backup --production
 TimeoutStartSec=1800
 NoNewPrivileges=yes
