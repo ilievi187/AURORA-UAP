@@ -41,6 +41,35 @@ if [[ "$mode" == --production ]]; then
  }
 fi
 
+# Systemd runs Wrangler without an interactive login. Use a scoped D1 Read
+# API token in the systemd user credential store (never committed or logged).
+cloudflare_token=""
+cloudflare_account=""
+if [[ "$mode" == --production ]]; then
+ credential_dir="$HOME/.config/credstore"
+ if [[ -v CREDENTIALS_DIRECTORY ]]; then
+  if [[ -n "$CREDENTIALS_DIRECTORY" ]]; then credential_dir="$CREDENTIALS_DIRECTORY"; fi
+ fi
+ token_file="$credential_dir/aurora_cloudflare_token"
+ account_file="$credential_dir/aurora_cloudflare_account_id"
+ if [[ ! -s "$token_file" ]]; then
+  echo "Scoped Cloudflare D1 Read API token missing for unattended backup. Configure a private credential first." >&2
+  exit 7
+ fi
+ file_mode="$(stat -c %a "$token_file")"
+ if [[ "$file_mode" != 600 && "$file_mode" != 400 ]]; then
+  echo "Cloudflare credential permissions must be private (0600/0400)." >&2; exit 7
+ fi
+ cloudflare_token="$(cat "$token_file")"
+ [[ "$cloudflare_token" =~ ^[A-Za-z0-9._-]{30,}$ ]] || {
+  echo "Invalid Cloudflare API token credential." >&2; exit 7
+ }
+ if [[ -s "$account_file" ]]; then cloudflare_account="$(cat "$account_file")"; fi
+ if [[ -n "$cloudflare_account" && ! "$cloudflare_account" =~ ^[0-9a-fA-F]{32}$ ]]; then
+  echo "Invalid Cloudflare account ID credential." >&2; exit 8
+ fi
+fi
+
 command -v "$age_bin" >/dev/null
 command -v "$rclone_bin" >/dev/null
 temporary="$(mktemp -d /dev/shm/aurora-backup.XXXXXXXX)"
@@ -57,11 +86,15 @@ if [[ "$mode" == --smoke ]]; then
 else
  filename="AURORA-D1-$timestamp.sql.age"
  echo "Exporting current production D1 into memory; may briefly block D1 requests."
- npx --yes wrangler@4.157.0 d1 export aurora-uap-production \
+ # Export uses the token only for the Wrangler subprocess. It is not passed
+ # to subsequent age, rclone or file cleanup programs.
+ if [[ -n "$cloudflare_account" ]]; then export CLOUDFLARE_ACCOUNT_ID="$cloudflare_account"; fi
+ CLOUDFLARE_API_TOKEN="$cloudflare_token" npx --yes wrangler@4.157.0 d1 export aurora-uap-production \
   --remote --skip-confirmation --output "$temporary/export.sql" \
   > "$temporary/wrangler.stdout" 2> "$temporary/wrangler.stderr" || {
-    echo "D1 export failed; no upload attempted." >&2; exit 5;
+    echo "D1 export failed; no upload attempted. Verify Cloudflare API token scope/account." >&2; exit 5;
   }
+ unset cloudflare_token cloudflare_account CLOUDFLARE_ACCOUNT_ID
  test -s "$temporary/export.sql" || { echo "Empty SQL export" >&2; exit 5; }
 fi
 

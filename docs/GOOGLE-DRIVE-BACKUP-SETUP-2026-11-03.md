@@ -1,3 +1,5 @@
+> **UPDATE 4 NOV 2026:** The scheduled D1 backup service is enabled but the latest run **FAILED** because noninteractive Wrangler requires a scoped Cloudflare API token. An encrypted historical Drive/local archive exists, but do NOT claim fresh daily backups are working. One-time secure token enrollment is needed; see docs/BACKUP-UNATTENDED-CLOUDFLARE-AUTH-2026-11-04.md.
+
 # AURORA encrypted Google Drive backup — operator setup
 
 **State after setup (3 November 2026):**
