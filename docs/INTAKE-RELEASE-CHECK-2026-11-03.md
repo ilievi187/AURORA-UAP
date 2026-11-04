@@ -93,3 +93,8 @@ The restricted /api/moderation/turnstile page provides an independent production
 ## 4 Nov — Siteverify still requires a real PASS
 
 A real owner challenge displayed Cloudflare widget Success but an AURORA server verification FAIL. New owner-only diagnostic error categories and a fresh retry button were added; production Siteverify remains a launch blocker until the owner sees a real PASS with exact expected hostname/action. No public submission or D1 mutation occurred during the screenshot investigation.
+
+
+## 4 Nov — isolated reporter-to-moderator lifecycle simulation
+
+An offline synthetic full-route test proves that a mock verified reporter can submit an in-memory quarantined report, see only their own receipt, and a locally signed owner Access JWT can view its detail and perform one audited moderation approval; approval does NOT publish to /api/cases. Negative tests exercise different reporter, non-owner moderator, cross-origin review, rejected challenge and emergency off. None of this proves the REAL production reporter-to-moderator flow; do not enable public intake for testing before legal/retention release gates. See docs/ISOLATED-REPORT-TO-MODERATION-REHEARSAL-2026-11-04.md.
