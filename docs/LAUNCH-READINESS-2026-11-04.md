@@ -29,3 +29,8 @@ A daily GitHub Actions workflow now runs the anonymous twelve-route security pre
 ## Separate genuine Turnstile diagnostic now available
 
 Owner-only diagnostic: https://aurorauap.org/api/moderation/turnstile. The separate page requires a valid Cloudflare Access owner identity and allows one actual managed challenge without activating report intake or writing to D1. The diagnostic itself cannot automatically prove a user completed the challenge: a PASS is only established after the owner opens the page and completes it. See docs/OWNER-TURNSTILE-DIAGNOSTIC-2026-11-04.md.
+
+
+## 4 November — real Turnstile browser outcome and instrumented follow-up
+
+The owner completed the real Cloudflare Turnstile widget (browser showed Success), but the AURORA owner-only diagnostic reported server FAIL. This is NOT a verified end-to-end Siteverify pass. A code change now provides safe, finite diagnostic categories for rejected server secrets, tokens, expired/reused challenges, hostname/action mismatches and upstream availability. The client offers a fresh challenge retry without submitting reports or modifying D1. Retest on the live Access-protected diagnostic only after this change is deployed, then confirm and address the actual reason. Do not activate public intake based on a browser widget Success alone.

@@ -98,7 +98,9 @@ export function normalizeSubmission(value,policyVersion){
   latitude,longitude,occurred_local,time_zone:tz,category:value.category,description,language_code,
   consent_version:policyVersion,turnstile_token};
 }
-export async function verifyTurnstile(token,env,hostname,fetcher=fetch){
+// Sanitized diagnostic reasons: none contains the token, secret, visitor IP,
+// response hostname, JWT, email address or raw Cloudflare error payload.
+export async function inspectTurnstile(token,env,hostname,fetcher=fetch){
  const params=new URLSearchParams({secret:env.AURORA_TURNSTILE_SECRET,response:token});
  const response=await fetcher("https://challenges.cloudflare.com/turnstile/v0/siteverify",{
   method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},
@@ -106,8 +108,22 @@ export async function verifyTurnstile(token,env,hostname,fetcher=fetch){
  });
  if(!response.ok)throw Error("Turnstile verification unavailable");
  const result=await response.json();
- // Fail closed on hostname or action mismatch and on replay/expired challenges.
- return result.success===true&&result.hostname===hostname&&result.action===ACTION;
+ if(result?.success!==true){
+  const codes=Array.isArray(result?.["error-codes"])?result["error-codes"]:[];
+  if(codes.includes("invalid-input-secret")||codes.includes("missing-input-secret"))
+   return {verified:false,reason:"server_secret_rejected"};
+  if(codes.includes("timeout-or-duplicate"))
+   return {verified:false,reason:"expired_or_reused_token"};
+  if(codes.includes("invalid-input-response")||codes.includes("missing-input-response"))
+   return {verified:false,reason:"token_rejected"};
+  return {verified:false,reason:"siteverify_rejected"};
+ }
+ if(result.hostname!==hostname)return {verified:false,reason:"hostname_mismatch"};
+ if(result.action!==ACTION)return {verified:false,reason:"action_mismatch"};
+ return {verified:true};
+}
+export async function verifyTurnstile(token,env,hostname,fetcher=fetch){
+ return (await inspectTurnstile(token,env,hostname,fetcher)).verified;
 }
 export async function storeSubmission(db,s,reporterId){
  if(typeof reporterId!=="string"||!/^[a-f0-9-]{36}$/i.test(reporterId))throw Error("Verified reporter required");

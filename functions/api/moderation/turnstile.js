@@ -1,6 +1,6 @@
 // Owner-only real Turnstile challenge diagnostic. Never touches D1 or reporting.
 import {accessIdentity} from '../../_lib/access.js';
-import {liveTurnstileConfigured,verifyTurnstile} from '../../_lib/intake.js';
+import {liveTurnstileConfigured,inspectTurnstile} from '../../_lib/intake.js';
 
 const BASE_HEADERS={
   'Cache-Control':'private, no-store, max-age=0',
@@ -46,7 +46,7 @@ const html=(siteKey)=>'<!doctype html><html lang="en"><head>'+
  '<button type="button" id="start" style="padding:12px;cursor:pointer">Run real Turnstile challenge</button>'+
  '<div id="mount" data-site-key="'+siteKey+'" style="margin:18px 0"></div>'+
  '<p id="status" role="status" aria-live="polite">Waiting to start.</p>'+
- '<script defer src="/assets/turnstile-diagnostic.js?v=20261104"></script>'+
+ '<script defer src="/assets/turnstile-diagnostic.js?v=20261104b"></script>'+
  '</body></html>';
 export async function onRequestGet({request,env}){
   if(!await authorize(request,env))return json({error:'unavailable'},403);
@@ -74,10 +74,10 @@ export async function onRequestPost({request,env}){
     token=data.token;
   }catch{return json({error:'invalid_request'},400)}
   try{
-    const okay=await verifyTurnstile(token,env,'aurorauap.org');
-    return okay
+    const outcome=await inspectTurnstile(token,env,'aurorauap.org');
+    return outcome.verified
       ?json({verified:true,report_submitted:false,private_data_changed:false},200)
-      :json({verified:false,error:'challenge_rejected'},403);
-  }catch{return json({verified:false,error:'challenge_unavailable'},503)}
+      :json({verified:false,error:'challenge_rejected',reason:outcome.reason},403);
+  }catch{return json({verified:false,error:'challenge_unavailable',reason:'siteverify_unavailable'},503)}
 }
 export async function onRequestDelete(){return json({error:'method_not_allowed'},405)}

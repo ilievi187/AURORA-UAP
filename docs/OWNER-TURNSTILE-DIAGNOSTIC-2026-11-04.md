@@ -33,3 +33,12 @@ https://aurorauap.org/api/moderation/turnstile
 - The only genuine challenge proof comes from the owner's real browser interaction. Tests alone cannot assert success until that occurs.
 
 Remaining public launch blockers are documented in docs/LAUNCH-READINESS-2026-11-04.md.
+
+
+## 4 November 2026 — real widget success and server failure follow-up
+
+The real managed widget displayed Cloudflare Success, but AURORA's previous frontend showed only a generic FAIL. A successful widget alone does not prove server-side Siteverify passed. There is no evidence of a successful production Siteverify yet.
+
+The diagnostic now displays only safe failure categories: server_secret_rejected, token_rejected, expired_or_reused_token, hostname_mismatch, action_mismatch, siteverify_rejected and siteverify_unavailable. It never exposes a token, secret, account identifier, raw upstream message, IP or Cloudflare Access JWT. The owner can try a fresh challenge after failure, with intake disabled and no D1 access.
+
+A server_secret_rejected result requires an authorized dashboard review of encrypted Pages AURORA_TURNSTILE_SECRET against the same Turnstile widget as the site's public key. Never paste secret values in a chat or PR. A token_rejected result can also signal mismatched widget credentials. The server continues to demand the exact action aurora_report and hostname aurorauap.org.

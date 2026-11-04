@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
 import {readFileSync} from 'node:fs';
 import {accessIdentity} from '../functions/_lib/access.js';
+import {inspectTurnstile,verifyTurnstile} from '../functions/_lib/intake.js';
 import {onRequest as guardModeratorPage} from '../functions/_middleware.js';
 import {onRequestGet,onRequestPost} from '../functions/api/moderation/index.js';
 import {onRequestGet as turnstileGet,onRequestPost as turnstilePost,onRequestDelete as turnstileDelete} from '../functions/api/moderation/turnstile.js';
@@ -240,15 +241,85 @@ test('owner real challenge diagnostic strictly verifies hostname/action and stor
   assert.equal(ok.status,200);
   assert.deepEqual(await ok.json(),{verified:true,report_submitted:false,private_data_changed:false});
   verified={success:true,hostname:'attacker.example',action:'aurora_report'};
-  assert.equal((await turnstilePost({request:request(),env:real})).status,403);
+  const wrongHost=await turnstilePost({request:request(),env:real});
+  assert.equal(wrongHost.status,403);
+  assert.equal((await wrongHost.json()).reason,'hostname_mismatch');
   verified={success:true,hostname:'aurorauap.org',action:'signup'};
-  assert.equal((await turnstilePost({request:request(),env:real})).status,403);
+  const wrongAction=await turnstilePost({request:request(),env:real});
+  assert.equal(wrongAction.status,403);
+  assert.equal((await wrongAction.json()).reason,'action_mismatch');
   verified={success:false,hostname:'aurorauap.org',action:'aurora_report'};
-  assert.equal((await turnstilePost({request:request(),env:real})).status,403);
+  const rejected=await turnstilePost({request:request(),env:real});
+  assert.equal(rejected.status,403);
+  assert.equal((await rejected.json()).reason,'siteverify_rejected');
   const previous=calls.length;
   assert.equal((await turnstilePost({request:request('https://attacker.example'),env:real})).status,403);
   assert.equal((await turnstilePost({request:request('https://aurorauap.org',{token:'x'}),env:real})).status,400);
   assert.equal((await turnstilePost({request:request('https://aurorauap.org',{token:'long_valid_token',extra:true}),env:real})).status,400);
   assert.equal(calls.length,previous,'invalid requests must not call external Siteverify');
  }finally{globalThis.fetch=original}
+});
+
+
+test('Siteverify diagnostics distinguish safe failure types without echoing token, secret or hostname',async()=>{
+ const envReal={AURORA_TURNSTILE_SECRET:'private_sensitive_secret_never_print'};
+ const challenge='private_sensitive_challenge_never_print';
+ const cases=[
+  [{success:false,'error-codes':['invalid-input-secret']},'server_secret_rejected'],
+  [{success:false,'error-codes':['missing-input-secret']},'server_secret_rejected'],
+  [{success:false,'error-codes':['invalid-input-response']},'token_rejected'],
+  [{success:false,'error-codes':['timeout-or-duplicate']},'expired_or_reused_token'],
+  [{success:false,'error-codes':['unknown-error','private-data']},'siteverify_rejected'],
+  [{success:true,hostname:'unexpected-private-host.example',action:'aurora_report'},'hostname_mismatch'],
+  [{success:true,hostname:'aurorauap.org',action:'unexpected-private-action'},'action_mismatch']
+ ];
+ for(const [upstream,expected] of cases){
+  let numRequests=0;
+  const fake=async(url,options)=>{
+   numRequests++;
+   assert.equal(url,'https://challenges.cloudflare.com/turnstile/v0/siteverify');
+   assert.equal(options.redirect,'error');
+   assert.ok(options.body.includes('response='));
+   assert.ok(options.body.includes('secret='));
+   return Response.json(upstream);
+  };
+  const diag=await inspectTurnstile(challenge,envReal,'aurorauap.org',fake);
+  assert.deepEqual(diag,{verified:false,reason:expected});
+  assert.equal(await verifyTurnstile(challenge,envReal,'aurorauap.org',fake),false);
+  assert.equal(numRequests,2);
+  const readable=JSON.stringify(diag);
+  for(const secret of [challenge,envReal.AURORA_TURNSTILE_SECRET,'unexpected-private-host','unexpected-private-action','private-data'])
+   assert.equal(readable.includes(secret),false);
+ }
+ const ok=await inspectTurnstile(challenge,envReal,'aurorauap.org',
+  async()=>Response.json({success:true,hostname:'aurorauap.org',action:'aurora_report'}));
+ assert.deepEqual(ok,{verified:true});
+});
+test('Owner-only diagnostic displays only sanitized Siteverify failure codes and safe 503',async()=>{
+ const previous=globalThis.fetch;
+ globalThis.fetch=async(url)=>{
+  if(url===env.AURORA_ACCESS_TEAM+'/cdn-cgi/access/certs')return Response.json({keys:[jwk]});
+  return Response.json({success:false,'error-codes':['invalid-input-secret']});
+ };
+ const signed=await token();
+ const real={...env,AURORA_TURNSTILE_SITE_KEY:'real_site_key_1234567890',AURORA_TURNSTILE_SECRET:'secret_only_on_server_123456789'};
+ const request=new Request('https://aurorauap.org/api/moderation/turnstile',{
+  method:'POST',headers:{'Cf-Access-Jwt-Assertion':signed,Origin:'https://aurorauap.org','Content-Type':'application/json'},
+  body:JSON.stringify({token:'private_ephemeral_token_123456'})
+ });
+ try{
+  const result=await turnstilePost({request:request.clone(),env:real});
+  assert.equal(result.status,403);
+  assert.match(result.headers.get('Cache-Control'),/no-store/);
+  const body=await result.text();
+  assert.deepEqual(JSON.parse(body),{verified:false,error:'challenge_rejected',reason:'server_secret_rejected'});
+  assert.doesNotMatch(body,/secret_only_on_server|private_ephemeral_token|invalid-input-secret/);
+  globalThis.fetch=async url=>{
+   if(url===env.AURORA_ACCESS_TEAM+'/cdn-cgi/access/certs')return Response.json({keys:[jwk]});
+   throw Error('upstream internal secret that must never be exposed');
+  };
+  const unavailable=await turnstilePost({request:request.clone(),env:real});
+  assert.equal(unavailable.status,503);
+  assert.deepEqual(await unavailable.json(),{verified:false,error:'challenge_unavailable',reason:'siteverify_unavailable'});
+ }finally{globalThis.fetch=previous}
 });

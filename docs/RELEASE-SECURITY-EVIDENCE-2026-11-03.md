@@ -73,3 +73,8 @@ Offline tests confirm that noncanonical POST paths reach neither Supabase/Turnst
 ## Owner-only real Turnstile diagnostic (4 November)
 
 Added isolated signed-Access-protected /api/moderation/turnstile. It exposes only a public site key, requires a genuine action aurora_report challenge and uses Siteverify with the encrypted Pages secret. Its POST never accesses private reports or D1. The daily anonymous prelaunch monitor now includes this route as a twelfth GET check. The real challenge remains unverified until an owner successfully completes it in a browser, and public intake remains OFF. See docs/OWNER-TURNSTILE-DIAGNOSTIC-2026-11-04.md.
+
+
+## Real Turnstile diagnostic failure observed 4 Nov 2026
+
+Owner screenshot: Cloudflare widget displayed Success while AURORA diagnostic showed FAIL. The production Turnstile gate remains unverified. Added sanitized server failure classes and a retryable diagnostic; this is a diagnostic improvement, not proof that the underlying credential configuration is corrected. No secrets or real tokens have been inspected or logged. Refer to docs/OWNER-TURNSTILE-DIAGNOSTIC-2026-11-04.md for follow-up.
