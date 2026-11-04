@@ -8,6 +8,9 @@ on:
       - 'functions/api/intake/**'
       - 'functions/api/account/**'
       - 'functions/api/moderation/**'
+      - 'functions/_lib/access.js'
+      - 'functions/_middleware.js'
+      - 'functions/api/news-editor.js'
       - 'moderation.html'
       - 'assets/turnstile-diagnostic.js'
       - 'docs/OWNER-TURNSTILE-DIAGNOSTIC-2026-11-04.md'
@@ -31,6 +34,9 @@ on:
       - 'tests/privacy-route.test.mjs'
       - 'tests/intake.test.mjs'
       - 'tests/moderation.test.mjs'
+      - 'tests/access-denial-matrix.test.mjs'
+      - 'docs/ACCESS-NEGATIVE-IDENTITY-AUDIT-2026-11-04.md'
+      - 'docs/ACCESS-ROLLOUT-2026-11-02.md'
       - 'tests/privacy-retention.test.mjs'
       - 'tests/backup-recovery.test.mjs'
       - 'tests/privacy-restore-guard.test.mjs'
@@ -57,6 +63,9 @@ on:
       - 'functions/api/intake/**'
       - 'functions/api/account/**'
       - 'functions/api/moderation/**'
+      - 'functions/_lib/access.js'
+      - 'functions/_middleware.js'
+      - 'functions/api/news-editor.js'
       - 'moderation.html'
       - 'assets/turnstile-diagnostic.js'
       - 'docs/OWNER-TURNSTILE-DIAGNOSTIC-2026-11-04.md'
@@ -80,6 +89,9 @@ on:
       - 'tests/privacy-route.test.mjs'
       - 'tests/intake.test.mjs'
       - 'tests/moderation.test.mjs'
+      - 'tests/access-denial-matrix.test.mjs'
+      - 'docs/ACCESS-NEGATIVE-IDENTITY-AUDIT-2026-11-04.md'
+      - 'docs/ACCESS-ROLLOUT-2026-11-02.md'
       - 'tests/privacy-retention.test.mjs'
       - 'tests/backup-recovery.test.mjs'
       - 'tests/privacy-restore-guard.test.mjs'
@@ -111,4 +123,4 @@ jobs:
       - run: npm run build:report-auth
       - run: git diff --exit-code -- report-auth.bundle.js
       - run: node --test tests/privacy-route.test.mjs tests/private-release-readiness.test.mjs
-      - run: node --experimental-sqlite --test tests/intake.test.mjs tests/workers-fetch-redirect-compat.test.mjs tests/reporter-auth.test.mjs tests/account-privacy.test.mjs tests/intake-auth-gate.test.mjs tests/isolated-intake-security.test.mjs tests/moderation.test.mjs tests/privacy-retention.test.mjs tests/backup-recovery.test.mjs tests/privacy-restore-guard.test.mjs tests/backup-drive.test.mjs
+      - run: node --experimental-sqlite --test tests/intake.test.mjs tests/workers-fetch-redirect-compat.test.mjs tests/reporter-auth.test.mjs tests/account-privacy.test.mjs tests/intake-auth-gate.test.mjs tests/isolated-intake-security.test.mjs tests/moderation.test.mjs tests/access-denial-matrix.test.mjs tests/privacy-retention.test.mjs tests/backup-recovery.test.mjs tests/privacy-restore-guard.test.mjs tests/backup-drive.test.mjs

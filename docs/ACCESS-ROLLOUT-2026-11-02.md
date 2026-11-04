@@ -22,3 +22,8 @@ Cloudflare Pages secret bindings must exist before the deployment that consumes 
 7. Check `/moderation/` too, as Cloudflare Access path handling can differ from Pages canonical routing.
 
 Do not disclose report data or Access JWTs in logs. This PR does **not** set `AURORA_INTAKE_ENABLED`, `AURORA_INTAKE_LEGAL_APPROVED`, `AURORA_INTAKE_WAF_REVIEWED` or `AURORA_RETENTION_PURGE_ENABLED`.
+
+
+## 4 Nov — negative JWT and route alias proof
+
+The origin now has regression tests using correctly signed synthetic RS256 tokens for a different email, plus issuer/audience/expiry/signature failures, covering moderator/editor pages and APIs and owner Turnstile diagnostics. Access is checked before any D1 query. Read-only production alias probes found no private content. Current Access policy API inspection was denied (401/403), so a real different-email denied login remains required later. See docs/ACCESS-NEGATIVE-IDENTITY-AUDIT-2026-11-04.md.

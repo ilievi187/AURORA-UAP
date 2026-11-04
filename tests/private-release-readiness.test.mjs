@@ -28,13 +28,14 @@ function mock(overrides={}){
 test('prelaunch proof only performs anonymous GET, requires Cloudflare Access or denied origin',async()=>{
  const m=mock();const result=await checkReadOnlyRelease(m.fetcher);
  assert.equal(result.ok,true);
- assert.equal(result.results.length,12);
- assert.equal(m.calls.length,12);
- assert.equal(new Set(m.calls.map(x=>x.url)).size,12);
+ assert.equal(result.results.length,17);
+ assert.equal(m.calls.length,17);
+ assert.equal(new Set(m.calls.map(x=>x.url)).size,17);
  assert.equal(m.calls.some(x=>x.init.body!==undefined),false);
 });
 test('GET 200 on any private route fails release preflight',async()=>{
- for(const path of ['/moderation','/moderation/','/moderation.html','/api/moderation/','/news-editor','/news-editor/','/news-editor.html']){
+ for(const path of ['/moderation','/moderation/','/moderation.html','/api/moderation/','/news-editor','/news-editor/','/news-editor.html','/moderation.html/','/moderation%2ehtml',
+  '/moderation/index.html','/api/moderation/index','/api/moderation/turnstile/']){
   const m=mock({[path]:new Response('private data',{status:200})});
   const result=await checkReadOnlyRelease(m.fetcher);
   assert.equal(result.ok,false,path);

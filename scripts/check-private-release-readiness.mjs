@@ -8,6 +8,12 @@ const privateEndpoints=[
  '/api/moderation/',
  '/api/moderation/?view=overview',
  '/api/moderation/turnstile',
+ // Access route-alias regression: GET only, no private content requested.
+ '/moderation.html/',
+ '/moderation%2ehtml',
+ '/moderation/index.html',
+ '/api/moderation/index',
+ '/api/moderation/turnstile/',
  '/news-editor',
  '/news-editor/',
  '/news-editor.html'
@@ -69,7 +75,7 @@ export async function checkReadOnlyRelease(fetcher=fetch){
 if(process.argv[1] && import.meta.url===new URL('file://'+process.argv[1]).href){
  if(process.argv.length!==3||process.argv[2]!=='--live'){
   console.error('Usage: node scripts/check-private-release-readiness.mjs --live');
-  console.error('Performs twelve bounded public GET requests only; NEVER writes production data.');
+  console.error('Performs seventeen bounded public GET requests only; NEVER writes production data.');
   process.exitCode=2;
  }else{
   try{
