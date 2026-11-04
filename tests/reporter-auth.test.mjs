@@ -33,7 +33,7 @@ test("only Auth-server-confirmed email gets report identity, never browser-submi
   assert.equal(url,"https://aurora-auth.supabase.co/auth/v1/user");
   assert.equal(opts.headers.apikey,CONFIG.AURORA_REPORT_AUTH_PUBLISHABLE_KEY);
   assert.ok(opts.headers.Authorization.startsWith("Bearer "));
-  assert.equal(opts.redirect,"error");
+  assert.equal(opts.redirect,"manual");
   assert.equal(opts.cache,"no-store");
   return Response.json(user,{status:code});
  });

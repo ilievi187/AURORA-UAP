@@ -42,3 +42,10 @@ The real managed widget displayed Cloudflare Success, but AURORA's previous fron
 The diagnostic now displays only safe failure categories: server_secret_rejected, token_rejected, expired_or_reused_token, hostname_mismatch, action_mismatch, siteverify_rejected and siteverify_unavailable. It never exposes a token, secret, account identifier, raw upstream message, IP or Cloudflare Access JWT. The owner can try a fresh challenge after failure, with intake disabled and no D1 access.
 
 A server_secret_rejected result requires an authorized dashboard review of encrypted Pages AURORA_TURNSTILE_SECRET against the same Turnstile widget as the site's public key. Never paste secret values in a chat or PR. A token_rejected result can also signal mismatched widget credentials. The server continues to demand the exact action aurora_report and hostname aurorauap.org.
+
+
+## 4 November 2026 — root cause of HTTP 503 found
+
+The real browser widget showed Success but the server returned HTTP 503. Source review found that the shared Siteverify helper passed redirect:error to a Cloudflare Pages/Workers fetch. Cloudflare Workers Request API does not implement redirect:error and throws TypeError before sending the network request. This explains the diagnostic error without suggesting the owner entered wrong keys.
+
+The approved correction changes fetch to redirect:manual, which does NOT follow redirects; the existing non-2xx response rejection remains mandatory. Same unsupported mode was found in the restricted Supabase user verification and news-tip Turnstile helper and was corrected there too. The actual successful production Siteverify challenge must still be rechecked after deployment; code and synthetic tests alone do not prove success.

@@ -278,7 +278,7 @@ test('Siteverify diagnostics distinguish safe failure types without echoing toke
   const fake=async(url,options)=>{
    numRequests++;
    assert.equal(url,'https://challenges.cloudflare.com/turnstile/v0/siteverify');
-   assert.equal(options.redirect,'error');
+   assert.equal(options.redirect,'manual');
    assert.ok(options.body.includes('response='));
    assert.ok(options.body.includes('secret='));
    return Response.json(upstream);
