@@ -1,3 +1,4 @@
+import {validatePrivateErasureRegister} from './privacy-restore-guard.js';
 // Private owner-operated deletion of a quarantined report after independent
 // identity verification. This module has NO publicly exposed route or scheduler.
 // Supabase account deletion and backup retention require separate operator steps.
@@ -80,6 +81,77 @@ export async function previewPrivateAccountErasure(db,{authUserId}={}){
    "owner_approved_private_d1_erasure",
    "separate_supabase_auth_and_processor_erasure",
    "independent_final_verification"
+  ]
+ };
+}
+
+// Owner-only PRE-ERASURE coverage check. This can be used to verify that each
+// currently linked private report has a corresponding entry in an external
+// owner-maintained, legally reviewed erasure register BEFORE any deletion.
+//
+// It intentionally does not establish register provenance, authenticate the
+// Supabase account, approve legal retention, change D1, or authorize launch.
+// All identifiers remain private in memory; the returned object is aggregate.
+
+export async function inspectPrivateAccountLedgerCoverage(db,{
+ authUserId,register
+}={}){
+ if(typeof db?.prepare!=='function')throw Error('Read-only D1 binding required');
+ if(typeof authUserId!=='string'||!UUID.test(authUserId))
+  throw Error('Independently verified private account UUID required');
+ validatePrivateErasureRegister(register);
+ const user=authUserId.toLowerCase();
+ const approved=new Set(register.entries
+  .filter(entry=>entry.authUserId.toLowerCase()===user)
+  .map(entry=>entry.receiptId.toLowerCase()));
+ // Include orphaned links, even if a restored schema has foreign keys disabled.
+ // Bounded to avoid silently giving a green result on a truncated account.
+ const query="SELECT l.submission_id, s.publication_status "+
+  "FROM intake_reporter_links l LEFT JOIN intake_submissions s "+
+  "ON s.id=l.submission_id WHERE lower(l.auth_user_id)=? "+
+  "ORDER BY l.submission_id LIMIT 501";
+ const result=await db.prepare(query).bind(user).all();
+ if(!Array.isArray(result?.results))throw Error('Private account inventory unavailable');
+ if(result.results.length>500)throw Error('Too many private links for one safe preview');
+ const live=new Set();
+ let nonQuarantinedOrOrphaned=0,covered=0;
+ for(const row of result.results){
+  if(!row||typeof row.submission_id!=='string'||!ID.test(row.submission_id))
+   throw Error('Corrupt private account link metadata');
+  const id=row.submission_id.toLowerCase();
+  if(live.has(id))throw Error('Duplicate private account link metadata');
+  live.add(id);
+  if(row.publication_status!=='quarantined')nonQuarantinedOrOrphaned++;
+  if(approved.has(id))covered++;
+ }
+ const missing=live.size-covered;
+ const previouslyRegistered=approved.size-covered;
+ const complete=missing===0&&nonQuarantinedOrOrphaned===0&&
+  live.size>0&&approved.size>0;
+ return {
+  dry_run:true,scope:'d1_private_account_ledger_coverage_only',
+  checked_live_private_links:live.size,
+  registered_for_account:approved.size,
+  currently_covered:covered,
+  currently_unregistered:missing,
+  registered_not_currently_linked:previouslyRegistered,
+  nonquarantined_or_orphaned:nonQuarantinedOrOrphaned,
+  current_link_coverage_complete:complete,
+  // Even a fully covered register MUST NOT be treated as verified deletion,
+  // complete historical ledger provenance, or public launch approval.
+  independent_identity_verification_done:false,
+  register_provenance_verified:false,
+  processor_erasure_verified:false,
+  sufficient_for_deletion:false,
+  sufficient_for_public_launch:false,
+  database_writes:0,
+  required_next_steps:[
+   'verify_requester_via_supabase_auth_admin',
+   'protect_and_approve_external_erasure_register',
+   'check_historical_snapshots_and_conflicts',
+   'review_published_material_and_retention_exceptions',
+   'owner_approve_separate_report_and_auth_erasure',
+   'verify_processors_and_future_backup_reconciliation'
   ]
  };
 }
