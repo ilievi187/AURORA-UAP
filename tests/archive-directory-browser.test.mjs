@@ -74,6 +74,28 @@ try{
    assert.deepEqual(errors,[]);
   }finally{await ctx.close()}
  });
+ await test("unavailable or malformed extended archive is visibly disclosed, without losing curated dossiers",async()=>{
+  for(const [scenario,response] of [
+   ["upstream failure",{status:503,body:'{"error":"unavailable"}'}],
+   ["invalid payload",{status:200,body:'{"cases":"not-an-array"}'}]
+  ]){
+   const ctx=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:"reduce"});
+   const page=await ctx.newPage(),errors=[];
+   page.on("pageerror",e=>errors.push(e.message));
+   try{
+    await page.addInitScript(()=>localStorage.setItem("aurora-lang","en"));
+    await page.route("**/data/bulk/index.json",route=>route.fulfill({...response,contentType:"application/json"}));
+    await page.goto("http://127.0.0.1:"+server.address().port+"/archive.html");
+    await page.waitForFunction(()=>document.querySelector("#archiveCount")?.textContent==="105");
+    assert.match(await page.locator("#archiveStatus").textContent(),/Partial archive: extended records are temporarily unavailable/,scenario);
+    assert.equal(await page.locator(".archive-card").count(),10,scenario);
+    await page.locator("#archiveSearch").fill("nimitz-2004");
+    assert.equal(await page.locator(".archive-card").count(),1,scenario);
+    assert.match(await page.locator("#archiveStatus").textContent(),/Partial archive:/,scenario);
+    assert.deepEqual(errors,[],scenario);
+   }finally{await ctx.close()}
+  }
+ });
  await test("country, searchable narrative, media and active-language filters preserve real links",async()=>{
   const ctx=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:"reduce"});
   const page=await ctx.newPage(),errors=[];
