@@ -57,3 +57,8 @@ Owner process:
 8. Keep a minimal restricted rights-request record according to an independently reviewed retention period, and acknowledge the request within applicable deadlines.
 
 Tests validate technical scope and isolation only. They do not establish GDPR compliance or authorize a real deletion or public intake activation.
+
+
+## 4 Nov — private account register coverage preview
+
+The new owner-only internal inspectPrivateAccountLedgerCoverage(db,{authUserId,register}) does a bounded SELECT-only account-owned D1 report-to-register comparison, returning aggregate coverage gaps and anomalous publication/orphan links only. No emails, report bodies or IDs leave the function. It cannot reconstruct earlier deleted records or validate register provenance, and does not delete or allow public intake. Full instructions are in docs/PRIVATE-ACCOUNT-LEDGER-COVERAGE-2026-11-04.md.

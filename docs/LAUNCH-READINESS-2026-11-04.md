@@ -12,7 +12,7 @@ This operator ledger is not legal certification or permission to activate the pr
 | Moderator access | Anonymous 17-route Access preflight green; synthetic signed second-email denial matrix for moderator/editor/Turnstile UI and APIs, no D1 reads before auth | Real different-email Access deny remains untested; current Cloudflare Access policy inventory API returned 401/403 |
 | D1 quarantine | All migrations, privacy regression tests green; 0 real reports | Keep disabled until all remaining gates completed |
 | Encrypted backup | **PASS 4 Nov:** owner-installed account-scoped API token enabled successful real production D1 export, age encryption, private Drive upload, download/decrypt verification and local encrypted copy; systemd exit 0, daily timer active | Verify the next unattended timer run, protect the broader D1 Edit token, approve retention, external erasure-ledger reconciliation and device-off behavior |
-| Personal data deletion | Private D1 single-report erasure tested, authenticated read-only receipts available, new account-wide D1 dry-run inventory with dual-account isolation tests | Independently test actual Supabase deletion, legal retention, Drive/D1 backup reconciliation and restricted rights-request log; no auto-delete |
+| Personal data deletion | Private D1 single-report erasure, verified read-only receipts, account-wide count preview AND a read-only external ledger coverage check with synthetic dual-account isolation | Independently test real Supabase deletion, register provenance, historic Drive/D1 backup reconciliation and restricted rights-request log; no auto-delete |
 | Privacy/legal | Public BG/EN notice, working draft with open details | Qualified BG/EU GDPR review of Art. 6 legal basis, controller details, processors, transfer terms, minors and third-party information |
 | Go/live | Production GET still says accepting:false, automatic_publication:false | Explicit final decision after all blockers, with emergency-off playbook ready |
 
@@ -63,3 +63,8 @@ The systemd timer is enabled and active; next run is scheduled for about 04:16 E
 ## 4 Nov — negative-account Access regression audit (no second mailbox)
 
 An offline RSA/JWKS test proves that an otherwise correctly signed different-email JWT is rejected at origin across the moderator UI/API, newsroom editor and owner Turnstile diagnostic without any D1 query. Tests cover wrong issuer/audience, expired/future JWTs, malformed signatures and configuration. The newsroom schema check now executes only AFTER owner authorization. Ten bounded read-only route-alias probes revealed no private content; five protected aliases joined the daily anonymous monitor (17 GETs total). A fresh Cloudflare Access policy API audit was blocked by OAuth HTTP 401/403. A real second-email denial remains OPEN. See docs/ACCESS-NEGATIVE-IDENTITY-AUDIT-2026-11-04.md.
+
+
+## 4 Nov — private account erasure-register coverage (no deletion)
+
+The internal owner-only read-only private-account ledger coverage inspector now matches every currently linked D1 report for one independently verified Auth account against the external register. Synthetic SQLite two-account tests prove the missing-entry, orphaned/nonquarantined state and over-500 overflow cases fail closed. It exposes no identifiers. This does not prove historical register completeness, actual Supabase Auth deletion, provider erasure or compliance. See docs/PRIVATE-ACCOUNT-LEDGER-COVERAGE-2026-11-04.md.
