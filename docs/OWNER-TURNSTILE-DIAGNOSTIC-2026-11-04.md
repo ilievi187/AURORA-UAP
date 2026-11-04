@@ -1,3 +1,5 @@
+> **LATEST VERIFIED RESULT — 4 Nov 2026:** The owner supplied a screenshot of the genuine production managed Turnstile widget showing success **and** AURORA displaying "PASS: real Turnstile Siteverify succeeded. No report was submitted." after PR #153. This confirms the isolated owner-only Siteverify proof; prior failures below are retained as historical incident notes. No token, key, reporter data or screenshot of unrelated desktop content was committed.
+
 # AURORA — owner-only live Turnstile challenge diagnostic
 
 Prelaunch operator procedure, 4 November 2026. This does NOT activate public intake, create a report or mark legal review completed.
@@ -49,3 +51,14 @@ A server_secret_rejected result requires an authorized dashboard review of encry
 The real browser widget showed Success but the server returned HTTP 503. Source review found that the shared Siteverify helper passed redirect:error to a Cloudflare Pages/Workers fetch. Cloudflare Workers Request API does not implement redirect:error and throws TypeError before sending the network request. This explains the diagnostic error without suggesting the owner entered wrong keys.
 
 The approved correction changes fetch to redirect:manual, which does NOT follow redirects; the existing non-2xx response rejection remains mandatory. Same unsupported mode was found in the restricted Supabase user verification and news-tip Turnstile helper and was corrected there too. The actual successful production Siteverify challenge must still be rechecked after deployment; code and synthetic tests alone do not prove success.
+
+
+## Owner confirmation after PR #153 — actual PASS (4 November 2026)
+
+After deploying the Cloudflare Workers redirect:manual compatibility fix in PR #153, the owner re-ran the production-only Access-protected diagnostic and supplied a screenshot showing both the real Cloudflare widget success and the message:
+
+PASS: real Turnstile Siteverify succeeded. No report was submitted.
+
+This passes the **real Siteverify owner diagnostic** gate: the server accepted the one-time token with the expected hostname and aurora_report action. The result is not an end-to-end private-report submission test, does not verify D1 moderation workflows with a real reporter identity, and is not a GDPR or launch authorization.
+
+Do not rerun this diagnostic needlessly or paste Turnstile tokens or Cloudflare Access credentials into source control.

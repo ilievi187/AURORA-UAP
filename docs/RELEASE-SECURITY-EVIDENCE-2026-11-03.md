@@ -1,3 +1,5 @@
+> **LIVE TURNSTILE UPDATE — 4 Nov 2026:** Owner screenshot confirms the real Cloudflare managed challenge **and** the AURORA server's "PASS: real Turnstile Siteverify succeeded. No report was submitted." after PR #153. Historical FAIL notes below predate the Worker redirect:manual fix. This confirms only the isolated owner diagnostic, not public report intake readiness.
+
 CURRENT UPDATE 4 NOV 2026: The bounded live WAF test has been confirmed via Cloudflare Security Events; historical statements below that the WAF was not tested refer to the earlier audit. Intake remains disabled. Full latest evidence is in docs/WAF-TURNSTILE-EMERGENCY-RUNBOOK-2026-11-04.md.
 
 # AURORA — prelaunch read-only security verification
