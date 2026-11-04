@@ -50,3 +50,8 @@ Documentation:
 - https://developers.cloudflare.com/d1/platform/limits/
 - https://developers.cloudflare.com/d1/best-practices/import-export-data/
 - https://supabase.com/docs/guides/auth/managing-user-data
+
+
+## 4 Nov 2026: read-only detection of resurrected erased reports
+
+Internal worker/privacy-restore-guard.js compares an ISOLATED restored snapshot against a separate owner-approved erasure ledger. It detects previously erased reports that reappear, ownership mismatch, missing ownership, unexpected private audit metadata and synthetic publication-state corruption. It returns only aggregate counts, without writes or report bodies. It does NOT prove ledger completeness or GDPR compliance, execute deletion or authorize any real restore. See docs/PRIVATE-RESTORE-ERASURE-GUARD-2026-11-04.md.
