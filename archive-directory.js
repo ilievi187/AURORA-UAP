@@ -8,14 +8,14 @@ const supported=new Set(["bg","en","de","ru","zh-CN","fr","es","it","pt","tr","r
 let language="bg";try{language=localStorage.getItem(storageKey)||"bg"}catch{}
 if(!supported.has(language))language="en";
 if(window.AURORA_PUBLIC_LANGUAGE==="en")language="en";
-let records=[],currentPage=1,search="",country="",mediaType="",sourceError=false;
+let records=[],currentPage=1,search="",country="",mediaType="",sourceError=false,partialArchive=false;
 const packs={
  bg:{home:"Начало",countries:"Държави",news:"Новини",language:"Език",
  heading:"СВЕТОВЕН АРХИВ UAP",intro:"Публикувани случаи и архивни документи от посочени източници. Отвори досието за подробни описания, оценки, документи и вградени видеа, когато има такива.",
  caseCount:"ДОСИЕТА",pageCount:"СТРАНИЦИ",countryCount:"ДЪРЖАВИ",
  browse:"РАЗГЛЕДАЙ СЛУЧАИТЕ",search:"ТЪРСИ",filterCountry:"ДЪРЖАВА",filterMedia:"МАТЕРИАЛИ",
  allCountries:"Всички държави",allMedia:"Всички",hasPlayable:"С вградено видео",hasVideo:"С видеоизточник",hasDocuments:"С документи",
- loading:"Зареждане на световния архив…",offline:"Архивът временно не отговаря.",empty:"Няма случаи по избраните критерии.",
+ loading:"Зареждане на световния архив…",offline:"Архивът временно не отговаря.",partial:"Частичен архив: разширените записи временно не са достъпни",empty:"Няма случаи по избраните критерии.",
  results:"случая",page:"Страница",of:"от",prev:"← Предишна",next:"Следваща →",view:"ОТВОРИ ПЪЛНОТО ДОСИЕ",
  source:"ОРИГИНАЛЕН ИЗТОЧНИК",video:"▶ ВГРАДИМО ВИДЕО",linkedVideo:"ВИДЕОИЗТОЧНИК",documents:"ДОКУМЕНТИ",
  disclaimer:"Разгледай публикациите и свидетелствата. Маркерите на картата показват приблизителни райони.",
@@ -25,7 +25,7 @@ const packs={
  caseCount:"CASE FILES",pageCount:"PAGES",countryCount:"COUNTRIES",
  browse:"EXPLORE CASES",search:"SEARCH",filterCountry:"COUNTRY",filterMedia:"MATERIALS",
  allCountries:"All countries",allMedia:"All records",hasPlayable:"With embedded player",hasVideo:"With video source",hasDocuments:"With documents",
- loading:"Loading the world archive…",offline:"Archive temporarily unavailable.",empty:"No cases match your filters.",
+ loading:"Loading the world archive…",offline:"Archive temporarily unavailable.",partial:"Partial archive: extended records are temporarily unavailable",empty:"No cases match your filters.",
  results:"records",page:"Page",of:"of",prev:"← Previous",next:"Next →",view:"OPEN FULL DOSSIER",
  source:"ORIGINAL SOURCE",video:"▶ PLAYABLE VIDEO",linkedVideo:"VIDEO SOURCE",documents:"DOCUMENTS",
  disclaimer:"Explore the published accounts and original sources. Map markers indicate approximate locations.",
@@ -136,8 +136,9 @@ function render(){
  const matches=filtered(),total=matches.length,pages=Math.ceil(total/PAGE_SIZE);
  currentPage=Math.max(1,Math.min(currentPage,Math.max(1,pages)));
  const host=$("archiveResults");resetArchivePlayback();host.replaceChildren();
- $("archiveStatus").textContent=sourceError?T().offline:total?
+ const status=sourceError?T().offline:total?
   T().count+": "+num(total)+" "+T().results+" · "+T().page+" "+currentPage+" "+T().of+" "+pages:T().empty;
+ $("archiveStatus").textContent=partialArchive?(T().partial||packs.en.partial)+" · "+status:status;
  for(const r of matches.slice((currentPage-1)*PAGE_SIZE,currentPage*PAGE_SIZE))host.append(card(r));
  pagination(total);
  $("archiveCount").textContent=num(records.length);
@@ -182,13 +183,15 @@ async function start(){
   const data=await curatedResponse.json();if(!Array.isArray(data.cases))throw Error("Invalid cases payload");
   const curated=globalThis.AURORA_ARCHIVE?.prepareArchiveCases(data.cases)||data.cases;
   let bulk=[];
-  if(bulkResponse?.ok){
+  if(!bulkResponse?.ok)partialArchive=true;
+  else{
     try{
       const body=await bulkResponse.json();
       if(!Array.isArray(body.cases)||body.cases.length>25000)throw Error("Invalid bulk archive index");
       bulk=body.cases;
     }catch(error){
-      // Keep the 101 curated files readable if the optional large index is unavailable.
+      // Keep the curated files readable, but disclose partial coverage to visitors.
+      partialArchive=true;
       console.warn("Supplementary archive index unavailable",error);
     }
   }
