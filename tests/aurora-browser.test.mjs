@@ -77,6 +77,46 @@ const port=server.address().port;
 let browser;
 try{
   browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{})});
+  await test("Turnstile widget success with backend rejection explains safe cause and supports fresh retry",async()=>{
+    const context=await browser.newContext({viewport:{width:1000,height:700}});
+    const page=await context.newPage(),errors=[],posts=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    await page.goto("http://127.0.0.1:"+port+"/index.html");
+    await page.setContent('<button id="start" type="button">Run real Turnstile challenge</button>'+
+     '<div id="mount" data-site-key="test_nonpublic_placeholder_sitekey_123"></div>'+
+     '<p id="status" role="status"></p>');
+    await page.evaluate(()=>{
+     window.turnstile={
+      render:(_target,config)=>{
+       queueMicrotask(()=>config.callback('opaque_synthetic_token_never_displayed'));
+       return 'synthetic-widget-id';
+      },
+      remove:()=>{}
+     };
+    });
+    let responses=0;
+    await page.route('**/api/moderation/turnstile',async route=>{
+     posts.push({method:route.request().method(),body:JSON.parse(route.request().postData())});
+     responses++;
+     await route.fulfill({status:responses===1?403:200,contentType:'application/json',
+      body:JSON.stringify(responses===1
+       ?{verified:false,error:'challenge_rejected',reason:'server_secret_rejected'}
+       :{verified:true,report_submitted:false,private_data_changed:false})});
+    });
+    await page.addScriptTag({url:"http://127.0.0.1:"+port+"/assets/turnstile-diagnostic.js"});
+    await page.locator('#start').click();
+    await page.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('Secret Key'));
+    assert.match(await page.locator('#status').textContent(),/Cloudflare rejected the server Secret Key/);
+    assert.doesNotMatch(await page.locator('#status').textContent(),/opaque_synthetic_token/);
+    assert.equal(await page.locator('#start').isEnabled(),true);
+    await page.locator('#start').click();
+    await page.waitForFunction(()=>document.querySelector('#status')?.textContent.startsWith('PASS:'));
+    assert.match(await page.locator('#status').textContent(),/No report was submitted/);
+    assert.deepEqual(posts.map(x=>x.method),['POST','POST']);
+    assert.deepEqual(posts.map(x=>Object.keys(x.body)),[['token'],['token']]);
+    assert.deepEqual(errors,[]);
+    await context.close();
+  });
   await test("news automatically renders generated language text and exposes original title",async()=>{
     const ctx=await browser.newContext({viewport:{width:1200,height:800},reducedMotion:"reduce"});
     const page=await ctx.newPage(),errors=[],queryLanguages=[];

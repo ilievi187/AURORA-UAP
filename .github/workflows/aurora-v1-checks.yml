@@ -77,7 +77,7 @@ jobs:
       - name: Validate guarded D1 operation and manual-only workflow
         run: node --test tests/d1-ops.test.mjs
   browser-e2e:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4

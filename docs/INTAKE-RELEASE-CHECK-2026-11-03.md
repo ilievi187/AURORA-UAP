@@ -88,3 +88,8 @@ Cloudflare Security Events GraphQL matched the test's 11th HTTP 429 response to 
 ## Owner-only managed Turnstile preflight (4 November)
 
 The restricted /api/moderation/turnstile page provides an independent production-host Siteverify challenge and confirmation without enabling user submissions or touching D1. Access demands the normal signed Cloudflare owner JWT, so anonymous users or unauthorized accounts cannot view or POST. This is a safer proof step than prematurely switching on public intake. Test code and CSP isolation have automated coverage, but actual owner interaction is still required to mark the real Turnstile challenge PASSED. See docs/OWNER-TURNSTILE-DIAGNOSTIC-2026-11-04.md.
+
+
+## 4 Nov — Siteverify still requires a real PASS
+
+A real owner challenge displayed Cloudflare widget Success but an AURORA server verification FAIL. New owner-only diagnostic error categories and a fresh retry button were added; production Siteverify remains a launch blocker until the owner sees a real PASS with exact expected hostname/action. No public submission or D1 mutation occurred during the screenshot investigation.
