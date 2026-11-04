@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import {DatabaseSync} from "node:sqlite";
 import {RETENTION_DAYS,retentionDueCounts,purgeRejectedReports} from "../worker/privacy-retention.js";
-import {eraseQuarantinedReport} from "../worker/privacy-rights.js";
+import {eraseQuarantinedReport,previewPrivateAccountErasure} from "../worker/privacy-rights.js";
 const read=path=>readFileSync(new URL("../"+path,import.meta.url),"utf8");
 const NOW=new Date("2026-11-02T12:00:00.000Z");
 function setup(){
@@ -119,4 +119,69 @@ test("rights erasure is transactionally rolled back if the report deletion fails
  for(const table of ["intake_submissions","intake_reporter_links","intake_review_events"])
   assert.equal(sql.prepare("SELECT count(*) AS n FROM "+table+" WHERE "+(table==="intake_submissions"?"id":"submission_id")+"=?").get(id).n,1,table);
  sql.close();
+});
+
+
+test("full-account erasure preview aggregates only independently scoped D1 private records and cannot delete",async()=>{
+ const {db,sql,seed,OWNER}=setup();
+ try{
+  seed("pending","2026-11-01T00:00:00Z","2026-11-01T00:00:00Z");
+  seed("rejected","2026-11-01T00:00:00Z","2026-11-01T00:00:00Z");
+  seed("approved","2026-11-01T00:00:00Z","2026-11-01T00:00:00Z");
+  const outsider="123e4567-e89b-42d3-a456-426614174888";
+  const separate=seed("needs_clarification","2026-11-01T00:00:00Z","2026-11-01T00:00:00Z");
+  sql.prepare("UPDATE intake_reporter_links SET auth_user_id=? WHERE submission_id=?").run(outsider,separate);
+  const before={
+   submissions:sql.prepare("SELECT COUNT(*) AS n FROM intake_submissions").get().n,
+   audits:sql.prepare("SELECT COUNT(*) AS n FROM intake_review_events").get().n,
+   links:sql.prepare("SELECT COUNT(*) AS n FROM intake_reporter_links").get().n
+  };
+  const own=await previewPrivateAccountErasure(db,{authUserId:OWNER});
+  assert.deepEqual(own,{
+   dry_run:true,scope:"d1_private_reports_only",
+   report_counts:{total:3,quarantined:3,pending:1,needs_clarification:0,approved:1,rejected:1},
+   private_review_event_count:3,needs_separate_review:false,executed:false,
+   next_steps:[
+    "independent_supabase_account_verification",
+    "owner_review_of_scope_and_any_published_material",
+    "approved_backup_restore_reconciliation",
+    "owner_approved_private_d1_erasure",
+    "separate_supabase_auth_and_processor_erasure",
+    "independent_final_verification"
+   ]
+  });
+  const other=await previewPrivateAccountErasure(db,{authUserId:outsider});
+  assert.equal(other.report_counts.total,1);
+  assert.equal(other.report_counts.needs_clarification,1);
+  assert.equal(other.private_review_event_count,1);
+  const missing=await previewPrivateAccountErasure(db,{authUserId:"123e4567-e89b-42d3-a456-426614174333"});
+  assert.equal(missing.report_counts.total,0);
+  assert.equal(missing.private_review_event_count,0);
+  for(const candidate of [null,undefined,"",OWNER+"wrong","not-a-uuid"])
+   await assert.rejects(()=>previewPrivateAccountErasure(db,{authUserId:candidate}),/Invalid private account identity/);
+  await assert.rejects(()=>previewPrivateAccountErasure({}, {authUserId:OWNER}),/D1 required/);
+  const exposed=JSON.stringify(own);
+  assert.equal(exposed.includes(OWNER),false);
+  assert.equal(exposed.includes(separate),false);
+  assert.equal(exposed.includes("Approximate area"),false);
+  assert.equal(exposed.includes("description"),false);
+  assert.deepEqual({
+   submissions:sql.prepare("SELECT COUNT(*) AS n FROM intake_submissions").get().n,
+   audits:sql.prepare("SELECT COUNT(*) AS n FROM intake_review_events").get().n,
+   links:sql.prepare("SELECT COUNT(*) AS n FROM intake_reporter_links").get().n
+  },before,"preview must leave all account data untouched");
+  assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM cases").get().n,0);
+ }finally{sql.close()}
+});
+
+test("full-account privacy preview does not imply Supabase account/backup deletion, even with zero reports",async()=>{
+ const {db,sql,OWNER}=setup();
+ try{
+  const result=await previewPrivateAccountErasure(db,{authUserId:OWNER});
+  assert.equal(result.report_counts.total,0);
+  assert.equal(result.dry_run,true);
+  assert.equal(result.executed,false);
+  assert.ok(result.next_steps.includes("separate_supabase_auth_and_processor_erasure"));
+  assert.ok(result.next_steps.includes("approved_backup_restore_reconciliation"));
+ }finally{sql.close()}
 });

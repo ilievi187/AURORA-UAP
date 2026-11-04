@@ -12,7 +12,7 @@ This operator ledger is not legal certification or permission to activate the pr
 | Moderator access | Anonymous Access redirect and private API tests green | Real unauthorized DIFFERENT account denial test |
 | D1 quarantine | All migrations, privacy regression tests green; 0 real reports | Keep disabled until all remaining gates completed |
 | Encrypted backup | Actual encrypted Google Drive backup, isolated restore and daily timer work | Sign off backup rotation/retention, rights erasure reconciliation and device-off behavior |
-| Personal data deletion | Internal D1 erasure tested, authenticated read-only user receipts available | Independently test admin Supabase deletion and provider retention; maintain privacy request log |
+| Personal data deletion | Private D1 single-report erasure tested, authenticated read-only receipts available, new account-wide D1 dry-run inventory with dual-account isolation tests | Independently test actual Supabase deletion, legal retention, Drive/D1 backup reconciliation and restricted rights-request log; no auto-delete |
 | Privacy/legal | Public BG/EN notice, working draft with open details | Qualified BG/EU GDPR review of Art. 6 legal basis, controller details, processors, transfer terms, minors and third-party information |
 | Go/live | Production GET still says accepting:false, automatic_publication:false | Explicit final decision after all blockers, with emergency-off playbook ready |
 
