@@ -39,3 +39,21 @@ Supabase official documentation: https://supabase.com/docs/guides/auth/managing-
 ## Production follow-up 4 November 2026
 
 Initial release preflight detected HTTP 503 on anonymous GET /api/account/privacy while the public Auth configuration remained available but the separate submission activation switch was unset. The follow-up change splits verifiedAccount (read-only, needs configured Supabase sign-in) from verifiedReporter (submission, also requires explicit AURORA_REPORT_AUTH_ENABLED=enabled). This must be checked live after deployment: anonymous GET should respond HTTP 401 and no-store, and the public intake status must continue accepting:false.
+
+
+## Full private-account erasure preview — 4 November 2026
+
+The internal, read-only previewPrivateAccountErasure(db,{authUserId}) helper now produces a minimized D1-only scope report for an independently verified Supabase Auth UUID. The result contains aggregated counts by private status, quarantined reports and audit events, never report bodies, emails, IDs or review rationales. It does not perform deletion and has no public endpoint, timer or self-service route.
+
+Owner process:
+
+1. Verify the requester's Supabase identity independently, using an approved private operator channel. A UUID supplied by a request email alone is not trustworthy.
+2. Invoke the helper only inside a restricted D1 operator environment, with an appropriately scoped private DB binding. Never copy the UUID into GitHub, an unencrypted note or chat.
+3. If needs_separate_review is true, stop and investigate non-quarantined/publication state before any private D1 deletion. A private D1 account preview does not cover public dossiers or separately published copies.
+4. Reconcile encrypted Google Drive backups, Cloudflare D1 Time Travel and processor logs under the legally approved retention/erasure policy BEFORE executing any individual deletion. A restored old backup can reintroduce previously erased data.
+5. Review the list of required actions. The preview returning zero D1 rows does not prove that the Supabase account was deleted, that Brevo/Cloudflare logs are gone, or that backups were sanitized.
+6. Each private D1 deletion still requires the separately approved eraseQuarantinedReport workflow and ownership match; the account preview is deliberately non-destructive.
+7. Complete and verify Supabase account deletion separately using authorized Supabase administrative controls and restricted evidence. Do not give a service-role key to the browser.
+8. Keep a minimal restricted rights-request record according to an independently reviewed retention period, and acknowledge the request within applicable deadlines.
+
+Tests validate technical scope and isolation only. They do not establish GDPR compliance or authorize a real deletion or public intake activation.

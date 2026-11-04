@@ -28,3 +28,8 @@ The owner should review the workflow and all local/legal prerequisites before ev
 ## Account privacy update — 4 November 2026
 
 A verified user may read only their own private receipt references and statuses through GET /api/account/privacy while public intake is disabled. The visible email link allows an individual to initiate a manual deletion request, but no request is sent until they send the email, and no data is deleted automatically. See docs/ACCOUNT-PRIVACY-OPERATIONS-2026-11-04.md for the required operator checks and residual risks.
+
+
+## 4 Nov 2026: private account-wide count-only dry-run
+
+Internal previewPrivateAccountErasure(db,{authUserId}) counts only private D1 reports linked to a separately verified Supabase UUID and related private review events. No email, report text, receipt IDs or direct account identifier are returned. It has no write path, public API endpoint or automatic schedule. Synthetic two-account tests demonstrate that other accounts cannot be included and that D1 remains unchanged. This is a preparatory inventory step, NOT full-account deletion or legal approval. See docs/ACCOUNT-PRIVACY-OPERATIONS-2026-11-04.md.
