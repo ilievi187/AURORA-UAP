@@ -1,3 +1,5 @@
+> **LATEST RESULT — 4 NOV 2026, 21:09 EET:** Owner-approved real production backup via the systemd service completed successfully after the owner installed an account-scoped Cloudflare token with D1 Edit and the correct Account ID. D1 export, age encryption, private Google Drive upload, download/decryption verification and mode-0600 local copy all passed. Daily timer remains enabled/active; the next scheduled run is pending. Historical incident notes below describe the previous failure.
+
 # AURORA — unattended Cloudflare D1 backup credential setup
 
 **Operator action still required as of 4 November 2026.** Do not declare that daily encrypted exports are working until the exact production job completes successfully and an actual encrypted Drive copy is verified.
@@ -53,3 +55,10 @@ Official references:
 - https://freedesktop.org/software/systemd/man/latest/systemd.exec.html
 
 **Privacy caveat:** A successful encrypted archive is not evidence of an approved backup retention/deletion period or GDPR compliance. External erasure reconciliation and independent legal review remain mandatory before public intake opens.
+
+
+## Corrected Cloudflare permission finding
+
+D1 Read permitted viewing the AURORA database but denied Wrangler D1 export with 403 / code 10000. The owner elevated only this account-scoped token to D1 Edit, which subsequently succeeded. D1 Edit is broader than read-only and can authorize DB changes; protect the token locally, audit or rotate it if compromised, and consider a more limited export privilege if Cloudflare supports one later. No token content is in GitHub. The next daily timer run still needs separate observation.
+
+The latest encrypted archive is AURORA-D1-20261104T190946Z.sql.age. The systemd service ended successfully; live prelaunch safety monitor passed 12/12, with no public intake enabled. This does not mean legal retention or privacy rights processes are complete.

@@ -1,3 +1,5 @@
+> **LATEST UPDATE 4 NOV 2026 21:09 EET:** The owner repaired the noninteractive Cloudflare API credential, and a real production D1 export succeeded, followed by age encryption, private Google Drive upload, downloaded decryption check and mode-0600 local copy. Service result=success/exit 0; next unattended timer run scheduled for 5 Nov at about 04:16 EET. Historical notes below describe earlier setup. Wrangler D1 export required D1 Edit, a broader permission than Read; protect and audit this token.
+
 > **UPDATE 4 NOV 2026:** The scheduled D1 backup service is enabled but the latest run **FAILED** because noninteractive Wrangler requires a scoped Cloudflare API token. An encrypted historical Drive/local archive exists, but do NOT claim fresh daily backups are working. One-time secure token enrollment is needed; see docs/BACKUP-UNATTENDED-CLOUDFLARE-AUTH-2026-11-04.md.
 
 # AURORA encrypted Google Drive backup — operator setup
