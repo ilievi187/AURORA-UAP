@@ -54,6 +54,11 @@ export function normalizeRow(row){
   provenance:{source_name:publisher,source_url:SOURCE_JSON,source_record_id:ext,license:"CC BY 4.0",
    attribution:"UAPDrop · https://www.uapdrop.com/data.html",source_kind:type}};
 }
+// Imported content can never silently regress translated English back to raw French.
+export function wouldEraseEnglishTranslatedGeipan(current){
+ return Boolean(current?.cases?.some(c=>
+   c.original_language==="fr"&&c.translation?.target_language==="en"));
+}
 export function buildBulk(rows,curated=[]){
  if(!Array.isArray(rows)||!rows.length)throw Error("Invalid input dataset");
  const curatedUrls=new Set(curated.map(c=>c.source?.url).filter(Boolean));
@@ -88,6 +93,16 @@ async function main(){
  const curated=JSON.parse(await readFile(path.join(ROOT,"data/cases.json"),"utf8")).cases;
  const {index,shards,report}=buildBulk(rows,curated);
  if(process.argv.includes("--check")){console.log(report);return}
+ // Never let a new raw UAPDrop rebuild silently replace the 2,715 translated
+ // GEIPAN dossiers with French wrongly tagged as English. Regenerate into a
+ // staging copy, translate and review it, then atomically deploy together.
+ try {
+  const current=JSON.parse(await readFile(path.join(OUTPUT,"index.json"),"utf8"));
+  if(wouldEraseEnglishTranslatedGeipan(current))
+   throw Error("Refusing destructive archive import: existing English-translated GEIPAN cases would revert to French. Rebuild/translate in an isolated staging copy.");
+ }catch(e){
+  if(e.code!=="ENOENT")throw e;
+ }
  await mkdir(path.join(OUTPUT,"shards"),{recursive:true});
  await writeFile(path.join(OUTPUT,"index.json"),JSON.stringify({cases:index})+"\n");
  await writeFile(path.join(OUTPUT,"manifest.json"),JSON.stringify(report)+"\n");

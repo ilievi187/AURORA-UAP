@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import {runInNewContext} from "node:vm";
-import {buildBulk,normalizeRow,shardFor} from "../scripts/import-uapdrop-records.mjs";
+import {buildBulk,normalizeRow,shardFor,wouldEraseEnglishTranslatedGeipan} from "../scripts/import-uapdrop-records.mjs";
 const read=p=>JSON.parse(readFileSync(new URL("../"+p,import.meta.url),"utf8"));
 const manifest=read("data/bulk/manifest.json");
 const index=read("data/bulk/index.json").cases;
@@ -34,7 +34,9 @@ test("shards contain every full dossier exactly once, with source and no invente
    assert.ok(r.media.length===0);
    if(r.id.startsWith("geipan-")){
     assert.equal(r.original_language,"fr");
-    assert.ok(r.summary.en.startsWith("Original French account"));
+    assert.ok(r.summary.fr.length>4,"Original French text must remain available");
+    assert.equal(r.translation?.target_language,"en");
+    assert.doesNotMatch(r.summary.en,/^Original French account/,"English display is not French");
    }else{
     assert.equal(r.original_language,"en");
     assert.equal(r.lat,null,"NARA's non-precision geocodes are not displayed as measured positions");
@@ -73,4 +75,11 @@ test("public browser shard hash matches Node build; invalid IDs never fetch",asy
  });
  assert.equal(resolved.id,id);
  assert.equal(resolved.source.url,record.source.url);
+});
+
+test("future raw French imports cannot silently erase already translated GEIPAN content",()=>{
+ assert.equal(wouldEraseEnglishTranslatedGeipan({cases:[{
+  original_language:"fr",translation:{target_language:"en",status:"machine_translated"}}]}),true);
+ assert.equal(wouldEraseEnglishTranslatedGeipan({cases:[{original_language:"fr"}]}),false);
+ assert.equal(wouldEraseEnglishTranslatedGeipan({cases:[{original_language:"en"}]}),false);
 });
