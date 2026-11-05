@@ -374,7 +374,7 @@ test("underfilled live refresh uses last-good without losing current headlines o
   if(originalCaches===undefined)delete globalThis.caches;else globalThis.caches=originalCaches;
  }
 });
-test("last-good newsroom response is returned before a slow refresh completes",async()=>{
+test("last-good newsroom response is instant without a per-visitor worker refresh",async()=>{
  const key="https://aurora-cache.invalid/news/last-good/global";
  const saved={status:"live",edition:"global",updated_at:new Date().toISOString(),count:2,items:[
   {title:"Sourced headline one",url:"https://publisher.test/one",source:"Example Press",published:new Date().toISOString()},
@@ -404,9 +404,8 @@ test("last-good newsroom response is returned before a slow refresh completes",a
   assert.equal(body.status,"cached");
   assert.equal(body.count,2);
   assert.equal(body.items[0].url,"https://publisher.test/one");
-  assert.equal(body.last_attempt.status,"refreshing");
-  assert.equal(pending.length,1,"refresh should continue through the request lifecycle waitUntil hook");
-  await Promise.all(pending.splice(0));
+  assert.equal(body.last_attempt.status,"scheduled_refresh");
+  assert.equal(pending.length,0,"per-visitor background RSS refresh would exhaust Cloudflare Worker resources");
  }finally{
   clearTimeout(keepAlive);
   globalThis.fetch=originalFetch;
@@ -613,11 +612,11 @@ test("cold Cloudflare edge serves explicit dated source-backed snapshot when bot
  const data=await response.json();
  assert.equal(requested,1);
  assert.equal(data.status,"cached");
- assert.equal(data.cache_source,"dated_publisher_snapshot");
+ assert.equal(data.cache_source,"scheduled_source_snapshot");
  assert.equal(data.count,2);
  assert.equal(data.items[0].url,"https://publisher.example/one");
  assert.equal(data.items[1].source,"Publisher Two");
- assert.equal(data.last_attempt.status,"unavailable");
+ assert.equal(data.last_attempt.status,"scheduled_refresh");
  assert.equal(data.translation.status,"unavailable","unavailable AI must not fabricate translations");
  assert.equal(data.items[0].translated_title,undefined);
 });
@@ -647,7 +646,7 @@ test("cold edge snapshot is never served if stale, invalid, mixed-content or wro
  }
 });
 
-test("live source success takes precedence over historical asset snapshot",async()=>{
+test("invalid asset snapshot never overrides healthy live publisher data",async()=>{
  let assetsRead=0;
  const response=await newsRoute({
   request:new Request("https://aurorauap.org/api/news?edition=global"),
@@ -656,7 +655,30 @@ test("live source success takes precedence over historical asset snapshot",async
   catalogFetcher:async()=>textResponse("<rss><channel></channel></rss>")
  });
  assert.equal(response.status,200);
- assert.equal(assetsRead,0,"static fallback must never override live publisher data");
+ assert.equal(assetsRead,1,"invalid scheduled asset is checked and safely bypassed");
  assert.equal((await response.json()).status,"live");
 });
 
+
+
+test("valid scheduled snapshot answers cold-edge traffic without any expensive upstream fetches",async()=>{
+ const stamp=new Date().toISOString().slice(0,10);
+ const records=Array.from({length:15},(_,i)=>({title:`UAP source-backed report ${i}`,source:"Publisher",url:`https://publisher.example/news/${i}`,published:stamp,language:"en",source_role:"specialist-press"}));
+ let assetsRead=0,googleRequests=0,publisherRequests=0;
+ const response=await newsRoute({
+  request:new Request("https://aurorauap.org/api/news?edition=global&lang=en&offset=0"),
+  env:{ASSETS:{async fetch(){assetsRead++;return Response.json({schema_version:1,checked_on:stamp,editions:{global:records}})}}},
+  fetcher:async()=>{googleRequests++;throw Error('on-request Google fetch is forbidden on a warm snapshot')},
+  catalogFetcher:async()=>{publisherRequests++;throw Error('on-request publisher fetch is forbidden on a warm snapshot')}
+ });
+ assert.equal(response.status,200);
+ const payload=await response.json();
+ assert.equal(payload.status,'cached');
+ assert.equal(payload.cache_source,'scheduled_source_snapshot');
+ assert.equal(payload.items.length,15);
+ assert.equal(payload.items[0].source_role,'specialist-press');
+ assert.equal(payload.items[0].published,stamp);
+ assert.equal(assetsRead,1);
+ assert.equal(googleRequests,0);
+ assert.equal(publisherRequests,0);
+});

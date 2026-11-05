@@ -328,8 +328,9 @@ export async function collectNewsEdition({edition,fetcher=fetch,catalogFetcher=f
 const STATIC_NEWS_SNAPSHOT_MAX_AGE_MS=14*24*60*60*1000;
 // Pages' edge Cache API is POP-local: a new visitor or cold POP may have no
 // cached headlines even when another edge has recently shown real articles.
-// Read an explicitly dated, repository-reviewed historical snapshot ONLY when
-// both live source lanes and the normal last-good cache have failed.
+// Read an explicitly dated, source-backed snapshot generated outside the Worker.
+// The public request path must not run dozens of RSS fetch/parse tasks: cold
+// Cloudflare isolates can exceed CPU/memory limits (error 1102).
 async function readStaticNewsSnapshot(request,edition,assets){
  if(!assets||typeof assets.fetch!=="function")return null;
  try{
@@ -349,9 +350,15 @@ async function readStaticNewsSnapshot(request,edition,assets){
    let u;try{u=new URL(item.url)}catch{return null}
    if(u.protocol!=="https:"||u.username||u.password||u.port||!Number.isFinite(Date.parse(item.published)))return null;
    items.push({title:item.title.slice(0,280),source:item.source.slice(0,100),
-    url:u.href,published:item.published,language:typeof item.language==="string"?item.language:"en"});
+    url:u.href,published:item.published,language:typeof item.language==="string"?item.language:"en",
+    ...(typeof item.source_role==="string"?{source_role:item.source_role}:{}),
+    ...(typeof item.source_region==="string"?{source_region:item.source_region}:{}),
+    ...(typeof item.category==="string"?{category:item.category}:{})});
   }
-  return {checked_at:new Date(checked).toISOString(),items};
+  const precise=Date.parse(payload.collected_at||'');
+  const checkedAt=Number.isFinite(precise)&&precise>=checked&&precise<Date.now()+3600000&&precise<checked+86400000
+    ?new Date(precise).toISOString():new Date(checked).toISOString();
+  return {checked_at:checkedAt,items};
  }catch{return null}
 }
 async function getRawNews({request,ctx,fetcher=fetch,catalogFetcher=fetch,timeoutMs=NEWS_REQUEST_TIMEOUT_MS,skipStaleFallback=false,assets=null,historyDb=null,historyEnabled=false}){
@@ -370,13 +377,24 @@ async function getRawNews({request,ctx,fetcher=fetch,catalogFetcher=fetch,timeou
     const payload=await saved.clone().json();
     const age=Date.now()-Date.parse(payload.updated_at);
     if(age>=0&&age<FALLBACK_AGE*1000&&Array.isArray(payload.items)&&payload.items.length>=MIN_STALE_ITEMS){
-     ctx.waitUntil(getRawNews({request,ctx,fetcher,catalogFetcher,timeoutMs,skipStaleFallback:true,assets,historyDb,historyEnabled}).catch(()=>{}));
-     return Response.json({...payload,status:"cached",last_attempt:{status:"refreshing",at:new Date().toISOString(),count:0,items:[],diagnostics:null}},{headers:{
+     // The separately scheduled GitHub job refreshes the durable snapshot.
+     // Never start a resource-intensive refresh per visitor from waitUntil.
+     return Response.json({...payload,status:"cached",last_attempt:{status:"scheduled_refresh",at:new Date().toISOString(),count:0,items:[],diagnostics:null}},{headers:{
       "Cache-Control":"no-store","X-Content-Type-Options":"nosniff"
      }});
     }
    }
   }catch{}
+ }
+ // Fast, bounded, correctly dated fallback for cold POPs. Source collection
+ // happens in a scheduled GitHub runner rather than in the public Worker.
+ const historical=await readStaticNewsSnapshot(request,edition,assets);
+ if(historical){
+  return Response.json({status:"cached",edition,updated_at:historical.checked_at,
+   count:historical.items.length,items:historical.items.map(item=>({...item,archival:true})),
+   cache_source:"scheduled_source_snapshot",
+   last_attempt:{status:"scheduled_refresh",at:historical.checked_at,count:0,items:[],diagnostics:null}
+  },{headers:{"Cache-Control":"no-store","X-Content-Type-Options":"nosniff"}});
  }
  const collected=await collectNewsEdition({edition,fetcher,catalogFetcher,timeoutMs});
  const {items,diagnostics}=collected;
@@ -411,15 +429,13 @@ async function getRawNews({request,ctx,fetcher=fetch,catalogFetcher=fetch,timeou
   if(cache&&ctx?.waitUntil)ctx.waitUntil(cache.put(key,out.clone()).catch(()=>{}));
   return out;
  }
- const historical=await readStaticNewsSnapshot(request,edition,assets);
  let archived={items:[],count:0,has_more:false};
  if(historyEnabled&&await newsFeedArchiveSchemaReady(historyDb))archived=await readNewsArchive(historyDb,{edition,limit:200,offset:0});
- const fallbackItems=dedupeHeadlines([...(historical?.items??[]),...archived.items]).slice(0,200).map(item=>({...item,archival:true}));
+ const fallbackItems=dedupeHeadlines(archived.items).slice(0,200).map(item=>({...item,archival:true}));
  if(fallbackItems.length){
-  const cache_source=historical&&archived.items.length?"mixed_news_history":historical?"dated_publisher_snapshot":"news_history_db";
+  const cache_source="news_history_db";
   const latestSeen=archived.items.reduce((latest,item)=>Math.max(latest,Date.parse(item.edition_last_seen_at)||0),0);
-  const snapshotTime=historical?Date.parse(historical.checked_at)||0:0;
-  return Response.json({status:"cached",edition,updated_at:new Date(Math.max(latestSeen,snapshotTime)||Date.now()).toISOString(),
+  return Response.json({status:"cached",edition,updated_at:new Date(latestSeen||Date.now()).toISOString(),
    count:fallbackItems.length,history_count:archived.count,items:fallbackItems,cache_source,
    last_attempt:{status:"unavailable",at:new Date().toISOString(),count:0,items:[],diagnostics}
   },{headers:{"Cache-Control":"no-store","X-Content-Type-Options":"nosniff"}});
