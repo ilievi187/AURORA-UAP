@@ -120,3 +120,13 @@ export function compactMarkerCount(value) {
     ? new Intl.NumberFormat('en', {notation:'compact', maximumFractionDigits:1}).format(value)
     : String(value);
 }
+
+/** Visual density only: exact counts remain available in marker metadata and titles. */
+export function markerDensityTier(count) {
+  if (!Number.isSafeInteger(count) || count < 1) return 'quiet';
+  if (count < 3) return 'quiet';
+  if (count < 10) return 'light';
+  if (count < 50) return 'active';
+  if (count < 200) return 'bright';
+  return 'hotspot';
+}

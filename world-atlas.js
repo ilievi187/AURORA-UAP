@@ -1,4 +1,4 @@
-import { clusterMarkers, compactMarkerCount, filterCases, hasCoordinates, mapPrecision } from './world-atlas-model.js';
+import { clusterMarkers, filterCases, hasCoordinates, mapPrecision, markerDensityTier } from './world-atlas-model.js';
 import { labels } from './world-atlas-labels.js';
 import { caseTextLanguage as resolvedCaseTextLanguage, translationDisclosure } from './archive-localization.js';
 
@@ -478,14 +478,14 @@ function renderSourcePins() {
   for (const {code,cluster} of allClusters) {
       const marker=place(cluster.left,cluster.top);
       const link = document.createElement('a');
-      link.className = 'world-source-marker';
+      link.className = 'world-source-marker density-' + markerDensityTier(cluster.count);
       link.href = '/countries/' + encodeURIComponent(code);
       link.dataset.country = code;
       link.dataset.geoCount = String(cluster.count);
       link.dataset.anchorShift = String(marker.shift);
       link.style.left = marker.left + '%';
       link.style.top = marker.top + '%';
-      link.textContent = cluster.count > 1 ? compactMarkerCount(cluster.count) : '•';
+      link.textContent = ''; // Density is conveyed by size and color, not numeric bubbles.
       const note=marker.shift ? ' · Marker offset for visibility' : '';
       link.title = countryDisplayName(code) + ' · ' + cluster.count +
         ' approximate city source records · Open country dossiers' + note;
@@ -561,14 +561,14 @@ function renderPins() {
       ? precisionKinds[0]
       : precisionKinds.length === 1 ? precisionKinds[0] : 'mixed';
     const approximate = cluster.count === 1 && precisionKind !== 'exact';
-    button.className = cluster.count > 1 ? 'world-map-marker is-cluster' : 'world-map-marker';
+    button.className = (cluster.count > 1 ? 'world-map-marker is-cluster' : 'world-map-marker') + ' density-' + markerDensityTier(cluster.count);
     if (approximate) button.classList.add('is-approximate');
     button.style.left = `${cluster.left}%`;
     button.style.top = `${cluster.top}%`;
     button.dataset.clusterCount = String(cluster.count);
     button.dataset.markerCaseId = cluster.cases[0].id;
     button.dataset.mapPrecision = precisionKind;
-    button.textContent = cluster.count > 1 ? String(cluster.count) : approximate ? '≈' : '•';
+    button.textContent = ''; // Keep exact counts in ARIA/title/data, not in the map dot.
     const preview = cluster.cases.slice(0, 3).map((item) => caseText(item, 'title')).join(', ');
     const additional = cluster.count > 3 ? ` (+${cluster.count - 3})` : '';
     const sourceLanguage = cluster.cases.some(needsTranslationDisclosure) ? ` · ${translationDisclosure(language())}` : '';
@@ -582,7 +582,7 @@ function renderPins() {
     const hasCountry = /^[A-Z]{2}$/.test(code) && code !== 'XZ';
     const countryName = hasCountry ? countryDisplayName(code) : 'Location without an assigned country';
     button.dataset.country = hasCountry ? code : '';
-    button.title = `${preview}${additional} · ${precisionLabels.join(', ')} · ${countryName} · Open ${hasCountry?'country dossiers':'case dossier'}`;
+    button.title = `${cluster.count} case${cluster.count === 1 ? '' : 's'} · ${preview}${additional} · ${precisionLabels.join(', ')} · ${countryName} · Open ${hasCountry?'country dossiers':'case dossier'}`;
     button.setAttribute('aria-label', `${countryName} · ${precisionLabels.join(', ')} · Open ${hasCountry?'country':'case'} files · ${cluster.count} map locations`);
     button.addEventListener('click', () => {
       const destination=hasCountry ? '/countries/' + encodeURIComponent(code)

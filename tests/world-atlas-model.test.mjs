@@ -149,7 +149,7 @@ test('map clustering groups nearby markers, separates them with zoom, and omits 
   assert.ok(elapsed < 1500, `dense marker clustering took ${elapsed.toFixed(1)}ms`);
 });
 
-test('large map marker counts use compact English labels while preserving exact underlying values', () => {
+test('source count helper retains exact data while the map renders density-only markers', () => {
   assert.equal(atlas.compactMarkerCount(1), '1');
   assert.equal(atlas.compactMarkerCount(999), '999');
   assert.equal(atlas.compactMarkerCount(1000), '1K');
@@ -158,7 +158,27 @@ test('large map marker counts use compact English labels while preserving exact 
   assert.equal(atlas.compactMarkerCount(2715), '2.7K');
   assert.equal(atlas.compactMarkerCount(12500), '12.5K');
   const map = readFileSync(new URL('../world-atlas.js', import.meta.url), 'utf8');
-  assert.match(map, /link\.textContent = cluster\.count > 1 \? compactMarkerCount\(cluster\.count\)/);
+  assert.match(map, /link\.textContent = ''/,'source markers must not display numeric counts');
+  assert.match(map, /markerDensityTier\(cluster\.count\)/,'marker size reflects density');
   assert.match(map, /link\.dataset\.geoCount = String\(cluster\.count\)/);
   assert.match(map, /link\.setAttribute\('aria-label'[\s\S]*?cluster\.count/);
+});
+
+
+test('atlas density tiers give increasing visual emphasis while retaining exact counts', () => {
+  const expected = [
+    [1,'quiet'], [2,'quiet'], [3,'light'], [9,'light'],
+    [10,'active'], [49,'active'], [50,'bright'], [199,'bright'],
+    [200,'hotspot'], [2715,'hotspot']
+  ];
+  for (const [count,tier] of expected) assert.equal(atlas.markerDensityTier(count),tier);
+  const js=readFileSync(new URL('../world-atlas.js',import.meta.url),'utf8');
+  const css=readFileSync(new URL('../atlas-density.css',import.meta.url),'utf8');
+  const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+  assert.match(js,/button\.textContent = ''/,'curated map markers have no numeric labels');
+  assert.match(js,/link\.dataset\.geoCount = String\(cluster\.count\)/,'original source count remains exact');
+  assert.match(js,/button\.dataset\.clusterCount = String\(cluster\.count\)/,'curated count remains exact');
+  assert.match(js,/button\.setAttribute\('aria-label'[\s\S]*?cluster\.count/,'curated counts remain screen-reader accessible');
+  for (const tier of ['quiet','light','active','bright','hotspot']) assert.match(css,new RegExp('\\.density-'+tier));
+  assert.match(html,/atlas-density\.css/);
 });
