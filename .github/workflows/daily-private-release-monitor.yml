@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 4
     env:
-      AURORA_RELEASE_MONITOR_PROFILE: ${{ vars.AURORA_RELEASE_MONITOR_PROFILE || 'prelaunch' }}
+      AURORA_RELEASE_MONITOR_PROFILE: ${{ vars.AURORA_RELEASE_MONITOR_PROFILE || 'postlaunch' }}
     steps:
       - name: Get site source
         uses: actions/checkout@v4

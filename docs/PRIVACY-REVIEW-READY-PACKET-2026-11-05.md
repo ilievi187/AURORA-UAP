@@ -1,5 +1,8 @@
 # AURORA UAP — qualified privacy review handoff (5 November 2026)
 
+> **Status update, 5 Nov 2026 (evening):** After the owner requested launch and saved the production variables, the live site now responds `accepting:true` in private text-only quarantine mode; no automatic publication. This packet remains **unapproved as a legal review** and its earlier references to intake being OFF are historical prelaunch evidence. The owner may self-review rather than hire a consultant, but must still complete actual processing, rights, processor and retention duties. See [current owner-led release procedure](OWNER-CONTROLLED-REPORT-LAUNCH-2026-11-05.md) and [daily postlaunch monitor](DAILY-SECURITY-MONITOR-2026-11-04.md).
+
+
 > **UNAPPROVED REVIEW PACK. PUBLIC REPORT INTAKE REMAINS OFF.** This document records engineering evidence, not legal advice, a signed DPA, a verified international transfer arrangement, or a GDPR compliance certificate. Review by a qualified Bulgarian/EU privacy professional and independent owner sign-off are required. No real visitor report or private identifiers belong in this repository.
 
 ## Later clarification — owner self-review is permitted (5 Nov 2026)
