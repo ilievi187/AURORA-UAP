@@ -1,2 +1,9 @@
+# AURORA public research archive — public pages are crawlable.
+# Sensitive endpoints are gated by authentication, not by robots.txt.
 User-agent: *
-Disallow: /
+Allow: /
+Disallow: /api/
+Disallow: /moderation
+Disallow: /news-editor
+
+Sitemap: https://aurorauap.org/sitemap.xml

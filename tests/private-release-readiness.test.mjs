@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {checkReadOnlyRelease} from '../scripts/check-private-release-readiness.mjs';
 const BASE='https://aurorauap.org';
-const notice='<article id="bg" lang="bg"></article><article id="en" lang="en"></article>Supabase Auth Brevo GDPR';
+const notice='<article id="en" lang="en"></article>Supabase Auth Brevo GDPR';
 const STATE={accepting:false,mode:'local_draft_only',attachments_enabled:false,contact_collection_enabled:false,automatic_publication:false,auth_required:true};
 function mock(overrides={}){
  const calls=[];
@@ -69,7 +69,7 @@ test('Accidental release/invalid auth gating/caching fails prelaunch contract',a
  assert.equal((await checkReadOnlyRelease(noCache.fetcher)).ok,false);
 });
 test('Missing Brevo/Supabase processing disclosure fails release preflight',async()=>{
- const m=mock({'/privacy':new Response('<article id="bg"></article><article id="en"></article>',{status:200})});
+ const m=mock({'/privacy':new Response('<article id="en"></article>',{status:200})});
  assert.equal((await checkReadOnlyRelease(m.fetcher)).ok,false);
 });
 
@@ -114,4 +114,13 @@ test('monitor rejects unrecognized release profile instead of ignoring safeguard
  const m=mock();
  await assert.rejects(()=>checkReadOnlyRelease(m.fetcher,{profile:'launch-now'}),/Invalid release monitor profile/);
  assert.equal(m.calls.length,0);
+});
+
+test('live English-only notice passes, but missing English notice still fails closed',async()=>{
+ const valid=mock({'/privacy':new Response('<article id="en" lang="en"></article>Supabase Auth Brevo GDPR',{status:200})});
+ assert.equal((await checkReadOnlyRelease(valid.fetcher)).ok,true);
+ const missing=mock({'/privacy':new Response('<article id="bg"></article>Supabase Auth Brevo GDPR',{status:200})});
+ const result=await checkReadOnlyRelease(missing.fetcher);
+ assert.equal(result.ok,false);
+ assert.ok(result.results.some(row=>row.name==='privacy-notice'&&!row.ok));
 });

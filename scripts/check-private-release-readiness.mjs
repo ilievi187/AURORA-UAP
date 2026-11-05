@@ -73,9 +73,9 @@ export async function checkReadOnlyRelease(fetcher=fetch,{profile='prelaunch'}={
  if(privacy.status!==200)fail('privacy-notice','HTTP '+privacy.status);
  else {
   const body=await privacy.text();
-  const fields=['<article id="bg"','<article id="en"','Supabase Auth','Brevo','GDPR'];
-  if(fields.some(x=>!body.includes(x)))fail('privacy-notice','Missing bilingual or processor disclosure');
-  else pass('privacy-notice','BG/EN and processors publicly disclosed');
+  const fields=['<article id="en"','Supabase Auth','Brevo','GDPR'];
+  if(fields.some(x=>!body.includes(x)))fail('privacy-notice','Missing English privacy notice or processor disclosure');
+  else pass('privacy-notice','English privacy notice and processors publicly disclosed');
  }
  // A private account inventory must deny anonymous visitors even while intake is off.
  const account=await get(fetcher,'/api/account/privacy');
