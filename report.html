@@ -11,34 +11,34 @@
 <link rel="stylesheet" href="/aurora-editorial-interiors.css">
 </head>
 <body data-aurora-page="report">
-<a class="skip" href="#reportMain">Към формуляра</a>
+<a class="skip" href="#reportMain">Skip to form</a>
 <div class="report-shell">
 <header class="report-nav">
 <a class="report-brand" href="/">✦ A U R O R A <small>INDEPENDENT OBSERVATION NETWORK</small></a>
-<a class="report-back" href="/">← НАЧАЛО / HOME</a>
+<a class="report-back" href="/">← HOME</a>
 </header>
 <main id="reportMain">
 <section class="report-hero">
 <p class="eyebrow">◉ / OBSERVATION INTAKE / V1.5</p>
-<h1 id="reportHeading">ПОДАЙ СИГНАЛ <span class="report-english">/ REPORT AN OBSERVATION</span></h1>
-<p id="reportHeroLead">Документирай какво си видял. Разграничаваме свидетелските сведения от доказаните факти. Всички сигнали минават през човешка проверка.</p>
-<div class="report-status" id="reportStatus" role="status" aria-live="polite">Проверка на системата за приемане…</div>
+<h1 id="reportHeading">REPORT AN OBSERVATION</h1>
+<p id="reportHeroLead">Document what you observed. We separate witness accounts from verified facts. Every submission undergoes human review.</p>
+<div class="report-status" id="reportStatus" role="status" aria-live="polite">Checking intake system status…</div>
 </section>
 <section class="report-section">
-<div class="report-form-head"><span>01 / FIELD REPORT</span><h2 id="reportFormTitle">Подготви своя сигнал</h2></div>
+<div class="report-form-head"><span>01 / FIELD REPORT</span><h2 id="reportFormTitle">Prepare your report</h2></div>
 <form id="observationForm" novalidate>
 <section id="reportAuth" class="report-auth" hidden aria-labelledby="reportAuthHeading">
-<h3 id="reportAuthHeading">VERIFY YOUR EMAIL / ПОТВЪРДИ ИМЕЙЛА СИ</h3>
+<h3 id="reportAuthHeading">VERIFY YOUR EMAIL</h3>
 <p id="reportAuthIntro">Free reporting. Donations are optional. Verify your email before submitting; your account is never published with your report.</p>
 <div id="reportAuthButtons" class="report-auth-buttons">
 <button type="button" data-auth-provider="google" hidden>Continue with Google</button>
 <button type="button" data-auth-provider="apple" hidden>Continue with Apple</button>
 <button type="button" data-auth-provider="x" hidden>Continue with X</button>
-<label id="reportAuthEmailBox" hidden><span>Email / Имейл</span><input type="email" id="reportAuthEmail" autocomplete="email" inputmode="email" placeholder="you@example.com"></label>
-<button type="button" id="reportAuthEmailSend" hidden>Send sign-in link / Изпрати линк</button>
+<label id="reportAuthEmailBox" hidden><span>Email</span><input type="email" id="reportAuthEmail" autocomplete="email" inputmode="email" placeholder="you@example.com"></label>
+<button type="button" id="reportAuthEmailSend" hidden>Send sign-in link</button>
 </div>
 <p id="reportAuthFeedback" role="status" aria-live="polite">Sign-in is required for submission.</p>
-<button type="button" id="reportAuthLogout" hidden>Sign out / Изход</button>
+<button type="button" id="reportAuthLogout" hidden>Sign out</button>
 <section id="reportPrivacyTools" class="report-privacy-tools" hidden aria-labelledby="reportPrivacyHeading">
 <h3 id="reportPrivacyHeading">MY PRIVATE REPORTS &amp; PRIVACY</h3>
 <p>View receipt references from your verified account. Requesting account or report deletion is handled manually after identity verification; nothing is deleted by this page.</p>
@@ -52,43 +52,43 @@
 </section>
 </section>
 <div class="report-grid">
-<label><span data-report-label="country">Държава / Country</span> <input id="country" maxlength="2" minlength="2" pattern="[A-Za-z]{2}" placeholder="BG" required autocomplete="off"></label>
-<label><span data-report-label="region">Регион / Region</span> <input id="region" maxlength="80" minlength="2" placeholder="напр. Шуменска област" required autocomplete="off"></label>
-<label><span data-report-label="location">Приблизителен район / Approximate location</span> <input id="location" maxlength="120" minlength="2" placeholder="град / населено място, без личен адрес" required autocomplete="off"></label>
-<label><span data-report-label="occurred">Дата и местен час / Local date and time</span> <input id="occurred" type="datetime-local" required></label>
-<label><span data-report-label="timezone">Часова зона / Time zone</span> <input id="timezone" maxlength="80" placeholder="Europe/Sofia" required></label>
-<label><span data-report-label="category">Тип / Category</span> <select id="category"><option value="lights">Светлини / Lights</option><option value="object">Обект / Object</option><option value="instrument">Инструментален запис / Instrument recording</option><option value="other">Друго / Other</option></select></label>
+<label><span data-report-label="country">Country</span> <input id="country" maxlength="2" minlength="2" pattern="[A-Za-z]{2}" placeholder="BG" required autocomplete="off"></label>
+<label><span data-report-label="region">Region</span> <input id="region" maxlength="80" minlength="2" placeholder="e.g. Bavaria / Sofia province" required autocomplete="off"></label>
+<label><span data-report-label="location">Approximate location</span> <input id="location" maxlength="120" minlength="2" placeholder="city or area, without personal address" required autocomplete="off"></label>
+<label><span data-report-label="occurred">Local date and time</span> <input id="occurred" type="datetime-local" required></label>
+<label><span data-report-label="timezone">Time zone</span> <input id="timezone" maxlength="80" placeholder="Europe/Sofia" required></label>
+<label><span data-report-label="category">Category</span> <select id="category"><option value="lights">Lights</option><option value="object">Object</option><option value="instrument">Instrument recording</option><option value="other">Other</option></select></label>
 </div>
-<label class="report-description"><span data-report-label="description">Описание / Description</span>
-<textarea id="description" rows="8" minlength="50" maxlength="5000" required placeholder="Какво видя, в каква посока, колко време продължи и какви бяха условията? Не споделяй имена, адреси или други лични данни."></textarea></label>
+<label class="report-description"><span data-report-label="description">Description</span>
+<textarea id="description" rows="8" minlength="50" maxlength="5000" required placeholder="What did you observe, in which direction, how long did it last, and what were the sky conditions? Do not include names, addresses, or personal data."></textarea></label>
 <input id="website" type="text" tabindex="-1" autocomplete="off" class="trap" aria-hidden="true">
-<p class="form-advisory" id="reportAdvisory">Без имена, имейли, лични адреси, точни GPS координати или файлове. При активиране ще се записват само описанието, дата/час, часова зона и приблизителен район.</p>
+<p class="form-advisory" id="reportAdvisory">No names, emails, personal addresses, exact GPS coordinates, or files. Only the description, date/time, time zone, and approximate area are recorded.</p>
 <p class="form-advisory" id="reportAgeNotice">Only people aged 18 or older may submit reports. Anyone can save a local draft.</p>
 <div id="activationControls" hidden>
 <label class="consent"><input type="checkbox" id="adultConfirm" required> <span id="adultConfirmLabel">I confirm that I am 18 or older. No date of birth or identity document is required.</span></label>
-<label class="consent"><input type="checkbox" id="consent"> <span id="consentPrefix">Потвърждавам, че съм прочел/а</span> <a id="privacyLink" href="/privacy" target="_blank" rel="noopener noreferrer">информацията за личните данни и условията</a> <span id="consentSuffix">и разрешавам обработката на този сигнал за модерация.</span></label>
+<label class="consent"><input type="checkbox" id="consent"> <span id="consentPrefix">I confirm that I have read the</span> <a id="privacyLink" href="/privacy" target="_blank" rel="noopener noreferrer">privacy notice and terms</a> <span id="consentSuffix">and consent to processing this report for human moderation.</span></label>
 <div id="turnstileMount"></div>
 </div>
 <div class="report-actions">
-<button type="button" id="saveDraft">ЗАПАЗИ ЧЕРНОВА</button>
-<button type="button" id="downloadDraft">ИЗТЕГЛИ ЧЕРНОВА (JSON)</button>
-<button type="button" id="clearDraft">ИЗТРИЙ ЧЕРНОВА</button>
-<button type="submit" id="sendReport" disabled>ПОДАЙ НАБЛЮДЕНИЕ</button>
+<button type="button" id="saveDraft">SAVE DRAFT</button>
+<button type="button" id="downloadDraft">DOWNLOAD DRAFT (JSON)</button>
+<button type="button" id="clearDraft">CLEAR DRAFT</button>
+<button type="submit" id="sendReport" disabled>SUBMIT OBSERVATION</button>
 </div>
 <p id="formFeedback" role="status" aria-live="polite"></p>
 <div id="receiptPanel" class="receipt-panel" hidden aria-live="polite">
-<strong id="receiptHeading">ПРИЕТО ЗА ЧОВЕШКИ ПРЕГЛЕД / RECEIVED FOR REVIEW</strong>
-<p id="receiptNote">Запази този номер. Сигналът не е публикуван. / Save this reference; the report is not public.</p>
+<strong id="receiptHeading">RECEIVED FOR HUMAN REVIEW</strong>
+<p id="receiptNote">Save this reference; the report is not public.</p>
 <code id="receiptValue"></code>
-<button type="button" id="copyReceipt">КОПИРАЙ НОМЕРА / COPY RECEIPT</button>
+<button type="button" id="copyReceipt">COPY RECEIPT</button>
 </div>
 </form>
 </section>
 <section class="report-section">
-<div class="report-form-head"><span>02 / RESEARCH ETHICS</span><h2 id="reportEthicsTitle">Какво следва?</h2></div>
-<p id="reportEthics1">Всеки действително приет сигнал получава уникален номер и влиза в частна опашка за човешка проверка. Първоначалната цел е преглед до 72 часа, но това не е гарантиран срок. Нищо не се публикува автоматично. Черновите остават само в текущия браузър.</p>
-<p id="reportEthics2">Ако приемането е изключено, бутонът „Изтегли чернова“ запазва JSON файл само на твоето устройство. Това НЕ изпраща сигнала към AURORA. Не разпространявай файла, ако в описанието има лични данни.</p>
-<p id="reportEthics3">Няма публична система за снимки, видео или контактни данни на този етап. Автоматично публикуване от AI е изключено.</p>
+<div class="report-form-head"><span>02 / RESEARCH ETHICS</span><h2 id="reportEthicsTitle">What happens next?</h2></div>
+<p id="reportEthics1">Every accepted report receives a unique reference ID and enters a private queue for human review. Nothing is published automatically. Drafts stay exclusively in your browser.</p>
+<p id="reportEthics2">When intake is disabled, 'Download draft' saves a JSON file locally on your device only. It does NOT transmit anything to AURORA.</p>
+<p id="reportEthics3">There is no public upload for photos, video, or contact details at this stage. Automated AI publication is disabled.</p>
 </section>
 </main><footer>THE SKY BELONGS TO EVERYONE · FREE PUBLIC ACCESS · AURORA UAP</footer>
 </div></body></html>

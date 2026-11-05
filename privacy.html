@@ -1,13 +1,13 @@
 <!doctype html>
-<html lang="bg">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#050b12">
 <meta name="robots" content="index,follow">
-<meta name="description" content="AURORA UAP — информация за поверителност, сигнали и права на подателите / privacy and reporting information.">
+<meta name="description" content="AURORA UAP — privacy, reporting, data protection and rights information.">
 <link rel="canonical" href="https://aurorauap.org/privacy">
-<title>AURORA UAP | Поверителност / Privacy</title>
+<title>AURORA UAP | Privacy & Data Protection</title>
 <style>
 :root{color-scheme:dark;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:#050b12;color:#edf7fb}
 *{box-sizing:border-box}body{margin:0;line-height:1.7}
@@ -21,7 +21,6 @@ main{max-width:900px;padding:3rem 1.2rem 5rem;margin:auto}
 h1{font-size:clamp(2.1rem,5vw,3.7rem);line-height:1.17;letter-spacing:-.04em;margin:.8rem 0 1.2rem}
 .lead{font-size:1.12rem;color:#cadce3;max-width:720px}
 .status{margin:2rem 0;padding:1rem 1.25rem;border:1px solid #28515a;border-left:4px solid #68d2d3;background:#0a1a25}
-.langnav{display:flex;gap:1rem;flex-wrap:wrap;padding:1.4rem 0}
 article{padding:1.3rem 0 2.3rem;border-top:1px solid #29414b}
 article h2{font-size:1.55rem;line-height:1.3;margin-bottom:1.3rem}
 section{margin:1.5rem 0}
@@ -34,35 +33,15 @@ footer{border-top:1px solid #29414b;padding:2rem 1.2rem;text-align:center;color:
 <body>
 <header><nav aria-label="AURORA">
 <a class="brand" href="/">✦ AURORA UAP</a>
-<div class="navlinks"><a href="/report.html">Подай сигнал / Report</a><a href="/">Начало / Home</a></div>
+<div class="navlinks"><a href="/report.html">Report</a><a href="/">Home</a></div>
 </nav></header>
 <main>
 <p class="eyebrow">AURORA / TRUST & PRIVACY</p>
-<h1>Поверителност <span aria-hidden="true">/</span> Privacy</h1>
-<p class="lead">Как обработваме сигналите за наблюдения, кой има достъп и как можете да упражните правата си. / How we handle observation reports, who can access them and how to exercise your rights.</p>
-<div class="status"><strong>Поверителност / Privacy:</strong> AURORA приема текстови сигнали само от потребители с потвърден имейл и ги съхранява в частна опашка за човешка проверка. Нищо не се публикува автоматично; текущата техническа наличност е показана във <a href="/report.html">формуляра</a>. / AURORA accepts text reports from verified-email users into a private human-review queue. Nothing is published automatically; live service availability is shown in the <a href="/report.html">form</a>.</div>
-<div class="langnav"><a href="#bg">Български</a><a href="#en">English</a></div>
-<article id="bg" lang="bg">
-<h2>Информация за личните данни — български</h2>
-<section><h3>1. Администратор и контакт</h3>
-<p>AURORA UAP е независим личен проект, управляван от Илиян Даниелов Илиев (физическо лице). За въпроси относно личните данни, достъп, корекции, изтриване или оттегляне на съгласие: <a href="mailto:blizzard9011@gmail.com">blizzard9011@gmail.com</a>. Не публикуваме личен домашен адрес.</p></section>
-<section><h3>2. Какво и защо събираме</h3>
-<p>При активирано изпращане получаваме двубуквен код на държава, регион, приблизително населено място/район, дата и местен час на наблюдението, часова зона, категория, текстово описание (50–5000 символа), език и версия на потвърдената информация. Записват се също случаен идентификатор на заявката, номер на сигнала, време, статус и журнал на модераторските решения. Целта е <strong>частно приемане, защита от злоупотреби и човешка проверка</strong>, а не автоматично публикуване.</p>
-<p>Самият текстов сигнал не изисква имейл, телефон, домашен адрес, точен GPS или файлове. За изпращане на сигнал се изисква отделен профил с потвърден имейл. Входът с потвърден имейл е достъпен и когато подаването временно е изключено. Supabase Auth обработва имейл адреса и техническите данни за вход, а Brevo доставя служебните имейли за покани и потвърждение от AURORA UAP. Съдържанието на черновите не се изпраща на тези доставчици. AURORA ще съхранява само отделен идентификатор за връзка между проверения профил и частния сигнал; той няма да се показва публично. Даренията са доброволни и нямат отношение към достъпа до подаване. Моля, не включвайте лични данни на свидетели, деца или трети лица в свободния текст. Описанието може въпреки това да съдържа лични данни и се третира като поверително.</p></section>
-<section><h3>3. Основание за обработване</h3>
-<p>Изпращането е доброволно; преди изпращане се изисква изрично съгласие за обработване на сигнала с цел човешка модерация. Данните за техническа сигурност и доставка на сайта могат да се обработват отделно от Cloudflare според приложимите условия. Правното основание за тези отделни технически операции е предмет на документирана оценка от администратора. Бъдеща публична публикация ще изисква ново самостоятелно основание и преглед.</p></section>
-<section><h3>4. Съхранение, достъп и публикация</h3>
-<p>Получените сигнали се пазят в частна Cloudflare D1 база, недостъпна за публичния архив. Достъп има само оторизиран модератор чрез Cloudflare Access. Cloudflare предоставя инфраструктурата, а Supabase Auth — удостоверяването на профилите и може да обработва технически данни за сигурност, включително IP адрес; условията с подизпълнителите, местата на обработване и международните трансфери са предмет на текущ документален преглед от администратора. Одобрение от модератор <strong>не означава публикуване</strong>: бъдеща публикация изисква отделна проверка, минимизиране и премахване на лични данни.</p></section>
-<section><h3>5. Срокове и изтриване</h3>
-<p>Планирани правила: отхвърлените сигнали да се изтриват до 90 дни след решението; неприключилите да се преглеждат до 180 дни след постъпване; одобрените, но непубликувани да се преразглеждат до 12 месеца след последното решение. Изпълнението на тези срокове е процес под контрола на администратора; автоматично изтриване не е включено. Сроковете за логове и резервни копия все още се уточняват. Поисканото изтриване се разглежда индивидуално и с внимание към резервните копия. След вход с потвърден имейл можете да видите само номерата и статусите на собствените си частни сигнали във формуляра („View my private reports“), включително ако приемането временно е изключено. За искане за изтриване на сигнал или акаунт използвайте контакта по-горе; искането се обработва ръчно след проверка на самоличността, а самият бутон за контакт не изтрива данни. За индивидуална заявка използвайте контакта по-горе и запазения номер на сигнала. Изтриването на частен сигнал и изтриването на профила в Supabase са отделни действия; идентичността на подателя трябва да се потвърди преди изпълнение, а сроковете за резервни копия още се уточняват.</p></section>
-<section><h3>6. Вашите права</h3>
-<p>Според приложимите условия на GDPR можете да поискате достъп, корекция, изтриване, ограничаване, преносимост или да възразите; когато основанието е съгласие, можете да го оттеглите. Може да поискаме разумна проверка, че сигналът е ваш. Имате право на жалба до Комисията за защита на личните данни (КЗЛД) в България.</p></section>
-<section><h3>7. Чернови, защита и деца</h3>
-<p>Когато приемането е изключено, съхранената чернова остава само в браузъра ви, а изтегленият JSON файл е на вашето устройство — <strong>нищо не се изпраща</strong> до AURORA. Може да изтриете черновата от формуляра. Това се отнася само до съдържанието на черновата: регистрацията/входът отделно обработва данни чрез Supabase и Brevo. При активно подаване Cloudflare Turnstile и защитата срещу злоупотреби могат да обработват технически данни. Само лица на 18 или повече години могат да изпращат сигнали; преди изпращане се изисква потвърждение за пълнолетие от самия подател. Не събираме дата на раждане или документ за самоличност и не записваме това потвърждение като отделно поле в D1. Самодекларирането не е независима проверка на възрастта. Не подавайте сведения, идентифициращи деца, или лични данни на трети лица.</p></section>
-<p><strong>Последна редакция: 5 ноември 2026 г.</strong> Сайтът приема частни текстови сигнали. Отделните задължения по срокове на съхранение, технически логове и отношения с доставчиците се документират и доуточняват от администратора.</p>
-</article>
+<h1>Privacy &amp; Data Protection</h1>
+<p class="lead">How we handle observation reports, who can access them, how long they are retained, and how you can exercise your rights.</p>
+<div class="status"><strong>Privacy:</strong> AURORA accepts text reports from verified-email users into a private human-review queue. Nothing is published automatically; live service availability is shown in the <a href="/report.html">report form</a>.</div>
 <article id="en" lang="en">
-<h2>Privacy information — English</h2>
+<h2>Privacy notice</h2>
 <section><h3>1. Controller and contact</h3>
 <p>AURORA UAP is an independent personal project operated by Iliyan Danielov Iliev, an individual. For privacy questions and requests to access, correct, erase or withdraw consent regarding report data, contact <a href="mailto:blizzard9011@gmail.com">blizzard9011@gmail.com</a>. A private residential address is not published.</p></section>
 <section><h3>2. Data and purpose</h3>
