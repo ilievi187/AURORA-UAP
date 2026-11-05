@@ -323,3 +323,66 @@ test('Owner-only diagnostic displays only sanitized Siteverify failure codes and
   assert.deepEqual(await unavailable.json(),{verified:false,error:'challenge_unavailable',reason:'siteverify_unavailable'});
  }finally{globalThis.fetch=previous}
 });
+
+// Never expose Cloudflare secrets, account tokens or D1 contents via readiness.
+test('signed owner sees only boolean intake readiness checks, and missing switch is pinpointed',async()=>{
+ const original=globalThis.fetch;globalThis.fetch=fetcher;
+ let schemaReads=0;
+ const db={
+  prepare(query){
+   assert.match(query,/sqlite_master/,'readiness may inspect schema names only');
+   schemaReads++;
+   const name=query.includes('intake_submissions')?'intake_submissions':
+    query.includes('intake_review_events')?'intake_review_events':'intake_reporter_links';
+   return {first:async()=>({name})};
+  },
+  batch:async()=>{throw Error('Read-only readiness must not write D1')}
+ };
+ const good={...env,DB:db,AURORA_REPORT_AUTH_ENABLED:'enabled',
+  AURORA_REPORT_AUTH_URL:'https://aurora-test.supabase.co',
+  AURORA_REPORT_AUTH_PUBLISHABLE_KEY:'sb_publishable_testkey0123456789ABC',
+  AURORA_REPORT_AUTH_PROVIDERS:'email',
+  AURORA_TURNSTILE_SECRET:'production-test-secret-must-not-leak',
+  AURORA_TURNSTILE_SITE_KEY:'production-test-sitekey-must-not-leak',
+  AURORA_INTAKE_ENABLED:'enabled',AURORA_INTAKE_LEGAL_APPROVED:'yes',
+  AURORA_INTAKE_WAF_REVIEWED:'yes',
+  AURORA_INTAKE_POLICY_VERSION:'intake-v1-reviewed',
+  AURORA_INTAKE_POLICY_URL:'https://aurorauap.org/privacy',
+  AURORA_INTAKE_HOSTNAME:'aurorauap.org'
+ };
+ const call=envData=>onRequestGet({request:new Request('https://aurorauap.org/api/moderation/?view=readiness',
+  {headers:{'Cf-Access-Jwt-Assertion':signedToken}}),env:envData});
+ const signedToken=await token();
+ try{
+  const response=await call(good);
+  assert.equal(response.status,200);
+  assert.match(response.headers.get('cache-control'),/no-store/);
+  const raw=await response.text(),body=JSON.parse(raw);
+  assert.equal(body.ready,true);
+  assert.equal(body.accepting,true);
+  assert.equal(Object.values(body.checks).every(v=>v===true),true);
+  assert.equal(body.private_record_content_accessed,false);
+  assert.equal(body.report_submitted,false);
+  assert.equal(raw.includes(good.AURORA_TURNSTILE_SECRET),false);
+  assert.equal(raw.includes(good.AURORA_TURNSTILE_SITE_KEY),false);
+  assert.equal(raw.includes(good.AURORA_ACCESS_AUD),false);
+  assert.equal(raw.includes(good.AURORA_MODERATOR_EMAIL),false);
+  assert.equal(schemaReads,3);
+  const missing=await call({...good,AURORA_INTAKE_ENABLED:'disabled'});
+  const denied=await missing.json();
+  assert.equal(denied.ready,false);
+  assert.equal(denied.accepting,false);
+  assert.equal(denied.checks.intake_switch,false);
+  assert.equal(denied.checks.owner_privacy_decision,true);
+ }finally{globalThis.fetch=original}
+});
+test('readiness denies unauthenticated or different-host callers before any D1 access',async()=>{
+ const db={prepare(){throw Error('Unauthenticated D1 query must not happen')}};
+ const missing=await onRequestGet({request:new Request('https://aurorauap.org/api/moderation/?view=readiness'),
+  env:{...env,DB:db}});
+ assert.equal(missing.status,403);
+ assert.match(missing.headers.get('cache-control'),/no-store/);
+ const preview=await onRequestGet({request:new Request('https://preview.pages.dev/api/moderation/?view=readiness'),
+  env:{...env,DB:db}});
+ assert.equal(preview.status,403);
+});

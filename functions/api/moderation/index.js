@@ -1,5 +1,6 @@
 import {accessIdentity} from '../../_lib/access.js';
-import {reviewSubmission} from '../../_lib/intake.js';
+import {reviewSubmission,intakeEnabled,intakeSchemaReady,moderatorQueueConfigured,liveTurnstileConfigured} from '../../_lib/intake.js';
+import {reporterAuthConfigured,configuredProviders} from '../../_lib/reporter-auth.js';
 import {retentionDueCounts} from '../../../worker/privacy-retention.js';
 const headers={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Content-Security-Policy':"default-src 'none'; frame-ancestors 'none'",'Referrer-Policy':'no-referrer'};
 const reply=(body,status=200)=>Response.json(body,{status,headers});
@@ -14,7 +15,30 @@ export async function onRequestGet({request,env}){
  if(!await authenticate(request,env))return reply({error:'unavailable'},403);
  const params=new URL(request.url).searchParams;
  if(params.has('view')){
-  if([...params.keys()].length!==1||params.get('view')!=='overview')return reply({error:'invalid_query'},400);
+  if([...params.keys()].length!==1||!['overview','readiness'].includes(params.get('view')))return reply({error:'invalid_query'},400);
+  if(params.get('view')==='readiness'){
+   // Owner-only configuration diagnosis. Never return any env value, key,
+   // identity, report body or private data. The only D1 reads are schema names.
+   const checks={
+    production_host:new URL(request.url).hostname==='aurorauap.org',
+    d1_schema:await intakeSchemaReady(env.DB),
+    verified_reporter_auth:reporterAuthConfigured(env),
+    email_provider:configuredProviders(env).includes('email'),
+    moderator_queue:moderatorQueueConfigured(env),
+    live_turnstile:liveTurnstileConfigured(env),
+    policy_version:env.AURORA_INTAKE_POLICY_VERSION==='intake-v1-reviewed',
+    policy_url:env.AURORA_INTAKE_POLICY_URL==='https://aurorauap.org/privacy',
+    hostname_binding:env.AURORA_INTAKE_HOSTNAME==='aurorauap.org',
+    owner_privacy_decision:env.AURORA_INTAKE_LEGAL_APPROVED==='yes',
+    waf_review:env.AURORA_INTAKE_WAF_REVIEWED==='yes',
+    intake_switch:env.AURORA_INTAKE_ENABLED==='enabled'
+   };
+   return reply({
+    ready:Object.values(checks).every(Boolean),
+    accepting:checks.d1_schema&&intakeEnabled(env,'aurorauap.org'),
+    checks,report_submitted:false,private_record_content_accessed:false
+   });
+  }
   try{
    const counts={pending:0,needs_clarification:0,approved:0,rejected:0};
    const rows=await env.DB.prepare("SELECT status,COUNT(*) AS total FROM intake_submissions GROUP BY status").all();
