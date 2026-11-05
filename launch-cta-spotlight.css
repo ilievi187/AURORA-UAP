@@ -1,0 +1,233 @@
+/* AURORA / launch spotlights — the two primary public actions.
+   Loaded LAST to override monochrome editorial skins without changing functionality. */
+:root { --aurora-report-bright:#73f3e8; --aurora-report-ink:#041a20; --aurora-support-bright:#ff677e; }
+body:has(.silence-hero) .site-header .desktop-nav a.nav-report,
+body:has(.silence-hero) .mobile-nav a.nav-report {
+ color:#0b2428!important; background:#8bf6e9!important;
+ border:1px solid #b6fff6!important; border-radius:5px!important;
+ padding:11px 13px!important; font-weight:800!important;
+ box-shadow:0 0 20px #41e6d33b!important;
+}
+body:has(.silence-hero) .site-header .desktop-nav a.nav-support,
+body:has(.silence-hero) .mobile-nav a.nav-support {
+ color:#fff9fa!important; background:linear-gradient(120deg,#ce294d,#8f1833)!important;
+ border:1px solid #ff8497!important; border-radius:5px!important;
+ padding:11px 13px!important;font-weight:800!important;
+ box-shadow:0 0 18px #fb425943!important;
+}
+body:has(.silence-hero) .desktop-nav a.nav-report:hover,
+body:has(.silence-hero) .mobile-nav a.nav-report:hover {background:#c5fff9!important;}
+body:has(.silence-hero) .desktop-nav a.nav-support:hover,
+body:has(.silence-hero) .mobile-nav a.nav-support:hover {background:#ec3c61!important;}
+body:has(.silence-hero) .silence-hero .silence-actions a.hero-report-cta{
+ color:var(--aurora-report-ink)!important;background:linear-gradient(110deg,#a7fff2,#50e4dc)!important;
+ border-color:#aefff8!important;
+ box-shadow:0 6px 30px #3be0d63d!important;font-weight:800;
+}
+body:has(.silence-hero) .silence-hero .silence-actions a.hero-donate-cta{
+ color:#fff!important;background:linear-gradient(110deg,#da3255,#a11d3d)!important;
+ border-color:#ff8599!important;
+ box-shadow:0 6px 30px #e22b5440!important;font-weight:800;
+}
+body:has(.silence-hero) .silence-hero .silence-actions :is(.hero-report-cta,.hero-donate-cta):hover{
+ filter:brightness(1.13);transform:translateY(-2px);
+}
+body:has(.portal-hub) .portal-card[data-portal="report"]{
+ background:linear-gradient(115deg,#0b3a42,#082029)!important;
+ border-color:#65d9d5b9!important;box-shadow:inset 3px 0 #72e9df!important;
+}
+body:has(.portal-hub) .portal-card[data-portal="support"]{
+ background:linear-gradient(115deg,#471528,#211018)!important;
+ border-color:#e76a85a8!important;box-shadow:inset 3px 0 #ff708a!important;
+}
+body:has(.portal-hub) .portal-card[data-portal="report"] :is(strong,.icon){color:#aafff6!important;}
+body:has(.portal-hub) .portal-card[data-portal="support"] :is(strong,.icon){color:#ffb9c8!important;}
+body:has(.silence-hero) main>.home-report-cta{
+ border:1px solid #62dddaa6!important;border-radius:14px!important;
+ background:radial-gradient(circle at 94% 17%,#177c7e7b,transparent 37%),linear-gradient(110deg,#103b42,#07161e)!important;
+ box-shadow:inset 4px 0 #76f6e6,0 22px 65px #0007!important;
+}
+body:has(.silence-hero) .home-report-cta .home-report-cta-link{
+ border-color:#a9fff7!important;background:#87f8e9!important;color:#052126!important;
+ min-height:58px;border-radius:7px!important;font-size:13px;font-weight:850;
+ box-shadow:0 0 26px #50e8d14a!important;
+}
+body:has(.silence-hero) .home-report-cta .home-report-cta-link:hover{background:#d7fffa!important;}
+body:has(.silence-hero) main>.donate-banner{
+ background:radial-gradient(circle at 87% 27%,#e64d6e7b,transparent 42%),linear-gradient(120deg,#3b1425,#160c16)!important;
+ border:1px solid #ff708f90!important;border-radius:14px!important;
+ box-shadow:inset 4px 0 #ff7893,0 25px 65px #0007!important;
+}
+body:has(.silence-hero) main>.donate-banner .donate-giant{
+ background:#eb4265!important;border:1px solid #ffc5d0!important;
+ box-shadow:0 9px 34px #fa466473!important;border-radius:8px!important;color:white!important;
+ padding:17px 28px!important;
+}
+body:has(.silence-hero) main>.donate-banner .donate-giant:hover{background:#ff5f7e!important;}
+
+/* Support: bold coral glow without claiming that payments are enabled. */
+body[data-aurora-page="donate"] .donation-page{max-width:1430px;}
+body[data-aurora-page="donate"] .donate-hero{
+ position:relative;overflow:hidden;text-align:left!important;align-items:flex-start!important;
+ min-height:520px!important;padding:clamp(55px,7vw,110px) clamp(24px,5vw,78px)!important;
+ border:1px solid #df607e98!important;border-radius:16px!important;
+ background:radial-gradient(ellipse at 78% 16%,#e6457863,transparent 45%),
+            radial-gradient(ellipse at 7% 65%,#b02b4938,transparent 56%),
+            linear-gradient(125deg,#291321,#0b1019 78%)!important;
+ box-shadow:0 35px 95px #0009,inset 0 0 50px #f05a7a18!important;
+}
+body[data-aurora-page="donate"] .donate-hero::before{
+ content:"AURORA / OPEN RESEARCH FUND"!important;
+ left:auto!important;right:clamp(20px,4vw,60px)!important;top:24px!important;color:#ffb8c6!important;
+}
+body[data-aurora-page="donate"] .donate-hero .eyebrow{color:#ffb6c7!important;}
+body[data-aurora-page="donate"] .donate-hero h1{
+ max-width:800px!important;font-size:clamp(50px,7.6vw,104px)!important;
+ letter-spacing:-.06em!important;margin:22px 0 20px!important;
+}
+body[data-aurora-page="donate"] .donate-hero h1 span:first-child{color:#ff829d!important;}
+body[data-aurora-page="donate"] .donate-hero h1 span:last-child{color:#fff5f7!important;}
+body[data-aurora-page="donate"] .donate-hero p{
+ text-align:left;margin-left:0!important;max-width:690px!important;color:#f2d8df!important;
+ font-size:clamp(15px,1.35vw,18px)!important;line-height:1.65!important;
+}
+body[data-aurora-page="donate"] .donate-trust{
+ display:flex;flex-wrap:wrap;gap:9px;margin:17px 0 16px;
+}
+body[data-aurora-page="donate"] .donate-trust span{
+ padding:8px 12px;border:1px solid #ffb7c754;border-radius:999px;
+ background:#ff71851b;color:#ffe5eb;font:650 11px/1.4 ui-monospace,Consolas,monospace;
+}
+body[data-aurora-page="donate"] .donate-actions{justify-content:flex-start;gap:16px;}
+body[data-aurora-page="donate"] #donateCheckout{
+ border:1px solid #ffc1cd!important;border-radius:9px!important;
+ background:linear-gradient(110deg,#f84d71,#bf2750)!important;color:#fff!important;
+ padding:20px 42px!important;min-height:68px!important;min-width:220px;
+ font-size:18px!important;font-weight:850!important;
+ box-shadow:0 10px 32px #e4325966!important;opacity:1!important;
+}
+body[data-aurora-page="donate"] #donateCheckout:disabled{
+ background:linear-gradient(110deg,#8c3c52,#572438)!important;color:#ffe4ea!important;
+ border-color:#db90a4!important;box-shadow:none!important;cursor:not-allowed;
+}
+body[data-aurora-page="donate"] #donateCheckout:not(:disabled):hover{filter:brightness(1.13);transform:translateY(-2px);}
+body[data-aurora-page="donate"] .donate-secondary-link{
+ display:inline-flex;align-items:center;justify-content:center;min-height:58px;
+ padding:13px 20px;text-decoration:none;color:#fff3f7;border:1px solid #ffb6c663;
+ border-radius:8px;background:#100e18c9;font-size:13px;font-weight:700;
+}
+body[data-aurora-page="donate"] .donate-secondary-link:hover{background:#3b1c2a;}
+body[data-aurora-page="donate"] #paymentStatus{
+ margin:25px 0 0!important;max-width:690px!important;padding:18px 20px!important;
+ border:1px solid #ffb0c083!important;border-radius:9px!important;
+ background:#3d1a2bbd!important;color:#ffe1e9!important;
+ box-shadow:inset 4px 0 #ff8ca5!important;font-weight:690;
+}
+body[data-aurora-page="donate"] .fund-card{border-bottom-color:#ff75953b!important;}
+body[data-aurora-page="donate"] .fund-card h3{color:#ffe5eb!important;}
+
+/* Reports: luminous teal discovery funnel; keep access checks and disabled states intact. */
+body[data-aurora-page="report"] .report-hero{
+ min-height:400px!important;
+ padding:clamp(50px,6vw,80px) clamp(19px,4vw,52px) 30px!important;
+ border:1px solid #65dbd9a3!important;border-radius:14px!important;
+ background:radial-gradient(circle at 92% 12%,#148c8a7a,transparent 40%),
+            linear-gradient(117deg,#082b36,#061018)!important;
+ box-shadow:inset 4px 0 #8cfff2,0 24px 70px #0008!important;
+}
+body[data-aurora-page="report"] .report-hero::before{
+ content:"AURORA / HUMAN REVIEW • PRIVATE BY DEFAULT"!important;color:#b5fff2!important;
+ top:18px!important;right:clamp(14px,3vw,38px)!important;font-size:8px!important;
+}
+body[data-aurora-page="report"] .report-hero .eyebrow{color:#a7fff0!important;}
+body[data-aurora-page="report"] .report-hero h1{
+ color:#f6ffff!important;max-width:860px!important;
+ font-size:clamp(44px,6vw,86px)!important;text-shadow:0 0 34px #6ee5df28!important;
+}
+body[data-aurora-page="report"] .report-hero #reportHeroLead{
+ color:#c9eaeb!important;max-width:750px!important;font-size:16px!important;
+}
+body[data-aurora-page="report"] .report-hero-highlights{display:flex;flex-wrap:wrap;gap:9px;margin:23px 0 19px;}
+body[data-aurora-page="report"] .report-hero-highlights span{
+ color:#d3fff8;background:#15545e8a;padding:8px 12px;
+ border:1px solid #83f6e66b;border-radius:999px;
+ font:640 11px/1.4 ui-monospace,Consolas,monospace;
+}
+body[data-aurora-page="report"] .report-hero-cta{
+ display:inline-flex;align-items:center;justify-content:center;min-height:52px;
+ padding:12px 22px;background:#84f2e6;border:1px solid #c3fff9;
+ border-radius:7px;color:#06232a;text-decoration:none;font:800 13px/1.5 Inter,system-ui,sans-serif;
+ box-shadow:0 8px 28px #55efe245;
+}
+body[data-aurora-page="report"] .report-hero-cta:hover{background:#c4fffa;}
+body[data-aurora-page="report"] #reportStatus{
+ max-width:820px!important;margin:24px 0 0!important;
+ border:1px solid #7fc5c48b!important;background:#0c313aeb!important;
+ border-radius:8px!important;color:#e0faf8!important;
+ padding:15px 18px!important;
+}
+body[data-aurora-page="report"] #reportStatus.ready{
+ border-color:#8affdf!important;background:#0b483ef0!important;
+ color:#d7fff2!important;box-shadow:inset 4px 0 #99ffe0!important;
+}
+body[data-aurora-page="report"] #reportStatus.disabled{
+ border-color:#eabf7f!important;background:#423018!important;color:#fff1d6!important;
+}
+body[data-aurora-page="report"] main>.report-section{
+ border:1px solid #347c83a3!important;border-radius:13px!important;
+ background:radial-gradient(circle at 95% 0%,#13505a24,transparent 50%),#081b24!important;
+ box-shadow:0 18px 55px #0007!important;
+}
+body[data-aurora-page="report"] .report-form-head span{color:#a0fff0!important;}
+body[data-aurora-page="report"] .report-auth{
+ border-color:#61d7d9c7!important;border-radius:9px!important;
+ background:linear-gradient(125deg,#103d45,#0b2630)!important;box-shadow:0 0 28px #43cbb321;
+}
+body[data-aurora-page="report"] .report-section :is(input:not([type="checkbox"]),select,textarea):focus{
+ border-color:#9cf8ec!important;outline:2px solid #6eeee4!important;outline-offset:2px;
+}
+body[data-aurora-page="report"] .report-actions #sendReport:not(:disabled){
+ min-height:57px;background:#80f7e7!important;color:#06252a!important;
+ border:1px solid #c8fff9!important;font-weight:850!important;
+ box-shadow:0 8px 25px #56e0d636!important;
+}
+body[data-aurora-page="report"] .report-actions #sendReport:disabled{opacity:.5!important;box-shadow:none!important;}
+@media(max-width:900px){
+ body:has(.silence-hero) .site-header .desktop-nav a.nav-report,
+ body:has(.silence-hero) .site-header .desktop-nav a.nav-support{padding-inline:9px!important;}
+}
+@media(max-width:700px){
+ body[data-aurora-page="donate"] .donate-hero{text-align:left!important;min-height:520px!important;padding:74px 22px 40px!important;}
+ body[data-aurora-page="donate"] .donate-hero h1{font-size:clamp(44px,12vw,72px)!important;}
+ body[data-aurora-page="donate"] .donate-actions{align-items:stretch;flex-direction:column;}
+ body[data-aurora-page="donate"] #donateCheckout,
+ body[data-aurora-page="donate"] .donate-secondary-link{width:100%!important;min-width:0!important;max-width:100%!important;white-space:normal!important;overflow-wrap:anywhere!important;padding-inline:13px!important;}
+ body[data-aurora-page="donate"] .fund-grid{grid-template-columns:1fr!important;}
+ body[data-aurora-page="report"] .report-hero{min-height:450px!important;padding:70px 20px 28px!important;}
+ body[data-aurora-page="report"] .report-hero h1{font-size:clamp(40px,11vw,65px)!important;letter-spacing:-.045em!important;}
+ body[data-aurora-page="report"] .report-hero-cta{width:100%;}
+ body:has(.portal-hub) .silence-hero .silence-actions a.hero-report-cta,
+ body:has(.portal-hub) .silence-hero .silence-actions a.hero-donate-cta{flex:1 1 100%;}
+}
+@media(prefers-reduced-motion:reduce){
+ body:has(.silence-hero) .silence-hero .silence-actions :is(.hero-report-cta,.hero-donate-cta),
+ body[data-aurora-page="donate"] #donateCheckout{transition:none!important;transform:none!important;}
+}
+
+/* Previous reveal animation left the whole hero-action row at opacity:0 on
+   early renders. These essential navigation links must always be clickable. */
+body:has(.silence-hero) .silence-hero .silence-actions{
+ opacity:1!important;transform:none!important;visibility:visible!important;
+ position:relative;z-index:9;pointer-events:auto!important;
+}
+@media(min-width:701px){
+ body:has(.portal-hub) .silence-hero .silence-copy{width:min(840px,72vw)!important;}
+ body:has(.portal-hub) .silence-hero .silence-actions{flex-wrap:nowrap!important;gap:12px!important;}
+ body:has(.portal-hub) .silence-hero .silence-actions .button{padding-inline:16px!important;flex:0 0 auto;}
+}
+
+/* The discovery portal already exposes Report and Support on narrow screens.
+   Avoid duplicate hero actions pushing the eight destinations below the fold. */
+@media(max-width:700px){
+ body:has(.portal-hub) .silence-hero .silence-actions{display:none!important;}
+}

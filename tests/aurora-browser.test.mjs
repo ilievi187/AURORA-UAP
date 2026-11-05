@@ -962,7 +962,7 @@ try{
     ],expected);
     assert.equal(await page.locator("#auroraLanguageCount").textContent(),"18");
     assert.equal(await page.locator(".silence-actions a[href='/archive.html']").count(),1);
-    assert.equal(await page.locator(".silence-actions a[href='/media.html']").count(),1);
+    assert.equal(await page.locator('.portal-grid .portal-card[data-portal="media"][href="/media.html"]').count(),1);
     assert.equal(await page.locator("#worldMapCanvas").count(),1);
     const background=await page.locator(".silence-ship").evaluate(el=>getComputedStyle(el).backgroundImage);
     assert.match(background,/hero-ufo\.webp/);
@@ -985,7 +985,7 @@ try{
     await page.locator("#gateContinue").click();
     await page.locator("#languageGate").waitFor({state:"hidden"});
     assert.equal(await page.locator("#hero-title").textContent(),"AURORA");
-    assert.ok(await page.locator(".silence-actions a[href='/archive.html']").isVisible());
+    assert.ok(await page.locator('.portal-grid .portal-card[data-portal="archive"][href="/archive.html"]').isVisible());
     await page.waitForFunction(()=>document.querySelector("#silenceHero")?.dataset.stats==="sourced");
     const columns=await page.locator(".silence-stats").evaluate(el=>getComputedStyle(el).gridTemplateColumns);
     assert.equal(columns.split(" ").length,2,"mobile displays two metric columns");
