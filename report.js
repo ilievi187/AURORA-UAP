@@ -7,7 +7,7 @@
  const fields=["country","region","location","occurred","timezone","category","description"];
  let enabled=false,siteKey="",policyVersion="",challenge="",widget=null,pending=false;
  let authClient=null,authIdentity=null,authInit=false;
- let privacyOffset=0,privacyBusy=false;
+ let privacyOffset=0,privacyBusy=false,privacyGeneration=0,authRefreshGeneration=0;
  let requestKey=crypto.randomUUID(),widgetApi=null,statusState="checking";
  const I18N={
   "bg":{
@@ -700,6 +700,9 @@
 
  const authCopy=(en,bg)=>document.documentElement.lang?.toLowerCase().startsWith("bg")?bg:en;
  function resetPrivacyReceipts(){
+  // Invalidate pending receipt reads before any account state change or refresh.
+  privacyGeneration++;
+  privacyBusy=false;
   privacyOffset=0;
   $("reportPrivateReceipts").replaceChildren();
   $("reportPrivateReceipts").hidden=true;
@@ -709,18 +712,19 @@
  async function loadPrivacyReceipts(){
   if(privacyBusy||!authClient||!authIdentity)return;
   privacyBusy=true;
+  const generation=privacyGeneration;
   const accountId=authIdentity.id,button=$("reportPrivacyList"),more=$("reportPrivacyMore");
   button.disabled=true;more.disabled=true;
   try{
    const {data}=await authClient.auth.getSession();
    const accessToken=data?.session?.access_token;
-   if(!accessToken){$("reportPrivacyFeedback").textContent="Please sign in again.";return}
+   if(!accessToken){if(generation===privacyGeneration&&accountId===authIdentity?.id)$("reportPrivacyFeedback").textContent="Please sign in again.";return}
    const path="/api/account/privacy"+(privacyOffset?"?offset="+privacyOffset:"");
    const response=await fetch(path,{method:"GET",
     headers:{Authorization:"Bearer "+accessToken},credentials:"same-origin",cache:"no-store"});
    if(!response.ok)throw Error("Private report data unavailable");
    const payload=await response.json();
-   if(accountId!==authIdentity?.id)return;
+   if(generation!==privacyGeneration||accountId!==authIdentity?.id)return;
    if(!Array.isArray(payload.receipts)||payload.published!==false||
     !payload.receipts.every(entry=>/^aur-int-[a-f0-9-]{36}$/.test(entry.receipt_id||"")&&
     ["pending","needs_clarification","approved","rejected"].includes(entry.status)))
@@ -738,20 +742,24 @@
     ?"Only your private receipt references are shown. Deletion requests are reviewed manually."
     :"No private reports linked to this verified account.";
   }catch{
-   if(accountId===authIdentity?.id)$("reportPrivacyFeedback").textContent="Unable to retrieve private reports right now. No data was changed.";
+   if(generation===privacyGeneration&&accountId===authIdentity?.id)$("reportPrivacyFeedback").textContent="Unable to retrieve private reports right now. No data was changed.";
   }finally{
-   privacyBusy=false;button.disabled=false;more.disabled=false;
+   if(generation===privacyGeneration){privacyBusy=false;button.disabled=false;more.disabled=false;}
   }
  }
  async function refreshAuth(){
   if(!authClient)return;
+  const generation=++authRefreshGeneration;
   const previousId=authIdentity?.id;
-  authIdentity=null;
+  let verified=null;
   try{
    const {data,error}=await authClient.auth.getUser();
    const user=error?null:data?.user;
-   if(user?.id&&user.email&&user.email_confirmed_at)authIdentity={id:user.id,email:user.email};
+   if(user?.id&&user.email&&user.email_confirmed_at)verified={id:user.id,email:user.email};
   }catch{/* unverified or inaccessible session */}
+  // An older Auth check must never reinstate an account after sign-out.
+  if(generation!==authRefreshGeneration)return;
+  authIdentity=verified;
   $("reportAuthButtons").hidden=!!authIdentity;
   $("reportAuthLogout").hidden=!authIdentity;
   if(previousId!==authIdentity?.id)resetPrivacyReceipts();
@@ -806,7 +814,16 @@
      authCopy("Check your inbox for the sign-in link.","Провери пощата си за линк за вход.");
    }finally{b.disabled=false}
   });
-  $("reportAuthLogout").addEventListener("click",async()=>{await authClient.auth.signOut();await refreshAuth()});
+  $("reportAuthLogout").addEventListener("click",async()=>{
+   // Clear the private UI synchronously, even if Supabase logout is slow.
+   ++authRefreshGeneration;
+   authIdentity=null;
+   resetPrivacyReceipts();
+   $("reportPrivacyTools").hidden=true;
+   $("reportAuthLogout").hidden=true;
+   refreshSubmitButton();
+   try{await authClient.auth.signOut()}finally{await refreshAuth()}
+  });
   authClient.auth.onAuthStateChange(()=>{queueMicrotask(()=>refreshAuth())});
   authInit=true;
   await refreshAuth();
