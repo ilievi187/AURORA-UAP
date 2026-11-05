@@ -1,4 +1,4 @@
-name: AURORA prelaunch private-surface monitor
+name: AURORA public-report privacy boundary monitor
 
 on:
   schedule:
@@ -9,14 +9,16 @@ permissions:
   contents: read
 
 concurrency:
-  group: aurora-prelaunch-security-monitor
+  group: aurora-report-privacy-boundary-monitor
   cancel-in-progress: false
 
 jobs:
   read-only-security-monitor:
-    name: Daily anonymous access and intake-off proof
+    name: Daily anonymous security and intake-profile proof
     runs-on: ubuntu-latest
     timeout-minutes: 4
+    env:
+      AURORA_RELEASE_MONITOR_PROFILE: ${{ vars.AURORA_RELEASE_MONITOR_PROFILE || 'prelaunch' }}
     steps:
       - name: Get site source
         uses: actions/checkout@v4
@@ -27,4 +29,4 @@ jobs:
       - name: Validate monitoring logic offline
         run: node --test tests/private-release-readiness.test.mjs
       - name: Verify anonymous access boundary on live production
-        run: node scripts/check-private-release-readiness.mjs --live
+        run: node scripts/check-private-release-readiness.mjs --live --profile="$AURORA_RELEASE_MONITOR_PROFILE"
