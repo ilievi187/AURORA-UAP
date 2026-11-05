@@ -15,11 +15,11 @@
    const data=await api('?view=overview');
    const c=data.counts||{},due=data.due||{};
    const items=[
-    ['Всички',data.total],['Чакат преглед',c.pending],['Нужно уточнение',c.needs_clarification],
-    ['Прегледани',c.approved],['Отхвърлени',c.rejected],
-    ['Отхвърлени за изтриване след 90 дни',due.rejected_expired],
-    ['Чакат преглед над 180 дни',due.awaiting_review],
-    ['Одобрени за преоценка над 12 месеца',due.approved_reassessment]
+    ['All',data.total],['Pending review',c.pending],['Needs clarification',c.needs_clarification],
+    ['Reviewed',c.approved],['Rejected',c.rejected],
+    ['Rejected, due for deletion after 90 days',due.rejected_expired],
+    ['Pending review for more than 180 days',due.awaiting_review],
+    ['Approved, due for reassessment after 12 months',due.approved_reassessment]
    ];
    const list=element('dl');
    for(const [label,count] of items){
@@ -27,7 +27,7 @@
     list.append(item);
    }
    summary.replaceChildren(list);
-  }catch{summary.textContent='Справката временно не е достъпна. Нищо не е променено.'}
+  }catch{summary.textContent='Overview is temporarily unavailable. No changes were made.'}
  }
  function renderRecord(record,{events=null,truncated=false}={}){
   const card=element('article');card.className='report-section';
@@ -36,29 +36,29 @@
    element('p',`${record.approximate_location} · ${record.occurred_local} (${record.time_zone}) · ${record.category}`));
   const desc=element('p',record.description);desc.className='moderation-description';card.append(desc);
   if(events===null){
-   const history=element('button','Преглед и история на решенията');
+   const history=element('button','Review and decision history');
    history.type='button';history.addEventListener('click',()=>loadReceipt(record.id));card.append(history);
   }else{
    const section=element('section');section.className='moderation-audit';
-   section.append(element('h3','Одитна история (частна)'));
-   if(!events.length)section.append(element('p','Няма записани действия.'));
+   section.append(element('h3','Private audit history'));
+   if(!events.length)section.append(element('p','No recorded actions.'));
    for(const item of events){
     const entry=element('div');entry.className='moderation-audit-entry';
     entry.append(element('strong',`${item.created_at} · ${item.actor_type} · ${item.action} · ${item.previous_status||'—'} → ${item.new_status||'—'}`));
     entry.append(element('p',item.rationale));section.append(entry);
    }
-   if(truncated)section.append(element('p','Показани са първите 100 действия.'));
+   if(truncated)section.append(element('p','Showing the first 100 actions.'));
    card.append(section);
   }
   if(['pending','needs_clarification'].includes(record.status)){
-   const form=element('form'),label=element('label','Решение'),select=element('select');
-   for(const [value,title] of [['approved','Проверен'],['rejected','Отхвърлен'],['needs_clarification','Нужно уточнение']]){
+   const form=element('form'),label=element('label','Decision'),select=element('select');
+   for(const [value,title] of [['approved','Reviewed'],['rejected','Rejected'],['needs_clarification','Needs clarification']]){
     const option=element('option',title);option.value=value;select.append(option)
    }
    label.append(select);
-   const reasonLabel=element('label','Основание за решението'),reason=element('textarea');
+   const reasonLabel=element('label','Reason for decision'),reason=element('textarea');
    reason.required=true;reason.minLength=12;reason.maxLength=1000;reasonLabel.append(reason);
-   const button=element('button','Запази решението');button.type='submit';form.append(label,reasonLabel,button);
+   const button=element('button','Save decision');button.type='submit';form.append(label,reasonLabel,button);
    form.addEventListener('submit',async event=>{
     event.preventDefault();button.disabled=true;
     try{
@@ -68,7 +68,7 @@
      if(!response.ok)throw Error('review_failed');
      await Promise.all([loadReceipt(record.id),loadOverview()]);
     }catch{
-     notice.textContent='Решението не беше запазено. Обнови и опитай отново.';
+     notice.textContent='The decision was not saved. Refresh and try again.';
      button.disabled=false;
     }
    });
@@ -78,40 +78,40 @@
  }
  async function load(offset=0){
   const version=++requestVersion;
-  queue.replaceChildren();notice.textContent='Зареждане…';
+  queue.replaceChildren();notice.textContent='Loading…';
   try{
    const data=await api('?offset='+offset);
    if(version!==requestVersion)return;
    currentOffset=data.offset;
-   notice.textContent=data.submissions.length?'Частни сигнали — страница '+(Math.floor(currentOffset/data.limit)+1)+':':'Няма сигнали за показване.';
+   notice.textContent=data.submissions.length?'Private reports — page '+(Math.floor(currentOffset/data.limit)+1)+':':'No reports to display.';
    for(const record of data.submissions)queue.append(renderRecord(record));
-   const pager=element('nav');pager.setAttribute('aria-label','Страници със сигнали');
+   const pager=element('nav');pager.setAttribute('aria-label','Report pages');
    if(currentOffset>0){
-    const prev=element('button','← Предишни');prev.type='button';
+    const prev=element('button','← Previous');prev.type='button';
     prev.addEventListener('click',()=>load(Math.max(0,currentOffset-data.limit)));pager.append(prev);
    }
    if(data.has_more){
-    const next=element('button','Следващи →');next.type='button';
+    const next=element('button','Next →');next.type='button';
     next.addEventListener('click',()=>load(data.next_offset));pager.append(next);
    }
    queue.append(pager);
   }catch{
-   if(version===requestVersion)notice.textContent='Няма достъп до защитения преглед или услугата временно не е достъпна.';
+   if(version===requestVersion)notice.textContent='The private review is unavailable or access was denied.';
   }
  }
  async function loadReceipt(id){
-  if(!RECEIPT.test(id)){notice.textContent='Невалиден номер на сигнал.';return}
+  if(!RECEIPT.test(id)){notice.textContent='Invalid report reference.';return}
   const version=++requestVersion;
-  queue.replaceChildren();notice.textContent='Зареждане на защитеното досие…';
+  queue.replaceChildren();notice.textContent='Loading private report…';
   try{
    const data=await api('?receipt='+encodeURIComponent(id));
    if(version!==requestVersion)return;
-   notice.textContent='Частно досие — '+id;
-   const back=element('button','← Обратно към опашката');back.type='button';
+   notice.textContent='Private report — '+id;
+   const back=element('button','← Back to queue');back.type='button';
    back.addEventListener('click',()=>load(currentOffset));
    queue.append(back,renderRecord(data.submission,{events:data.events||[],truncated:data.events_truncated===true}));
   }catch{
-   if(version===requestVersion)notice.textContent='Сигналът не е намерен или услугата е недостъпна.';
+   if(version===requestVersion)notice.textContent='The report was not found or the service is unavailable.';
   }
  }
  document.getElementById('receiptLookup').addEventListener('submit',event=>{
