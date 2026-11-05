@@ -78,3 +78,12 @@ test("every public page loads the English-only bootstrap before other scripts",(
  assert.match(read("script.js"),/AURORA_PUBLIC_LANGUAGE==="en"/);
  assert.match(read("archive-directory.js"),/AURORA_PUBLIC_LANGUAGE==="en"/);
 });
+
+test("English-only public search descriptions never revert to Bulgarian",()=>{
+ for(const page of publicPages){
+  const html=read(page);
+  const meta=html.match(/<meta\s+name="description"\s+content="([^"]+)"/i);
+  if(!meta)continue;
+  assert.doesNotMatch(meta[1],/[\u0400-\u04ff]/,page+" search description must be English only");
+ }
+});
