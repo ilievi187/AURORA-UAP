@@ -1,0 +1,51 @@
+/* AURORA atlas density. Circle size and luminance encode number of source
+   records, not UFO probability, confidence, precision or event authenticity.
+   Full counts remain in title / aria-label / data; clicking never auto-zooms. */
+body:has(.silence-hero) .world-map-viewport :is(.world-map-marker,.world-source-marker){
+ --dot-size:10px;--dot-core:#9fb6c6;--dot-edge:#d5e3ed;--dot-glow:#a2bdcb68;
+ position:absolute;display:grid;place-items:center;
+ width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;
+ padding:0!important;border:0!important;border-radius:50%!important;
+ background:transparent!important;box-shadow:none!important;color:transparent!important;
+ font-size:0!important;text-decoration:none!important;white-space:normal;
+ cursor:pointer;pointer-events:auto;
+}
+body:has(.silence-hero) .world-map-viewport :is(.world-map-marker,.world-source-marker)::before{
+ content:"";display:block;width:var(--dot-size);height:var(--dot-size);
+ border:1px solid var(--dot-edge);border-radius:50%;
+ background:radial-gradient(circle at 32% 28%,#ffffffd9 0%,var(--dot-core) 38%,var(--dot-core) 75%,#142a34 100%);
+ box-shadow:0 0 0 3px color-mix(in srgb,var(--dot-glow),transparent 62%),0 0 14px var(--dot-glow),0 0 25px color-mix(in srgb,var(--dot-glow),transparent 42%);
+ transition:transform .16s ease,box-shadow .16s ease;
+}
+body:has(.silence-hero) .world-map-viewport :is(.world-map-marker,.world-source-marker).density-quiet{
+ --dot-size:9px;--dot-core:#839fb3;--dot-edge:#bdcedb;--dot-glow:#b2c9dd57;
+}
+body:has(.silence-hero) .world-map-viewport :is(.world-map-marker,.world-source-marker).density-light{
+ --dot-size:13px;--dot-core:#91c7de;--dot-edge:#c9ebf5;--dot-glow:#71badd87;
+}
+body:has(.silence-hero) .world-map-viewport :is(.world-map-marker,.world-source-marker).density-active{
+ --dot-size:17px;--dot-core:#80e0db;--dot-edge:#cafffa;--dot-glow:#50e3d0a6;
+}
+body:has(.silence-hero) .world-map-viewport :is(.world-map-marker,.world-source-marker).density-bright{
+ --dot-size:22px;--dot-core:#a4f4c7;--dot-edge:#d7ffe5;--dot-glow:#8df8bcb0;
+}
+body:has(.silence-hero) .world-map-viewport :is(.world-map-marker,.world-source-marker).density-hotspot{
+ --dot-size:28px;--dot-core:#ffd58d;--dot-edge:#fff1ce;--dot-glow:#ffc471d1;
+}
+/* Approximate curated positions keep their distinct dashed outline. */
+body:has(.silence-hero) .world-map-viewport .world-map-marker.is-approximate::before{border-style:dashed;border-width:2px}
+body:has(.silence-hero) .world-map-viewport :is(.world-map-marker,.world-source-marker):is(:hover,:focus-visible,[aria-pressed="true"])::before{
+ transform:scale(1.16);box-shadow:0 0 0 5px #e4faff4d,0 0 22px var(--dot-glow),0 0 36px var(--dot-glow);
+}
+body:has(.silence-hero) .world-map-viewport :is(.world-map-marker,.world-source-marker):focus-visible{
+ outline:2px solid #eaffff!important;outline-offset:0;z-index:10;
+}
+body:has(.silence-hero) .atlas-density-legend{gap:11px;max-width:80%;}
+body:has(.silence-hero) .atlas-density-legend span::before{width:7px;height:7px;border:1px solid #c3d7e4;background:#839fb3;box-shadow:0 0 9px #a0bdd480;}
+body:has(.silence-hero) .atlas-density-legend .density-legend-active::before{width:10px;height:10px;border-color:#cafffa;background:#80e0db;box-shadow:0 0 11px #50e3d0;}
+body:has(.silence-hero) .atlas-density-legend .density-legend-hotspot::before{width:13px;height:13px;border-color:#fff1ce;background:#ffd58d;box-shadow:0 0 15px #ffc471;}
+@media(max-width:650px){
+ body:has(.silence-hero) .atlas-density-legend{gap:8px;max-width:72%;font-size:7px;}
+ body:has(.silence-hero) .world-map-viewport .density-hotspot{--dot-size:25px!important;}
+}
+@media(prefers-reduced-motion:reduce){body:has(.silence-hero) .world-map-viewport :is(.world-map-marker,.world-source-marker)::before{transition:none}}

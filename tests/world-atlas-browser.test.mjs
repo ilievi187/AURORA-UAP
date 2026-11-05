@@ -126,6 +126,13 @@ try {
     const clusterCounts = await page.locator('#worldMapPins [data-cluster-count]').evaluateAll((items) => items.map((item) => Number(item.dataset.clusterCount)));
     assert.equal(clusterCounts.reduce((sum, count) => sum + count, 0), 15);
     assert.ok(clusterCounts.some((count) => count > 1));
+    assert.ok(await page.locator('#worldMapPins button').evaluateAll(markers =>
+      markers.every(marker => marker.textContent.trim() === '' && marker.className.includes('density-'))),
+      'curated map dots use density styles, not printed numbers');
+    await page.waitForFunction(() => document.querySelectorAll('#worldBulkPins a[data-geo-count]').length > 0);
+    assert.ok(await page.locator('#worldBulkPins a').evaluateAll(markers =>
+      markers.every(marker => marker.textContent.trim() === '' && Number(marker.dataset.geoCount) > 0 && marker.title.includes(marker.dataset.geoCount))),
+      'source markers retain exact counts in metadata and tooltip, not as visible numbers');
     const alignment = await page.evaluate(() => {
       const marker = document.querySelector('#worldMapPins button[data-marker-case-id="westall-1966"]');
       const map = document.querySelector('#worldMapViewport').getBoundingClientRect();
