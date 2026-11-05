@@ -20,9 +20,12 @@ test('real XML sitemap lists only indexable public routes and country directorie
  assert.ok(urls.includes('https://aurorauap.org/'));
  for(const route of ['/archive','/countries','/countries/US','/countries/FR','/news','/media','/sources','/privacy']) assert.ok(urls.includes('https://aurorauap.org'+route),route);
  for(const url of urls){
-   assert.match(url,/^https:\/\/aurorauap\.org\/(?:|archive|countries(?:\/[A-Z]{2})?|news|media|sources|privacy)$/);
-   assert.doesNotMatch(url,/\/api\/|\/report|\/donate|\/moderation|\/news-editor|\/archive\//);
+   assert.match(url,/^https:\/\/aurorauap\.org\/(?:|archive(?:\/[a-z0-9-]{3,90})?|countries(?:\/[A-Z]{2})?|news|media|sources|privacy)$/);
+   assert.doesNotMatch(url,/\/api\/|\/report|\/donate|\/moderation|\/news-editor/);
  }
+ const listed=urls.filter(u=>u.includes('/archive/')).map(u=>u.split('/').at(-1));
+ const curated=JSON.parse(read('data/seo/curated.json'));
+ assert.deepEqual(listed.sort(),Object.keys(curated).filter(id=>curated[id].indexable).sort(), 'only substantial reviewed cases appear in the sitemap');
  assert.match(read('archive.html'),/<link rel="canonical" href="https:\/\/aurorauap\.org\/archive">/);
  assert.match(read('sources.html'),/<link rel="canonical" href="https:\/\/aurorauap\.org\/sources">/);
 });

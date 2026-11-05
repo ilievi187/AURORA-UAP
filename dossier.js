@@ -206,6 +206,9 @@
  }
  function render(c){
   currentCase=c;
+  // The server-supplied sourced excerpt is a no-JS fallback; avoid duplicate
+  // content once the full interactive dossier has been loaded.
+  document.getElementById('serverDossierIntro')?.remove();
   const t=getPack();
   const sourceEnglish=legacyBulgarian(c)&&!c.translationSummaryReady;
   const title=(sourceEnglish?c.title?.en:local(c.title))||id;
