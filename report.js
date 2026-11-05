@@ -704,6 +704,8 @@
   privacyGeneration++;
   privacyBusy=false;
   privacyOffset=0;
+  $("reportPrivacyList").disabled=false;
+  $("reportPrivacyMore").disabled=false;
   $("reportPrivateReceipts").replaceChildren();
   $("reportPrivateReceipts").hidden=true;
   $("reportPrivacyMore").hidden=true;
