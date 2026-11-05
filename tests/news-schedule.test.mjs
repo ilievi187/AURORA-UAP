@@ -10,7 +10,10 @@ test('durable news refresh is scheduled conservatively and owner-gated',()=>{
  assert.match(workflow,/workflow_dispatch:/);
  assert.match(workflow,/timeout-minutes:\s*6/);
  assert.match(workflow,/AURORA_NEWS_REFRESH_TOKEN:\s*\$\{\{\s*secrets\.AURORA_NEWS_REFRESH_TOKEN\s*\}\}/);
- assert.match(workflow,/enabled=false/,'missing owner secret must skip rather than issue an unauthenticated request');
+ assert.match(workflow,/vars\.AURORA_NEWS_REFRESH_ENABLED == 'true'/,'scheduled job must be visibly skipped while owner has not opted in');
+ assert.match(workflow,/if \[\[ -z "\$\{AURORA_NEWS_REFRESH_TOKEN:-\}" \]\]/,'missing secret must be checked before any network request');
+ assert.match(workflow,/exit 1/,'an opted-in job must fail visibly if the secret is missing');
+ assert.doesNotMatch(workflow,/enabled=false|steps\.archive-config\.outputs\.enabled/,'do not report a green run when the durable refresh was skipped');
  assert.doesNotMatch(workflow,/AURORA_NEWS_REFRESH_TOKEN:\s*['"][^$]/i,'no credential value may be committed');
 });
 
