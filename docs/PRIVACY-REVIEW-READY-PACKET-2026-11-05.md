@@ -2,6 +2,10 @@
 
 > **UNAPPROVED REVIEW PACK. PUBLIC REPORT INTAKE REMAINS OFF.** This document records engineering evidence, not legal advice, a signed DPA, a verified international transfer arrangement, or a GDPR compliance certificate. Review by a qualified Bulgarian/EU privacy professional and independent owner sign-off are required. No real visitor report or private identifiers belong in this repository.
 
+## Later clarification — owner self-review is permitted (5 Nov 2026)
+
+Earlier references below to a mandatory *independent professional* are an AURORA internal release preference, **not** a universal GDPR requirement. The owner/controller may conduct a documented, proportionate legal-basis, risk, processor-contract and retention review, obtaining external advice if the facts warrant it. The missing real different-account Access sign-in remains explicitly UNTESTED (not a false PASS). The operational release source of truth is [OWNER-CONTROLLED-REPORT-LAUNCH-2026-11-05.md](OWNER-CONTROLLED-REPORT-LAUNCH-2026-11-05.md). No owner processing decision or production authorization flag is claimed in this addendum.
+
 ## Scope and production behavior verified
 
 - Website: https://aurorauap.org; public BG/EN privacy text: https://aurorauap.org/privacy; reporter page: https://aurorauap.org/report.
