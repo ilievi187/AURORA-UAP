@@ -1,4 +1,4 @@
-// AURORA PRELAUNCH public read-only security proof.
+// AURORA public read-only security proof for prelaunch OR an explicitly authorized postlaunch.
 // No cookies, tokens, POST requests, WAF bursts, D1 writes or secrets.
 const BASE='https://aurorauap.org';
 const privateEndpoints=[
@@ -35,7 +35,8 @@ async function get(fetcher,path){
  });
  return result;
 }
-export async function checkReadOnlyRelease(fetcher=fetch){
+export async function checkReadOnlyRelease(fetcher=fetch,{profile='prelaunch'}={}){
+ if(!['prelaunch','postlaunch'].includes(profile))throw Error('Invalid release monitor profile');
  const results=[];
  const fail=(name,reason)=>results.push({name,ok:false,reason});
  const pass=(name,detail)=>results.push({name,ok:true,detail});
@@ -45,11 +46,28 @@ export async function checkReadOnlyRelease(fetcher=fetch){
   const noStore=(status.headers.get('cache-control')||'').includes('no-store');
   let state;
   try{state=await status.json()}catch{state=null}
-  if(!state||state.accepting!==false||state.mode!=='local_draft_only'||
-   state.attachments_enabled!==false||state.automatic_publication!==false||
-   state.auth_required!==true||Object.hasOwn(state,'site_key')||!noStore){
+  const common=state&&noStore&&state.attachments_enabled===false&&
+   state.contact_collection_enabled===false&&state.automatic_publication===false&&
+   state.auth_required===true;
+  if(profile==='prelaunch'){
+   if(!common||state.accepting!==false||state.mode!=='local_draft_only'||
+      Object.hasOwn(state,'site_key'))
     fail('intake-status','Closed-mode or cache contract mismatch');
-  }else pass('intake-status','public intake disabled; auth separate; no-store');
+   else pass('intake-status','public intake disabled; auth separate; no-store');
+  }else{
+   // The public site may accept private reports ONLY with the existing
+   // email verification and reviewed-policy contract; this GET never submits.
+   const liveKey=typeof state?.site_key==='string'&&state.site_key.length>10&&
+    !['1x00000000000000000000AA','2x00000000000000000000AB',
+      '1x00000000000000000000BB','2x00000000000000000000BB',
+      '3x00000000000000000000FF'].includes(state.site_key);
+   if(!common||state.accepting!==true||state.mode!=='text_only_quarantine'||
+      state.policy_version!=='intake-v1-reviewed'||
+      state.policy_url!=='https://aurorauap.org/privacy'||!liveKey||
+      !Array.isArray(state.auth_providers)||!state.auth_providers.includes('email'))
+    fail('intake-status','Approved text-only intake contract mismatch');
+   else pass('intake-status','private text-only intake active; manual review, no publication; no-store');
+  }
  }
  const privacy=await get(fetcher,'/privacy');
  if(privacy.status!==200)fail('privacy-notice','HTTP '+privacy.status);
@@ -73,19 +91,22 @@ export async function checkReadOnlyRelease(fetcher=fetch){
  return {ok:results.every(x=>x.ok),results};
 }
 if(process.argv[1] && import.meta.url===new URL('file://'+process.argv[1]).href){
- if(process.argv.length!==3||process.argv[2]!=='--live'){
-  console.error('Usage: node scripts/check-private-release-readiness.mjs --live');
-  console.error('Performs seventeen bounded public GET requests only; NEVER writes production data.');
+ const extra=process.argv[3]||'--profile=prelaunch';
+ const profile=extra.startsWith('--profile=')?extra.slice('--profile='.length):'';
+ if((process.argv.length!==3&&process.argv.length!==4)||process.argv[2]!=='--live'||
+    !['prelaunch','postlaunch'].includes(profile)){
+  console.error('Usage: node scripts/check-private-release-readiness.mjs --live [--profile=prelaunch|postlaunch]');
+  console.error('Read-only: seventeen bounded anonymous GETs; NEVER writes production data.');
   process.exitCode=2;
  }else{
   try{
-   const audit=await checkReadOnlyRelease();
+   const audit=await checkReadOnlyRelease(fetch,{profile});
    for(const item of audit.results)
     console.log((item.ok?'PASS ':'FAIL ')+item.name+' — '+(item.detail||item.reason));
-   console.log(audit.ok?'PASS: prelaunch anonymous isolation and disclosure':'FAIL: investigate before launch');
+   console.log(audit.ok?'PASS: '+profile+' anonymous isolation and disclosure':'FAIL: investigate '+profile+' release gate');
    if(!audit.ok)process.exitCode=1;
   }catch(err){
-   console.error('FAIL: network or preflight unavailable:',err?.name||'Error');
+   console.error('FAIL: network or release monitor unavailable:',err?.name||'Error');
    process.exitCode=1;
   }
  }
