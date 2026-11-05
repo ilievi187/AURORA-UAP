@@ -31,6 +31,7 @@
 <link rel="stylesheet" href="/report-home-callout.css">
 <link rel="stylesheet" href="/aurora-silence.css">
 <link rel="stylesheet" href="/home-portal.css">
+<link rel="stylesheet" href="/launch-cta-spotlight.css?v=launch-20261105">
 </head>
 <body class="gate-open">
 <noscript><style>#languageGate{display:none!important}body.gate-open{overflow:auto}.site-shell{pointer-events:auto!important}</style></noscript>
@@ -89,7 +90,7 @@
       <a href="/media.html" data-i18n="navMedia">Видео</a>
       <a href="/report.html" data-i18n="reportButton" class="nav-report">Подай сигнал</a>
       <a href="#mission" data-portal-nav="about">За AURORA</a>
-      <a href="/donate.html" data-portal-nav="support">Подкрепа</a>
+      <a href="/donate.html" class="nav-support" data-portal-nav="support">Support</a>
     </nav>
     <div class="header-actions"><button type="button" class="gate-trigger" id="openLanguageGate" aria-label="Промени езика / Change language">LANGUAGE</button><label class="sr-only" for="langToggle">Language / Език</label><select class="lang-button lang-select" id="langToggle" aria-label="Language / Език"><option value="bg">Български</option><option value="en">English</option><option value="de">Deutsch</option><option value="ru">Русский</option><option value="zh-CN">中文</option><option value="fr">Français</option><option value="es">Español</option><option value="it">Italiano</option><option value="pt">Português</option><option value="tr">Türkçe</option><option value="ro">Română</option><option value="el">Ελληνικά</option><option value="sr">Српски</option><option value="uk">Українська</option><option value="pl">Polski</option><option value="ar">العربية</option><option value="ja">日本語</option><option value="ko">한국어</option></select><button type="button" class="menu-button" id="menuToggle" aria-label="Меню / Menu" aria-expanded="false"><svg class="icon"><use href="#i-menu"/></svg></button></div>
   </header>
@@ -97,7 +98,7 @@
     <a href="#home" data-i18n="navHome">Начало</a><a href="/news.html" data-i18n="navNews">Новини</a>
     <a href="/archive.html" data-i18n="navArchive">Архив</a><a href="#worldAtlas" data-i18n="navMap">Карта</a>
     <a href="/media.html" data-i18n="navMedia">Видео</a><a href="/report.html" data-i18n="reportButton" class="nav-report">Подай сигнал</a>
-    <a href="#mission" data-portal-nav="about">За AURORA</a><a class="nav-donate" href="/donate.html" data-portal-nav="support">Подкрепа</a>
+    <a href="#mission" data-portal-nav="about">За AURORA</a><a class="nav-donate nav-support" href="/donate.html" data-portal-nav="support">Support</a>
   </nav>
 
   <main id="main">
@@ -117,9 +118,9 @@
       <p class="silence-subtitle">UNIDENTIFIED AERIAL PHENOMENA</p>
       <p class="silence-description" data-i18n="heroBody">AURORA is an independent international archive of reported UAP sightings, source documents, historical cases and media.</p>
       <div class="hero-buttons silence-actions">
-        <a href="/archive.html" class="button button-primary"><span data-i18n="heroArchiveCTA">Разгледай случаите</span><svg class="icon icon-arrow"><use href="#i-arrow"/></svg></a>
-        <a href="/media.html" class="button button-secondary"><svg class="icon"><use href="#i-eye"/></svg><span data-i18n="navMedia">Видео</span></a>
-        <a href="/news.html" class="button button-secondary portal-news-cta"><svg class="icon"><use href="#i-book"/></svg><span data-i18n="navNews">Новини</span></a>
+        <a href="/archive.html" class="button button-primary"><span data-i18n="heroArchiveCTA">Explore Case Files</span><svg class="icon icon-arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        <a href="/report.html" class="button button-secondary hero-report-cta">Report a Sighting <span aria-hidden="true">↗</span></a>
+        <a href="/donate.html" class="button button-secondary hero-donate-cta">Support AURORA <span aria-hidden="true">♡</span></a>
       </div>
     </div>
     <section class="portal-hub" id="exploreAURORA" aria-labelledby="portalHeading">
