@@ -20,3 +20,15 @@ Reference: scripts/check-private-release-readiness.mjs and docs/LAUNCH-READINESS
 ## 4 Nov — URL aliases
 
 The daily monitor now makes 17 read-only GETs, including five additional protected route aliases. This is not a live denied-different-account audit; see docs/ACCESS-NEGATIVE-IDENTITY-AUDIT-2026-11-04.md.
+
+## 5 Nov 2026 — separate opt-in POSTLAUNCH mode (prepared, NOT enabled)
+
+The same read-only monitor supports two fail-closed profiles without credentials or report submissions:
+- `prelaunch` (the default and current setting): the public API must show `accepting:false`, `local_draft_only`; no Turnstile site key exposed.
+- `postlaunch` (future owner-opt-in after explicit legal, independent Access, genuine private walkthrough, and final go/no-go): the public API must show `accepting:true`, `text_only_quarantine`, a non-test public Turnstile site key, `intake-v1-reviewed` policy with canonical URL, verified email among providers, zero contact collection, zero attachments, and **automatic_publication:false**.
+
+Both monitor modes perform the same 17 public anonymous **GET** requests; no identities, private records, POST/DELETE requests, WAF bursts or D1 write credentials. Protected moderator/editor surfaces must still deny the anonymous visitor and the private account receipt endpoint must still return 401 with no-store.
+
+**Changeover procedure:** After all independent release gates, set GitHub repository Actions variable `AURORA_RELEASE_MONITOR_PROFILE=postlaunch` as part of the owner-approved launch window, then manually run the workflow `AURORA public-report privacy boundary monitor`. Confirm it passes after actual authorized intake activation. A prelaunch monitor failing because intake unexpectedly activated is a **security warning**, not something to suppress by switching modes without approval.
+
+**Rollback:** If public intake needs emergency OFF, disable `AURORA_INTAKE_ENABLED` in production *first* and set `AURORA_RELEASE_MONITOR_PROFILE=prelaunch` as part of that rollback, then run the monitor manually. Do not delete reports, disable Access or turn on auto-publication. This monitor is a necessary boundary check, **not** a legal compliance certificate or permission to launch.
