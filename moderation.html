@@ -1,18 +1,18 @@
 <!doctype html>
-<html lang="bg"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>AURORA — Модерация</title><link rel="stylesheet" href="/report.css?v=mod-20261103-r138"><script defer src="/moderation.js?v=mod-20261103-r138"></script></head>
-<body><main class="report-shell"><header><a href="/">✦ AURORA</a></header><h1>Преглед на сигнали</h1><p>Сигналите остават поверителни. Одобрението за преглед не ги публикува.</p><section class="moderation-overview" aria-labelledby="overviewTitle">
-<h2 id="overviewTitle">Състояние на частната опашка</h2>
-<div id="moderationSummary" role="status" aria-live="polite">Зареждане на справката…</div>
-<p class="moderation-hint">Просрочените срокове са сигнали за проверка, не автоматични действия. Изтриването и публикуването не се извършват от този панел.</p>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>AURORA — Private Moderation</title><link rel="stylesheet" href="/report.css?v=mod-20261103-r138"><script defer src="/moderation.js?v=mod-20261103-r138"></script></head>
+<body><main class="report-shell"><header><a href="/">✦ AURORA</a></header><h1>Private Report Review</h1><p>Reports remain confidential. A moderator review decision never publishes a report automatically.</p><section class="moderation-overview" aria-labelledby="overviewTitle">
+<h2 id="overviewTitle">Private Review Queue</h2>
+<div id="moderationSummary" role="status" aria-live="polite">Loading overview…</div>
+<p class="moderation-hint">Overdue retention deadlines prompt review, not automatic actions. This panel does not delete or publish reports.</p>
 </section>
 <section class="report-section" aria-label="Private security diagnostic">
 <h2>Turnstile verification</h2>
 <p>Owner-only real challenge test. Checks the production Turnstile integration without accepting reports or changing D1.</p>
 <p><a href="/api/moderation/turnstile" target="_blank" rel="noopener">Open isolated Turnstile test</a></p>
 </section>
-<form id="receiptLookup" class="moderation-lookup" aria-label="Търсене по номер на сигнал">
-<label for="receiptQuery">Намери сигнал по номер</label>
+<form id="receiptLookup" class="moderation-lookup" aria-label="Find report by reference">
+<label for="receiptQuery">Find report by reference</label>
 <div class="moderation-lookup-row"><input id="receiptQuery" autocomplete="off" spellcheck="false" maxlength="44" placeholder="aur-int-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" required>
-<button type="submit">Намери</button><button type="button" id="allReports">Всички сигнали</button><button type="button" id="reloadReports">Обнови</button></div>
+<button type="submit">Find</button><button type="button" id="allReports">All reports</button><button type="button" id="reloadReports">Refresh</button></div>
 </form>
-<p id="notice" role="status">Зареждане…</p><section id="queue" aria-label="Сигнали"></section></main></body></html>
+<p id="notice" role="status">Loading…</p><section id="queue" aria-label="Private reports"></section></main></body></html>
