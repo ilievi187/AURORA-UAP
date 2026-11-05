@@ -14,7 +14,7 @@ const curatedArchive=(()=>{const {cases,...meta}=JSON.parse(readFileSync(new URL
 const fullArchive=readFileSync(new URL('../data/cases.json',import.meta.url),'utf8');
 const homepageIntegrityCases=(()=>{
   const cases=JSON.parse(readFileSync(new URL('../data/cases.json',import.meta.url))).cases;
-  const wanted=new Set(['disclosure-virginia-2024','uap-archive-aaro-atmospheric-wakes-case']);
+  const wanted=new Set(['disclosure-ohare-2006','uap-archive-aaro-atmospheric-wakes-case']);
   return cases.filter(item=>wanted.has(item.id));
 })();
 const homepageIntegrityArchive=JSON.stringify({cases:homepageIntegrityCases});
@@ -318,9 +318,9 @@ try {
     await page.locator('#languageGate').waitFor({state:'hidden'});
     await page.waitForFunction(()=>document.querySelectorAll('#reportGrid a.report-card').length===2);
 
-    const legacy=homepageIntegrityCases.find(item=>item.id==='disclosure-virginia-2024');
+    const legacy=homepageIntegrityCases.find(item=>item.id==='disclosure-ohare-2006');
     const authored=homepageIntegrityCases.find(item=>item.id==='uap-archive-aaro-atmospheric-wakes-case');
-    const legacyCard=page.locator('#reportGrid a[href="/archive/disclosure-virginia-2024"]');
+    const legacyCard=page.locator('#reportGrid a[href="/archive/disclosure-ohare-2006"]');
     const authoredCard=page.locator('#reportGrid a[href="/archive/uap-archive-aaro-atmospheric-wakes-case"]');
     assert.equal(await legacyCard.locator('h3').textContent(),legacy.title.en);
     assert.equal(await legacyCard.locator('.desc').textContent(),legacy.summary.en);
@@ -333,7 +333,7 @@ try {
       'an authored Bulgarian summary must remain Bulgarian without a false fallback warning');
 
     await page.locator('#langToggle').selectOption('de');
-    await page.waitForFunction(()=>document.querySelector('#reportGrid a[href="/archive/disclosure-virginia-2024"] .archive-translation-disclosure')?.textContent===
+    await page.waitForFunction(()=>document.querySelector('#reportGrid a[href="/archive/disclosure-ohare-2006"] .archive-translation-disclosure')?.textContent===
       'Englischer Originaltext · Übersetzung nicht verfügbar');
     assert.equal(await legacyCard.locator('.desc').textContent(),legacy.summary.en);
     assert.equal(await authoredCard.locator('.desc').textContent(),authored.summary.en);
@@ -351,17 +351,17 @@ try {
     await page.locator('#gateLanguageGrid button[data-language="bg"]').click();
     await page.locator('#gateContinue').click();
     await page.locator('#languageGate').waitFor({state:'hidden'});
-    await page.locator('#worldMapResults [data-world-case-id="disclosure-virginia-2024"]').waitFor();
-    await page.locator('#worldMapResults [data-world-case-id="disclosure-virginia-2024"]').click();
+    await page.locator('#worldMapResults [data-world-case-id="disclosure-ohare-2006"]').waitFor();
+    await page.locator('#worldMapResults [data-world-case-id="disclosure-ohare-2006"]').click();
 
-    const legacy=homepageIntegrityCases.find(item=>item.id==='disclosure-virginia-2024');
+    const legacy=homepageIntegrityCases.find(item=>item.id==='disclosure-ohare-2006');
     const detail=page.locator('#worldCaseDetail');
     assert.equal(await detail.locator('h3').textContent(),legacy.title.en);
     assert.equal(await detail.locator('p').nth(1).textContent(),legacy.summary.en);
     assert.equal(await detail.locator('.world-translation-disclosure').count(),1);
     assert.equal(await detail.locator('.world-translation-disclosure').textContent(),
       'Оригинален текст на английски · автоматичният превод не е наличен');
-    assert.equal(await page.locator('#worldMapResults [data-world-case-id="disclosure-virginia-2024"] .world-result-language').textContent(),
+    assert.equal(await page.locator('#worldMapResults [data-world-case-id="disclosure-ohare-2006"] .world-result-language').textContent(),
       'Оригинален текст на английски · автоматичният превод не е наличен');
     assert.doesNotMatch(await detail.textContent(),/случай, описан в публичния каталог|Маркерът, ако има такъв/);
 
@@ -371,7 +371,7 @@ try {
     assert.equal(await detail.locator('h3').textContent(),legacy.title.en);
     assert.equal(await detail.locator('p').nth(1).textContent(),legacy.summary.en);
     await page.locator('#langToggle').selectOption('en');
-    await page.waitForFunction(()=>document.querySelector('#worldCaseDetail h3')?.textContent==='The Active Virginia Coast Case');
+    await page.waitForFunction(()=>document.querySelector('#worldCaseDetail h3')?.textContent==='O\'Hare');
     assert.equal(await detail.locator('.world-translation-disclosure').count(),0);
     assert.deepEqual(errors,[]);
     await context.close();
