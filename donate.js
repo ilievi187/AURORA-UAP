@@ -30,6 +30,8 @@ function verifiedCheckoutLink(){
 const link=verifiedCheckoutLink();
 if(link){
   checkout.disabled=false;
+  checkout.removeAttribute('aria-describedby'); // Availability explanation is hidden for active external checkout.
+  checkout.title='Continue to Buy Me a Coffee — AURORA UAP';
   status.hidden=true;
   checkout.addEventListener('click',()=>{window.location.assign(link);});
 }else{

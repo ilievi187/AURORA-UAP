@@ -32,3 +32,10 @@ test('accepts an HTTPS public creator profile only', () => {
   assert.equal(validate('https://buymeacoffee.com/creator'), 'https://buymeacoffee.com/creator');
   assert.equal(validate('https://www.buymeacoffee.com/creator'), 'https://www.buymeacoffee.com/creator');
 });
+
+
+test('the configured public destination is the verified owner-confirmed creator profile', async () => {
+  const config = await readFile(resolve(root, 'payment-config.js'), 'utf8');
+  assert.match(config, /AURORA_PAYMENT_LINK\s*=\s*"https:\/\/buymeacoffee\.com\/aurorauap"/);
+  assert.equal(validate('https://buymeacoffee.com/aurorauap'), 'https://buymeacoffee.com/aurorauap');
+});
