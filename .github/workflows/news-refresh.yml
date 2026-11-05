@@ -7,24 +7,20 @@ permissions:
   contents: read
 jobs:
   refresh-source-backed-history:
-    if: github.repository == 'ilievi187/AURORA-UAP'
+    if: github.repository == 'ilievi187/AURORA-UAP' && vars.AURORA_NEWS_REFRESH_ENABLED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 6
     env:
       AURORA_NEWS_REFRESH_TOKEN: ${{ secrets.AURORA_NEWS_REFRESH_TOKEN }}
     steps:
-      - name: Check owner-controlled archive configuration
-        id: archive-config
+      - name: Require enabled refresh secret before any request
         shell: bash
         run: |
           if [[ -z "${AURORA_NEWS_REFRESH_TOKEN:-}" ]]; then
-            echo "enabled=false" >> "$GITHUB_OUTPUT"
-            echo "Durable refresh skipped; the owner has not configured the secret."
-          else
-            echo "enabled=true" >> "$GITHUB_OUTPUT"
+            echo "::error::Durable news refresh is opted in but AURORA_NEWS_REFRESH_TOKEN is missing from GitHub Actions secrets."
+            exit 1
           fi
       - name: Refresh source-backed editions into durable D1 history
-        if: steps.archive-config.outputs.enabled == 'true'
         shell: bash
         run: |
           set -euo pipefail
