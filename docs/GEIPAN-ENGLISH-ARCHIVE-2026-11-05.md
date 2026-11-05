@@ -10,8 +10,8 @@ A read-only desktop/mobile visual inspection caught the discrepancy: French orig
 
 - Ingested source: UAPDrop's CC BY 4.0 compilation of original CNES GEIPAN reports.
 - **2,715 GEIPAN records**: all retain their original `original_language:"fr"`, authoritative source links, date, source provenance, geographic metadata, status, and original French summary/story in `.fr` fields.
-- **2,698** report summaries and stories have a machine-generated English translation from the published original using local Helsinki-NLP/opus-mt-fr-en, created offline on the owner's ROCm GPU.
-- **17** cases have a safe English-only *translation unavailable* notice instead of untrustworthy model output; source originals remain cited for reading. Never claim these were translated.
+- **2,713** report summaries and stories have a machine-generated English translation from the published original using local Helsinki-NLP/opus-mt-fr-en, created offline on the owner's ROCm GPU.
+- **2** source records contain only one non-descriptive character (E or *), so no eyewitness narrative exists to translate. They now display an English explanation of the source limitation. Do not invent observation details.
 - **7,317** English National Archives records and **101** curated dossiers are untouched.
 - The public bulk index and full dossier shards share identical English summaries and translation status. This is not editorially verified fact-checking: `translation.editorial_reviewed:false` appears in machine-translated records, and the dossier text discloses it.
 - No private Supabase Auth, Cloudflare D1 report, moderation data or user account was read or modified by this localization.
@@ -32,4 +32,11 @@ This is translation, not a claim that any reported object was extraterrestrial. 
 - Narrow/mobile (approx. 420px): no horizontal overflow, accessible original-source action.
 - Verify no original French quotation is incorrectly rendered as the English description; original-language source remains available by hyperlink and archive data.
 
-**Not a claim of completed linguistic proofreading for all 2,698 machine translations.** Continue sample/editorial QA where cited source narratives have disputed technical terminology.
+**Not a claim of completed linguistic proofreading for all 2,713 machine translations.** Continue sample/editorial QA where cited source narratives have disputed technical terminology.
+
+
+## Completion pass — 5 November 2026
+
+An additional translation pass over the last 17 GEIPAN records found 15 French narratives and 2 source records containing only a single character. All 15 narratives have English machine translations; the other two display an honest English source-limitation statement. The French original, source links, dates, classifications and geographic metadata remain unchanged.
+
+Invariant: all 2,715 GEIPAN public dossiers have English display text, 2,713 machine translated and 2 source_text_insufficient. The remaining 7,317 Blue Book and 101 curated records are unchanged. This is 100% English UI coverage, not a claim that empty originals can be translated or that machine translation received editorial proofreading.

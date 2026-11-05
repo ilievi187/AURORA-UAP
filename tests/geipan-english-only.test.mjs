@@ -18,9 +18,9 @@ test("all 2,715 original French GEIPAN sources have honest English display field
    assert.equal(record.translation?.source_language,"fr");
    assert.equal(record.translation?.target_language,"en");
    assert.equal(record.translation?.editorial_reviewed,false);
-   assert.ok(["machine_translated","translation_unavailable"].includes(record.translation.status));
+   assert.ok(["machine_translated","source_text_insufficient"].includes(record.translation.status));
    assert.ok(record.source?.url?.startsWith("https://www.cnes-geipan.fr/"));
-   assert.ok(record.summary?.fr?.length>4);
+   assert.ok(record.summary?.fr?.length>0);
    assert.ok(record.summary?.en?.length>20);
    assert.ok(record.summary.en.length<=320,"Summary length "+record.id);
    assert.ok(Array.isArray(record.story?.fr)&&record.story.fr.length===2);
@@ -32,12 +32,20 @@ test("all 2,715 original French GEIPAN sources have honest English display field
     assert.match(record.story.en[0],/Machine-translated/);
     assert.notEqual(record.summary.en,record.summary.fr);
     assert.ok(record.story.en[1].length>15);
-   }else assert.match(record.story.en[0],/English translation unavailable/);
+   }else {
+    assert.equal(record.translation.status,"source_text_insufficient");
+    assert.match(record.story.en[0],/no usable eyewitness narrative/i);
+    assert.match(record.summary.en,/fragment/i);
+   }
    assert.ok(!ids.has(record.id));
    ids.set(record.id,record);
   }
  }
  assert.equal(n,2715);
+ const statuses=[...ids.values()].reduce((acc,r)=>(acc[r.translation.status]=(acc[r.translation.status]||0)+1,acc),{});
+ assert.deepEqual(statuses,{machine_translated:2713,source_text_insufficient:2});
+ assert.equal(ids.get("geipan-2753").translation.status,"source_text_insufficient");
+ assert.equal(ids.get("geipan-2792").translation.status,"source_text_insufficient");
  const inIndex=index.cases.filter(c=>c.original_language==="fr");
  assert.equal(inIndex.length,n);
  for(const c of inIndex){
