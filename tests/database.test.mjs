@@ -141,17 +141,22 @@ test("manual seed SQL generator applies real reviewed cases and is idempotent",(
  sqlite.close();
 });
 
-test("dynamic Pages country route serves shared extensionless country asset",async()=>{
- let seen="";
- const response=await serveCountry({
-  request:new Request("https://aurorauap.org/countries/DE"),
-  params:{code:"DE"},
-  env:{ASSETS:{fetch:async request=>{seen=new URL(request.url).pathname;return new Response("country fixture",{status:200})}}}
- });
+test("dynamic Pages country route checks public source index before serving a real country",async()=>{
+ const seen=[];
+ const env={ASSETS:{fetch:async request=>{
+  const path=new URL(request.url).pathname;seen.push(path);
+  if(path==="/data/seo/countries.json")return new Response(read("data/seo/countries.json"),{status:200,headers:{"Content-Type":"application/json"}});
+  if(path==="/country")return new Response("country fixture",{status:200});
+  if(path==="/404.html")return new Response("404 page",{status:200});
+  throw Error("Unexpected asset "+path);
+ }}};
+ const response=await serveCountry({request:new Request("https://aurorauap.org/countries/DE"),params:{code:"DE"},env});
  assert.equal(response.status,200);
- assert.equal(seen,"/country");
- const invalid=await serveCountry({request:new Request("https://aurorauap.org/countries/INVALID"),params:{code:"INVALID"},env:{}});
- assert.equal(invalid.status,400);
+ assert.deepEqual(seen.slice(0,2),["/data/seo/countries.json","/country"]);
+ const absent=await serveCountry({request:new Request("https://aurorauap.org/countries/ZZ"),params:{code:"ZZ"},env});
+ assert.equal(absent.status,404);
+ const invalid=await serveCountry({request:new Request("https://aurorauap.org/countries/INVALID"),params:{code:"INVALID"},env});
+ assert.equal(invalid.status,404);
 });
 
 test("source finding is separate from editorial publication approval",async()=>{
@@ -257,20 +262,26 @@ test("duplicate case IDs with different source record IDs are never imported",()
  assert.throws(()=>validateManifest(duplicate),/Bad duplicate\/id/);
 });
 
-test("shared dossier Pages routes reject invalid IDs and serve only the common template",async()=>{
+test("shared dossier Pages routes serve only source-indexed archived IDs, and preserve public D1 template",async()=>{
  const {onRequestGet:legacyPage}=await import("../functions/archive/[id].js");
  const {onRequestGet:casePage}=await import("../functions/cases/[id].js");
- let fetched="";
+ const fetched=[];
  const env={ASSETS:{fetch:async request=>{
-  fetched=new URL(request.url).pathname;return new Response("dossier fixture",{status:200});
+  const path=new URL(request.url).pathname;fetched.push(path);
+  if(path==="/data/seo/curated.json")return new Response(read("data/seo/curated.json"),{status:200,headers:{"Content-Type":"application/json"}});
+  if(path==="/dossier")return new Response(read("dossier.html"),{status:200,headers:{"Content-Type":"text/html"}});
+  if(path==="/404.html")return new Response("404 page",{status:200});
+  throw Error("Unexpected asset "+path);
  }}};
- for(const [method,route,id] of [
-  [legacyPage,"/archive/phoenix-1997","phoenix-1997"],
-  [casePage,"/cases/aaro-pr-2013","aaro-pr-2013"]]){
-  const response=await method({request:new Request("https://aurorauap.org"+route),params:{id},env});
-  assert.equal(response.status,200);
-  assert.equal(fetched,"/dossier");
- }
+ const published=await legacyPage({request:new Request("https://aurorauap.org/archive/uap-archive-aaro-atmospheric-wakes-case"),params:{id:"uap-archive-aaro-atmospheric-wakes-case"},env});
+ assert.equal(published.status,200);
+ assert.deepEqual(fetched.slice(0,2),["/data/seo/curated.json","/dossier"]);
+ assert.match(await published.text(),/meta name="robots" content="index,follow"/);
+ const absent=await legacyPage({request:new Request("https://aurorauap.org/archive/nonexistent-public-case"),params:{id:"nonexistent-public-case"},env});
+ assert.equal(absent.status,404);
+ const d1=await casePage({request:new Request("https://aurorauap.org/cases/aaro-pr-2013"),params:{id:"aaro-pr-2013"},env});
+ assert.equal(d1.status,200);
+ assert.equal(fetched.at(-1),"/dossier");
  const denied=await casePage({request:new Request("https://aurorauap.org/cases/NOT-VALID!"),params:{id:"NOT-VALID!"},env});
  assert.equal(denied.status,400);
 });
