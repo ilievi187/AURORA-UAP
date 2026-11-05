@@ -112,3 +112,11 @@ export function clusterMarkers(cases, { width, height, zoom = 1, radius = 42 } =
     top: cell.y / cell.cases.length / height * 100
   }));
 }
+
+/** Short label for map bubbles only. Full record counts stay in titles, ARIA and datasets. */
+export function compactMarkerCount(value) {
+  if (!Number.isSafeInteger(value) || value < 0) return '—';
+  return value >= 1000
+    ? new Intl.NumberFormat('en', {notation:'compact', maximumFractionDigits:1}).format(value)
+    : String(value);
+}

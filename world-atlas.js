@@ -1,4 +1,4 @@
-import { clusterMarkers, filterCases, hasCoordinates, mapPrecision } from './world-atlas-model.js';
+import { clusterMarkers, compactMarkerCount, filterCases, hasCoordinates, mapPrecision } from './world-atlas-model.js';
 import { labels } from './world-atlas-labels.js';
 import { caseTextLanguage as resolvedCaseTextLanguage, translationDisclosure } from './archive-localization.js';
 
@@ -485,7 +485,7 @@ function renderSourcePins() {
       link.dataset.anchorShift = String(marker.shift);
       link.style.left = marker.left + '%';
       link.style.top = marker.top + '%';
-      link.textContent = cluster.count > 1 ? String(cluster.count) : '•';
+      link.textContent = cluster.count > 1 ? compactMarkerCount(cluster.count) : '•';
       const note=marker.shift ? ' · Marker offset for visibility' : '';
       link.title = countryDisplayName(code) + ' · ' + cluster.count +
         ' approximate city source records · Open country dossiers' + note;

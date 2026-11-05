@@ -148,3 +148,17 @@ test('map clustering groups nearby markers, separates them with zoom, and omits 
   assert.equal(denseGroups[0].cases.at(-1).id, `dense-${dense.length - 1}`);
   assert.ok(elapsed < 1500, `dense marker clustering took ${elapsed.toFixed(1)}ms`);
 });
+
+test('large map marker counts use compact English labels while preserving exact underlying values', () => {
+  assert.equal(atlas.compactMarkerCount(1), '1');
+  assert.equal(atlas.compactMarkerCount(999), '999');
+  assert.equal(atlas.compactMarkerCount(1000), '1K');
+  assert.equal(atlas.compactMarkerCount(2500), '2.5K');
+  assert.equal(atlas.compactMarkerCount(2590), '2.6K');
+  assert.equal(atlas.compactMarkerCount(2715), '2.7K');
+  assert.equal(atlas.compactMarkerCount(12500), '12.5K');
+  const map = readFileSync(new URL('../world-atlas.js', import.meta.url), 'utf8');
+  assert.match(map, /link\.textContent = cluster\.count > 1 \? compactMarkerCount\(cluster\.count\)/);
+  assert.match(map, /link\.dataset\.geoCount = String\(cluster\.count\)/);
+  assert.match(map, /link\.setAttribute\('aria-label'[\s\S]*?cluster\.count/);
+});
