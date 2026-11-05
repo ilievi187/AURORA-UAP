@@ -64,16 +64,20 @@ jobs:
         run: node --test tests/public-news-snapshot.test.mjs
       - name: Fetch source-backed headlines and validate the replacement
         run: node scripts/update-public-news-snapshot.mjs
+      - name: Validate compiled publisher discovery safety
+        run: node --test tests/discovery-snapshot.test.mjs
+      - name: Fetch bounded publisher matches for the source directory
+        run: node scripts/update-public-discovery-snapshot.mjs
       - name: Publish the dated feed snapshot in the public site
         shell: bash
         run: |
           set -euo pipefail
-          if git diff --quiet -- data/news-last-good.json; then
+          if git diff --quiet -- data/news-last-good.json data/discovery-last-good.json; then
             echo 'News snapshot unchanged.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/news-last-good.json
+          git add data/news-last-good.json data/discovery-last-good.json
           git commit -m 'data(news): refresh dated source-backed headline snapshot'
           git push origin HEAD:main

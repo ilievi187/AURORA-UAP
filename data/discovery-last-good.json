@@ -1,0 +1,347 @@
+{
+  "schema_version": 1,
+  "checked_on": "2026-11-05",
+  "collected_at": "2026-11-05T23:08:44.820Z",
+  "notice": "Publisher-feed keyword matches from a dated source-backed snapshot; no automatic verification or proof of non-human origin.",
+  "regions": {
+    "all": {
+      "status": "cached",
+      "checked": [
+        "the-debrief",
+        "the-war-zone",
+        "bbc-world",
+        "aljazeera-english",
+        "france24-english",
+        "dw-english",
+        "nasa-releases",
+        "japan-times",
+        "cbc-world",
+        "abc-australia",
+        "africanews",
+        "hindu-science",
+        "guardian-science",
+        "spiegel-wissenschaft",
+        "liberation-sciences",
+        "nature",
+        "space-com",
+        "science-news",
+        "phys-org-space",
+        "scientific-american",
+        "live-science"
+      ],
+      "failed": [
+        {
+          "id": "cbc-world",
+          "error": "fetch_failed"
+        }
+      ],
+      "count": 9,
+      "items": [
+        {
+          "title": "Mysterious ‘black triangles’ spotted over sensitive US site, new Pentagon UFO files reveal",
+          "url": "https://www.theguardian.com/world/2026/oct/23/ufo-pentagon-files",
+          "source": "The Guardian",
+          "source_id": "guardian-science",
+          "source_role": "specialist-press",
+          "source_region": "europe",
+          "feed_host": "www.theguardian.com",
+          "published": "2026-10-23T18:45:43.000Z",
+          "language": "en"
+        },
+        {
+          "title": "Pentagon Opens New Pathway for Government Insiders to Disclose UAP Information",
+          "url": "https://thedebrief.org/pentagon-opens-new-pathway-for-government-insiders-to-disclose-uap-information/",
+          "source": "The Debrief",
+          "source_id": "the-debrief",
+          "source_role": "specialist-press",
+          "source_region": "americas",
+          "feed_host": "thedebrief.org",
+          "published": "2026-09-16T13:44:31.000Z",
+          "language": "en"
+        },
+        {
+          "title": "Democratic Allies Must Join Forces in the Race for UAP Disclosure",
+          "url": "https://thedebrief.org/democratic-allies-must-join-forces-in-the-race-for-uap-disclosure/",
+          "source": "The Debrief",
+          "source_id": "the-debrief",
+          "source_role": "specialist-press",
+          "source_region": "americas",
+          "feed_host": "thedebrief.org",
+          "published": "2026-09-16T12:40:21.000Z",
+          "language": "en"
+        },
+        {
+          "title": "New Survey Suggests Gen Z Are More Likely to Believe in Aliens—How UFO Media May Be Shaping a Generation",
+          "url": "https://thedebrief.org/new-survey-suggests-gen-z-are-more-likely-to-believe-in-aliens-how-ufo-media-may-be-shaping-a-generation/",
+          "source": "The Debrief",
+          "source_id": "the-debrief",
+          "source_role": "specialist-press",
+          "source_region": "americas",
+          "feed_host": "thedebrief.org",
+          "published": "2026-08-29T13:58:33.000Z",
+          "language": "en"
+        },
+        {
+          "title": "Physicists Reveal Possible Connection Between “Warp Drive” Spacecraft and Phenomena Detailed in Recent Pentagon Releases",
+          "url": "https://thedebrief.org/physicists-reveal-possible-connection-between-warp-drive-spacecraft-and-phenomena-detailed-in-recent-pentagon-releases/",
+          "source": "The Debrief",
+          "source_id": "the-debrief",
+          "source_role": "specialist-press",
+          "source_region": "americas",
+          "feed_host": "thedebrief.org",
+          "published": "2026-08-27T12:47:54.000Z",
+          "language": "en"
+        },
+        {
+          "title": "'We Want to Believe' book explores the reality of UFOs: 'It's always going to be more likely that someone is wrong about what they saw' (interview)",
+          "url": "https://www.space.com/entertainment/we-want-to-believe-book-explores-the-reality-of-ufos-its-always-going-to-be-more-likely-that-someone-is-wrong-about-what-they-saw-interview",
+          "source": "Space.com",
+          "source_id": "space-com",
+          "source_role": "specialist-press",
+          "source_region": "americas",
+          "feed_host": "www.space.com",
+          "published": "2026-08-22T14:00:00.000Z",
+          "language": "en"
+        },
+        {
+          "title": "Scientists Just Analyzed More Than 100 UAP Videos Released by the Pentagon’s ‘PURSUE’ Program—This is What They Learned",
+          "url": "https://thedebrief.org/scientists-just-analyzed-more-than-100-uap-videos-released-by-the-pentagons-pursue-program-this-is-what-they-learned/",
+          "source": "The Debrief",
+          "source_id": "the-debrief",
+          "source_role": "specialist-press",
+          "source_region": "americas",
+          "feed_host": "thedebrief.org",
+          "published": "2026-08-20T12:06:05.000Z",
+          "language": "en"
+        },
+        {
+          "title": "Pentagon Releases New Batch of UAP Videos and Historical Files, But Clarity Remains Elusive",
+          "url": "https://thedebrief.org/pentagon-releases-new-batch-of-uap-videos-and-historical-files-but-clarity-remains-elusive/",
+          "source": "The Debrief",
+          "source_id": "the-debrief",
+          "source_role": "specialist-press",
+          "source_region": "americas",
+          "feed_host": "thedebrief.org",
+          "published": "2026-07-10T17:18:54.000Z",
+          "language": "en"
+        },
+        {
+          "title": "The missing scientists at the centre of a UFO conspiracy",
+          "url": "https://www.theguardian.com/news/audio/2026/jul/10/the-missing-scientists-at-the-centre-of-a-ufo-conspiracy",
+          "source": "The Guardian",
+          "source_id": "guardian-science",
+          "source_role": "specialist-press",
+          "source_region": "europe",
+          "feed_host": "www.theguardian.com",
+          "published": "2026-07-10T02:00:07.000Z",
+          "language": "en"
+        }
+      ]
+    },
+    "europe": {
+      "status": "cached",
+      "checked": [
+        "bbc-world",
+        "france24-english",
+        "dw-english",
+        "esa-top-news",
+        "uk-ministry-of-defence",
+        "bbc-mundo",
+        "dw-wissen",
+        "guardian-world",
+        "lemonde-sciences",
+        "elpais-ciencia",
+        "spiegel-international",
+        "dnevnik",
+        "guardian-science",
+        "spiegel-wissenschaft",
+        "liberation-sciences",
+        "nature",
+        "phys-org-space"
+      ],
+      "failed": [
+        {
+          "id": "esa-top-news",
+          "error": "fetch_failed"
+        }
+      ],
+      "count": 2,
+      "items": [
+        {
+          "title": "Mysterious ‘black triangles’ spotted over sensitive US site, new Pentagon UFO files reveal",
+          "url": "https://www.theguardian.com/world/2026/oct/23/ufo-pentagon-files",
+          "source": "The Guardian",
+          "source_id": "guardian-science",
+          "source_role": "specialist-press",
+          "source_region": "europe",
+          "feed_host": "www.theguardian.com",
+          "published": "2026-10-23T18:45:43.000Z",
+          "language": "en"
+        },
+        {
+          "title": "The missing scientists at the centre of a UFO conspiracy",
+          "url": "https://www.theguardian.com/news/audio/2026/jul/10/the-missing-scientists-at-the-centre-of-a-ufo-conspiracy",
+          "source": "The Guardian",
+          "source_id": "guardian-science",
+          "source_role": "specialist-press",
+          "source_region": "europe",
+          "feed_host": "www.theguardian.com",
+          "published": "2026-07-10T02:00:07.000Z",
+          "language": "en"
+        }
+      ]
+    },
+    "americas": {
+      "status": "cached",
+      "checked": [
+        "the-debrief",
+        "the-war-zone",
+        "nasa-releases",
+        "cbc-world",
+        "noaa-news",
+        "npr-science",
+        "folha-mundo",
+        "space-com",
+        "science-news",
+        "scientific-american",
+        "live-science",
+        "nyt-science"
+      ],
+      "failed": [
+        {
+          "id": "cbc-world",
+          "error": "fetch_failed"
+        }
+      ],
+      "count": 7,
+      "items": [
+        {
+          "title": "Pentagon Opens New Pathway for Government Insiders to Disclose UAP Information",
+          "url": "https://thedebrief.org/pentagon-opens-new-pathway-for-government-insiders-to-disclose-uap-information/",
+          "source": "The Debrief",
+          "source_id": "the-debrief",
+          "source_role": "specialist-press",
+          "source_region": "americas",
+          "feed_host": "thedebrief.org",
+          "published": "2026-09-16T13:44:31.000Z",
+          "language": "en"
+        },
+        {
+          "title": "Democratic Allies Must Join Forces in the Race for UAP Disclosure",
+          "url": "https://thedebrief.org/democratic-allies-must-join-forces-in-the-race-for-uap-disclosure/",
+          "source": "The Debrief",
+          "source_id": "the-debrief",
+          "source_role": "specialist-press",
+          "source_region": "americas",
+          "feed_host": "thedebrief.org",
+          "published": "2026-09-16T12:40:21.000Z",
+          "language": "en"
+        },
+        {
+          "title": "New Survey Suggests Gen Z Are More Likely to Believe in Aliens—How UFO Media May Be Shaping a Generation",
+          "url": "https://thedebrief.org/new-survey-suggests-gen-z-are-more-likely-to-believe-in-aliens-how-ufo-media-may-be-shaping-a-generation/",
+          "source": "The Debrief",
+          "source_id": "the-debrief",
+          "source_role": "specialist-press",
+          "source_region": "americas",
+          "feed_host": "thedebrief.org",
+          "published": "2026-08-29T13:58:33.000Z",
+          "language": "en"
+        },
+        {
+          "title": "Physicists Reveal Possible Connection Between “Warp Drive” Spacecraft and Phenomena Detailed in Recent Pentagon Releases",
+          "url": "https://thedebrief.org/physicists-reveal-possible-connection-between-warp-drive-spacecraft-and-phenomena-detailed-in-recent-pentagon-releases/",
+          "source": "The Debrief",
+          "source_id": "the-debrief",
+          "source_role": "specialist-press",
+          "source_region": "americas",
+          "feed_host": "thedebrief.org",
+          "published": "2026-08-27T12:47:54.000Z",
+          "language": "en"
+        },
+        {
+          "title": "'We Want to Believe' book explores the reality of UFOs: 'It's always going to be more likely that someone is wrong about what they saw' (interview)",
+          "url": "https://www.space.com/entertainment/we-want-to-believe-book-explores-the-reality-of-ufos-its-always-going-to-be-more-likely-that-someone-is-wrong-about-what-they-saw-interview",
+          "source": "Space.com",
+          "source_id": "space-com",
+          "source_role": "specialist-press",
+          "source_region": "americas",
+          "feed_host": "www.space.com",
+          "published": "2026-08-22T14:00:00.000Z",
+          "language": "en"
+        },
+        {
+          "title": "Scientists Just Analyzed More Than 100 UAP Videos Released by the Pentagon’s ‘PURSUE’ Program—This is What They Learned",
+          "url": "https://thedebrief.org/scientists-just-analyzed-more-than-100-uap-videos-released-by-the-pentagons-pursue-program-this-is-what-they-learned/",
+          "source": "The Debrief",
+          "source_id": "the-debrief",
+          "source_role": "specialist-press",
+          "source_region": "americas",
+          "feed_host": "thedebrief.org",
+          "published": "2026-08-20T12:06:05.000Z",
+          "language": "en"
+        },
+        {
+          "title": "Pentagon Releases New Batch of UAP Videos and Historical Files, But Clarity Remains Elusive",
+          "url": "https://thedebrief.org/pentagon-releases-new-batch-of-uap-videos-and-historical-files-but-clarity-remains-elusive/",
+          "source": "The Debrief",
+          "source_id": "the-debrief",
+          "source_role": "specialist-press",
+          "source_region": "americas",
+          "feed_host": "thedebrief.org",
+          "published": "2026-07-10T17:18:54.000Z",
+          "language": "en"
+        }
+      ]
+    },
+    "asia-pacific": {
+      "status": "no_matches",
+      "checked": [
+        "japan-times",
+        "abc-australia",
+        "hindu-science",
+        "nhk-news",
+        "yonhap-english",
+        "rnz-world",
+        "sbs-news",
+        "smh-world",
+        "straitstimes-world",
+        "channel-newsasia",
+        "scmp-world",
+        "asahi-headlines"
+      ],
+      "failed": [],
+      "count": 0,
+      "items": []
+    },
+    "middle-east-africa": {
+      "status": "no_matches",
+      "checked": [
+        "aljazeera-english",
+        "africanews",
+        "bbc-africa",
+        "sabc-news",
+        "allafrica",
+        "jerusalem-post",
+        "guardian-africa",
+        "dw-africa",
+        "rfi-afrique",
+        "premium-times"
+      ],
+      "failed": [],
+      "count": 0,
+      "items": []
+    },
+    "global": {
+      "status": "no_matches",
+      "checked": [
+        "un-news",
+        "iaea-topnews",
+        "gao-reports"
+      ],
+      "failed": [],
+      "count": 0,
+      "items": []
+    }
+  }
+}

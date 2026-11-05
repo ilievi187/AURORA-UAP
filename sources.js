@@ -156,6 +156,8 @@ function renderMatches(payload) {
   matchList.replaceChildren();
   const names = new Map(catalog.map((entry) => [entry.id, entry.publisher]));
   const checked = (payload.checked || []).map((id) => names.get(id) || id).join(", ");
+  const snapshotNote = payload.cache_source === "scheduled_publisher_snapshot" && payload.checked_on
+    ? ` · Snapshot checked ${payload.checked_on}` : "";
   if (payload.status === "unavailable") {
     setStatus(matchStatus, "error", message("Източниците не отговориха. Каталогът остава достъпен, без добавени заглавия.","Sources did not respond. The directory remains available without new headlines."));
     return;
@@ -170,7 +172,7 @@ function renderMatches(payload) {
     setStatus(matchStatus, "ready", message(`Няма съвпадения по UAP, UFO, OVNI, AARO или НЛО. Проверени: ${checked}${failedNote}`,`No UAP/UFO/AARO keyword matches. Checked: ${checked}`));
     return;
   }
-  setStatus(matchStatus, "ready", message(`${payload.items.length} съвпадения. Отвори оригиналните публикации. Проверени: ${checked}${failedNote}`,`${payload.items.length} headlines from publishers. Feeds checked: ${checked}`));
+  setStatus(matchStatus, "ready", message(`${payload.items.length} съвпадения. Отвори оригиналните публикации. Проверени: ${checked}${failedNote}`,`${payload.items.length} headlines from publishers. Feeds checked: ${checked}${snapshotNote}`));
   for (const item of payload.items) {
     const href = safeHttps(item.url);
     if (!href) continue;
