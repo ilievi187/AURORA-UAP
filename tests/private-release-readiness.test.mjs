@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {checkReadOnlyRelease} from '../scripts/check-private-release-readiness.mjs';
 const BASE='https://aurorauap.org';
 const notice='<article id="bg" lang="bg"></article><article id="en" lang="en"></article>Supabase Auth Brevo GDPR';
-const STATE={accepting:false,mode:'local_draft_only',attachments_enabled:false,automatic_publication:false,auth_required:true};
+const STATE={accepting:false,mode:'local_draft_only',attachments_enabled:false,contact_collection_enabled:false,automatic_publication:false,auth_required:true};
 function mock(overrides={}){
  const calls=[];
  const fetcher=async(url,init)=>{
@@ -71,4 +71,47 @@ test('Accidental release/invalid auth gating/caching fails prelaunch contract',a
 test('Missing Brevo/Supabase processing disclosure fails release preflight',async()=>{
  const m=mock({'/privacy':new Response('<article id="bg"></article><article id="en"></article>',{status:200})});
  assert.equal((await checkReadOnlyRelease(m.fetcher)).ok,false);
+});
+
+const LIVE_STATE={...STATE,accepting:true,mode:'text_only_quarantine',
+ site_key:'0x4AAuroraReleasedProviderKey',policy_version:'intake-v1-reviewed',
+ policy_url:'https://aurorauap.org/privacy',auth_providers:['email']};
+test('postlaunch proof accepts only properly gated private text-only intake and 17 anonymous GET requests',async()=>{
+ const m=mock({'/api/intake/status':Response.json(LIVE_STATE,{headers:{'Cache-Control':'no-store'}})});
+ const audit=await checkReadOnlyRelease(m.fetcher,{profile:'postlaunch'});
+ assert.equal(audit.ok,true);
+ assert.equal(audit.results.length,17);
+ assert.equal(m.calls.length,17);
+ assert.ok(m.calls.every(x=>x.init.method==='GET'&&x.init.redirect==='manual'));
+ assert.equal(m.calls.some(x=>x.init.body!==undefined),false);
+});
+test('prelaunch monitor does not silently accept an unapproved launch',async()=>{
+ const m=mock({'/api/intake/status':Response.json(LIVE_STATE,{headers:{'Cache-Control':'no-store'}})});
+ assert.equal((await checkReadOnlyRelease(m.fetcher)).ok,false);
+});
+test('postlaunch monitor fails closed on unsafe launch changes',async()=>{
+ const cases=[
+  {...LIVE_STATE,accepting:false,mode:'local_draft_only'},
+  {...LIVE_STATE,automatic_publication:true},
+  {...LIVE_STATE,attachments_enabled:true},
+  {...LIVE_STATE,contact_collection_enabled:true},
+  {...LIVE_STATE,auth_required:false},
+  {...LIVE_STATE,policy_version:'draft'},
+  {...LIVE_STATE,policy_url:'https://other.example/privacy'},
+  {...LIVE_STATE,auth_providers:['google']},
+  {...LIVE_STATE,site_key:'1x00000000000000000000AA'},
+  {...LIVE_STATE,site_key:undefined}
+ ];
+ for(const state of cases){
+  const m=mock({'/api/intake/status':Response.json(state,{headers:{'Cache-Control':'no-store'}})});
+  const result=await checkReadOnlyRelease(m.fetcher,{profile:'postlaunch'});
+  assert.equal(result.ok,false,JSON.stringify(state));
+ }
+ const noStore=mock({'/api/intake/status':Response.json(LIVE_STATE)});
+ assert.equal((await checkReadOnlyRelease(noStore.fetcher,{profile:'postlaunch'})).ok,false);
+});
+test('monitor rejects unrecognized release profile instead of ignoring safeguards',async()=>{
+ const m=mock();
+ await assert.rejects(()=>checkReadOnlyRelease(m.fetcher,{profile:'launch-now'}),/Invalid release monitor profile/);
+ assert.equal(m.calls.length,0);
 });
