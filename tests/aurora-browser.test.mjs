@@ -769,6 +769,53 @@ try{
     assert.deepEqual(errors,[]);
     await context.close();
   });
+  await test('pending private receipt response cannot reappear after sign-out',async()=>{
+    const context=await browser.newContext({viewport:{width:1150,height:820},reducedMotion:'reduce'});
+    const page=await context.newPage(),errors=[];
+    page.on('pageerror',error=>errors.push(error.message));
+    const id='123e4567-e89b-42d3-a456-426614174000';
+    let receiptRequestSeen;
+    const requestSeen=new Promise(resolve=>{receiptRequestSeen=resolve});
+    let releaseResponse;
+    const responseGate=new Promise(resolve=>{releaseResponse=resolve});
+    await page.route('**/api/intake/status',route=>route.fulfill({status:200,contentType:'application/json',
+     body:JSON.stringify({accepting:false,mode:'local_draft_only',auth_required:true,
+      auth_url:'https://aurora-test.supabase.co',
+      auth_key:'sb_publishable_testing_public_key_123456789',auth_providers:['email']})}));
+    await page.route('**/api/account/privacy',async route=>{
+     receiptRequestSeen();
+     await responseGate;
+     await route.fulfill({status:200,contentType:'application/json',
+      body:JSON.stringify({receipts:[{receipt_id:'aur-int-'+id,status:'pending',
+       created_at:'2026-11-04T12:00:00.000Z'}],next_offset:null,published:false})});
+    });
+    await page.route('**/report-auth.bundle.js',route=>route.fulfill({status:200,contentType:'application/javascript',
+     body:`window.__testSignedIn=true;window.AURORAReportAuth={create:()=>({auth:{
+      getUser:async()=>({data:{user:window.__testSignedIn?{id:"${id}",email:"verified@example.com",
+       email_confirmed_at:"2026-01-01T00:00:00Z"}:null}}),
+      getSession:async()=>({data:{session:{access_token:"verified_test_token_123456789012345678901"}}}),
+      onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}}),
+      signOut:async()=>{window.__testSignedIn=false;return {error:null}},
+      signInWithOtp:async()=>({error:null})}})};`}));
+    try{
+     await page.goto('http://127.0.0.1:'+port+'/report.html');
+     await page.locator('#reportAuthLogout').waitFor({state:'visible',timeout:4000});
+     await page.locator('#reportPrivacyList').click();
+     await requestSeen;
+     await page.locator('#reportAuthLogout').click();
+     await page.locator('#reportAuthLogout').waitFor({state:'hidden',timeout:4000});
+     releaseResponse();
+     await page.waitForFunction(()=>document.querySelector('#reportPrivacyList')?.disabled===false);
+     assert.equal(await page.locator('#reportPrivateReceipts li').count(),0,
+      'a delayed reply from the previous signed-in session must not restore private receipts');
+     assert.equal(await page.locator('#reportPrivacyTools').isVisible(),false);
+     assert.equal(await page.locator('#reportAuthButtons').isVisible(),true);
+     assert.deepEqual(errors,[]);
+    }finally{
+     releaseResponse();
+     await context.close();
+    }
+  });
   await test('Supabase invitation hash on homepage transfers to the report callback only',async()=>{
     const ctx=await browser.newContext({viewport:{width:1024,height:768},reducedMotion:'reduce'});
     const page=await ctx.newPage();
