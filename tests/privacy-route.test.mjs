@@ -20,12 +20,12 @@ test('privacy notice accurately describes privacy protections and local draft mo
  for(const term of ['Cloudflare D1','Cloudflare Access','Turnstile','90','180','12','GDPR','quarantine','blizzard9011@gmail.com'])
   assert.ok(privacy.includes(term),`Missing required privacy topic: ${term}`);
  assert.doesNotMatch(privacy,/\[TO VERIFY\]|\[ТРЯБВА ДА СЕ ПОТВЪРДИ\]|lorem ipsum/i);
- assert.match(privacy,/не означава, че подаването е активно/);
- assert.match(privacy,/does not itself enable submissions/);
+ assert.match(privacy,/AURORA приема текстови сигнали/);
+ assert.match(privacy,/accepts text reports from verified-email users/);
  assert.match(privacy,/Brevo/,"Transactional email processor must be named");
  assert.match(privacy,/Supabase Auth/,"Auth processor must be named");
- assert.match(privacy,/Verified-email sign-in is already available/,"Do not imply registration starts only with public intake");
- assert.match(privacy,/Входът с потвърден имейл вече е достъпен/,"BG notice must disclose active registration");
+ assert.match(privacy,/Verified-email sign-in may also remain available/,"Verified-email authentication persists during temporary report downtime");
+ assert.match(privacy,/Входът с потвърден имейл е достъпен/,"BG notice must disclose active registration");
  assert.match(privacy,/backup-retention procedures remain under review/);
  assert.match(privacy,/Изтриването на частен сигнал и изтриването на профила/);
  assert.match(privacy,/Само лица на 18 или повече години/);
