@@ -60,7 +60,10 @@ test('source-only page with invalid ID cannot accidentally become a 200',async()
 test('countries with actual published archives work and fabricated country returns 404',async()=>{
  for(const code of ['US','FR','BR','GB','AU']){
   const r=await country({request:new Request('https://aurorauap.org/countries/'+code),params:{code},env});assert.equal(r.status,200,code);
-  assert.match(await r.text(),/COUNTRY EXPLORER/);
+  const page=await r.text();
+  assert.ok(page.includes(`<link rel="canonical" href="https://aurorauap.org/countries/${code}">`));
+  assert.match(page,/<meta property="og:title"/);
+  assert.match(page,/<h1 id="countryName">[^<]+ — Country Explorer<\/h1>/);
  }
  for(const code of ['ZZ','AA','99']){
   const r=await country({request:new Request('https://aurorauap.org/countries/'+code),params:{code},env});assert.equal(r.status,404,code);

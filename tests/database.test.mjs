@@ -146,7 +146,7 @@ test("dynamic Pages country route checks public source index before serving a re
  const env={ASSETS:{fetch:async request=>{
   const path=new URL(request.url).pathname;seen.push(path);
   if(path==="/data/seo/countries.json")return new Response(read("data/seo/countries.json"),{status:200,headers:{"Content-Type":"application/json"}});
-  if(path==="/country")return new Response("country fixture",{status:200});
+  if(path==="/country")return new Response(read("country.html"),{status:200,headers:{"Content-Type":"text/html"}});
   if(path==="/404.html")return new Response("404 page",{status:200});
   throw Error("Unexpected asset "+path);
  }}};

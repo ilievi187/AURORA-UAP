@@ -37,3 +37,17 @@ export function dossierMarkup(html,id,metadata){
  }
  return page;
 }
+
+export function countryMarkup(html,code){
+ if(!/^[A-Z]{2}$/.test(code))throw Error('Invalid public country code');
+ if(!html.includes('<title>AURORA — Country Explorer</title>'))throw Error('Country template title marker missing');
+ const name=new Intl.DisplayNames(['en'],{type:'region'}).of(code)||code;
+ const title=`${name} UAP Case Archive | AURORA UAP`;
+ const description=`Explore original-source historical UAP reports filed under ${name}. View published dates, documents and location uncertainty in the open AURORA archive.`;
+ const canonical='https://aurorauap.org/countries/'+code;
+ const meta=`<link rel="canonical" href="${canonical}"><meta name="description" content="${escapeHtml(description)}"><meta property="og:type" content="website"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${canonical}"><meta name="twitter:card" content="summary">`;
+ return html.replace('<meta name="robots" content="index,follow">',`<meta name="robots" content="index,follow">${meta}`)
+  .replace('<title>AURORA — Country Explorer</title>',`<title>${escapeHtml(title)}</title>`)
+  .replace('<h1 id="countryName">COUNTRY EXPLORER</h1>',`<h1 id="countryName">${escapeHtml(name)} — Country Explorer</h1>`)
+  .replace('<p id="countryIntro">Explore archived reports, documents and witness accounts with original source links.</p>',`<p id="countryIntro">${escapeHtml(description)}</p>`);
+}
