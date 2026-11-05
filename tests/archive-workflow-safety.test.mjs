@@ -72,3 +72,13 @@ test("licensed temp import copies overlay dependencies and checks exact narrativ
  assert.ok(validate.includes("note.story_bg"));
  assert.ok(validate.includes("note.story_en"));
 });
+
+
+test('scheduled archive refresh regenerates and commits SEO only from publicly reviewed source files',()=>{
+ assert.ok(publish.includes('node scripts/build-public-seo.mjs'));
+ assert.ok(publish.includes('node scripts/build-public-seo.mjs --check'));
+ assert.ok(publish.indexOf('node scripts/sync-disclosure-zone.mjs')<publish.indexOf('node scripts/build-public-seo.mjs'));
+ assert.ok(publish.indexOf('node scripts/build-public-seo.mjs')<publish.indexOf('git add data/cases.json'));
+ assert.ok(publish.includes('data/seo/ sitemap.xml'));
+ assert.ok(!validate.includes('node scripts/build-public-seo.mjs'), 'read-only validation must not generate public SEO assets');
+});

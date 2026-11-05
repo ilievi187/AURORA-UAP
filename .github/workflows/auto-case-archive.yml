@@ -121,13 +121,16 @@ jobs:
         run: node scripts/sync-open-case-archive.mjs
       - name: Fetch CC BY worldwide case metadata without publishing private reports
         run: node scripts/sync-disclosure-zone.mjs
+      - name: Rebuild public-only SEO manifests and indexable curated dossier sitemap
+        run: node scripts/build-public-seo.mjs
       - name: Validate updated archive and static site contracts
         run: |
-          node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs tests/disclosure-zone-sync.test.mjs tests/disclosure-zone-editorial-annotations.test.mjs tests/approximate-case-geography.test.mjs tests/auto-archive-sync.test.mjs
+          node scripts/build-public-seo.mjs --check
+          node --test tests/aurora-v1.test.mjs tests/archive-records.test.mjs tests/disclosure-zone-sync.test.mjs tests/disclosure-zone-editorial-annotations.test.mjs tests/approximate-case-geography.test.mjs tests/auto-archive-sync.test.mjs tests/seo-route-validation.test.mjs
           git diff --check
       - name: Commit verified archive snapshot
         run: |
-          git add data/cases.json data/archive-sync-status.json data/disclosure-zone-sync-status.json
+          git add data/cases.json data/archive-sync-status.json data/disclosure-zone-sync-status.json data/seo/ sitemap.xml
           if git diff --cached --quiet; then
             echo "No source changes; no archive update PR needed"
             exit 0
