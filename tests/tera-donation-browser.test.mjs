@@ -28,10 +28,9 @@ try {
         for (const language of ['bg', 'en', 'de', 'ru', 'zh-CN']) {
           await page.locator('#langSelect').selectOption(language);
           assert.equal(await page.locator('html').getAttribute('lang'), language);
-          assert.equal(await page.locator('#donateCheckout').isDisabled(), true);
-          const statusText = await page.locator('#paymentStatus').innerText();
-          assert.ok(statusText.length > 15, `${language} checkout state must be explicit`);
-          assert.doesNotMatch(statusText, /prepar|vorbere|准备中|en préparation|προετοιμά|у припреми|w przygotowaniu|يجري إعداد|準備中|준비 중/i);
+          assert.equal(await page.locator('#donateCheckout').isEnabled(), true);
+          assert.equal(await page.locator('#paymentStatus').isVisible(), false);
+          assert.ok((await page.locator('#donateCheckout').innerText()).trim().length > 2, `${language} donation CTA must be readable`);
           for (const selector of ['.brand', '#langSelect', '.header-actions a', '#donateCheckout']) {
             const box = await page.locator(selector).boundingBox();
             assert.ok(box && box.x >= -1 && box.x + box.width <= width + 1, `${language} ${selector} extends beyond viewport: ${JSON.stringify(box)}`);
@@ -45,6 +44,7 @@ try {
   }
   await test('unconfigured checkout is disabled and exposes its explanation to assistive technology', async () => {
     const page = await browser.newPage({viewport:{width:375,height:800}, reducedMotion:'reduce'});
+    await page.route('**/payment-config.js', route => route.fulfill({contentType:'application/javascript',body:'window.AURORA_PAYMENT_LINK = null;'}));
     try {
       await page.goto(`http://127.0.0.1:${server.address().port}/donate.html`);
       assert.equal(await page.locator('#langSelect').getAttribute('id'), await page.locator('label[for="langSelect"]').getAttribute('for'));
@@ -67,8 +67,9 @@ try {
       assert.equal(page.url(), url);
     } finally { await page.close(); }
   });
-  await test('all 18 donation locales disclose unavailable checkout and keep payment disabled', async () => {
+  await test('all 18 donation locales disclose unavailable checkout when config is removed', async () => {
     const page = await browser.newPage({reducedMotion:'reduce'});
+    await page.route('**/payment-config.js', route => route.fulfill({contentType:'application/javascript',body:'window.AURORA_PAYMENT_LINK = null;'}));
     try {
       await page.goto(`http://127.0.0.1:${server.address().port}/donate.html`);
       for (const language of ['bg', 'en', 'de', 'ru', 'zh-CN', 'fr', 'es', 'it', 'pt', 'tr', 'ro', 'el', 'sr', 'uk', 'pl', 'ar', 'ja', 'ko']) {
@@ -89,6 +90,19 @@ try {
       assert.equal(await page.locator('#donateCheckout').isDisabled(), true);
       assert.equal(await page.locator('#paymentStatus').isVisible(), true);
       assert.match(await page.locator('#paymentStatus').innerText(), /не са налични/i);
+    } finally { await page.close(); }
+  });
+  await test('owner-confirmed AURORA creator button navigates directly to its verified public page', async () => {
+    const page = await browser.newPage({reducedMotion:'reduce'});
+    await page.route('https://buymeacoffee.com/aurorauap', route => route.fulfill({contentType:'text/html',body:'<!doctype html><title>AURORA checkout handoff test - no payment</title>'}));
+    try {
+      await page.goto(`http://127.0.0.1:${server.address().port}/donate.html`);
+      assert.equal(await page.locator('#donateCheckout').isEnabled(), true);
+      assert.equal(await page.locator('#paymentStatus').isVisible(), false);
+      assert.equal(await page.locator('#donateCheckout').getAttribute('aria-describedby'), null);
+      await page.locator('#donateCheckout').click();
+      await page.waitForURL('https://buymeacoffee.com/aurorauap');
+      assert.equal(await page.title(), 'AURORA checkout handoff test - no payment');
     } finally { await page.close(); }
   });
   await test('a future valid creator URL enables checkout and navigates only to that URL', async () => {

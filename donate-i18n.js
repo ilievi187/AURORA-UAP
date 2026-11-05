@@ -22,9 +22,9 @@ window.AURORA_DONATION_TRANSLATIONS = {
     "outreach": "📚 Образование и общност",
     "outreachDesc": "Публикуване на методики, образователни материали, преводи, достъпни доклади и изграждане на доброволчески екип.",
     "transparent": "Прозрачност и отчетност",
-    "transp1": "AURORA е проект в начален етап. Това не е твърдение за официална регистрация като благотворителна организация. Преди активирането на плащания ще посочим точния получател и неговия правен статут.",
+    "transp1": "AURORA е независим изследователски проект в начален етап и не се представя като регистрирана благотворителна организация. Публичният профил за подкрепа е AURORA — UAP Research Initiative в Buy Me a Coffee. Подкрепата е доброволна и не осигурява специален достъп до архива.",
     "transp2": "Ще публикуваме отчети за получените средства, категории на разходите и напредъка на проекта, без да разкриваме лични данни на дарителите. Средствата ще се използват само за ясно описаните цели.",
-    "payNote": "Плащанията ще се обработват от външен лицензиран доставчик. Не съхраняваме номера на карти или банкови данни в сайта. Никое плащане не може да се извърши без вашето потвърждение.",
+    "payNote": "Бутонът ДАРИ отваря Buy Me a Coffee, където доставчикът обработва евентуалното плащане. AURORA не събира данни за карти или банкови сметки. Изплащанията към създателя може още да подлежат на проверка от доставчика; прегледайте данните преди потвърждение.",
     "foot": "Наука. Откритост. Отговорност.",
     "title": "AURORA — Подкрепи проекта"
   },
@@ -51,9 +51,9 @@ window.AURORA_DONATION_TRANSLATIONS = {
     "outreach": "📚 Education and community",
     "outreachDesc": "Methods, educational resources, translations, accessible reports and developing a volunteer community.",
     "transparent": "Transparency and accountability",
-    "transp1": "AURORA is an early-stage project. It is not represented as a registered charity. We will disclose the exact payment recipient and legal status before enabling payments.",
+    "transp1": "AURORA is an early-stage independent research project, not presented as a registered charity. The public support recipient is the AURORA — UAP Research Initiative creator page on Buy Me a Coffee. Contributions are voluntary and do not purchase archive access.",
     "transp2": "We plan to publish summaries of funds received, spending categories and progress without revealing donor personal information. Funds will be used only for described purposes.",
-    "payNote": "Payments will be handled by an external licensed provider. We do not store bank or card details on this site. A payment cannot happen without your confirmation.",
+    "payNote": "Selecting DONATE opens Buy Me a Coffee, where the provider handles any payment. AURORA does not collect card or bank details. Payouts to the creator may still be subject to provider verification; review the payment details before confirming.",
     "foot": "Science. Openness. Responsibility.",
     "title": "AURORA — Support the project"
   },

@@ -22,18 +22,19 @@ test("front-page report and support actions are visible, English, accessible and
  assert.match(css,/\.portal-card\[data-portal="support"\]/);
 });
 
-test("support page becomes bright but disabled payments remain disabled until a verified link exists",()=>{
+test("support page enables only the owner-confirmed Buy Me a Coffee profile while retaining safe fallback",()=>{
  assert.match(donate,/launch-cta-spotlight\.css/);
  assert.match(donate,/id="donateCheckout" disabled/);
  assert.match(donate,/id="paymentStatus" role="status"/);
  assert.match(donate,/class="donate-trust"/);
  assert.match(donate,/class="donate-secondary-link" href="\/archive\.html"/);
  const paymentConfig=read("payment-config.js");
- assert.match(paymentConfig,/AURORA_PAYMENT_LINK\s*=\s*null/);
+ assert.match(paymentConfig,/AURORA_PAYMENT_LINK\s*=\s*"https:\/\/buymeacoffee\.com\/aurorauap"/);
  const checkout=read("donate.js");
  assert.match(checkout,/verifiedCheckoutLink/);
  assert.match(checkout,/if\(link\)\{/);
  assert.match(checkout,/checkout\.disabled=false/);
+ assert.match(checkout,/checkout\.removeAttribute\('aria-describedby'\)/);
  assert.match(checkout,/if\(link\)[\s\S]*?checkout\.disabled=false/);
  assert.match(css,/#donateCheckout:disabled/);
 });

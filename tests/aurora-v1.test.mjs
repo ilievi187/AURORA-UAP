@@ -43,7 +43,7 @@ test('visitors are never misled into thinking example cases are verified',()=>{
   assert.doesNotMatch(html,/id="historicDemoMap"/,'the retired fictional map is removed');
   assert.match(html,/id="worldAtlas"/,'sourced world atlas remains');
   assert.match(html,/Провери във формуляра дали подаването е активно/);
-  assert.match(read('payment-config.js'),/AURORA_PAYMENT_LINK\s*=\s*null/);
+  assert.match(read('payment-config.js'),/AURORA_PAYMENT_LINK\s*=\s*"https:\/\/buymeacoffee\.com\/aurorauap"/,'owner-confirmed public recipient; no direct payment on this site');
 });
 
 test('motion respects reduced-motion accessibility preference',()=>{
