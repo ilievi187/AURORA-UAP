@@ -865,7 +865,7 @@ try{
     }));
     assert.equal(layout.display,'grid');
     assert.equal(layout.border,'1px');
-    await page.waitForFunction(()=>document.querySelector('#moderationSummary')?.textContent.includes('180 дни'));
+    await page.waitForFunction(()=>document.querySelector('#moderationSummary')?.textContent.includes('180 days'));
     assert.equal(await page.locator('#moderationSummary dd').first().textContent(),'1');
     assert.equal(await page.locator('#queue article').count(),1);
     assert.equal(await page.locator('#queue img').count(),0,'reported HTML is never interpreted');
@@ -873,7 +873,7 @@ try{
     await page.waitForFunction(()=>document.querySelector('.moderation-audit-entry')?.textContent.includes('Kept private'));
     assert.equal(await page.locator('.moderation-audit-entry script').count(),0);
     await page.locator('#queue button').first().click();
-    await page.waitForFunction(()=>document.querySelector('#notice')?.textContent.includes('страница'));
+    await page.waitForFunction(()=>document.querySelector('#notice')?.textContent.includes('page'));
     await page.locator('#receiptQuery').fill(id);
     await page.locator('#receiptLookup button[type=submit]').click();
     await page.waitForFunction(()=>document.querySelector('.moderation-audit-entry')!==null);
