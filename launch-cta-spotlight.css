@@ -225,3 +225,9 @@ body:has(.silence-hero) .silence-hero .silence-actions{
  body:has(.portal-hub) .silence-hero .silence-actions{flex-wrap:nowrap!important;gap:12px!important;}
  body:has(.portal-hub) .silence-hero .silence-actions .button{padding-inline:16px!important;flex:0 0 auto;}
 }
+
+/* The discovery portal already exposes Report and Support on narrow screens.
+   Avoid duplicate hero actions pushing the eight destinations below the fold. */
+@media(max-width:700px){
+ body:has(.portal-hub) .silence-hero .silence-actions{display:none!important;}
+}
