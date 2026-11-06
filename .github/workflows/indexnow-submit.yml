@@ -1,0 +1,18 @@
+name: AURORA public IndexNow URL notification (manual only)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  notify-reviewed-public-pages:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate public and reviewed IndexNow URL set
+        run: node --test tests/indexnow-notification.test.mjs
+      - name: Ensure public key is deployed and notify participating search engines
+        run: node scripts/submit-indexnow.mjs --submit
