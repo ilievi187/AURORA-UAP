@@ -24,10 +24,11 @@ export function dossierMarkup(html,id,metadata){
  const description=metadata?.summary?.trim().slice(0,200)||'AURORA UAP public source-linked case archive.';
  const indexable=metadata?.indexable===true;
  const og= indexable
-  ? `<meta property="og:type" content="article"><meta property="og:title" content="${escapeHtml(title+' | AURORA UAP')}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${canonical}"><meta name="twitter:card" content="summary">` : '';
+  ? `<meta property="og:type" content="article"><meta property="og:site_name" content="AURORA UAP"><meta property="og:title" content="${escapeHtml(title+' | AURORA UAP')}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${canonical}"><meta property="og:image" content="https://aurorauap.org/assets/hero-ufo.webp"><meta property="og:image:alt" content="Illustrative UAP research artwork; not a photograph of this case"><meta name="twitter:card" content="summary">` : '';
  const head=`<link rel="canonical" href="${canonical}">`+og;
  let page=html.replace('<meta name="robots" content="noindex,nofollow">',`<meta name="robots" content="${indexable?'index,follow':'noindex,follow'}">${head}`)
   .replace(/<title>[^<]*<\/title>/,`<title>${escapeHtml(title+' | AURORA UAP')}</title>`)
+  .replace('<h1 id="dossierTitle">AURORA / CASE DOSSIER</h1>',`<h1 id="dossierTitle">${escapeHtml(title)}</h1>`)
   .replace(/<meta name="description" content="[^"]*">/,`<meta name="description" content="${escapeHtml(description)}">`);
  if(indexable&&metadata?.source){
   const snippet=`<section class="dossier-server-summary" id="serverDossierIntro" aria-label="Source-backed case summary"><h2>${escapeHtml(title)}</h2><p>${escapeHtml(metadata.summary)}</p><p>Source document: <a href="${escapeHtml(metadata.source)}" rel="noopener noreferrer" target="_blank">Original public reference</a></p></section>`;
@@ -45,7 +46,7 @@ export function countryMarkup(html,code){
  const title=`${name} UAP Case Archive | AURORA UAP`;
  const description=`Explore original-source historical UAP reports filed under ${name}. View published dates, documents and location uncertainty in the open AURORA archive.`;
  const canonical='https://aurorauap.org/countries/'+code;
- const meta=`<link rel="canonical" href="${canonical}"><meta name="description" content="${escapeHtml(description)}"><meta property="og:type" content="website"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${canonical}"><meta name="twitter:card" content="summary">`;
+ const meta=`<link rel="canonical" href="${canonical}"><meta name="description" content="${escapeHtml(description)}"><meta property="og:type" content="website"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${canonical}"><meta property="og:image" content="https://aurorauap.org/assets/hero-ufo.webp"><meta property="og:image:alt" content="Illustrative AURORA UAP research artwork; not a photograph of a case"><meta name="twitter:card" content="summary">`;
  return html.replace('<meta name="robots" content="index,follow">',`<meta name="robots" content="index,follow">${meta}`)
   .replace('<title>AURORA — Country Explorer</title>',`<title>${escapeHtml(title)}</title>`)
   .replace('<h1 id="countryName">COUNTRY EXPLORER</h1>',`<h1 id="countryName">${escapeHtml(name)} — Country Explorer</h1>`)

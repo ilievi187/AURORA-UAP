@@ -7,7 +7,17 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#010305">
   <meta name="description" content="AURORA UAP — curated international RSS and Atom news sources, original publications and independently accessible references.">
-  <title>AURORA UAP | International Sources</title>
+  <meta name="robots" content="index,follow">
+<title>AURORA UAP | International Sources</title>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AURORA UAP">
+<meta property="og:title" content="AURORA UAP | International Sources">
+<meta property="og:description" content="AURORA UAP — curated international RSS and Atom news sources, original publications and independently accessible references.">
+<meta property="og:url" content="https://aurorauap.org/sources">
+<meta property="og:image" content="https://aurorauap.org/assets/hero-ufo.webp">
+<meta property="og:image:alt" content="Illustrative AURORA UAP research artwork; not evidence of a sighting">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
   <link rel="canonical" href="https://aurorauap.org/sources">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/live-tools.css">
@@ -19,55 +29,55 @@
 <link rel="stylesheet" href="/aurora-editorial-interiors.css">
 </head>
 <body class="live-page" data-aurora-page="sources">
-<a class="skip-link" href="#main">Към съдържанието</a>
+<a class="skip-link" href="#main">Skip to content</a>
 <main id="main" class="live-shell">
   <header class="live-header">
     <a class="live-logo" href="/">✦ AURORA</a>
     <nav class="live-links" aria-label="Навигация">
-      <a href="/">Начало</a>
-      <a href="/news.html">Новини</a>
-      <a href="/countries.html">Световен архив</a>
-      <a href="/report.html">Подготви сигнал</a>
+      <a href="/">Home</a>
+      <a href="/news.html">News</a>
+      <a href="/countries.html">World archive</a>
+      <a href="/report.html">Report a sighting</a>
     </nav>
   </header>
   <section class="live-hero">
     <p class="live-eyebrow">◉ SOURCE DIRECTORY / OFFICIAL FEEDS</p>
-    <h1>МЕЖДУНАРОДНИ ИЗТОЧНИЦИ</h1>
-    <p>Официални RSS и Atom адреси на редакции и институции, проверени на 29 октомври 2026. Открий независими редакции и институционални архиви от целия свят. Всяка емисия те отвежда към оригиналната публикация.</p>
+    <h1>INTERNATIONAL SOURCES</h1>
+    <p>Browse original RSS and Atom feeds published by newsrooms and institutions worldwide. Each source links to its original publication. Publisher availability may vary.</p>
     <p>Official publisher feeds checked on 29 October 2026. Browse international publishers and follow their original articles.</p>
   </section>
-  <p class="live-warning">Изследвай източниците по регион, открий техните публикации и сравни как различни редакции отразяват темата.</p>
+  <p class="live-warning">Explore sources by region, compare reporting and examine source-linked headlines.</p>
   <section aria-labelledby="catalogHeading">
     <div class="live-toolbar">
-      <label>Регион / Region
+      <label>Region
         <select id="sourceRegion">
-          <option value="all">Всички региони / All regions</option>
-          <option value="europe">Европа / Europe</option>
-          <option value="americas">Америка / Americas</option>
-          <option value="asia-pacific">Азия и Тихия океан / Asia-Pacific</option>
-          <option value="middle-east-africa">Близък изток и Африка / Middle East and Africa</option>
-          <option value="global">Международни организации / International</option>
+          <option value="all">All regions</option>
+          <option value="europe">Europe</option>
+          <option value="americas">Americas</option>
+          <option value="asia-pacific">Asia-Pacific</option>
+          <option value="middle-east-africa">Middle East and Africa</option>
+          <option value="global">International organizations</option>
         </select>
       </label>
-      <button type="button" id="reloadMatches">Провери заглавия</button>
-      <button type="button" id="checkHealth">Провери състоянието</button>
+      <button type="button" id="reloadMatches">Check headlines</button>
+      <button type="button" id="checkHealth">Check source status</button>
     </div>
-    <p id="sourceStatus" class="live-status" data-state="loading" role="status" aria-live="polite">Зареждане на източниците…</p>
-    <h2 id="catalogHeading">Каталог</h2>
+    <p id="sourceStatus" class="live-status" data-state="loading" role="status" aria-live="polite">Loading international sources…</p>
+    <h2 id="catalogHeading">Catalog</h2>
     <div id="sourceList" class="live-grid"></div>
   </section>
   <section aria-labelledby="healthHeading">
-    <h2 id="healthHeading">Състояние на източниците</h2>
-    <p>Проверката тръгва само от този бутон и обхваща до 12 адреса от каталога за избрания регион. Не приема произволен URL. Недостъпен източник се показва като недостъпен, без измислени заглавия.</p>
-    <p id="healthStatus" class="live-status" role="status" aria-live="polite">Още не е правена проверка на състоянието.</p>
+    <h2 id="healthHeading">Source status</h2>
+    <p>The status check examines a bounded list of catalog sources and never accepts arbitrary visitor URLs. Offline sources are shown as unavailable, not replaced with invented headlines.</p>
+    <p id="healthStatus" class="live-status" role="status" aria-live="polite">No source status check yet.</p>
     <div id="healthList" class="match-list"></div>
   </section>
   <section aria-labelledby="matchHeading">
-    <h2 id="matchHeading">Съвпадения по ключови думи</h2>
-    <p id="matchStatus" class="live-status" role="status" aria-live="polite">Още не е правена проверка.</p>
+    <h2 id="matchHeading">Keyword matches</h2>
+    <p id="matchStatus" class="live-status" role="status" aria-live="polite">No discovery check yet.</p>
     <div id="matchList" class="match-list"></div>
   </section>
-  <noscript><p class="live-warning">Каталогът се зарежда от /api/sources. Без JavaScript отворете тази връзка директно.</p></noscript>
+  <noscript><p class="live-warning">The catalog is loaded from /api/sources. Without JavaScript, open that link directly.</p></noscript>
 </main>
 </body>
 </html>

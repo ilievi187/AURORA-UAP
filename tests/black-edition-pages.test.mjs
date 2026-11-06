@@ -32,7 +32,7 @@ test("published editorial copy invites investigation without the repeated extrat
   const source=read(file);
   assert.doesNotMatch(source,/not proof of extraterrestrial|does not establish extraterrestrial|не доказва(?:т|телства)|не доказателства за извънземен|не е извънземно обяснение/i,file);
  }
- assert.match(read("index.html"),/СЛЕДВАЙ ИСТОРИЯТА/);
+ assert.match(read("index.html"),/FOLLOW THE STORY./);
  assert.doesNotMatch(read("dossier.html"),/dossierCaution/);
 });
 test("source-locked translator denies unpublished and arbitrary strings",async()=>{

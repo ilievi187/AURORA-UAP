@@ -9,7 +9,17 @@
   <meta name="theme-color" content="#05101c">
   <meta name="robots" content="index,follow">
   <meta name="description" content="AURORA UAP — an independent international open research platform for unusual aerial phenomena. Explore sourced case files, worldwide news and original media.">
-  <title>AURORA UAP | Explore the Unexplained</title>
+  <link rel="canonical" href="https://aurorauap.org/">
+<title>AURORA UAP | Explore the Unexplained</title>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AURORA UAP">
+<meta property="og:title" content="AURORA UAP | Explore the Unexplained">
+<meta property="og:description" content="AURORA UAP — an independent international open research platform for unusual aerial phenomena. Explore sourced case files, worldwide news and original media.">
+<meta property="og:url" content="https://aurorauap.org/">
+<meta property="og:image" content="https://aurorauap.org/assets/hero-ufo.webp">
+<meta property="og:image:alt" content="Illustrative AURORA UAP research artwork; not evidence of a sighting">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="aurora-v1.css">
@@ -63,17 +73,17 @@
   <div class="gate-inner">
     <div class="gate-symbol" aria-hidden="true"><span class="gate-symbol-ring"></span><span class="gate-symbol-core">✦</span></div>
     <p class="gate-overline"><span class="gate-online" aria-hidden="true"></span> AURORA / HUMAN INTERFACE · INIT SEQUENCE 01</p>
-    <h2 id="gateHeading">Избери език</h2>
-    <p class="gate-subtitle" id="gateSubtitle">Избери езика, на който искаш да изследваш AURORA.</p>
+    <h2 id="gateHeading">Choose language</h2>
+    <p class="gate-subtitle" id="gateSubtitle">Select the interface language for exploring AURORA.</p>
     <div id="gateLanguageGrid" class="gate-language-grid" role="group" aria-label="Език на интерфейса"></div>
-    <p id="gateSelection" class="gate-selection" role="status" aria-live="polite">ИЗБЕРИ ЕЗИК НА ИНТЕРФЕЙСА</p>
+    <p id="gateSelection" class="gate-selection" role="status" aria-live="polite">CHOOSE INTERFACE LANGUAGE</p>
     <div class="gate-actions">
       <button type="button" id="gateContinue" class="gate-continue" disabled>
-        <span id="gateContinueLabel">ПРОДЪЛЖИ</span><span class="gate-continue-icon" aria-hidden="true">↗</span>
+        <span id="gateContinueLabel">CONTINUE</span><span class="gate-continue-icon" aria-hidden="true">↗</span>
       </button>
       <button type="button" id="gateCancel" class="gate-cancel" hidden>← BACK TO AURORA</button>
     </div>
-    <p class="gate-foot" id="gateDisclaimer">Езикът на интерфейса се задава тук. Досиетата може да останат на английски, ако няма пълен превод.</p>
+    <p class="gate-foot" id="gateDisclaimer">The interface language is selected here. Original source records may remain in English.</p>
   </div>
 </div>
 <div class="ambient ambient-left"></div><div class="ambient ambient-right"></div>
@@ -84,22 +94,22 @@
       <span class="brand-text"><b>A U R O R A</b><small>UAP ARCHIVE · OPEN RESEARCH</small></span>
     </a>
     <nav class="desktop-nav" aria-label="Основна навигация">
-      <a href="#home" data-i18n="navHome" class="active">Начало</a>
-      <a href="/news.html" data-i18n="navNews">Новини</a>
-      <a href="/archive.html" data-i18n="navArchive">Архив</a>
-      <a href="#worldAtlas" data-i18n="navMap">Карта</a>
-      <a href="/media.html" data-i18n="navMedia">Видео</a>
-      <a href="/report.html" data-i18n="reportButton" class="nav-report">Подай сигнал</a>
-      <a href="#mission" data-portal-nav="about">За AURORA</a>
+      <a href="#home" data-i18n="navHome" class="active">Home</a>
+      <a href="/news.html" data-i18n="navNews">News</a>
+      <a href="/archive.html" data-i18n="navArchive">Archive</a>
+      <a href="#worldAtlas" data-i18n="navMap">Map</a>
+      <a href="/media.html" data-i18n="navMedia">Videos</a>
+      <a href="/report.html" data-i18n="reportButton" class="nav-report">Report a sighting</a>
+      <a href="#mission" data-portal-nav="about">About AURORA</a>
       <a href="/donate.html" class="nav-support" data-portal-nav="support">Support</a>
     </nav>
-    <div class="header-actions"><button type="button" class="gate-trigger" id="openLanguageGate" aria-label="Промени езика / Change language">LANGUAGE</button><label class="sr-only" for="langToggle">Language / Език</label><select class="lang-button lang-select" id="langToggle" aria-label="Language / Език"><option value="bg">Български</option><option value="en">English</option><option value="de">Deutsch</option><option value="ru">Русский</option><option value="zh-CN">中文</option><option value="fr">Français</option><option value="es">Español</option><option value="it">Italiano</option><option value="pt">Português</option><option value="tr">Türkçe</option><option value="ro">Română</option><option value="el">Ελληνικά</option><option value="sr">Српски</option><option value="uk">Українська</option><option value="pl">Polski</option><option value="ar">العربية</option><option value="ja">日本語</option><option value="ko">한국어</option></select><button type="button" class="menu-button" id="menuToggle" aria-label="Меню / Menu" aria-expanded="false"><svg class="icon"><use href="#i-menu"/></svg></button></div>
+    <div class="header-actions"><button type="button" class="gate-trigger" id="openLanguageGate" aria-label="Промени езика / Change language">LANGUAGE</button><label class="sr-only" for="langToggle">Language</label><select class="lang-button lang-select" id="langToggle" aria-label="Language / Език"><option value="bg">Български</option><option value="en">English</option><option value="de">Deutsch</option><option value="ru">Русский</option><option value="zh-CN">中文</option><option value="fr">Français</option><option value="es">Español</option><option value="it">Italiano</option><option value="pt">Português</option><option value="tr">Türkçe</option><option value="ro">Română</option><option value="el">Ελληνικά</option><option value="sr">Српски</option><option value="uk">Українська</option><option value="pl">Polski</option><option value="ar">العربية</option><option value="ja">日本語</option><option value="ko">한국어</option></select><button type="button" class="menu-button" id="menuToggle" aria-label="Меню / Menu" aria-expanded="false"><svg class="icon"><use href="#i-menu"/></svg></button></div>
   </header>
   <nav class="mobile-nav" id="mobileNav" aria-label="Мобилна навигация" hidden>
-    <a href="#home" data-i18n="navHome">Начало</a><a href="/news.html" data-i18n="navNews">Новини</a>
-    <a href="/archive.html" data-i18n="navArchive">Архив</a><a href="#worldAtlas" data-i18n="navMap">Карта</a>
-    <a href="/media.html" data-i18n="navMedia">Видео</a><a href="/report.html" data-i18n="reportButton" class="nav-report">Подай сигнал</a>
-    <a href="#mission" data-portal-nav="about">За AURORA</a><a class="nav-donate nav-support" href="/donate.html" data-portal-nav="support">Support</a>
+    <a href="#home" data-i18n="navHome">Home</a><a href="/news.html" data-i18n="navNews">News</a>
+    <a href="/archive.html" data-i18n="navArchive">Archive</a><a href="#worldAtlas" data-i18n="navMap">Map</a>
+    <a href="/media.html" data-i18n="navMedia">Videos</a><a href="/report.html" data-i18n="reportButton" class="nav-report">Report a sighting</a>
+    <a href="#mission" data-portal-nav="about">About AURORA</a><a class="nav-donate nav-support" href="/donate.html" data-portal-nav="support">Support</a>
   </nav>
 
   <main id="main">
@@ -126,40 +136,40 @@
     </div>
     <section class="portal-hub" id="exploreAURORA" aria-labelledby="portalHeading">
       <div class="portal-hub-heading">
-        <div><p class="portal-kicker">AURORA / DISCOVERY PORTAL</p><h2 id="portalHeading">Открий AURORA</h2></div>
+        <div><p class="portal-kicker">AURORA / DISCOVERY PORTAL</p><h2 id="portalHeading">Explore AURORA</h2></div>
         <div class="portal-hub-actions">
-          <p id="portalIntro">Избери посока — новини, архив, карта или медии.</p>
-          <a id="portalSubmitNews" class="portal-submit-news" data-portal-nav="submitNews" href="/news.html#newsTips">Изпрати новина</a>
+          <p id="portalIntro">Choose a section — news, cases, world map or media.</p>
+          <a id="portalSubmitNews" class="portal-submit-news" data-portal-nav="submitNews" href="/news.html#newsTips">Submit a news tip</a>
         </div>
       </div>
       <nav class="portal-grid" aria-label="Открий AURORA">
-        <a class="portal-card" data-portal="news" href="/news.html"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg><span><strong data-portal-title>Последни новини</strong><small data-portal-description>Публикации от международни източници</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
-        <a class="portal-card" data-portal="map" href="#worldAtlas"><svg class="icon" aria-hidden="true"><use href="#i-globe"/></svg><span><strong data-portal-title>Световна карта</strong><small data-portal-description>Разгледай досиетата по район</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
-        <a class="portal-card" data-portal="archive" href="/archive.html"><svg class="icon" aria-hidden="true"><use href="#i-folder"/></svg><span><strong data-portal-title>Архив на случаи</strong><small data-portal-description>10K+ sourced case records</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
-        <a class="portal-card" data-portal="media" href="/media.html"><svg class="icon" aria-hidden="true"><use href="#i-image"/></svg><span><strong data-portal-title>Видео и медии</strong><small data-portal-description>Клипове, изображения и документи</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
-        <a class="portal-card" data-portal="report" href="/report.html"><svg class="icon" aria-hidden="true"><use href="#i-target"/></svg><span><strong data-portal-title>Подай наблюдение</strong><small data-portal-description>Провери дали приемът е отворен</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
-        <a class="portal-card" data-portal="about" href="#mission"><svg class="icon" aria-hidden="true"><use href="#i-eye"/></svg><span><strong data-portal-title>За AURORA</strong><small data-portal-description>Мисия и редакционен подход</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
-        <a class="portal-card" data-portal="support" href="/donate.html"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><span><strong data-portal-title>Дарения</strong><small data-portal-description>Виж как можеш да подкрепиш проекта</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
-        <a class="portal-card" data-portal="search" href="/archive.html#archiveSearch"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span><strong data-portal-title>Търси в архива</strong><small data-portal-description>Намери случай по място или източник</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+        <a class="portal-card" data-portal="news" href="/news.html"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg><span><strong data-portal-title>Latest news</strong><small data-portal-description>Reporting from international sources</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+        <a class="portal-card" data-portal="map" href="#worldAtlas"><svg class="icon" aria-hidden="true"><use href="#i-globe"/></svg><span><strong data-portal-title>World map</strong><small data-portal-description>Browse cases by region</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+        <a class="portal-card" data-portal="archive" href="/archive.html"><svg class="icon" aria-hidden="true"><use href="#i-folder"/></svg><span><strong data-portal-title>UAP case archive</strong><small data-portal-description>10K+ sourced case records</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+        <a class="portal-card" data-portal="media" href="/media.html"><svg class="icon" aria-hidden="true"><use href="#i-image"/></svg><span><strong data-portal-title>Videos and media</strong><small data-portal-description>Clips, images and documents</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+        <a class="portal-card" data-portal="report" href="/report.html"><svg class="icon" aria-hidden="true"><use href="#i-target"/></svg><span><strong data-portal-title>Report a sighting</strong><small data-portal-description>Check whether submissions are open</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+        <a class="portal-card" data-portal="about" href="#mission"><svg class="icon" aria-hidden="true"><use href="#i-eye"/></svg><span><strong data-portal-title>About AURORA</strong><small data-portal-description>Mission and editorial approach</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+        <a class="portal-card" data-portal="support" href="/donate.html"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><span><strong data-portal-title>Support AURORA</strong><small data-portal-description>See ways to support the project</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
+        <a class="portal-card" data-portal="search" href="/archive.html#archiveSearch"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span><strong data-portal-title>Search the archive</strong><small data-portal-description>Find a case by place or source</small></span><span class="portal-arrow" aria-hidden="true">↗</span></a>
       </nav>
     </section>
     <div class="silence-bottom">
       <div class="silence-stats" aria-label="Публична статистика на архива">
         <div class="silence-stat">
           <svg class="icon" aria-hidden="true"><use href="#i-folder"/></svg>
-          <div><strong id="auroraArchiveCount" aria-live="polite">—</strong><span data-stat-label="cases">АРХИВНИ СЛУЧАИ</span></div>
+          <div><strong id="auroraArchiveCount" aria-live="polite">—</strong><span data-stat-label="cases">ARCHIVED CASES</span></div>
         </div>
         <div class="silence-stat">
           <svg class="icon" aria-hidden="true"><use href="#i-globe"/></svg>
-          <div><strong id="auroraMappedCount" aria-live="polite">—</strong><span data-stat-label="mapped">НА КАРТАТА</span></div>
+          <div><strong id="auroraMappedCount" aria-live="polite">—</strong><span data-stat-label="mapped">GEOLOCATED</span></div>
         </div>
         <div class="silence-stat">
           <svg class="icon" aria-hidden="true"><use href="#i-users"/></svg>
-          <div><strong id="auroraLanguageCount">18</strong><span data-stat-label="languages">ЕЗИКА</span></div>
+          <div><strong id="auroraLanguageCount">18</strong><span data-stat-label="languages">LANGUAGES</span></div>
         </div>
         <div class="silence-stat">
           <svg class="icon" aria-hidden="true"><use href="#i-book"/></svg>
-          <div><strong class="silence-open" data-stat-label="openValue">OPEN</strong><span data-stat-label="open">ОТВОРЕН АРХИВ</span></div>
+          <div><strong class="silence-open" data-stat-label="openValue">OPEN</strong><span data-stat-label="open">OPEN ARCHIVE</span></div>
         </div>
       </div>
     </div>
@@ -167,14 +177,14 @@
   </section>
   <section class="world-atlas" id="worldAtlas" aria-labelledby="worldAtlasHeading">
     <div class="world-atlas-head">
-      <div><p class="console-kicker">AURORA / GLOBAL CASE INDEX</p><h2 id="worldAtlasHeading">СВЕТОВНА КАРТА НА СЛУЧАИТЕ</h2><p>Всички публикувани архивни истории на една карта. Търси по заглавие, район или източник; избери досие, за да видиш първоизточника.</p></div>
-      <div class="world-atlas-count-block"><strong class="world-atlas-count" id="worldMapCount">—</strong><span id="worldMapCountLabel">досие(та)</span></div>
+      <div><p class="console-kicker">AURORA / GLOBAL CASE INDEX</p><h2 id="worldAtlasHeading">WORLDWIDE CASE MAP</h2><p>Explore source-linked case locations. Select a marker to open the full public record.</p></div>
+      <div class="world-atlas-count-block"><strong class="world-atlas-count" id="worldMapCount">—</strong><span id="worldMapCountLabel">cases</span></div>
     </div>
     <div class="world-atlas-filters" role="search" aria-label="Търсене и филтриране на досиета">
-      <label class="world-search" for="worldSearch"><span data-world-t="search">ТЪРСИ ДОСИЕ</span><input id="worldSearch" type="search" autocomplete="off" placeholder="Заглавие, район, държава или източник"></label>
-      <label for="worldCountry"><span id="worldCountryLabel">ДЪРЖАВА</span><select id="worldCountry" aria-label="Филтър по държава"><option value="">ВСИЧКИ ДЪРЖАВИ</option></select></label>
-      <label for="worldYear"><span data-world-t="year">ГОДИНА</span><select id="worldYear"><option value="">ВСИЧКИ ГОДИНИ</option></select></label>
-      <label for="worldCategory"><span data-world-t="category">КАТЕГОРИЯ</span><select id="worldCategory"><option value="">ВСИЧКИ КАТЕГОРИИ</option></select></label>
+      <label class="world-search" for="worldSearch"><span data-world-t="search">SEARCH CASES</span><input id="worldSearch" type="search" autocomplete="off" placeholder="Заглавие, район, държава или източник"></label>
+      <label for="worldCountry"><span id="worldCountryLabel">COUNTRY</span><select id="worldCountry" aria-label="Filter by country"><option value="">ALL COUNTRIES</option></select></label>
+      <label for="worldYear"><span data-world-t="year">YEAR</span><select id="worldYear"><option value="">ALL YEARS</option></select></label>
+      <label for="worldCategory"><span data-world-t="category">CATEGORY</span><select id="worldCategory"><option value="">ALL CATEGORIES</option></select></label>
     </div>
     <div class="world-map-layout">
       <div class="world-map-column">
@@ -196,10 +206,10 @@
         <p class="world-map-caption" id="worldMapHelp">Click a marker to open its country's dossiers. Coordinates are approximate source locations. Manual +/− zoom remains available.</p>
         <nav class="world-country-links" id="worldCountryLinks" aria-label="Browse source-linked dossiers by country"><a href="/countries.html">ALL COUNTRIES ↗</a></nav>
       </div>
-      <aside class="world-case-detail" id="worldCaseDetail" aria-live="polite">Зареждане на световния архив…</aside>
+      <aside class="world-case-detail" id="worldCaseDetail" aria-live="polite">Loading the global archive…</aside>
     </div>
     <section class="world-results" aria-labelledby="worldResultsHeading">
-      <div class="world-results-head"><h3 id="worldResultsHeading">ДОСИЕТА</h3><p id="worldMapSummary">—</p></div>
+      <div class="world-results-head"><h3 id="worldResultsHeading">DOSSIERS</h3><p id="worldMapSummary">—</p></div>
       <ul id="worldMapResults" class="world-map-results" tabindex="-1"></ul>
     </section>
     <p id="worldMapState" class="home-news-state" role="status" aria-live="polite"></p>
@@ -213,12 +223,12 @@
       <div><strong id="registeredCountries">—</strong><span data-register-t="countries">COUNTRIES COVERED</span></div>
       <div><strong id="lastSync">—</strong><span data-register-t="sync">LAST SUCCESSFUL SYNC</span></div>
     </div>
-    <p id="registerNotice">Броят включва само одобрени и публикувани записи от базата. Демо случаите са изключени.</p>
+    <p id="registerNotice">Only public source-backed entries are shown; private submissions and test records are excluded.</p>
     <a href="/countries.html" class="register-link" data-register-t="explore">EXPLORE COUNTRIES ↗</a>
   </section>
   <section class="home-news" id="latestNews" aria-labelledby="homeNewsTitle">
  <div class="home-news-top"><div><p class="console-kicker">AURORA / GLOBAL NEWSROOM</p><h2 id="homeNewsTitle">LATEST NEWS FROM AROUND THE WORLD</h2></div><a href="/news.html">ALL NEWS ↗</a></div>
- <p id="homeNewsStatus" class="home-news-state" role="status">Зареждаме световните източници…</p>
+ <p id="homeNewsStatus" class="home-news-state" role="status">Loading world sources…</p>
  <div id="homeNewsGrid" class="home-news-grid"></div>
 </section>
 
@@ -227,25 +237,25 @@
   <section class="home-report-cta" id="submitObservation" aria-labelledby="homeReportTitle">
     <div class="home-report-cta-copy">
       <p class="console-kicker">AURORA / COMMUNITY OBSERVATIONS</p>
-      <h2 id="homeReportTitle" data-i18n="reportButton">Подай сигнал</h2>
-      <p class="home-report-note" data-i18n="reportDraftNote">Провери във формуляра дали подаването е активно. Ако е изключено, черновата остава само на устройството ти.</p>
+      <h2 id="homeReportTitle" data-i18n="reportButton">Report a sighting</h2>
+      <p class="home-report-note" data-i18n="reportDraftNote">Check the form for current submission availability. When closed, drafts remain on your device.</p>
     </div>
-    <a href="/report.html" class="home-report-cta-link"><span data-i18n="reportButton">Подай сигнал</span> <span aria-hidden="true">↗</span></a>
+    <a href="/report.html" class="home-report-cta-link"><span data-i18n="reportButton">Report a sighting</span> <span aria-hidden="true">↗</span></a>
   </section>
 
     <section class="section mission-intro" id="mission">
     <div class="section-heading two-col" id="research">
-      <div><div class="eyebrow" data-i18n="whatDo">КАКВО ПРАВИМ</div><h2 data-i18n="researchTitle">НАБЛЮДАВАМЕ. ПРОВЕРЯВАМЕ. ИЗСЛЕДВАМЕ.</h2></div>
-      <p data-i18n="researchIntro">За да разберем непознатото, първо изключваме познатото. Всеки сигнал заслужава уважение и внимателна проверка.</p>
+      <div><div class="eyebrow" data-i18n="whatDo">OUR RESEARCH</div><h2 data-i18n="researchTitle">DOCUMENT. VERIFY. EXPLORE.</h2></div>
+      <p data-i18n="researchIntro">To understand the unexplained, we first investigate conventional explanations. Every report deserves careful, respectful scrutiny.</p>
     </div>
   </section>
-  <section class="section reports-section" id="reports"><div class="section-heading report-heading"><div><div class="eyebrow" >СВЕТОВЕН АРХИВ</div><h2 >СЛУЧАИ ОТ СВЕТА</h2></div><div class="report-search"><svg class="icon"><use href="#i-search"/></svg><label for="reportSearch" class="sr-only">Търси случаи</label><input id="reportSearch" type="search" data-i18n-placeholder="searchPlaceholder" placeholder="Търси по град или описание..."></div></div><div class="report-grid" id="reportGrid"></div><div class="results-note" id="reportResultsNote" aria-live="polite"></div></section>
+  <section class="section reports-section" id="reports"><div class="section-heading report-heading"><div><div class="eyebrow" >GLOBAL CASE INDEX</div><h2 >WORLDWIDE CASES</h2></div><div class="report-search"><svg class="icon"><use href="#i-search"/></svg><label for="reportSearch" class="sr-only">Search cases</label><input id="reportSearch" type="search" data-i18n-placeholder="searchPlaceholder" placeholder="Search city or description..."></div></div><div class="report-grid" id="reportGrid"></div><div class="results-note" id="reportResultsNote" aria-live="polite"></div></section>
 
-  <section class="methodology" id="methodology"><div><div class="eyebrow" data-i18n="methodKicker">НАШИЯТ ПОДХОД</div><h2 data-i18n="methodTitle">ЛЮБОПИТСТВО СЛЕДВАЙ ИСТОРИЯТА.</h2><p data-i18n="methodBody">Следваме следите на всяка история — разказите на очевидците, публикациите, снимките, записите и контекста. Източниците са отворени за всеки, който иска да изследва.</p></div><div class="method-steps"><div><b>01</b><span data-i18n="method1">Документиране на източника</span></div><div><b>02</b><span data-i18n="method2">Проверка на обстоятелствата</span></div><div><b>03</b><span data-i18n="method3">Технически анализ</span></div><div><b>04</b><span data-i18n="method4">Публично, честно заключение</span></div></div></section>
+  <section class="methodology" id="methodology"><div><div class="eyebrow" data-i18n="methodKicker">OUR APPROACH</div><h2 data-i18n="methodTitle">FOLLOW THE STORY.</h2><p data-i18n="methodBody">Follow each account through witness testimony, published footage and original documents. Examine the sources and draw your own conclusions.</p></div><div class="method-steps"><div><b>01</b><span data-i18n="method1">Document the source</span></div><div><b>02</b><span data-i18n="method2">Verify the circumstances</span></div><div><b>03</b><span data-i18n="method3">Perform technical analysis</span></div><div><b>04</b><span data-i18n="method4">Publish a transparent conclusion</span></div></div></section>
 
-  <section class="donate-banner" id="support"><div><div class="eyebrow" data-i18n="donateKicker">ПОДКРЕПИ НЕЗАВИСИМИТЕ ИЗСЛЕДВАНИЯ</div><h2 data-i18n="donateTitle">ПОМОГНИ НИ ДА ИЗГРАДИМ AURORA.</h2><p data-i18n="donateSummary">Подкрепата ще бъде използвана за оборудване, разследвания, пътувания, софтуер, хостинг и прозрачни разходи по проекта.</p></div><a class="button button-donate donate-giant" href="donate.html"><span>❤️</span> <span data-i18n="navDonate">ДАРИ</span> <span aria-hidden="true">↗</span></a></section>
+  <section class="donate-banner" id="support"><div><div class="eyebrow" data-i18n="donateKicker">SUPPORT INDEPENDENT RESEARCH</div><h2 data-i18n="donateTitle">HELP US BUILD AURORA.</h2><p data-i18n="donateSummary">Voluntary support can help fund equipment, fieldwork, software, hosting and transparent project costs.</p></div><a class="button button-donate donate-giant" href="donate.html"><span>❤️</span> <span data-i18n="navDonate">DONATE</span> <span aria-hidden="true">↗</span></a></section>
   </main>
-  <footer class="footer"><div class="footer-identity"><div class="brand-icon small" aria-hidden="true"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="currentColor"/><path d="M28 8 31 25 41 29 31 32 28 48 25 32 15 29 25 25z" fill="currentColor"/></svg></div><div><b>A U R O R A</b><small>INTERNATIONAL UAP RESEARCH ARCHIVE</small><p data-i18n="footerSub">Да изследваме небето заедно.</p></div></div><div class="footer-links"><a href="#home" data-i18n="navHome">Начало</a><a href="#mission" data-i18n="navMission">Мисия</a><a href="#worldAtlas" data-i18n="navMap">Карта</a><a href="/archive.html" data-i18n="navArchive">Архив</a><a href="#methodology" data-i18n="methodNav">Методика</a><a href="/countries.html">Държави / Countries</a><a href="/news.html" data-i18n="navNews">Новини</a><a href="/report.html" data-i18n="reportButton" id="openIntakeCenter">Подай сигнал</a><small class="footer-report-note" data-i18n="reportDraftNote">Провери във формуляра дали подаването е активно. Ако е изключено, черновата остава само на устройството ти.</small><a href="donate.html" data-i18n="navDonate">❤️ ДАРИ</a><button type="button" id="footerLanguageGate" class="gate-trigger gate-trigger-in-footer">LANGUAGE</button></div><div class="earth-imagery-credit">Earth imagery: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope</a> (<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>), derived from NASA data. Resized/combined maps used for rendering.</div><small class="footer-quote">SCIENCE. TRANSPARENCY. OPEN SKIES.<span>© <span id="year">2026</span> AURORA / IURA</span></small></footer>
+  <footer class="footer"><div class="footer-identity"><div class="brand-icon small" aria-hidden="true"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="currentColor"/><path d="M28 8 31 25 41 29 31 32 28 48 25 32 15 29 25 25z" fill="currentColor"/></svg></div><div><b>A U R O R A</b><small>INTERNATIONAL UAP RESEARCH ARCHIVE</small><p data-i18n="footerSub">Exploring open skies together.</p></div></div><div class="footer-links"><a href="#home" data-i18n="navHome">Home</a><a href="#mission" data-i18n="navMission">Mission</a><a href="#worldAtlas" data-i18n="navMap">Map</a><a href="/archive.html" data-i18n="navArchive">Archive</a><a href="#methodology" data-i18n="methodNav">Methodology</a><a href="/countries.html">Countries</a><a href="/news.html" data-i18n="navNews">News</a><a href="/report.html" data-i18n="reportButton" id="openIntakeCenter">Report a sighting</a><small class="footer-report-note" data-i18n="reportDraftNote">Check the form for current availability. When closed, drafts remain on your device.</small><a href="donate.html" data-i18n="navDonate">❤️ DONATE</a><button type="button" id="footerLanguageGate" class="gate-trigger gate-trigger-in-footer">LANGUAGE</button></div><div class="earth-imagery-credit">Earth imagery: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope</a> (<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>), derived from NASA data. Resized/combined maps used for rendering.</div><small class="footer-quote">SCIENCE. TRANSPARENCY. OPEN SKIES.<span>© <span id="year">2026</span> AURORA / IURA</span></small></footer>
 </div>
 
 </body>

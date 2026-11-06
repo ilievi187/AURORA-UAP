@@ -3,37 +3,48 @@
 <script src="/english-launch.js"></script>
 <link rel="stylesheet" href="/english-launch.css"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#010305"><meta name="description" content="AURORA UAP — global UAP news and primary sources covering AARO, aerial observations, witness accounts and international reporting.">
-<title>AURORA UAP | World News</title><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://aurorauap.org/news">
+<meta name="robots" content="index,follow">
+<title>AURORA UAP | World News</title>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AURORA UAP">
+<meta property="og:title" content="AURORA UAP | World News">
+<meta property="og:description" content="AURORA UAP — global UAP news and primary sources covering AARO, aerial observations, witness accounts and international reporting.">
+<meta property="og:url" content="https://aurorauap.org/news">
+<meta property="og:image" content="https://aurorauap.org/assets/hero-ufo.webp">
+<meta property="og:image:alt" content="Illustrative AURORA UAP research artwork; not evidence of a sighting">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary"><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/live-tools.css"><link rel="stylesheet" href="/news-translation.css"><script defer src="/subpage-i18n.js"></script><script defer src="/news-ui-i18n.js"></script><script defer src="/news-category-i18n.js"></script><script defer src="/news-article-i18n.js"></script><script defer src="/news-tips-i18n.js"></script><script defer src="/news.js"></script><script defer src="/news-tips.js"></script><link rel="stylesheet" href="/aurora-design-refresh.css">
 <link rel="stylesheet" href="/aurora-black-pages.css">
 <link rel="stylesheet" href="/aurora-editorial-interiors.css">
 <link rel="stylesheet" href="/news-portal.css">
 </head>
 <body class="live-page" data-aurora-page="news"><main class="live-shell">
-<header class="live-header"><a class="live-logo" href="/">✦ AURORA</a><nav class="live-links" aria-label="Навигация"><a href="/">Начало</a><a href="/countries.html">Държави</a><a href="/report.html">Подготви сигнал</a></nav></header>
-<section class="live-hero" id="newsTop"><p class="live-eyebrow">◉ SOURCE MONITOR / WORLDWIDE</p><h1>СВЕТОВНИ UAP НОВИНИ</h1>
-<p>Истории от цял свят. Наблюдения, документи, видеозаписи и репортажи — подбрани по дата, с директен път към първоизточника. Изследвай това, което привлича вниманието ти.</p></section>
+<header class="live-header"><a class="live-logo" href="/">✦ AURORA</a><nav class="live-links" aria-label="Navigation"><a href="/">Home</a><a href="/countries.html">Countries</a><a href="/report.html">Report a sighting</a></nav></header>
+<section class="live-hero" id="newsTop"><p class="live-eyebrow">◉ SOURCE MONITOR / WORLDWIDE</p><h1>WORLD UAP NEWS</h1>
+<p>Explore source-linked UAP headlines from around the world: reports, documents, video and research, organized by publication date.</p></section>
 <section id="newsBrowse" aria-label="Филтри за новини"><div class="live-toolbar">
-<label>Обхват / Edition<select id="edition"><option value="global">🌍 Световен поток / Worldwide</option><option value="bulgaria">🇧🇬 България / Bulgaria</option><option value="official">Документи и институции / Official topics</option></select></label>
-<label><span id="newsSourceTypeLabel">Тип източник</span><select id="newsSourceType"><option value="all">Всички източници</option><option value="official-institution">Официални институции</option><option value="public-broadcaster">Обществени медии</option><option value="international-desk">Международни редакции</option><option value="specialist-press">Специализирани издания</option><option value="news-search">Google News търсене</option><option value="other">Други / архивни източници</option><option value="editorial">AURORA Editorial</option></select></label>
-<label><span id="newsTopicCategoryLabel">Редакторска категория</span><select id="newsTopicCategory"><option value="all">Всички категории</option><option value="sightings">Наблюдения</option><option value="official">Официални документи</option><option value="research">Изследвания</option><option value="history">История</option><option value="policy">Политики</option><option value="other">Друго / без категория</option></select></label>
-<label>Търси по заглавие или медия<input type="search" id="newsSearch" placeholder="UAP, AARO, НЛО…" maxlength="100"></label>
-<button type="button" id="refreshNews">Обнови</button></div>
-<p id="newsStatus" class="live-status" data-state="loading" role="status" aria-live="polite">Зареждане на заглавия…</p>
+<label>Edition<select id="edition"><option value="global">🌍 Worldwide feed</option><option value="bulgaria">🇧🇬 Bulgaria</option><option value="official">Official and institutional topics</option></select></label>
+<label><span id="newsSourceTypeLabel">Publisher type</span><select id="newsSourceType"><option value="all">All sources</option><option value="official-institution">Official institutions</option><option value="public-broadcaster">Public broadcasters</option><option value="international-desk">International desks</option><option value="specialist-press">Specialist publications</option><option value="news-search">Google News search</option><option value="other">Other / archived sources</option><option value="editorial">AURORA Editorial</option></select></label>
+<label><span id="newsTopicCategoryLabel">Editorial category</span><select id="newsTopicCategory"><option value="all">All categories</option><option value="sightings">Sightings</option><option value="official">Official documents</option><option value="research">Research</option><option value="history">History</option><option value="policy">Policy</option><option value="other">Other / uncategorized</option></select></label>
+<label>Search by headline or publisher<input type="search" id="newsSearch" placeholder="UAP, AARO, UFO…" maxlength="100"></label>
+<button type="button" id="refreshNews">Refresh</button></div>
+<p id="newsStatus" class="live-status" data-state="loading" role="status" aria-live="polite">Loading headlines…</p>
 <div id="newsList" class="live-grid"></div>
-<nav id="newsPagination" class="news-pagination" aria-label="Страници с новини"><button id="previousNews" type="button" disabled>Предишна</button><span id="newsPageStatus" aria-live="polite">Страница 1</span><button id="nextNews" type="button" disabled>Следваща</button></nav></section>
-<p class="live-warning">Международни публикации и отворени източници. Избери история, виж оригиналния материал и проследи темата.</p>
-<p><a href="https://news.google.com/search?q=UAP%20UFO" target="_blank" rel="noopener noreferrer">Отвори Google News директно ↗</a></p>
+<nav id="newsPagination" class="news-pagination" aria-label="News pages"><button id="previousNews" type="button" disabled>Previous</button><span id="newsPageStatus" aria-live="polite">Page 1</span><button id="nextNews" type="button" disabled>Next</button></nav></section>
+<p class="live-warning">International reporting and open sources. Read the original article and evaluate its context.</p>
+<p><a href="https://news.google.com/search?q=UAP%20UFO" target="_blank" rel="noopener noreferrer">Open Google News directly ↗</a></p>
 <section class="news-tip-panel" id="newsTips" aria-labelledby="newsTipsHeading">
- <div><p class="live-eyebrow">AURORA / COMMUNITY DESK</p><h2 id="newsTipsHeading">Предложи новина за проверка</h2><p id="newsTipsIntro">Изпратените връзки влизат в редакционна модерация и никога не се публикуват автоматично. Не изпращай лични или поверителни данни.</p></div>
- <p id="newsTipsStatus" class="live-status" role="status" aria-live="polite">Проверка на защитения канал…</p>
+ <div><p class="live-eyebrow">AURORA / COMMUNITY DESK</p><h2 id="newsTipsHeading">Suggest a news item for review</h2><p id="newsTipsIntro">Submitted links enter private editorial moderation. Nothing is published automatically. Do not submit private or confidential information.</p></div>
+ <p id="newsTipsStatus" class="live-status" role="status" aria-live="polite">Checking secure submission channel…</p>
  <form id="newsTipForm">
-  <label><span id="newsTipTitleLabel">Заглавие</span><input name="newsTipTitle" maxlength="200" required disabled></label>
-  <label><span id="newsTipUrlLabel">Оригинален URL</span><input name="newsTipUrl" type="url" maxlength="1200" placeholder="https://…" required disabled></label>
-  <label class="news-tip-consent"><input type="checkbox" name="newsTipConsent" required disabled><span id="newsTipConsentLabel">Разбирам, че предложението се проверява от редактор и не се публикува автоматично.</span></label>
+  <label><span id="newsTipTitleLabel">Headline</span><input name="newsTipTitle" maxlength="200" required disabled></label>
+  <label><span id="newsTipUrlLabel">Original URL</span><input name="newsTipUrl" type="url" maxlength="1200" placeholder="https://…" required disabled></label>
+  <label class="news-tip-consent"><input type="checkbox" name="newsTipConsent" required disabled><span id="newsTipConsentLabel">I understand that editors review submissions before any publication.</span></label>
   <label class="news-tip-honeypot" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
   <div id="newsTipChallenge" class="news-tip-challenge" hidden></div>
-  <button id="newsTipSubmit" type="submit" disabled>Изпрати за модерация</button>
+  <button id="newsTipSubmit" type="submit" disabled>Submit for review</button>
  </form>
 </section>
 </main></body></html>
