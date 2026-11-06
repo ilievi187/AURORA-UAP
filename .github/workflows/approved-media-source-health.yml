@@ -6,6 +6,9 @@ on:
       - '.github/workflows/approved-media-source-health.yml'
       - 'data/cases.json'
       - 'media-player.js'
+      - 'scripts/build-source-video-posters.mjs'
+      - 'data/media-source-posters.json'
+      - 'tests/media-publisher-posters.test.mjs'
   workflow_dispatch:
 permissions:
   contents: read

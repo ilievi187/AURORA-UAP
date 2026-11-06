@@ -218,7 +218,8 @@
  // The catalog can have several PDF translations and mirror links for one case.
  // Those are sources within one dossier, not separate video thumbnails.
  // Real videos remain individually playable and are shown first.
- let playbackFor=()=>null,posterFor=()=>null;
+ let playbackFor=()=>null,posterFor=()=>null,sourcePosterFor=()=>null;
+ let publisherPosterManifest=null;
  const titleFor=value=>typeof value==="string"?value:(value?.[locale]||value?.en||value?.bg||"");
  const rank=entry=>entry.m.type==="video"?(entry.playable?0:1):entry.m.type==="photo"?2:3;
  // Long government filenames belong in the source metadata, not in giant card headings.
@@ -260,11 +261,14 @@
    const picture=document.createElement("div");picture.className="media-entry-image";
    // Show authentic publisher-provided video posters where allowed. Do not repeat
    // the same decorative UFO/folder illustration on unrelated source records.
-   const poster=video?posterFor(m):null;
+   const verifiedPoster=video?posterFor(m):null;
+   const publisherPoster=!verifiedPoster&&video?sourcePosterFor(m,publisherPosterManifest):null;
+   const poster=verifiedPoster||publisherPoster;
    const img=document.createElement("img");img.loading="lazy";img.decoding="async";
    img.hidden=!poster;
    if(poster)img.src=poster;
-   img.alt=poster?"Source-published video thumbnail: "+(titleFor(m.title)||titleFor(c.title)):"";
+   img.alt=poster?"Publisher-provided video frame: "+(titleFor(m.title)||titleFor(c.title)):"";
+   img.referrerPolicy="no-referrer";
    const cover=document.createElement("div");cover.className="media-source-cover";
    cover.hidden=!!poster;
    const type=document.createElement("strong");
@@ -272,6 +276,17 @@
    const publisher=document.createElement("small");
    publisher.textContent=c.source?.name||"ORIGINAL PUBLISHER";
    cover.append(type,publisher);
+   if(poster){
+    const previewCredit=document.createElement("small");
+    previewCredit.className="media-source-preview-credit";
+    previewCredit.textContent=publisherPoster?"DVIDS publisher video still":"Source-published video still";
+    picture.append(previewCredit);
+    img.addEventListener("error",()=>{
+      // Publisher can revoke or change a frame; never leave a broken image
+      // pretending to be real video evidence.
+      img.hidden=true;cover.hidden=false;previewCredit.hidden=true;
+    });
+   }
    const badge=document.createElement("span");badge.textContent=video?words.video:documents?words.documents:words.photo;
    picture.append(img,cover,badge);
    const body=document.createElement("div");body.className="media-entry-body";
@@ -315,14 +330,23 @@
  async function load(){
   applyChrome();
   try{
-   const [r,playerModule]=await Promise.all([
+   const [r,playerModule,sourcePosters]=await Promise.all([
     fetch("/data/cases.json",{cache:"no-cache"}),
-    import("/media-player.js").catch(()=>null)
+    import("/media-player.js").catch(()=>null),
+    fetch("/data/media-source-posters.json",{cache:"no-cache"}).catch(()=>null)
    ]);
    if(!r.ok)throw Error("source");
    const data=await r.json();if(!Array.isArray(data.cases))throw Error("archive");
    if(typeof playerModule?.resolveMediaPlayback==="function")playbackFor=playerModule.resolveMediaPlayback;
    if(typeof playerModule?.resolveVideoPoster==="function")posterFor=playerModule.resolveVideoPoster;
+   if(typeof playerModule?.resolveDvidsSourcePoster==="function")sourcePosterFor=playerModule.resolveDvidsSourcePoster;
+   if(sourcePosters?.ok){
+     try{
+       const parsed=await sourcePosters.json();
+       if(parsed?.schema_version===1&&parsed.provider==="dvids"&&Array.isArray(parsed.items)&&parsed.items.length<=100)
+         {publisherPosterManifest=parsed;globalThis.AURORA_PUBLISHER_POSTERS=parsed;}
+     }catch{}
+   }
    const safeCases=globalThis.AURORA_ARCHIVE?.prepareArchiveCases(data.cases)||data.cases;
    const entries=safeCases.flatMap(c=>(Array.isArray(c.media)?c.media:[])
     .filter(m=>m&&["video","documents","archive","photo"].includes(m.type)&&valid(m.url)&&/^[a-z0-9-]{3,90}$/.test(c.id))

@@ -165,6 +165,24 @@ export function resolveVideoPoster(media){
  return null;
 }
 
+/** Publisher-linked preview, taken from the exact DVIDS source's public
+ * Open Graph image (not a fabricated UFO illustration). The manifest is static
+ * and can only match the same published DVIDS video ID and official CDN.
+ */
+export function resolveDvidsSourcePoster(media,manifest){
+ if(media?.type!=="video"||manifest?.schema_version!==1||manifest.provider!=="dvids"||!Array.isArray(manifest.items))return null;
+ const original=safeHttpsUrl(media.url);
+ if(!original||original.hostname!=="www.dvidshub.net")return null;
+ const id=original.pathname.match(/^\/video\/([1-9]\d{5,8})(?:\/[a-z0-9-]+)?\/?$/)?.[1];
+ if(!id)return null;
+ const record=manifest.items.find(row=>row?.source_url===original.href&&row.video_id===id);
+ if(!record)return null;
+ const image=safeHttpsUrl(record.poster_url);
+ if(!image||image.hostname!=="d1ldvf68ux039x.cloudfront.net"||image.search||image.hash||
+  !new RegExp(`^/thumbs/frames/video/\\d{4}/${id}/[A-Za-z0-9._-]{5,90}/(?:486x274_q95|1000w_q95)\\.jpg$`).test(image.pathname))return null;
+ return image.href;
+}
+
 const COPY = {
   en: {
     play: 'Watch in AURORA', close: 'Close player', kicker: 'AURORA player',
@@ -767,7 +785,8 @@ export function initializeMediaPlayer(documentRef = globalThis.document, options
       }
       const picture=card.querySelector(".media-entry-image");
       if(picture){
-        const thumb=resolveVideoPoster(media),img=picture.querySelector("img");
+        const thumb=resolveVideoPoster(media)||resolveDvidsSourcePoster(media,windowRef.AURORA_PUBLISHER_POSTERS);
+        const img=picture.querySelector("img");
         if(img){
           img.hidden=!thumb;
           if(thumb){img.src=thumb;img.alt="Published video thumbnail: "+title}
