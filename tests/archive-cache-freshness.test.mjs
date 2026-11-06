@@ -36,5 +36,6 @@ test('derived country, source map and expanded archive indexes revalidate on lat
  assert.ok(world.includes("fetch('/data/bulk/geo-points.json',{cache:'no-cache'})"));
  assert.ok(world.includes("fetch('/data/bulk/countries.json',{cache:'no-cache'})"));
  const country=src('country.js');
- assert.ok(country.includes('fetch("/data/bulk/index.json",{cache:"no-cache"})'));
+ assert.ok(country.includes('fetch("/data/bulk/by-country/"+code+".json",{cache:"no-cache"})'));
+ assert.ok(src('archive-directory.js').includes('fetch("/data/bulk/listings.json",{cache:"no-cache"})'));
 });

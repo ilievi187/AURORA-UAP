@@ -4,6 +4,13 @@ on:
     paths:
       - 'archive.html'
       - 'archive-directory.js'
+      - 'public-bulk-listings.js'
+      - 'scripts/build-bulk-listings.mjs'
+      - 'data/bulk/listings.json'
+      - 'data/bulk/by-country/**'
+      - 'country.html'
+      - 'country.js'
+      - 'tests/bulk-listings.test.mjs'
       - 'archive-directory.css'
       - 'world-atlas.js'
       - 'world-atlas.css'
@@ -17,6 +24,13 @@ on:
     paths:
       - 'archive.html'
       - 'archive-directory.js'
+      - 'public-bulk-listings.js'
+      - 'scripts/build-bulk-listings.mjs'
+      - 'data/bulk/listings.json'
+      - 'data/bulk/by-country/**'
+      - 'country.html'
+      - 'country.js'
+      - 'tests/bulk-listings.test.mjs'
       - 'archive-directory.css'
       - 'world-atlas.js'
       - 'world-atlas.css'
@@ -43,8 +57,9 @@ jobs:
       - name: Verify 11-page archive with 105 sourced fixture cases on mobile and desktop
         run: node --test tests/archive-directory-browser.test.mjs
       - name: Verify original UAP map pagination with existing fixture suite
-        run: node --test tests/world-atlas-model.test.mjs tests/world-atlas-browser.test.mjs
+        run: node --test tests/world-atlas-model.test.mjs tests/world-atlas-browser.test.mjs tests/bulk-listings.test.mjs
       - name: Validate browser source and working tree
         run: |
           node --check archive-directory.js
+          node scripts/build-bulk-listings.mjs --check
           git diff --check

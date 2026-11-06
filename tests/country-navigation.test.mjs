@@ -51,7 +51,7 @@ test("world marker activation navigates to country files, never calls automatic 
 test("country pages paginate source-linked files and replace fake folder images with source identity",()=>{
  const country=read("country.js"),page=read("country.html"),dir=read("countries.js");
  assert.match(country,/const HISTORY_PAGE_SIZE=24/);
- assert.match(country,/fetch\("\/data\/bulk\/index\.json"/);
+ assert.match(country,/fetch\("\/data\/bulk\/by-country\/"\+code\+"\.json"/);
  assert.match(dir,/fetch\("\/data\/bulk\/countries\.json"/);
  assert.match(page,/id="countryHistorySearch"/);
  assert.match(page,/id="countryHistoryPager"/);

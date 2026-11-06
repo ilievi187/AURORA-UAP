@@ -509,7 +509,8 @@
   try{
    const [curatedResponse,bulkResponse]=await Promise.all([
     fetch("/data/cases.json",{cache:"no-cache"}),
-    fetch("/data/bulk/index.json",{cache:"no-cache"}).catch(()=>null)
+    // Download only the selected country's records instead of all 10K entries.
+    fetch("/data/bulk/by-country/"+code+".json",{cache:"no-cache"}).catch(()=>null)
    ]);
    if(!curatedResponse.ok)throw Error("Source archive unavailable");
    const data=await curatedResponse.json();
@@ -518,7 +519,7 @@
    let extra=[];
    if(bulkResponse?.ok){
     try{const payload=await bulkResponse.json();
-     if(Array.isArray(payload.cases)&&payload.cases.length<=25000)extra=payload.cases;
+     extra=globalThis.AURORA_PUBLIC_BULK_LISTINGS?.unpack(payload)??[];
     }catch(error){console.warn("Supplemental country index unavailable",error)}
    }
    const seen=new Set();

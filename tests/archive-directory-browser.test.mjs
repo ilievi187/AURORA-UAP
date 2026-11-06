@@ -34,8 +34,8 @@ const server=createServer(async(req,res)=>{
  }
  // This suite specifically verifies pagination on its 105-record fixture.
  // The separate bulk-data suite checks the 10K+ published source index.
- if(u.pathname==="/data/bulk/index.json"){
-  res.writeHead(200,{"Content-Type":"application/json"}).end('{"cases":[]}');return;
+ if(u.pathname==="/data/bulk/listings.json"){
+  res.writeHead(200,{"Content-Type":"application/json"}).end('{"schema_version":1,"sources":[],"records":[]}');return;
  }
  const file=resolve(root,"."+u.pathname);
  if(!file.startsWith(root+sep)){res.writeHead(403).end();return}
@@ -77,14 +77,14 @@ try{
  await test("unavailable or malformed extended archive is visibly disclosed, without losing curated dossiers",async()=>{
   for(const [scenario,response] of [
    ["upstream failure",{status:503,body:'{"error":"unavailable"}'}],
-   ["invalid payload",{status:200,body:'{"cases":"not-an-array"}'}]
+   ["invalid payload",{status:200,body:'{"schema_version":1,"sources":[],"records":"not-an-array"}'}]
   ]){
    const ctx=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:"reduce"});
    const page=await ctx.newPage(),errors=[];
    page.on("pageerror",e=>errors.push(e.message));
    try{
     await page.addInitScript(()=>localStorage.setItem("aurora-lang","en"));
-    await page.route("**/data/bulk/index.json",route=>route.fulfill({...response,contentType:"application/json"}));
+    await page.route("**/data/bulk/listings.json",route=>route.fulfill({...response,contentType:"application/json"}));
     await page.goto("http://127.0.0.1:"+server.address().port+"/archive.html");
     await page.waitForFunction(()=>document.querySelector("#archiveCount")?.textContent==="105");
     assert.match(await page.locator("#archiveStatus").textContent(),/Partial archive: extended records are temporarily unavailable/,scenario);

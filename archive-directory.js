@@ -176,8 +176,9 @@ async function start(){
  try{
   const [curatedResponse,bulkResponse]=await Promise.all([
     fetch("/data/cases.json",{cache:"no-cache"}),
-    // The 10K+ metadata index is fetched once; full dossiers live in 64 lazy shards.
-    fetch("/data/bulk/index.json",{cache:"no-cache"}).catch(()=>null)
+    // Compact display-only listing; original languages and evidence remain in
+    // the 64 source-backed full dossier shards.
+    fetch("/data/bulk/listings.json",{cache:"no-cache"}).catch(()=>null)
   ]);
   if(!curatedResponse.ok)throw Error("Archive HTTP "+curatedResponse.status);
   const data=await curatedResponse.json();if(!Array.isArray(data.cases))throw Error("Invalid cases payload");
@@ -187,8 +188,8 @@ async function start(){
   else{
     try{
       const body=await bulkResponse.json();
-      if(!Array.isArray(body.cases)||body.cases.length>25000)throw Error("Invalid bulk archive index");
-      bulk=body.cases;
+      bulk=globalThis.AURORA_PUBLIC_BULK_LISTINGS?.unpack(body);
+      if(!Array.isArray(bulk))throw Error("Invalid bulk archive listing");
     }catch(error){
       // Keep the curated files readable, but disclose partial coverage to visitors.
       partialArchive=true;
