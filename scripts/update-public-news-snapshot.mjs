@@ -1,7 +1,7 @@
 // Source-backed, scheduled snapshot built off the request path in GitHub Actions.
 // Never transcribe articles or invent accounts; store headlines, attribution,
 // publication timestamps and original HTTPS links only.
-import {writeFile} from 'node:fs/promises';
+import {readFile,writeFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {resolve} from 'node:path';
 import {collectNewsEdition} from '../functions/api/news.js';
@@ -47,6 +47,19 @@ export async function buildSourceSnapshot(collector=collectNewsEdition,now=new D
 }
 export async function refreshSourceSnapshot({collector=collectNewsEdition,now=new Date(),destination=DATA_PATH}={}){
   const data=await buildSourceSnapshot(collector,now);
+  // Reuse only exact previously machine-translated headlines. Publisher, URL,
+  // original title and original language must all remain unchanged.
+  let older=null;try{older=JSON.parse(await readFile(destination,'utf8'))}catch{}
+  const lookup=new Map;
+  for(const edition of ['global','bulgaria','official'])for(const row of older?.editions?.[edition]||[]){
+    if(row?.translation?.status==='machine_translated'&&row.translation.target_language==='en'&&
+       row.translation.source_language===row.language&&typeof row.translated_title==='string'&&row.translated_title.trim())
+      lookup.set([row.url,row.title,row.language,row.source].join('\u0001'),row);
+  }
+  for(const edition of ['global','bulgaria','official'])for(const row of data.editions[edition]){
+    const previous=lookup.get([row.url,row.title,row.language,row.source].join('\u0001'));
+    if(previous){row.translated_title=previous.translated_title;row.source_language=previous.source_language||row.language;row.translation=previous.translation}
+  }
   // Validation finishes before replacing the known-good file.
   const content=JSON.stringify(data,null,2)+'\n';
   JSON.parse(content);

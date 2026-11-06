@@ -1052,7 +1052,7 @@ try{
     await page.route("**/api/stats",route=>route.fulfill({status:503,contentType:"application/json",body:'{"error":"database_unavailable"}'}));
     await page.route("**/api/cases?*",route=>route.fulfill({status:503,contentType:"application/json",body:'{"error":"database_unavailable"}'}));
     await page.goto("http://127.0.0.1:"+port+"/");
-    await page.waitForFunction(()=>document.querySelectorAll(".portal-card[data-portal]").length===8&&document.querySelector("#worldMapCount")?.textContent==="101");
+    await page.waitForFunction(()=>document.querySelectorAll(".portal-card[data-portal]").length===8&&document.querySelector("#worldMapCount")?.textContent===new Intl.NumberFormat(document.documentElement.lang).format(10133));
     assert.equal(await page.locator("#portalHeading").textContent(),"Открий AURORA");
     assert.equal(await page.locator("#portalSubmitNews").getAttribute("href"),"/news.html#newsTips");
     assert.equal(await page.locator("#portalSubmitNews").textContent(),"Изпрати новина");
@@ -1088,7 +1088,7 @@ try{
     await tabletPage.route("**/api/stats",route=>route.fulfill({status:503,contentType:"application/json",body:'{"error":"database_unavailable"}'}));
     await tabletPage.route("**/api/cases?*",route=>route.fulfill({status:503,contentType:"application/json",body:'{"error":"database_unavailable"}'}));
     await tabletPage.goto("http://127.0.0.1:"+port+"/");
-    await tabletPage.waitForFunction(()=>document.querySelectorAll(".portal-card[data-portal]").length===8&&document.querySelector("#worldMapCount")?.textContent==="101");
+    await tabletPage.waitForFunction(()=>document.querySelectorAll(".portal-card[data-portal]").length===8&&document.querySelector("#worldMapCount")?.textContent===new Intl.NumberFormat(document.documentElement.lang).format(10133));
     const tabletLayout=await tabletPage.evaluate(()=>({width:document.documentElement.scrollWidth-document.documentElement.clientWidth,portalTop:document.querySelector(".portal-grid").getBoundingClientRect().top,viewport:innerHeight}));
     assert.ok(tabletLayout.width<=1,"tablet layout has no horizontal overflow");
     assert.ok(tabletLayout.portalTop<tabletLayout.viewport,"tablet shows the discovery dashboard in the first viewport");
@@ -1105,7 +1105,7 @@ try{
     await mobilePage.route("**/api/stats",route=>route.fulfill({status:503,contentType:"application/json",body:'{"error":"database_unavailable"}'}));
     await mobilePage.route("**/api/cases?*",route=>route.fulfill({status:503,contentType:"application/json",body:'{"error":"database_unavailable"}'}));
     await mobilePage.goto("http://127.0.0.1:"+port+"/");
-    await mobilePage.waitForFunction(()=>document.querySelectorAll(".portal-card[data-portal]").length===8&&document.documentElement.dir==="rtl"&&document.querySelector("#worldMapCount")?.textContent==="101");
+    await mobilePage.waitForFunction(()=>document.querySelectorAll(".portal-card[data-portal]").length===8&&document.documentElement.dir==="rtl"&&document.querySelector("#worldMapCount")?.textContent===new Intl.NumberFormat(document.documentElement.lang).format(10133));
     assert.equal(await mobilePage.locator("[data-portal=\"news\"] [data-portal-title]").textContent(),"أحدث الأخبار");
     assert.equal(await mobilePage.locator("#portalSubmitNews").textContent(),"أرسل خبراً");
     const mobileEntry=await mobilePage.locator(".portal-grid").evaluate(grid=>({viewport:innerHeight,top:grid.getBoundingClientRect().top,visible:[...grid.querySelectorAll('.portal-card')].filter(card=>card.getBoundingClientRect().top<innerHeight&&card.getBoundingClientRect().bottom>0).length,fullyVisible:[...grid.querySelectorAll('.portal-card')].filter(card=>card.getBoundingClientRect().top>=0&&card.getBoundingClientRect().bottom<=innerHeight).length}));

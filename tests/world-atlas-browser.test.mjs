@@ -211,7 +211,7 @@ try {
       await page.locator('button[data-language="en"]').click();
       await page.locator('#gateContinue').click();
       await page.locator('#languageGate').waitFor({state:'hidden'});
-      await page.waitForFunction(()=>document.querySelector('#worldMapCount')?.textContent==='101');
+      await page.waitForFunction(()=>document.querySelector('#worldMapCount')?.textContent.replace(/\D/g,'')==='10133');
 
       const pins=await page.locator('#worldMapPins button').evaluateAll(buttons=>buttons.map(button=>({
         title:button.title,aria:button.getAttribute('aria-label'),count:Number(button.dataset.clusterCount),precision:button.dataset.mapPrecision

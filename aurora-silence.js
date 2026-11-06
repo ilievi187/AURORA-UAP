@@ -69,6 +69,12 @@
    }catch(_){/* Offline source counts never remove the curated geolocated cases. */}
    const format=new Intl.NumberFormat(document.documentElement.lang||"en");
    counters.cases.textContent=format.format(total);
+   // Home discovery cards and featured story grid share the same source-backed
+   // archive total, not the 101-item editorial subset.
+   if(total>filtered.length){
+     window.AURORA_ARCHIVE_TOTAL=total;
+     window.dispatchEvent(new Event('aurora:archive-stats-updated'));
+   }
    counters.mapped.textContent=format.format(filtered.filter(hasMapAnchor).length+additionalCityAnchors);
    hero.dataset.stats="sourced";
   }catch(_){

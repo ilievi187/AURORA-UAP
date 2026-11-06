@@ -178,7 +178,11 @@ function renderPortalCopy(){
     if(!entry)return;
     const title=card.querySelector('[data-portal-title]'),description=card.querySelector('[data-portal-description]');
     if(title)title.textContent=entry[0];
-    if(description)description.textContent=entry[1];
+    if(description){
+      const total=Number.isSafeInteger(window.AURORA_ARCHIVE_TOTAL)&&window.AURORA_ARCHIVE_TOTAL>0
+        ?new Intl.NumberFormat(lang).format(window.AURORA_ARCHIVE_TOTAL):'10K+';
+      description.textContent=entry[1].replace('{total}',total);
+    }
   });
   document.querySelectorAll('[data-portal-nav]').forEach(link=>{
     const labelKey={about:'navAbout',support:'navSupport',submitNews:'submitNews'}[link.dataset.portalNav];
@@ -271,7 +275,12 @@ function renderReports(){
   bottom.append(type,arrow);card.append(...cardContent,bottom);grid.append(card);
  }
  if(!visible.length){const el=document.createElement('p');el.className='empty-results';el.textContent=editorialLang().empty;grid.append(el)}
- const count=document.createElement('span');count.textContent=visible.length+' / '+filtered.length+' '+editorialLang().count;note.append(count);
+ const count=document.createElement('span');
+ const curatedLabel=lang==='en'?'featured dossiers':'curated dossiers';
+ const archiveTotal=Number.isSafeInteger(window.AURORA_ARCHIVE_TOTAL)?window.AURORA_ARCHIVE_TOTAL:null;
+ count.textContent=visible.length+' / '+filtered.length+' '+curatedLabel+
+   (archiveTotal&&archiveTotal>filtered.length?' · '+new Intl.NumberFormat(lang).format(archiveTotal)+' in full archive':'');
+ note.append(count);
  if(filtered.length>visible.length){
   const button=document.createElement('button');button.type='button';button.className='show-all';button.textContent=editorialLang().more+' ↓';
   button.addEventListener('click',()=>{reportPageSize+=6;renderReports()});note.append(button);
@@ -315,4 +324,5 @@ function setup(){
   translate();
   loadEditorialCases();
 }
+window.addEventListener('aurora:archive-stats-updated',()=>{renderPortalCopy();if(editorialLoaded)renderReports()});
 setup();

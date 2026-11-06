@@ -47,6 +47,7 @@ let baseCases = [];
 let approvedCases = [];
 let sourceAnchors = [];
 let sourceCountryCounts = [];
+let publicArchiveTotal = null;
 let cases = [];
 let filtered = [];
 let land = [];
@@ -498,9 +499,10 @@ function renderSourcePins() {
 
 async function loadSourceNavigation() {
   try {
-    const [geoResponse,countryResponse] = await Promise.all([
+    const [geoResponse,countryResponse,manifestResponse] = await Promise.all([
       fetch('/data/bulk/geo-points.json',{cache:'no-cache'}),
-      fetch('/data/bulk/countries.json',{cache:'no-cache'})
+      fetch('/data/bulk/countries.json',{cache:'no-cache'}),
+      fetch('/data/bulk/manifest.json',{cache:'no-cache'}).catch(()=>null)
     ]);
     if (!geoResponse.ok || !countryResponse.ok) return;
     const [geo,landCounts] = await Promise.all([geoResponse.json(),countryResponse.json()]);
@@ -510,8 +512,18 @@ async function loadSourceNavigation() {
       point.precision === 'city' && hasCoordinates(point));
     sourceCountryCounts = landCounts.countries.filter(entry => /^[A-Z]{2}$/.test(entry?.code||'') &&
       Number.isSafeInteger(entry.count) && entry.count > 0);
+    if(manifestResponse?.ok){
+      try{
+        const manifest=await manifestResponse.json();
+        // Never mix a real 10K manifest with a synthetic test or partial feed.
+        if(Number.isSafeInteger(manifest.curated_existing)&&manifest.curated_existing===baseCases.length&&
+           Number.isSafeInteger(manifest.imported)&&manifest.imported>=0&&
+           manifest.archive_total===manifest.imported+baseCases.length)
+          publicArchiveTotal=manifest.archive_total;
+      }catch{}
+    }
     renderSourcePins();
-    if (language() === 'en') ui.countLabel.textContent = 'CURATED CASES';
+    render();
     if (ui.countryLinks) {
       ui.countryLinks.replaceChildren();
       const caption = document.createElement('span');
@@ -666,15 +678,20 @@ function render() {
   });
   if (!filtered.slice(0, RESULTS_PAGE_SIZE).some((item) => item.id === selected)) selected = filtered[0]?.id || null;
   const mapped = filtered.filter(hasCoordinates).length;
-  ui.count.textContent = new Intl.NumberFormat(language()).format(filtered.length);
-  ui.countLabel.textContent = t('results');
-  ui.summary.textContent = `${filtered.length} ${t('results')} · ${mapped} ${t('mapped')}`;
+  const allCurated=!ui.search.value.trim()&&!ui.country.value&&!ui.year.value&&!ui.category.value;
+  const overall=allCurated&&Number.isSafeInteger(publicArchiveTotal)&&publicArchiveTotal>=filtered.length;
+  ui.count.textContent = new Intl.NumberFormat(language()).format(overall?publicArchiveTotal:filtered.length);
+  ui.countLabel.textContent = overall?'PUBLISHED CASES':'CURATED RESULTS';
+  ui.summary.textContent = `${filtered.length} curated cases · ${mapped} mapped`+
+    (publicArchiveTotal?' · '+new Intl.NumberFormat(language()).format(publicArchiveTotal)+' total public archive records':'');
   renderResults();
   renderDetails(filtered.find((item) => item.id === selected) || null);
   renderPins();
   renderResultsSelection();
   const visibleStatus = filtered.length ? ui.summary.textContent : t('noResults');
-  ui.status.textContent = registryIncomplete ? `${visibleStatus} · ${t('registryIncomplete')}` : visibleStatus;
+  ui.status.textContent = registryIncomplete
+    ? `${visibleStatus} · ${publicArchiveTotal?'Separate submissions register currently unavailable':t('registryIncomplete')}`
+    : visibleStatus;
   if (focusedResultId) {
     const replacement = [...ui.results.querySelectorAll('[data-world-case-id]')]
       .find((button) => button.dataset.worldCaseId === focusedResultId);

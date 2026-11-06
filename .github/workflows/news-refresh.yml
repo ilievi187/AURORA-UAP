@@ -47,7 +47,7 @@ jobs:
     # No private secrets, database writes, or visitor request budget required.
     if: github.repository == 'ilievi187/AURORA-UAP'
     runs-on: ubuntu-latest
-    timeout-minutes: 4
+    timeout-minutes: 12
     permissions:
       contents: write
     concurrency:
@@ -64,6 +64,12 @@ jobs:
         run: node --test tests/public-news-snapshot.test.mjs
       - name: Fetch source-backed headlines and validate the replacement
         run: node scripts/update-public-news-snapshot.mjs
+      - name: Check English translation safeguards
+        run: node --test tests/news-english-translation.test.mjs
+      - name: Machine-translate foreign publisher headlines into English
+        run: node scripts/translate-public-news-snapshot.mjs
+      - name: Require all published headlines to have valid English translations
+        run: node scripts/translate-public-news-snapshot.mjs --check
       - name: Validate compiled publisher discovery safety
         run: node --test tests/discovery-snapshot.test.mjs
       - name: Fetch bounded publisher matches for the source directory

@@ -99,3 +99,17 @@ test("homepage directory avoids duplicated stock thumbnails and preserves attrib
  assert.match(script,/source\.className='report-source'/,"published case cards retain source attribution");
  assert.match(portal,/\.world-case-detail\s*\{[^}]*max-height:[^}]*overflow-y:auto/s,"long detail panel does not stretch map section");
 });
+
+
+test('public home discovery distinguishes 101 selected editorial cases from the complete source-linked archive',()=>{
+ const portal=read('home-portal-i18n.js');
+ assert.ok(!portal.includes('101 case files'),'hardcoded curated-only total is misleading');
+ assert.match(portal,/\{total\} case files with cited sources/);
+ assert.match(read('script.js'),/AURORA_ARCHIVE_TOTAL/);
+ assert.match(read('aurora-silence.js'),/aurora:archive-stats-updated/);
+ const manifest=JSON.parse(read('data/bulk/manifest.json'));
+ const curated=JSON.parse(read('data/cases.json'));
+ assert.equal(manifest.archive_total,manifest.imported+curated.cases.length);
+ assert.equal(manifest.archive_total,10133);
+ assert.match(read('world-atlas.js'),/publicArchiveTotal/);
+});

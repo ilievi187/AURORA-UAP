@@ -349,8 +349,17 @@ async function readStaticNewsSnapshot(request,edition,assets){
       typeof item.url!=="string"||typeof item.published!=="string")return null;
    let u;try{u=new URL(item.url)}catch{return null}
    if(u.protocol!=="https:"||u.username||u.password||u.port||!Number.isFinite(Date.parse(item.published)))return null;
-   items.push({title:item.title.slice(0,280),source:item.source.slice(0,100),
-    url:u.href,published:item.published,language:typeof item.language==="string"?item.language:"en",
+   // Retain source text and independently checked precomputed machine translation.
+  // Cloudflare Workers AI may be unavailable; the scheduled build translates
+  // source-linked headlines once and never makes a translator call per visitor.
+  const sourceLanguage=typeof item.language==="string"?item.language:"en";
+  const pretranslated=item.translation?.status==='machine_translated'&&
+    item.translation.target_language==='en'&&item.translation.source_language===sourceLanguage&&
+    typeof item.translated_title==='string'&&item.translated_title.trim().length>=4&&
+    item.translated_title.length<=650&&!/[\u0400-\u052f\u3040-\u30ff\u4e00-\u9fff]/.test(item.translated_title);
+  items.push({title:item.title.slice(0,280),source:item.source.slice(0,100),
+    url:u.href,published:item.published,language:sourceLanguage,
+    ...(pretranslated?{translated_title:item.translated_title,source_language:sourceLanguage,translation:item.translation}:{}),
     ...(typeof item.source_role==="string"?{source_role:item.source_role}:{}),
     ...(typeof item.source_region==="string"?{source_region:item.source_region}:{}),
     ...(typeof item.category==="string"?{category:item.category}:{})});

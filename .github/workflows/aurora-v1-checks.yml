@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: '22'
       - name: Validate sourced RSS headlines, failure handling and non-fake offline responses
-        run: node --test tests/live-feeds.test.mjs
+        run: node --test tests/live-feeds.test.mjs tests/news-english-translation.test.mjs
   pages-function-build:
     runs-on: ubuntu-latest
     steps:

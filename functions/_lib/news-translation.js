@@ -20,8 +20,12 @@ export function detectHeadlineLanguage(text,fallback="en"){
  if(/[\u0400-\u04ff]/.test(s)){
   if(/[іїєґ]/i.test(s))return "uk";
   if(/[ђјљњћџ]/i.test(s))return "sr";
-  if(/[ыэъё]/i.test(s))return "ru";
-  return fallback==="ru"||fallback==="uk"||fallback==="sr"?fallback:"bg";
+  // Bulgarian uses Ъ too. It is not a uniquely Russian character:
+  // respect the trusted source-feed language before guessing from glyphs.
+  const selected=String(fallback||'').split('-')[0];
+  if(['bg','ru','uk','sr'].includes(selected))return selected;
+  if(/[ыэё]/i.test(s))return 'ru';
+  return 'bg';
  }
  return String(fallback||"en").split("-")[0]||"en";
 }
@@ -63,6 +67,19 @@ export async function translateNewsPage(items,target,offset,ai){
   if(!rawTitle)continue;
   const source=detectHeadlineLanguage(rawTitle,item.language||"en");
   item.source_language=source;
+  const pretranslated=item.translation?.status==='machine_translated'&&
+    item.translation.target_language==='en'&&item.translation.source_language===source&&
+    typeof item.translated_title==='string'&&item.translated_title.trim().length>=4;
+  if(pretranslated&&requested==='en'){
+    cachedHits++;
+    continue;
+  }
+  // A prior English translation must never appear as a translation into some
+  // other language when the caller requests a different target.
+  if(pretranslated&&requested!=='en'){
+    delete item.translated_title;
+    delete item.translated_summary;
+  }
   if(item.editorial_translation===true){cachedHits++;continue}
   if(source===requested)continue;
   const rawSummary=typeof item.summary==="string"?item.summary.trim():"";
