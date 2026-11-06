@@ -6,6 +6,17 @@ const MODEL="@cf/meta/m2m100-1.2b";
 const MAX_CACHE_ENTRIES=600;
 const memoryCache=new Map();
 
+// A machine-translated English headline may legitimately contain a short
+// original-language proper name. Reject mostly untranslated Cyrillic/CJK
+// output, while allowing limited names/loanwords and accented publisher names.
+export function isPlausiblyEnglishHeadline(value){
+ if(typeof value!=="string"||value.trim().length<4||value.length>650)return false;
+ const letters=[...value].filter(c=>/\p{L}/u.test(c));
+ const latin=letters.filter(c=>/[A-Za-z]/.test(c)).length;
+ if(latin<8)return false;
+ return letters.length-latin<=Math.max(4,Math.floor(latin*.15));
+}
+
 export function normalizeTargetLanguage(target){
  return target==="zh-CN"?"zh":String(target||"en").split("-")[0];
 }

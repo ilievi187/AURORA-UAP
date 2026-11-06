@@ -4,7 +4,7 @@ import {mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {translatePublicHeadline,validateTranslatedSnapshot,translateSnapshot} from '../scripts/translate-public-news-snapshot.mjs';
-import {translateNewsPage} from '../functions/_lib/news-translation.js';
+import {translateNewsPage,isPlausiblyEnglishHeadline} from '../functions/_lib/news-translation.js';
 import {onRequestGet as getNews} from '../functions/api/news.js';
 const fixture=(language='bg')=>({title:'Свидетели съобщиха за необичаен обект',source:'Example News',url:'https://publisher.example/uap',published:new Date().toISOString(),language,source_role:'specialist-press'});
 const sample={schema_version:1,checked_on:new Date().toISOString().slice(0,10),editions:{
@@ -50,7 +50,7 @@ test('bad external translation leaves last good public snapshot bytes unchanged'
  const dir=await mkdtemp(path.join(tmpdir(),'aurora-news-failclosed-')),file=path.join(dir,'snapshot.json');
  try{
   const raw=JSON.stringify(sample);await writeFile(file,raw);
-  await assert.rejects(()=>translateSnapshot({file,attempts:1,concurrency:1,fetcher:async()=>new Response('translator offline',{status:503})}),/translation failed/);
+  await assert.rejects(()=>translateSnapshot({file,attempts:1,concurrency:1,fetcher:async()=>new Response('translator offline',{status:503})}),/Too many machine translation failures/);
   assert.equal(await readFile(file,'utf8'),raw);
  }finally{await rm(dir,{recursive:true,force:true})}
 });
@@ -65,4 +65,33 @@ test('Cloudflare serves precomputed verified English headline from a source snap
  assert.equal(d.items[0].title,fixture().title);
  assert.equal(d.items[0].source_language,'bg');
  assert.equal(d.translation.status,'translated');
+});
+
+
+test('machine translations may contain small original proper nouns but cannot remain mostly Japanese or Cyrillic',async()=>{
+ assert.equal(isPlausiblyEnglishHeadline('UFO spotted near 東京 during a research visit'),true);
+ assert.equal(isPlausiblyEnglishHeadline('UFO report concerning Российская Федерация'),false);
+ assert.equal(isPlausiblyEnglishHeadline('マシンを彩るロゴやソニック宅配便のデザイン UFO'),false);
+ assert.equal(isPlausiblyEnglishHeadline('Witnesses reported a strange light over the sea'),true);
+ const output=await translatePublicHeadline('OVNI signalé à Paris','fr',{fetcher:async()=>Response.json([[['A UFO was reported in Paris; details concerning 東京 are pending']]])});
+ assert.match(output,/UFO was reported/);
+});
+
+test('one untranslatable source record is skipped, while every displayed headline still has a real English rendering',async()=>{
+ const dir=await mkdtemp(path.join(tmpdir(),'aurora-news-one-mixed-title-')),file=path.join(dir,'snapshot.json');
+ try{
+  await writeFile(file,JSON.stringify(sample));let count=0;
+  const result=await translateSnapshot({file,attempts:1,concurrency:1,fetcher:async()=>{
+   count++;
+   if(count===1)return Response.json([[['НЛО']]]);
+   return Response.json([[['Reported unusual aerial object']]]);
+  }});
+  assert.equal(result.excludedUntranslated,1);
+  const data=JSON.parse(await readFile(file,'utf8'));
+  assert.equal(data.editions.global.length,7);
+  assert.equal(data.editions.bulgaria.length,8);
+  assert.equal(data.translations.status,'complete');
+  assert.equal(data.translations.excluded_untranslated,1);
+  assert.equal(validateTranslatedSnapshot(data).nonEnglish,8);
+ }finally{await rm(dir,{recursive:true,force:true})}
 });

@@ -1,4 +1,4 @@
-import {NEWS_LANGUAGES,PAGE_SIZE,translateNewsPage} from "../_lib/news-translation.js";
+import {NEWS_LANGUAGES,PAGE_SIZE,translateNewsPage,isPlausiblyEnglishHeadline} from "../_lib/news-translation.js";
 import {DISCOVERY_TOTAL_LIMIT,discoverMatches} from "../_lib/discovery.js";
 import {dedupeHeadlines} from "../_lib/headline-dedup.js";
 import {archiveNewsItems,newsFeedArchiveSchemaReady,readNewsArchive} from "../_lib/news-feed-archive.js";
@@ -356,7 +356,7 @@ async function readStaticNewsSnapshot(request,edition,assets){
   const pretranslated=item.translation?.status==='machine_translated'&&
     item.translation.target_language==='en'&&item.translation.source_language===sourceLanguage&&
     typeof item.translated_title==='string'&&item.translated_title.trim().length>=4&&
-    item.translated_title.length<=650&&!/[\u0400-\u052f\u3040-\u30ff\u4e00-\u9fff]/.test(item.translated_title);
+    isPlausiblyEnglishHeadline(item.translated_title);
   items.push({title:item.title.slice(0,280),source:item.source.slice(0,100),
     url:u.href,published:item.published,language:sourceLanguage,
     ...(pretranslated?{translated_title:item.translated_title,source_language:sourceLanguage,translation:item.translation}:{}),

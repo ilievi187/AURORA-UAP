@@ -6,6 +6,7 @@
 import {readFile,writeFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
+import {isPlausiblyEnglishHeadline} from '../functions/_lib/news-translation.js';
 const OUTPUT=fileURLToPath(new URL('../data/news-last-good.json',import.meta.url));
 const LANGUAGE=/^(?:bg|de|es|fr|it|ja|pt|ru|en)$/;
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -13,7 +14,7 @@ const safeHeadline=s=>typeof s==='string'&&s.trim().length>=4&&s.trim().length<=
 const verifiedEnglish=item=>{
  if(!safeHeadline(item?.translated_title)||item.translation?.status!=='machine_translated'||item.translation?.target_language!=='en'||item.translation?.source_language!==item.language)return false;
  // A Cyrillic/Japanese title cannot be mislabeled as an English translation.
- if(/[\u0400-\u052f\u3040-\u30ff\u4e00-\u9fff]/.test(item.translated_title))return false;
+ if(!isPlausiblyEnglishHeadline(item.translated_title))return false;
  return true;
 };
 export async function translatePublicHeadline(title,source,{fetcher=fetch}={}){
@@ -25,7 +26,7 @@ export async function translatePublicHeadline(title,source,{fetcher=fetch}={}){
  const data=await response.json();
  if(!Array.isArray(data)||!Array.isArray(data[0]))throw Error('Malformed machine translation');
  const result=data[0].map(part=>Array.isArray(part)&&typeof part[0]==='string'?part[0]:'').join('').replace(/\s+/g,' ').trim();
- if(!safeHeadline(result)||/[\u0400-\u052f\u3040-\u30ff\u4e00-\u9fff]/.test(result))throw Error('Non-English translation output');
+ if(!safeHeadline(result)||!isPlausiblyEnglishHeadline(result))throw Error('Non-English translation output');
  return result;
 }
 export function validateTranslatedSnapshot(data){
@@ -55,6 +56,7 @@ export async function translateSnapshot({file=OUTPUT,fetcher=fetch,concurrency=3
   }
  }
  let next=0;
+ const failed=[];
  const worker=async()=>{
   while(next<jobs.length){
    const {item}=jobs[next++];let lastError;
@@ -67,18 +69,31 @@ export async function translateSnapshot({file=OUTPUT,fetcher=fetch,concurrency=3
      lastError=null;break;
     }catch(e){lastError=e;if(tries<attempts)await wait(500*tries)}
    }
-   if(lastError)throw Error('English translation failed for public headline '+item.language+': '+lastError.message);
+   if(lastError){
+    // Do not publish an untranslated headline; one publisher's mixed-script
+    // title must not cancel every other source-backed translation.
+    failed.push({item,reason:lastError.message});
+   }
    await wait(115); // Bounded provider traffic; do not overload a public endpoint.
   }
  };
  await Promise.all(Array.from({length:Math.min(concurrency,Math.max(1,jobs.length))},()=>worker()));
+ const maximumFailures=Math.max(3,Math.floor(jobs.length*.1));
+ if(failed.length>maximumFailures)
+  throw Error('Too many machine translation failures ('+failed.length+'/'+jobs.length+'); keeping last known-good feed');
+ if(failed.length){
+  const discard=new Set(failed.map(f=>f.item));
+  for(const edition of ['global','bulgaria','official'])
+   data.editions[edition]=data.editions[edition].filter(row=>!discard.has(row));
+ }
  const totals=validateTranslatedSnapshot(data);
  data.translations={target_language:'en',status:'complete',translated:totals.translated,
-  method:'automated_machine_translation',editorial_reviewed:false,checked_at:now.toISOString()};
+  method:'automated_machine_translation',editorial_reviewed:false,checked_at:now.toISOString(),
+  excluded_untranslated:failed.length};
  // Don't replace a working public snapshot unless every foreign headline has
  // a source-preserving, independently validated English machine translation.
  await writeFile(file,JSON.stringify(data,null,2)+'\n','utf8');
- return { ...totals,translatedThisRun:jobs.length};
+ return { ...totals,translatedThisRun:jobs.length-failed.length,excludedUntranslated:failed.length};
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
  try{
