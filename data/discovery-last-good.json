@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "checked_on": "2026-11-06",
-  "collected_at": "2026-11-06T19:37:04.497Z",
+  "checked_on": "2026-11-07",
+  "collected_at": "2026-11-07T06:20:37.490Z",
   "notice": "Publisher-feed keyword matches from a dated source-backed snapshot; no automatic verification or proof of non-human origin.",
   "regions": {
     "all": {
@@ -35,7 +35,7 @@
           "error": "fetch_failed"
         }
       ],
-      "count": 9,
+      "count": 8,
       "items": [
         {
           "title": "Mysterious ‘black triangles’ spotted over sensitive US site, new Pentagon UFO files reveal",
@@ -124,17 +124,6 @@
           "feed_host": "thedebrief.org",
           "published": "2026-07-10T17:18:54.000Z",
           "language": "en"
-        },
-        {
-          "title": "The missing scientists at the centre of a UFO conspiracy",
-          "url": "https://www.theguardian.com/news/audio/2026/jul/10/the-missing-scientists-at-the-centre-of-a-ufo-conspiracy",
-          "source": "The Guardian",
-          "source_id": "guardian-science",
-          "source_role": "specialist-press",
-          "source_region": "europe",
-          "feed_host": "www.theguardian.com",
-          "published": "2026-07-10T02:00:07.000Z",
-          "language": "en"
         }
       ]
     },
@@ -165,7 +154,7 @@
           "error": "fetch_failed"
         }
       ],
-      "count": 2,
+      "count": 1,
       "items": [
         {
           "title": "Mysterious ‘black triangles’ spotted over sensitive US site, new Pentagon UFO files reveal",
@@ -176,17 +165,6 @@
           "source_region": "europe",
           "feed_host": "www.theguardian.com",
           "published": "2026-10-23T18:45:43.000Z",
-          "language": "en"
-        },
-        {
-          "title": "The missing scientists at the centre of a UFO conspiracy",
-          "url": "https://www.theguardian.com/news/audio/2026/jul/10/the-missing-scientists-at-the-centre-of-a-ufo-conspiracy",
-          "source": "The Guardian",
-          "source_id": "guardian-science",
-          "source_role": "specialist-press",
-          "source_region": "europe",
-          "feed_host": "www.theguardian.com",
-          "published": "2026-07-10T02:00:07.000Z",
           "language": "en"
         }
       ]

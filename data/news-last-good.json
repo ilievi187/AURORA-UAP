@@ -1,16 +1,174 @@
 {
   "schema_version": 1,
-  "checked_on": "2026-11-06",
-  "collected_at": "2026-11-06T19:36:45.655Z",
+  "checked_on": "2026-11-07",
+  "collected_at": "2026-11-07T06:20:15.614Z",
   "provenance": "RSS/Atom publisher and Google News search headlines collected by AURORA GitHub Actions; articles are external third-party publications.",
   "notice": "Dated source-linked headline snapshot, not real-time reporting and not verification of a sighting. Original publisher links and published timestamps preserved.",
   "editions": {
     "global": [
       {
+        "title": "Repeat advertisers returning season after season are the strongest proof of cinema advertising effectiveness: Sachiin Guptaa, UFO Moviez - MediaNews4U",
+        "source": "MediaNews4U",
+        "url": "https://news.google.com/rss/articles/CBMi9gFBVV95cUxNd0xqeGZ0RTVJUzlqdjNtdXpvOWI3LWd3c0NGR0lVQmJOdHBwQXV4aVdPdzQ3ZG5jaDNKSC1qNVdCT3FmX2tYX0hrdmNJOHVlTEpzcFJBbjZub1VGV196enNQNmY0TjAzd0Z5SXJQNE5UM3pQZlZCX2EwT0JrY1lYeVY5ZnpCUkgxUG1PalVVQ19BamM2UHpPdTBIX1ozZmszOWxGMGZTakpuTzNIYTZLYW1XMWJwQ21pQWR1ZGtGUWFQZjAwUGtlMzZOQXViVDRMbTFGT0ZnOVhBN1lfeHVRdEpoc1RYU3ZqZnNaRjBWbWtSMDRzS0E?oc=5",
+        "published": "2026-11-07T05:47:27.000Z",
+        "language": "en",
+        "source_role": "news-search"
+      },
+      {
+        "title": "“収穫なし”のUFOキャッチャーはむしろ吉？ 森本天が合格圏内に再浮上「運を使わなくて良かったかな（笑）」 - ALBA Net",
+        "source": "ALBA Net",
+        "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE82a1ZSNEtOYUNnMVdZWHNoWnA4eUpHalEzQzlkeDZ1dTROMVJ2cEdCUXpMNHR4ejBSbkVRU1d1Z2YwcHIybngtUTk3SzM5allHNEZmOWZSNzk4VmlFSVhhV1RtR19PeUgzeUZWVXRaZmJxZjRUQWw0?oc=5",
+        "published": "2026-11-06T23:59:05.000Z",
+        "language": "ja",
+        "source_role": "news-search",
+        "translated_title": "Is a UFO catcher with “no harvest” actually good luck? Ten Morimoto resurfaces in the passing range \"I guess I'm glad I didn't rely on luck (lol)\" - ALBA Net",
+        "source_language": "ja",
+        "translation": {
+          "source_language": "ja",
+          "target_language": "en",
+          "status": "machine_translated",
+          "method": "automated",
+          "provider": "machine_translation",
+          "editorial_reviewed": false
+        }
+      },
+      {
+        "title": "“収穫なし”のUFOキャッチャーはむしろ吉？ 森本天が合格圏内に再浮上「運を使わなくて良かったかな（笑）」 - 47NEWS",
+        "source": "47NEWS",
+        "url": "https://news.google.com/rss/articles/CBMiS0FVX3lxTE5KWl9KOVdJZVV4YnRsWG1UZDc3Sk01M0JnWEEzMjBsb2dhRXNOcUdJLTNrTlR4Z1NoY1pfS0hxWFpRRVlta2xkNXk4dw?oc=5",
+        "published": "2026-11-06T23:59:05.000Z",
+        "language": "ja",
+        "source_role": "news-search",
+        "translated_title": "Is a UFO catcher with “no harvest” actually good luck? Ten Morimoto re-emerges within the passing range \"I guess I'm glad I didn't rely on luck (lol)\" - 47NEWS",
+        "source_language": "ja",
+        "translation": {
+          "source_language": "ja",
+          "target_language": "en",
+          "status": "machine_translated",
+          "method": "automated",
+          "provider": "machine_translation",
+          "editorial_reviewed": false
+        }
+      },
+      {
+        "title": "“収穫なし”のUFOキャッチャーはむしろ吉？ 森本天が合格圏内に再浮上「運を使わなくて良かったかな（笑）」 - UQライフ",
+        "source": "UQライフ",
+        "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxNcFNVUzAwUUtMWnYwQlJTTlRkWmdrTndLMkczX0FhcnNEVWh5aHJ3ZC1zMEN0RWE5YlgwMTBuRXV4bk1lWDR5a08zS3lrZTBsWWRBZERlWkhwMXI4U3E5VzdieEd4Z0ZwTzF4anpBa2NIZjQ5clBnVWpPcGNZdFFRR3Nyaw?oc=5",
+        "published": "2026-11-06T23:59:00.000Z",
+        "language": "ja",
+        "source_role": "news-search",
+        "translated_title": "Is a UFO catcher with “no harvest” actually good luck? Ten Morimoto re-emerges within the passing range \"I guess I didn't have to rely on luck (lol)\" - UQ Life",
+        "source_language": "ja",
+        "translation": {
+          "source_language": "ja",
+          "target_language": "en",
+          "status": "machine_translated",
+          "method": "automated",
+          "provider": "machine_translation",
+          "editorial_reviewed": false
+        }
+      },
+      {
+        "title": "“収穫なし”のUFOキャッチャーはむしろ吉？ 森本天が合格圏内に再浮上「運を使わなくて良かったかな（笑）」 - ライブドアニュース",
+        "source": "ライブドアニュース",
+        "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE9SZER2cmtzcTZuMXR5NGczdzFGR25RRU04al9vWkk3THBxb0NwRXRjbHF4ZzE3ajBZd0xkTTJobUVMOXFtMklZVHZqLS1xX3Y0LU5GcFNRbHBWYmtTOTlR?oc=5",
+        "published": "2026-11-06T23:59:00.000Z",
+        "language": "ja",
+        "source_role": "news-search",
+        "translated_title": "Is a UFO catcher with “no harvest” actually good luck? Ten Morimoto re-emerges within the passing range \"I guess I'm glad I didn't rely on luck (lol)\" - Livedoor News",
+        "source_language": "ja",
+        "translation": {
+          "source_language": "ja",
+          "target_language": "en",
+          "status": "machine_translated",
+          "method": "automated",
+          "provider": "machine_translation",
+          "editorial_reviewed": false
+        }
+      },
+      {
+        "title": "NBA - Spurs : \"Wembanyama est un OVNI\" après avoir broyé les Mavs (Basket Time) - RMC Sport",
+        "source": "RMC Sport",
+        "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxNMUtWc2lURmJnQXlQdGZoYXRvYVA2WTM3dHNYdFI0M19ZYkZsMmdibnEwdGZDcUpqZl8tQUc4Y2xzb090TVhlOUVMOHhSWGdhcl9BdXlJdmFzdHpXeTlpNkRqWlMwR2pkNXc5Vy1JX3VpRm9fcEk3WEpYNGR2Mmh3U0tac1h3UFFBeTVxVndMUDJYd1VfM2Itbm5SbG9PVzd3NGhxWEd4RnRackx1S0luZXYxZEpRLTgtTEFCWTIybWRHWExSZkttVldqbG8?oc=5",
+        "published": "2026-11-06T23:24:00.000Z",
+        "language": "fr",
+        "source_role": "news-search",
+        "translated_title": "NBA - Spurs: \"Wembanyama is a UFO\" after crushing the Mavs (Basket Time) - RMC Sport",
+        "source_language": "fr",
+        "translation": {
+          "source_language": "fr",
+          "target_language": "en",
+          "status": "machine_translated",
+          "method": "automated",
+          "provider": "machine_translation",
+          "editorial_reviewed": false
+        }
+      },
+      {
+        "title": "VIDEO | ¿Es real? Nuevo avistamiento de OVNI deja sorprendidos a usuarios de internet - Azteca Morelos",
+        "source": "Azteca Morelos",
+        "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxQQjFHdHJ4dnE5cFZFUW9sY0N0OXJfTW1jOGFjb1hoX3Boa3Ftb3laVEJnMzJ4YXB4RC1SN0ltaU05Q3VPOGNMaVFMSl95NEM5VGI3NnNVekItTTZ4MlhBZG4yamE2TE4tbjIzMmZkTXpVNHgtdXpQUW1uY2NYUkZJRURCcWtHQmw5WUxhQjJIdm4xWjZnRmdhclllYzBGalhVNW0tcldrV1Y3UWxLQUwwMDF5NVRsbTlaX3kzYXphajFvMVhfRVItWk00MmY?oc=5",
+        "published": "2026-11-06T23:05:37.000Z",
+        "language": "es",
+        "source_role": "news-search",
+        "translated_title": "VIDEO | Is it real? New UFO sighting leaves internet users surprised - Azteca Morelos",
+        "source_language": "es",
+        "translation": {
+          "source_language": "es",
+          "target_language": "en",
+          "status": "machine_translated",
+          "method": "automated",
+          "provider": "machine_translation",
+          "editorial_reviewed": false
+        }
+      },
+      {
+        "title": "UFO Researcher Jon Stewart Says Trump Could Make a \"Hail Mary\" Disclosure Move on Aliens - FOX 32 Chicago",
+        "source": "FOX 32 Chicago",
+        "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFBkNGFpUUVDSnI2aWVQSXNxSk9HbUVWS0FvbWZaRkVvWWhwdlFlRE5aM1RVZG5qWVpWYlRrVWZic25jN0xlU3RneXJSc1NFMC1Vd3dhbzBJMENvTHBjb2tSRTNfUG9kd9IBa0FVX3lxTE9JUF9mYXRjbDJENkg2V3IxS3d5Y2YtRXo5MEJOekJRX3dsTGJtNVpYMF9GZkFBWU9IQW5HLUNuWUxpZGZOR0NIemsxYUowODFuMGtSRTVpTjJrdTJTeXRGLWRBOGs1UV83NE9N?oc=5",
+        "published": "2026-11-06T23:01:22.000Z",
+        "language": "en",
+        "source_role": "news-search"
+      },
+      {
+        "title": "“Dicen que no existe, pero sucede”: custodio relata supuesto encuentro con un OVNI en Chichén Itzá - Por Esto!",
+        "source": "Por Esto!",
+        "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQUFNmY0xsX01weXJva0RvY21sTlR1X1NEN2VlLXhHTGNHQ21HdDlNdGE0d2lKMHhBRU5xdDUxY3dIUExTU1h6ZUlEUWQ1NkN5VWlDc0RfMjlyRXhlNnZXajBNUElZV3dBaHJxWE9vb3pUUmM1OGY1WVlVazdpX0d5M19aczd3UHBSVnJ2Z0poWDI1MkJmcHpnSFFMenM4LTJKZjYtdGItT1RLZ9IBrwFBVV95cUxOWmQyVWxDbVBKN09fQUxQRHRESTNlZzJnSk14YnRjSEh2bXgzT0hzb0RzX192akF4aEpPbzNjWk96azVqdkRZZkg1NWZHMTdVSFpVcWUtME50S1liTWF3QzFEZUhzRm5MN0k1T0RFUGhEOFJGZU5rdl91U0d4U3lnM0NsbEhpYUg2THItZmdNbzVOU0hUQ0hwaTVNRDY0eTlOcVI2aGRfM3AtUE5yTU9R?oc=5",
+        "published": "2026-11-06T21:43:52.000Z",
+        "language": "es",
+        "source_role": "news-search",
+        "translated_title": "“They say it doesn't exist, but it happens”: custodian recounts alleged encounter with a UFO in Chichén Itzá - Por Esto!",
+        "source_language": "es",
+        "translation": {
+          "source_language": "es",
+          "target_language": "en",
+          "status": "machine_translated",
+          "method": "automated",
+          "provider": "machine_translation",
+          "editorial_reviewed": false
+        }
+      },
+      {
+        "title": "Mysterious object near the International Space Station, NASA footage sparks UFO theories - Gazeta Express",
+        "source": "Gazeta Express",
+        "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQMWhVMU00bzlFVDdhT3hmMUM1dkdFZjA1NzhHc1VsWENPUVVqUU5Oc2lsT3VJY2tQVGdXQmN0eUVaUUQ5LVVVT2pZcEg0RnpMbUNDUG12eW5NQzZ5Q21iNWI1N2hVOXI1MTkyWS1jRlRjN2E3a2pfOEtVZzloZ1R4eGFkS3owQXZnQlJ3YnhlUXBycnZhdEpvTzhrU29NVTdMNTh1djQwNmhieXNseS1VSEhoWGlwdUNjTzI1QU56NA?oc=5",
+        "published": "2026-11-06T19:34:00.000Z",
+        "language": "en",
+        "source_role": "news-search"
+      },
+      {
         "title": "Science Behind the Forecast: The cloud that can look like a UFO - Louisville Public Media",
         "source": "Louisville Public Media",
         "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQQVJobmVXa05tY0Zib0swRENvNnd6RzNCNXN2ZjU5bFl0VC1TU1pMb0d0R1lKcmhLMkdqWENfdFZIaU5Lb3RJREppU0tBelY5OU9weTJrQUF5ZEZueHB3NUJaNlo3Z0lZcnlEMGZ5Nm9JOC1DcnhMQlFnc29NTXFnM3o0dnJfMjk5ZlhxMnBETkVDS3l2RnQzbEhVUTJVSmc?oc=5",
         "published": "2026-11-06T19:02:00.000Z",
+        "language": "en",
+        "source_role": "news-search"
+      },
+      {
+        "title": "‘Stranger Things’ Prequel Teaser Gives Fans A First Look At A Mysterious UFO Over Nevada - Comic Basics",
+        "source": "Comic Basics",
+        "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxNSTF4dkdYWTdMUGpYa21zSWFFVTlzVXdKNV94cE1oODVPandWcE9BN25SUm5RM1pNTEY0RENVaGNKNkp2ZGRKTmNTZFdkcjFJcXhMMHJWZ0NnbTRyanNqQjliMTBNTXRnR1BCWk52eWF4cmVWX29GbWE1T1lvd3lDSUZhMTBhcnVXQlNPczRkdlRHMnVrbEN4dXNaZVFnbWN1NElnbnlQUnBzR3F0eTFOcHc5ZEhPZw?oc=5",
+        "published": "2026-11-06T18:49:48.000Z",
         "language": "en",
         "source_role": "news-search"
       },
@@ -39,6 +197,42 @@
         "published": "2026-11-06T16:53:49.000Z",
         "language": "en",
         "source_role": "news-search"
+      },
+      {
+        "title": "Tesla : Elon Musk acte la fin du chaotique parcours du Cybertruck, l'ovni de l'automobile - Les Echos",
+        "source": "Les Echos",
+        "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxNaVR6dXh4RVRnbUw4VjB3em0tQzF3eUNFOENZX2p1NVRYSGhaSjQtUG8zNjgxSW15LWJEZWcwRjZrNHpWN05DbHlyRmZhSlBtTWZGeGRzYlVMdEdDMktyYVBZbnoxUkxSTE9qbnpIUUtBdVR6TmhzOUpUcmZYZnIzeUJwby1SbVEzNjZaemlFMXVqSVlXTzQxSXBWNTh6cjQ4V2dQX052anAxVHJKTnM0WVlVOHg0ZnZTc3c?oc=5",
+        "published": "2026-11-06T15:50:53.000Z",
+        "language": "fr",
+        "source_role": "news-search",
+        "translated_title": "Tesla: Elon Musk marks the end of the chaotic journey of the Cybertruck, the automobile UFO - Les Echos",
+        "source_language": "fr",
+        "translation": {
+          "source_language": "fr",
+          "target_language": "en",
+          "status": "machine_translated",
+          "method": "automated",
+          "provider": "machine_translation",
+          "editorial_reviewed": false
+        }
+      },
+      {
+        "title": "Captan extraño fenómeno en el cielo de CdMx: \"Luces fijas y en forma de triángulo\" | VIDEO - MILENIO",
+        "source": "MILENIO",
+        "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxPZ0JHTThZMHN3ck1xM2tsSjhhbXFTSjhuRzhSdkVBbVlnV29xa1FrWmMxUTBCdzdHc3VwV3hCTmR2a0Z3dzNYMGc3U1hVZXJfOVZwYmduamJ2b0RzQkxVaFlKaVpLdmQ4R2ZwYXMtZEVvbjktWFJEZDhGbDJDaHBWcng2a2pFMVFEYjZGYi1PdEJVZlRqM0FzYdIBmAFBVV95cUxOUTZSZGhGdEpIb2U1MjdwOVQ0b2ZiVkNaNGhUaFhCclhYNllEemM4REdZczdWSFVXS3NVa25QaWliMmVWMG5vUWUyeVd3UDhyd0ljdkhLT1Y0eFYzczI0Q25hanZYVTYydlJ5TDVidThJSk5VTWZvcXJqZDFrNDQ4RTRBeFZ5cmZ4UlRVNlhOa2IyZnJtdGdzZg?oc=5",
+        "published": "2026-11-06T15:36:00.000Z",
+        "language": "es",
+        "source_role": "news-search",
+        "translated_title": "They capture a strange phenomenon in the sky of CdMx: \"Fixed, triangle-shaped lights\" | VIDEO - MILLENNIUM",
+        "source_language": "es",
+        "translation": {
+          "source_language": "es",
+          "target_language": "en",
+          "status": "machine_translated",
+          "method": "automated",
+          "provider": "machine_translation",
+          "editorial_reviewed": false
+        }
       },
       {
         "title": "Mysterious UFO Spotted Near International Space Station In NASA Video Sparks Claims Of Near Collision - BroBible",
@@ -77,6 +271,24 @@
         "source_language": "fr",
         "translation": {
           "source_language": "fr",
+          "target_language": "en",
+          "status": "machine_translated",
+          "method": "automated",
+          "provider": "machine_translation",
+          "editorial_reviewed": false
+        }
+      },
+      {
+        "title": "EUA divulgam imagens inéditas de OVNI registradas por astronautas da Nasa; confira - Hugo Gloss",
+        "source": "Hugo Gloss",
+        "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNYnRLaE9FNnFhbDNKTDBnYi02XzZxZ0pQdW9yVWZSZmRpTWx1T3pwWHF5UzBZZzMyWkNtMnRnSWRWalByWmpKa0RJdjNoQm15RUt1VWJuSk9DbFExVm9MU093UEZGVUNOMGlaOFVWZmtwUjZ2bVdBWVhkckpGNE8wSlNaTVZBcldCRUs0TkN4RnpHS29FNk1ORWFCWFhreWU3LXM4NnRCa19ic1NyVGdmNUtzUlAwY0Nk0gG-AUFVX3lxTE5uMjBRVWM0WjRmdjJZVnVHUzZCY0dXOTdyMU1jMm5OUExCVkM0WWpORkQ4V25UQmRxTXg3dFk2WnV0TXpWOUlyZTZBbDJCQkdqQVZ0eW9keDNoc2NiXy1GSGdLeGlzWWkzWE1aUnNUcjVDOE92bUFVc0NBZUUyaW5TUjFUaktzdUh0TU1VRC1zZy11UnBOdHl6MTgyT1hMMWZsRUx0Ml90UFBySEZDYUNaVUNyUzBib05xV0hYbkE?oc=5",
+        "published": "2026-11-06T12:57:29.000Z",
+        "language": "pt",
+        "source_role": "news-search",
+        "translated_title": "USA releases never-before-seen images of UFOs recorded by NASA astronauts; check it out - Hugo Gloss",
+        "source_language": "pt",
+        "translation": {
+          "source_language": "pt",
           "target_language": "en",
           "status": "machine_translated",
           "method": "automated",
@@ -229,24 +441,6 @@
         "source_language": "de",
         "translation": {
           "source_language": "de",
-          "target_language": "en",
-          "status": "machine_translated",
-          "method": "automated",
-          "provider": "machine_translation",
-          "editorial_reviewed": false
-        }
-      },
-      {
-        "title": "UFO取材で中甑島、カッパ取材で屋久島に行ったことがある三浦さんに有人離島カードと一般国道カードを開封してもらったら……「離島好きなんですよ」「面白いかも！？」【UMAデスク】 - YouTube",
-        "source": "YouTube",
-        "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFBZZjlLeXlCTUpJZVEyQy1IcnNPdXFyb0dSZnBLVlg0N0ZuWUlDblFSWG02M3JPZkNjYzFnU1NPNHBpYnVaQ0hzM096UzVrTnJwTGJ4a2g5U0tqVGNY?oc=5",
-        "published": "2026-11-06T09:00:39.000Z",
-        "language": "ja",
-        "source_role": "news-search",
-        "translated_title": "When I asked Mr. Miura, who has been to Nakakoshikijima for UFO reporting and Yakushima for Kappa reporting, to open the manned remote island card and general national highway card... ``I like remote islands'' ``Maybe it's interesting!?'' [UMA Desk] - YouTube",
-        "source_language": "ja",
-        "translation": {
-          "source_language": "ja",
           "target_language": "en",
           "status": "machine_translated",
           "method": "automated",
@@ -505,24 +699,6 @@
         }
       },
       {
-        "title": "Nube con forma de ovni es captada en carretera de Chile - TV Azteca Puebla",
-        "source": "TV Azteca Puebla",
-        "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNd1pjVXgwY1hNbUVkQ3lCMEdWN2FITS1SY3cxSlRXNDMtNHM4c19uUTZNdkc3X1ZyMUhxb3k3Y3RQaTJybzU4VmNsWl93bTJ0V0x2VEp6Y3FCNndBQmdHTXpiYnBLNGE1OWl0Vzh5OWxtMmZ4ZmRvVGdwYUZKWWpDVFJCelJPZEJpQzRxTk94MGNkd0ZibDdoR2ZPRQ?oc=5",
-        "published": "2026-11-06T01:09:39.000Z",
-        "language": "es",
-        "source_role": "news-search",
-        "translated_title": "Cloud shaped like a UFO is captured on the highway in Chile - TV Azteca Puebla",
-        "source_language": "es",
-        "translation": {
-          "source_language": "es",
-          "target_language": "en",
-          "status": "machine_translated",
-          "method": "automated",
-          "provider": "machine_translation",
-          "editorial_reviewed": false
-        }
-      },
-      {
         "title": "「チロルチョコ〈たまごっちおやつキャンディ風味〉」発売。UFOやロケットに乗りはしゃぐたまごっちを描いた個包装入り - グルメ Watch",
         "source": "グルメ Watch",
         "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE5XdldhVG1kN0hzd3UxNllLaEMtWU9MSzRYME5pVmRuemhnY3ZjdFJ0VDlCbk05X0VKdTljZFFYVnBWYU1qbFdPZUlMaU9GcFhKOUZEX1FZWmVaeGZCeTJkQi1vWlFtM3JZckE?oc=5",
@@ -559,56 +735,12 @@
         }
       },
       {
-        "title": "50周年を迎えた「日清焼そばU.F.O.」がオリジナルIPを「コロコロコミック」で育てる理由 (1/3) - MarkeZine",
-        "source": "MarkeZine",
-        "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE1yWU51Mm5veUhTVlVhSWJxVGJIOGFBbnlHTDZHRDR3bzZsZ1hlWE4zbFVwNUdYdk9JTTNWVkE0SFpHSG5VMDFhZmpQbl9KTEJQNnBz?oc=5",
-        "published": "2026-11-05T23:30:00.000Z",
-        "language": "ja",
-        "source_role": "news-search",
-        "translated_title": "Why “Nissin Yakisoba U.F.O.”, which celebrated its 50th anniversary, is developing its original IP with “CoroCoro Comic” (1/3) - MarkeZine",
-        "source_language": "ja",
-        "translation": {
-          "source_language": "ja",
-          "target_language": "en",
-          "status": "machine_translated",
-          "method": "automated",
-          "provider": "machine_translation",
-          "editorial_reviewed": false
-        }
-      },
-      {
         "title": "A UFO over Denver International Airport? New viral video adds to DIA’s conspiracy lore - 98.5 KYGO",
         "source": "98.5 KYGO",
         "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQa0s4YmRTT3RvVlNrSW42THNiTTFicTVBREY0MUlwM0p5UTBneTBWZGhla2pjMXJCQUhkdUpVaUYtN3BQcVJkQ1NZZFFPUEkyd3FiMzA0TmVtZHVhSTRDclM1czQwcDM3YmZmWFFzZXRMekZLYjhrRENnRU44OXBRTjdJcUtPYVQ0T00waENWV2F2d3hLWjFJRVVxLUtjVXZFd1lBZg?oc=5",
         "published": "2026-11-05T22:42:46.000Z",
         "language": "en",
         "source_role": "news-search"
-      },
-      {
-        "title": "How a 1947 UFO sighting near Mt. Rainier popularized the term “flying saucer” - Starlust.org",
-        "source": "Starlust.org",
-        "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQeUJkU1NvZmJIWVNtSDBYLVl0dWRMYlJEclpqSmpyTkFYczJMTFBSeUR5bTNianUtQ09LZkhmSFdZdWNpeERSNW5lbERlaUxKdkVOdElNS0NxdmpVcGQ4SURqcFptZE1PckcxZW1IZW5URHNheDlab2xjeGkybGVsTW5CcUdkTGtFZG1HZ0stcFoxREJMR01RZWtIazFpNjNVVmV1YXBjV1ZJYWo5eS1Od0NhSQ?oc=5",
-        "published": "2026-11-05T22:34:12.000Z",
-        "language": "en",
-        "source_role": "news-search"
-      },
-      {
-        "title": "¿Qué está pasando en Centroamérica? Dos videos muestran extrañas luces en el cielo - TV Azteca Jalisco",
-        "source": "TV Azteca Jalisco",
-        "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxOR1RZX1A5cmdITTdlaUxnT29kX0QzRmhQNlY5U2ZTN09wdkRyT3F5X2xaVll3WVMza0ZSMU1sYzlhbzB3UmV3UnNyd0U0TVRURXJrSm5XNVZVeUg1bUZZZGR3LXRZZDd2T3p2SEhxbjBIUXA1WkVzdEZkemZvQ0ZSM29GWnhPWGJLaTNkZ0QtcXNNMTVEX29xUVpSYlVzUUFial9uS2ExWkx5M1g3bWdKSkllcjYzQUR0ZGh0UzMtbWFudlhybU1SR1VOTkhfV01tMkE?oc=5",
-        "published": "2026-11-05T22:19:20.000Z",
-        "language": "es",
-        "source_role": "news-search",
-        "translated_title": "What is happening in Central America? Two videos show strange lights in the sky - TV Azteca Jalisco",
-        "source_language": "es",
-        "translation": {
-          "source_language": "es",
-          "target_language": "en",
-          "status": "machine_translated",
-          "method": "automated",
-          "provider": "machine_translation",
-          "editorial_reviewed": false
-        }
       },
       {
         "title": "Cinco apps imprescindibles para los amantes del fenómeno ovni - Blog de Lenovo",
@@ -655,34 +787,16 @@
         }
       },
       {
-        "title": "Vor 40 Jahren: Wie Ostrhauderfehn die ersten Ufo-Nächte feierte - OZ online",
-        "source": "OZ online",
-        "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNUkRmV2d3cTdnS1RsSGxaRWYxSzAzbkxuZVdwTkFNcXduUHdtZ1EzZlpFbTJfYjJMd3dfYkR4UUtqNEpSaDFveW1GVEhCM041d3F1VTVicDVVTzFwY0RkalRNQ3M1RFVUUXZhcm0wdjdhdld5MV9QaXAxRllMRTFLNHlhNjhwMXZYbzl6MnVmNDVlSkhM?oc=5",
+        "title": "Vor 40 Jahren: Wie Ostrhauderfehn die ersten Ufo-Nächte feierte - GA online",
+        "source": "GA online",
+        "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQaUE0OGNrMDBiQzdzOXZJX3dMVGViT2M5bjFjUm5ZV0dZUllxQXNSVlhuNlJoNTQ1Y0pyOWZmNGNSLXNnbmRybjM5bktBaU5uN3pwWTJNcFg1aXFtaDBLU0xzRU9XeVZFT3BNTnBSWl9xRi1iY2ZtaHlOR1VoODNJSHY0eW1JdG1ZQjJ3LU5GWm9QM2Fw?oc=5",
         "published": "2026-11-05T17:55:00.000Z",
         "language": "de",
         "source_role": "news-search",
-        "translated_title": "40 years ago: How Ostrhauderfehn celebrated the first UFO nights - OZ online",
+        "translated_title": "40 years ago: How Ostrhauderfehn celebrated the first UFO nights - GA online",
         "source_language": "de",
         "translation": {
           "source_language": "de",
-          "target_language": "en",
-          "status": "machine_translated",
-          "method": "automated",
-          "provider": "machine_translation",
-          "editorial_reviewed": false
-        }
-      },
-      {
-        "title": "Федерални агенти наблюдавали безшумно триъгълно НЛО, разкрива доклад на Пентагона - https://novini247.com/",
-        "source": "https://novini247.com/",
-        "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPUExfZERSRDBnY3lUNDcwTXIzVUdXV2Q2S0doZjhYanJYdzRPM0ZHVEpzY3lmZmNIWktlSVdKTC05NzV6eW9DcC1LY0pTZTg5ejRZa2sweU5lMmJpMW5OV0c5UEFyV29tZ2l1bktBRnRSSGtnbk9CaUtZQnVjbjlWR3FwTDBTMHZRR3hMRkxZbVNTREpOTzlnWUFoclRsU1UzdHdGNTNHSzJON08yTU1QZnpGLUc?oc=5",
-        "published": "2026-11-05T16:50:50.000Z",
-        "language": "bg",
-        "source_role": "news-search",
-        "translated_title": "Federal agents observed silent triangular UFO, Pentagon report reveals - https://novini247.com/",
-        "source_language": "bg",
-        "translation": {
-          "source_language": "bg",
           "target_language": "en",
           "status": "machine_translated",
           "method": "automated",
@@ -701,24 +815,6 @@
         "source_language": "bg",
         "translation": {
           "source_language": "bg",
-          "target_language": "en",
-          "status": "machine_translated",
-          "method": "automated",
-          "provider": "machine_translation",
-          "editorial_reviewed": false
-        }
-      },
-      {
-        "title": "Blog: Luftfahrt - Lockheed Martin Reveals Mk21A ICBM Reentry Vehicle That Looks Straight Out Of UFO Files - hjkc.de",
-        "source": "hjkc.de",
-        "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxPYXlicDdvTG9MQVdtOWtxemhPY1V0QnhzbDBaQ2NYYjQ4azVQUG5qa2tsLUhXRXVINjdid2lrY2tKYXBUTDcwWS1HOXJRNGd5STRJdGNhY0JiUDFDQVI1SWp6a0xfb2VsMU9Wc2d2YVZtZDZGcU9qYkE5U2RvWjJ4REVnMjJuQnVVRmlTMGtmamVzcTU3bFRuS2pOdW5MbEh3c1N1Q0k2OHVPcTMzME9UTUp0eE1vZmtScFpoYnNnS0hsUWdIRktWVnp3?oc=5",
-        "published": "2026-11-05T15:30:00.000Z",
-        "language": "de",
-        "source_role": "news-search",
-        "translated_title": "Blog: Aviation - Lockheed Martin Reveals Mk21A ICBM Reentry Vehicle That Looks Straight Out Of UFO Files - hjkc.de",
-        "source_language": "de",
-        "translation": {
-          "source_language": "de",
           "target_language": "en",
           "status": "machine_translated",
           "method": "automated",
@@ -923,14 +1019,6 @@
         }
       },
       {
-        "title": "UFO Moviez revenue rises 17%, while Q2 PAT falls 15% in FY27 - Multibagg AI",
-        "source": "Multibagg AI",
-        "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPQ3I1dE41Sk5lZV9hOWx5Q0FXalVEbWJuYzc2OFpJUWxRbGt3VGFzQWs5b0c0THRYOHQtQ3hUSVlJNUdkcFBiaHJ5Uy1CdDNPZmhadkx6M2tKeEJ6VFctX2ZwOTQ5X3lCZTNxTmFHMk9WWENwVDRHUVhjRjlGaVV6MjFQTDZCZGJPRk9PTVp3b3gtZ1pVTWNfbFdDalVnRE1uS2M4aUVtSUo?oc=5",
-        "published": "2026-11-05T05:27:10.000Z",
-        "language": "en",
-        "source_role": "news-search"
-      },
-      {
         "title": "Mysterious 'UFO' spotted in NASA video sparks claim of near collision - Daily Mail",
         "source": "Daily Mail",
         "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxOcFdxRXdXSldwbnZZUXBDSHJoSU1fd2JrTGZPdnFkd0tRQUdic1hoX1NSdVN2REJjVXNBajd0YmpZZWFxRUEyZHdoLV8wVW1IbGg0WXNmcEFka3luSlRRME02QXEwZFpaNDF1ZmoyM3lnQlZjMUFvZDJBUHowMVhFRThFWVdNZm5jVEFCZy1EQUdLV05JdFE?oc=5",
@@ -1034,24 +1122,6 @@
         "language": "it",
         "source_role": "news-search",
         "translated_title": "UFO(s) (TV Series 2021–2022) - Ratings - IMDb",
-        "source_language": "it",
-        "translation": {
-          "source_language": "it",
-          "target_language": "en",
-          "status": "machine_translated",
-          "method": "automated",
-          "provider": "machine_translation",
-          "editorial_reviewed": false
-        }
-      },
-      {
-        "title": "OVNI(s) (2021) - IMDb",
-        "source": "IMDb",
-        "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxONGtZRDh4SkF5N2FhNC1vOUlVQW9iUm9pU3dIcGJyT2NsVFRVTlVhcUpiZWRhWDBpR0ZUMUZmTHFUbWhCVFNsM29GVGNTMk1vTTdqMnBFNno4Tmx6Y25Ka0RFUENBNi1ucUdGSWZoSDdxTnZ6YkJZVjVRaEZBTXpRVmhwMWpzUQ?oc=5",
-        "published": "2026-11-04T23:30:45.000Z",
-        "language": "it",
-        "source_role": "news-search",
-        "translated_title": "UFO(s) (2021) - IMDb",
         "source_language": "it",
         "translation": {
           "source_language": "it",
@@ -1273,10 +1343,10 @@
         "source_role": "news-search"
       },
       {
-        "title": "2 UFO Sightings Reported Halloween Week In Southern Idaho - 95.7 KEZJ",
-        "source": "95.7 KEZJ",
-        "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9pNC1VR1U3c1V3TVhrLUpLZzJfTW5GRTVwMWoyYmhYa2NOOTJCN2NhUmo0WkZnQUphWjcwVTJrMHdDOHlCOXJDbEpmRE42b2xWVmt3Y2V2NFhWMmpX?oc=5",
-        "published": "2026-11-04T03:26:41.000Z",
+        "title": "Hang Out With Sean Hannity - Jay Stratton & Dan Farah Expose 80 Years of UFO Secrets | Hang Out with Sean Hannity - FOX One",
+        "source": "FOX One",
+        "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxPd2Y3QWVneE51YllHaERqWWVRQlRhNTc5RFl6cEVGRGRsVDhRYktLdzRxNW5jbWprTXdfU3RZZXBYRFBBTXNwQmg4dFNqTzdzME1sQWlPMnVUM2drUEdpZk5aTU84NExaM3lTTUNjRkJsWUJYN1RwZFU1SzNNWW5WU1ZPSHhjTmxhUnR1OHZlYkxzS2s2YnpZUW9NU1dqR2pfSjhlSWZEb1EwZ01HV3ZmdFVRdVlmSWJRZ19QRWRnbDlQa0RsYkVObXFfcXlsRVhP?oc=5",
+        "published": "2026-11-04T02:49:38.000Z",
         "language": "en",
         "source_role": "news-search"
       },
@@ -1317,14 +1387,6 @@
         }
       },
       {
-        "title": "British Airways Jet Carrying 256 Passengers Almost Hits UFO The 'Size Of Four Toasters' Over England - BroBible",
-        "source": "BroBible",
-        "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE9zWVdLd2lCbjAwMkJoQ2FnRUg3QzdJR05UZGpjTHNBbVJWNXM4c0VZNDlHS2tERVI5bzRBNXpYLWQzelVMRl9fMlBhUDhNVmhsamQwX0lVZHI3MlpraG42RVZwOUtBeExreXZ2TVJzMGlROHJSWWtIdGNGSmxwdw?oc=5",
-        "published": "2026-11-03T21:05:07.000Z",
-        "language": "en",
-        "source_role": "news-search"
-      },
-      {
         "title": "Мистериозно НЛО над обсерватория във Великобритания - Dnes.bg",
         "source": "Dnes.bg",
         "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxOaGJYbk5yVTByQmFQQXotdl9QYl9RUEQ5dUNHYU80QktuUkZEd2gtYVhVRkZ6VXM1dXFkUUp4aXNiYzZNNUdONjFvRDBMZ0tBU2RuRnZtMThRcWRFU05PRmd2LXNHU3NpbHUtTkFpLUNZWjg3TkZac3pPTjd0LXh0ZXdHcW1Ec296cUpXVG9KVmFFamk0?oc=5",
@@ -1335,6 +1397,24 @@
         "source_language": "bg",
         "translation": {
           "source_language": "bg",
+          "target_language": "en",
+          "status": "machine_translated",
+          "method": "automated",
+          "provider": "machine_translation",
+          "editorial_reviewed": false
+        }
+      },
+      {
+        "title": "¡IMPACTANTE! OVNI GIGANTE aterroriza a los habitantes durante los festejos de Día de Muertos (+VIDEO) - Azteca Veracruz",
+        "source": "Azteca Veracruz",
+        "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxNS2tXRUpmMzMxMV9pQ2hqdE56UmNjMUxrYm9oQ2JuSC1mLXE5cXh3cDJIVktIR1N5TlB2TjRDZENNbWRNZUg2ZXE2aUVtaXc1ZkRFdVA1eXdrWkh6dldieXB5aWJ4VW8yUEN3OG1NM2lHdlpmall5TmdoZ2VQX1lsNTZ2SVp3dlpTa0ZFQ0pGRFFacU9GNV8zcWxWOXBuZU41QnZ2SGx4MEEtTjVm?oc=5",
+        "published": "2026-11-03T17:43:26.000Z",
+        "language": "es",
+        "source_role": "news-search",
+        "translated_title": "SHOCKING! GIANT UFO terrorizes residents during Day of the Dead celebrations (+VIDEO) - Azteca Veracruz",
+        "source_language": "es",
+        "translation": {
+          "source_language": "es",
           "target_language": "en",
           "status": "machine_translated",
           "method": "automated",
@@ -1409,6 +1489,24 @@
         "source_role": "news-search"
       },
       {
+        "title": "【2026年10月第5週】カップ焼きそば・パスタランキング1位はU.F.O.メキシカンタコス味！久しぶりランクインや急上昇商品も注目まとめ - もぐナビ",
+        "source": "もぐナビ",
+        "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE5DSW5oY2Y3VkdEc3pSdHpWanFMNG5iM3VSV0tRNDZiQWFpelJHWEZ2S1JIdVRxU3Z3UnBueFJjeVBtTDl4YUsxVzhvRWoyQ0g1RlU3ZlJZSkFIYUxER0pDWU1nZExEdw?oc=5",
+        "published": "2026-11-03T04:05:03.000Z",
+        "language": "ja",
+        "source_role": "news-search",
+        "translated_title": "[5th ​​week of October 2026] U.F.O. Mexican taco flavor ranks first in the cup fried noodles/pasta ranking! Summary of products that have been ranked for the first time in a while and products that are rapidly increasing - MoguNavi",
+        "source_language": "ja",
+        "translation": {
+          "source_language": "ja",
+          "target_language": "en",
+          "status": "machine_translated",
+          "method": "automated",
+          "provider": "machine_translation",
+          "editorial_reviewed": false
+        }
+      },
+      {
         "title": "Pentágono tentou obter investigação militar brasileira sobre série de OVNIs em Colares, no Pará, revelam novos documentos - CNN Brasil",
         "source": "CNN Brasil",
         "url": "https://news.google.com/rss/articles/CBMi7gFBVV95cUxQZkptM3lRRVVYaUV1ei13VkViQVFTbEMwa1hSZ3M1V0JDMkRTT0QzOWxmS0REYUM3aTZvRUJtbnN2QmtJc3pVbDBXLXMxTVRXZEZfY09hbkpxbUpNSWxXYzNEV0tzdnNRVjZuWVltcTdhVklRMUhfeWRqdURXdXRaZDE5ckhDUFpXRko2aDQ0c1NRbXB3bWhzc3BhX2k2aVJhS0JxbHYtRVNJTjhrZkd3ejEtbmJpakRxWEZLeWhXSlMza04zMXhXb2ZxOXNUczV1elVab0dtMlNSZEt3OFU4dkE1UUptS3U1R2hrZEtR?oc=5",
@@ -1445,9 +1543,9 @@
         }
       },
       {
-        "title": "New Pentagon files reveal UFO sightings off California coast - geekspin",
-        "source": "geekspin",
-        "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNbThRZFlJRWxnUXNnV0hJdGJiNWZCOXE4T282b0JtQUZqcGlpa3F5cV9udVpNUjVpdnJ2LTlIVXo1TGtkOVUtcFlBUzhjM0U0Qmc0bXVBd0NBRGY0VGVxMWQzMUE4RjR4Y2JOendtcTUwQ1l4RktGT3VZYURiY1VLSld1T2Z4b29h?oc=5",
+        "title": "New Pentagon files reveal UFO sightings off California coast - Yahoo",
+        "source": "Yahoo",
+        "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxNSmF4TUtfZldEQ1dnY1dSNVNfOVNxVFQwN1d2ckY5M2l1MUdrbmRMbkdQQjRkVXlZVFVqaW9XVV9WcVBzTnRkRFlGMkNlRGtrbHRwN0o2ZGthSVBtLXNIcC1PbG0xdWxISWhmMVJRNE00RUl5eDgxcU1ENWZKOU9nU0JxNmw0Tl9BbzJDRG85NWFKUjFPSGtKNkdB?oc=5",
         "published": "2026-11-02T22:15:12.000Z",
         "language": "en",
         "source_role": "news-search"
@@ -1463,24 +1561,6 @@
         "source_language": "ja",
         "translation": {
           "source_language": "ja",
-          "target_language": "en",
-          "status": "machine_translated",
-          "method": "automated",
-          "provider": "machine_translation",
-          "editorial_reviewed": false
-        }
-      },
-      {
-        "title": "¿Una nave nodriza en Estados Unidos? Captan extraño objeto cilíndrico en el cielo de Texas - TV Azteca Jalisco",
-        "source": "TV Azteca Jalisco",
-        "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxQOXAxaHplelBOWmVwMHlkeEJBaGpHZU41aTBTOXdMOUhWM3E4d0pZRmNzMEZqT3RLMVpEVjVkMzNSb2FwTzkySk9WbmNTTHh2dzI3dWtGQ1MzWFNGbFpwSlZtODc1cmoxcm9hV1hOQUd1WUlacWJOZ29tUGxWeHJZdnB2akxpZjZXdmROaFg2Y2k3ZmQySE1GdlJFOHM4OHhBUmJ3OEtEV0RtNmkyX3djRlRjYTFKQXBFSDhNUWdzUUZwUW9YeTUzZW1Ec3hCb3o3?oc=5",
-        "published": "2026-11-02T21:57:38.000Z",
-        "language": "es",
-        "source_role": "news-search",
-        "translated_title": "A mothership in the United States? Strange cylindrical object captured in the sky over Texas - TV Azteca Jalisco",
-        "source_language": "es",
-        "translation": {
-          "source_language": "es",
           "target_language": "en",
           "status": "machine_translated",
           "method": "automated",
@@ -1515,6 +1595,32 @@
         "source_role": "news-search"
       },
       {
+        "title": "Dissecting the UAP Headquarters through the lens of placemaking architecture - The Manila Times",
+        "source": "The Manila Times",
+        "url": "https://news.google.com/rss/articles/CBMi7gFBVV95cUxNR0lvQ2JqTWtvSVBZMDNvbjNvX1JQSVVWLUsxUGJ0RFVySTdVV3J2aHM2UV8ycnJoalhmTmp0NDhCOUl6SDkwY0hnNmc0OThhanZ5SDFfbVRGMHhJdUZLZ0pFWmRTN3FjcjZtYUZPblVwc2lkczVtdUdoMU5CTlhuTWR0Zjd6WmFlZnQybFBXNC1pbnZ2UF9QdVpZYm5NVkNGdE14RHBkNUZXMENGeTlFWTNVR1RFMWdROVZ2VXVSOHdlU1B2Q3ZUWHF2a21oS05nV2FkVVdoNTFnRnhYekF0aXY4dEVKcDRvOEpyUVZn0gHzAUFVX3lxTE81aVJDd3lPMG1sRjdtQmtORnEyQ05ISTBOaDhCN0RmOGV6MG41Ri1FZkc5Z2ttMlFILXZzdjdzandzRk9wMU1iWlROa2hCMVNrVnRqNGRTUXByNVotcF9kZjU5dzh2WFZGbzN4TTF1OHoyaE5iS2dhM2l0WU9pa0lQbXFkeWkycEVkalJBTnBDcGZGUWFxUV85cmhxZjcxSzZYWHp3WXpOdmJvdWtPT3pqZ0xEM3RzamhpMlliZjcxU1cxcHNjaDNHTFE3eGJ4UjlOWGNOTmFIZllxakJPcUl1VGlGTnMyaXJ0Q3FLbHBnS0E3Zw?oc=5",
+        "published": "2026-11-02T16:02:00.000Z",
+        "language": "en",
+        "source_role": "news-search"
+      },
+      {
+        "title": "E se gli Alieni fossimo noi umani? Il film coreano Hope e la recensione di Paolo Mereghetti, critico di cinema del Corriere - Mistero BUFO",
+        "source": "Mistero BUFO",
+        "url": "https://news.google.com/rss/articles/CBMi-AFBVV95cUxNMVZuQ2lfOXVpWTFvcmJuUWJOdmZITG03ZWtPUXdhd195bkxoNGR2VGFRZHNKTWVmeFc1WHdaVm5DYlZHWTFsMWlTOVdLbk9tampTME9PTnRVRi0xb1VyYUh1aHZBTVJMRjNqMi1wYUVaRENxdU1PVUVSbHp3VUdxRGJoWFdBRHRldlNmUjhnV2otWkRFMjduZVplc1FSTWlQT25MQms1S3ItaGQzdktzWWF3ZFRDalE0a2h0VjFER2VCRHpNanJMZl9oYXBxQVFKLXhFVXl5b1FMaWpvUVZkejZlcnY4Tks1aGVHWXlOLWNZbTNLbGxCMQ?oc=5",
+        "published": "2026-11-02T14:51:15.000Z",
+        "language": "it",
+        "source_role": "news-search",
+        "translated_title": "What if the Aliens were us humans? The Korean film Hope and the review by Paolo Mereghetti, film critic of the Corriere - Mistero BUFO",
+        "source_language": "it",
+        "translation": {
+          "source_language": "it",
+          "target_language": "en",
+          "status": "machine_translated",
+          "method": "automated",
+          "provider": "machine_translation",
+          "editorial_reviewed": false
+        }
+      },
+      {
         "title": "“Un triangle noir qui n’émet aucun son”: la Maison-Blanche dévoile de nouvelles observations d’OVNI - 7sur7.be",
         "source": "7sur7.be",
         "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxNUGdUSFd2STIwaUpJTnpWOXBDb0xHMVVwWmJLZGN0dXhsc3BZNFRkeHpJaGRqT3A4Y3E5YUNKTjlxTFR4SU8zQlpwRXQ4Mjl6alBITEd3bXllanExTXJLaTlKYkI4czBTLUR5eXI4eVVLWU5SdW1QZ0M0LXZJZ3k2a2xyLTRRbGdZSW5YcEFramI1UGFiRzZrenJmelA1WVUxM0Q1ZmVQYTU2dWhsdG1RbjdRejhBUkltYWFyU1Z2dDRXczVxZVUzSU9JQlhRdHM?oc=5",
@@ -1533,18 +1639,10 @@
         }
       },
       {
-        "title": "Sauchie man appears on BBC show to discuss 'UFO sightings' in central Scotland - Alloa Advertiser",
-        "source": "Alloa Advertiser",
-        "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxOWU94dC1pN0M0NkVRSEI3dEZCamswQ1hxOFJoQ2V4clQycmNXOE9jbTM3QTRLNE40YW52cjR5NkhOWHJ0OWVudTVrWDVWdjRNQl9vUGtrOG9lSFZxb3QzVVR1N01waWoyVGRPR2hDM2E1VHJzSi1KQ053c1JUZU1FeGNBZzBpekhxSEtpTUNCYURpX0dZZ3VyVDdNdTF4Mlk?oc=5",
-        "published": "2026-11-02T14:35:02.000Z",
-        "language": "en",
-        "source_role": "news-search"
-      },
-      {
-        "title": "Something Mysterious Appeared to Fly Towards the ISS, but Was It Really an Alien Spacecraft? - International Business Times UK",
+        "title": "Democrats Reportedly Prepare UFO Disclosure Committee Because Whistleblowers Do Not 'Trust Another President' - International Business Times UK",
         "source": "International Business Times UK",
-        "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE9feE82WEV4RWVYbDU0SmdZZ1dFZDlWSklXT1lrVEl4VjFucFZjQ3FWRDJRaXo0dnhpNC1Ob3VEY0lDeEh5VTg0TkMzTHFMV296WFJ3TVNrQU55cmZNOW9uRDFERmJMUWZWZnk2MmNGLVZPNGNpb0pvaTl2Yw?oc=5",
-        "published": "2026-11-02T11:10:00.000Z",
+        "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxONExETzdKNjVwVnhsTnpvU0ZCUy1xZDhnbFZKN1ROblhTcGpWd0NKMm5rWWRhOTRqNHZjdXo2NjJwR2g1MHpXbnZHclJVb2dVUnoxZHlQTlZydFBqSXM5bUNISzdMcjZUMlduaDlEU1pBVE5EdXpSbm02ZTBzWW1iRmRIUy1yTVJMalV3?oc=5",
+        "published": "2026-11-02T12:21:00.000Z",
         "language": "en",
         "source_role": "news-search"
       },
@@ -1574,6 +1672,24 @@
         "language": "ja",
         "source_role": "news-search",
         "translated_title": "Fukuari Gourmet Selection - Kitaibaraki's \"Simmered Red Bean Liver\" and Chiba's \"UFO Burger\" are now available! ~ - JEF United Ichihara/Chiba Official Website",
+        "source_language": "ja",
+        "translation": {
+          "source_language": "ja",
+          "target_language": "en",
+          "status": "machine_translated",
+          "method": "automated",
+          "provider": "machine_translation",
+          "editorial_reviewed": false
+        }
+      },
+      {
+        "title": "宇宙ステーションまでわずか25m!? NASA中継に映り込んだ直径7mの「UFO」ドラゴン補給船のカメラが捉えた謎の物体 - TOCANA",
+        "source": "TOCANA",
+        "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFA3ZklZTGZVNVF3UFRlNTdPcmRyX0hCVEFoWXNqV1FQS2xQNHI3elk0RUR6THhiNFBZOC1jbThMaU5uS09PUmx3TUZaTGNTa3JrM3FBMzlGV2R2dTcw?oc=5",
+        "published": "2026-11-02T09:00:00.000Z",
+        "language": "ja",
+        "source_role": "news-search",
+        "translated_title": "Only 25m from the space station!? A 7m diameter \"UFO\" caught on NASA broadcast Mysterious object captured by the Dragon supply ship's camera - TOCANA",
         "source_language": "ja",
         "translation": {
           "source_language": "ja",
@@ -1629,24 +1745,6 @@
         }
       },
       {
-        "title": "Тревога в Латвия заради неидентифициран обект в небето - Таралеж: Истината има значение",
-        "source": "Таралеж: Истината има значение",
-        "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxQZ2FEOUJrREpMRU5jMnlVUi1DODdHLXRuUUY0SEV4MUtqWXdGV2lERm02bGFlQ2t2LUNiUGtKVThzdm9LY3JjQ0lwMkh2Mm1XdmZPeTNsSFVhblFVRU8zRTZKRHVHMVladXItOEdUa0VpSWdiNVdrY0ZVT0VTZUdaRHRaUjg?oc=5",
-        "published": "2026-11-01T22:44:36.000Z",
-        "language": "bg",
-        "source_role": "news-search",
-        "translated_title": "Alarm in Latvia due to unidentified object in the sky - Hedgehog: The truth matters",
-        "source_language": "bg",
-        "translation": {
-          "source_language": "bg",
-          "target_language": "en",
-          "status": "machine_translated",
-          "method": "automated",
-          "provider": "machine_translation",
-          "editorial_reviewed": false
-        }
-      },
-      {
         "title": "Battlefield 6 esconde un easter egg de un Ovni en sus partidas en línea, pero es tan difícil de conseguir que probablemente nunca lo hayas visto - 3DJuegos México",
         "source": "3DJuegos México",
         "url": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxPNDIydjVzRk9HMlI5aF9QeVVzNjNFZjZBbVNPaWhtbGVPa2FaVTBEN3FZc2JGa3NZLUJuRGhteWVWeWt3bExDV0tyZGFPeVRyZnFzcnR6eXdscXVYSWptcThVWG5wM0FXRTV4QTV6X2wtbTQtd2NpZ3lmOHRLV1hvUC15aXlTUVNDVVBtTWdaUWNRcnFEenItTGhFQmtPMEZxZ3psZ0N5VVFDYlhvVGdPcnhOYTRqYmNhdW5jWGNobjhoY0lHbC04d3hfVnRUb3I1aHQ2cGtCclpTZklNM3hSX9IB5gFBVV95cUxPLThNcm9nOGw4aVM4Vjd0Yjdhd3FBRWN2QUdTRlVXQUt5OW1KdG1CU1BkQjdVWGtMYjd1U2hSeWp4ZnBqZUNZUFpiNTBycUZTQzFsOHFXTXJFRDFydDNlOTRKVkNCMXJucDVWbThfUlJtSHFKSkdEREtWSVJPLWxSanQ1UVBLSmowQ25rVDFuSW9ueWlNMzE4VFJwbzBMNVFqck9tWTFFQ1ZsNzB0UEFFa0Z6d2Z5TWNpN3R0YVBueFlBQzA3Zmk2VzZrQzRtbmR1ZS1TZTQtd3d0WUZTY2Y1eVpiWTR0dw?oc=5",
@@ -1665,24 +1763,16 @@
         }
       },
       {
-        "title": "Map shows Merseyside's UFO hotspots as Pentagon releases files - Liverpool Echo",
-        "source": "Liverpool Echo",
-        "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxQdkRTLXpmOU5tQXBUdEdiMHhUdVlDME52WWRkNVNIY1VtU1Y2TGZYNGxKdmZNQmk1UGZTcjVycFNIcnVNdGE0U1AxcS1YS1czemoxU2hrUnVVb21OMFl0RndEcjlOOGNXeE1ZRlk4TktTQi1USnI0UTU3SWlZc1Z4Q3dTRjFaMVMtUnFJdHpvOXNiam1WNGZqdFFmSQ?oc=5",
-        "published": "2026-11-01T19:25:00.000Z",
-        "language": "en",
-        "source_role": "news-search"
-      },
-      {
-        "title": "Sorry We’re Closed – L’OVNI d’Akupara Games est offert jusqu’au 05/11/26 - GEEKNPLAY -",
-        "source": "GEEKNPLAY -",
-        "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxONTZMaFB3Q1ZWaGxIa2JVd2E4ZjF6QTl4anIydjdhWkY3ZnUwWFN0b2Q4Q0U1RGVsVnZCbVJrczBRQVotckJmV3poRVNpUUtIVU94NmNmZ2p1TURGN050V2JzU0o1Vkx2WlcybmJfc3Jxdi0xdW83VXAwdEJuRlloZWRka05BY1NoOUszTm5nbGtRZEd0RFZn?oc=5",
-        "published": "2026-11-01T18:28:11.000Z",
-        "language": "fr",
+        "title": "米中間選挙でＵＦＯ情報公開に暗雲？ 民主党が下院奪還ならトランプ政権の取り組み停止も - 東スポWEB",
+        "source": "東スポWEB",
+        "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9VNGlfNUEyQVpwVnJ4akF1c3NVLTBrMTd5OUdZSXhOd19oM09uYzhDMFN3RUVTRUpGRGRfUUN2dG5NcmNpekJIZkpEODNUOTVXMXVfM2hGc3poTXdH?oc=5",
+        "published": "2026-11-01T21:00:00.000Z",
+        "language": "ja",
         "source_role": "news-search",
-        "translated_title": "Sorry We’re Closed – Akupara Games’ UFO is available until 05/11/26 - GEEKNPLAY -",
-        "source_language": "fr",
+        "translated_title": "Dark cloud over UFO information disclosure in US midterm elections? If Democrats take back the House of Representatives, Trump administration efforts may be halted - East Sports Web",
+        "source_language": "ja",
         "translation": {
-          "source_language": "fr",
+          "source_language": "ja",
           "target_language": "en",
           "status": "machine_translated",
           "method": "automated",
@@ -1691,62 +1781,22 @@
         }
       },
       {
-        "title": "Неидентифициран обект във въздушното пространство на Латвия в близост до границите с Русия и Беларус - bTV Новините",
-        "source": "bTV Новините",
-        "url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxPU1NwRTVsbVBncnVmUFhUYjBUYkwwN3FwUHRWUzhzSVdlbkVZc19iNjNseFRSMllYb2h3RVNWYXVuSU45QmdVeEtsWWhSbFA1U19jYzhOLTB4Rkt6bC1wLTh4Ry1QTGFYU1RmcHpCTVJLNklka1JMdDc0bWtqNnRhaGVuZDF5YjdqdjhNdWF2Z3k0QkRHMUY3X0JqLWFkdkNpb2NHOWNENWV5UFFENmt0amJCVk44U0N6bWhJY01RMjJoTTBudGRVSUFaNXBzNEQ2RF9rbg?oc=5",
-        "published": "2026-11-01T18:22:06.000Z",
-        "language": "bg",
+        "title": "交信、ご当地グルメ、お笑いショー… ＵＦＯファン大満足 飯野のフェス 和太鼓やツアー楽しむ - 47NEWS",
+        "source": "47NEWS",
+        "url": "https://news.google.com/rss/articles/CBMiS0FVX3lxTE96X3hITWlMQldEcGVEb0JHYW4zcS05eVJQSGl0X0owcmpTUGtfMlY4VXk0cXV3b0RxYk80eFhxbUprZERZMWRHTHdSZw?oc=5",
+        "published": "2026-11-01T20:36:00.000Z",
+        "language": "ja",
         "source_role": "news-search",
-        "translated_title": "Unidentified object in the airspace of Latvia near the borders with Russia and Belarus - bTV News",
-        "source_language": "bg",
+        "translated_title": "Communication, local gourmet food, comedy show... UFO fans will be satisfied with Iino's festival, enjoy Japanese drums and tours - 47NEWS",
+        "source_language": "ja",
         "translation": {
-          "source_language": "bg",
+          "source_language": "ja",
           "target_language": "en",
           "status": "machine_translated",
           "method": "automated",
           "provider": "machine_translation",
           "editorial_reviewed": false
         }
-      },
-      {
-        "title": "Is the truth out there? USA’s declassified UFO files prompt sniggers about ET claims - News24",
-        "source": "News24",
-        "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxPU0x3OEtoaXhmTVVoYVVTclppOGZjSl9WdjNVamlCTVprU3J4YTN1azQzX2xBYmwyVVo2R2l3dndBTWdERG5sNlpVMkxhRzRtOXpTc012bFNIUGZtN0NKVVRZbXJ6Z0d2RTdUendlczhKVUx4MnB5cW5YNkVLT0R6ZTZWTGtWMnBURXdTVWJpRHg5TTNfbzdGX2NoOHdZbDRVQXVia2k2UkNTWFJVbVhaeHRzNXN0RjZqQlNsdW5LcURnRGFaT09td1h6amdxeGphb1RGem5yUmN4dw?oc=5",
-        "published": "2026-11-01T18:07:54.000Z",
-        "language": "en",
-        "source_role": "news-search"
-      },
-      {
-        "title": "UFO map shows nearly 2,000 sightings across UK - 13 were in Newcastle - Chronicle Live",
-        "source": "Chronicle Live",
-        "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxPX2VjRl9ERGJ4QWQ0anpKRUhPOWhjcEdPc3VIU3NOQkZJMUZvNm1BTWRRTl9tOW1RZV9jNllPdGhockgzcDE2RkEwcFlaaklXWlIxNEZKeUZ3QzBsOThDSWRtQUxFRzVmS25LR2VkcTk3NGNkbHJLMk9ZNUhxcHMxQ3RrVGdCZ3ZHTVJiTmJ3REfSAZYBQVVfeXFMTjljWTg0aU5XRWZsOWJtOHpyaHNLcm00NU5YajZDeVNTYTB2OXZFOEhLR25DVURGNnU5RG9nYzlyVDdvbXctV1YzYlR0Z0k2TmhQdEZ4Q0h6MzgtWkw1QktZRkZTV1RpczY0VmFMZnJQUGxpSGl1cU5RM2RVenNGZXphckdENjFlRklBZGkwZkpVYzNIejVB?oc=5",
-        "published": "2026-11-01T17:14:00.000Z",
-        "language": "en",
-        "source_role": "news-search"
-      },
-      {
-        "title": "Pentagon’s former UFO chief questions FBI agents' account of mysterious black triangle sighting - MEAWW News",
-        "source": "MEAWW News",
-        "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPV2JFUGpESU9TcXNfd1dsZEFwaEE3OFZVdzBxa0l2alQ2YjE5SkpuWjBVRWpvSFpxWlpBSGFQT2txM3FkdjBPU1dmU0hrZGpKWTNrc1VLOTlhUk5xSl8wRFZLcXdvSDY4elVUMDBXVFkycGtUUlU0YUtEY3lTbTI3VTc5Ykd0blRoaEtfRVhsYWRWd0MxZkJIcHlTWkZPSkJMQzlYdDYwOEVOdEExb0oyRHpVYWF0U2s?oc=5",
-        "published": "2026-11-01T16:41:46.000Z",
-        "language": "en",
-        "source_role": "news-search"
-      },
-      {
-        "title": "44 Cornwall UFO sightings MAPPED - Cornwall Live",
-        "source": "Cornwall Live",
-        "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxOMEl2TzFVWktQR1BRMXRUTmxnamdyWG42Q1JTQ3JBLXFFWV9TUXBuN3c5TmlnZ0d4UG9qRlFjTFVLY0N4M043ZkRiY1hzX0J3NkdLcmJjXzRmMmZhNDlMcE5RZjNYeG1uRkJwSUFEWnJyUFZ1M1lPdDl3RnRwbzl2VlVtSlIwWFNvLWVVbnY4LTFVTVXSAZgBQVVfeXFMTi1QdkFaNmFTYy1yNktFaGJxV0l6NExacl9rc1Jhay0wYW02REdjdUlMN3F6eVc3Z0VVNzdZVjgxa29tU1dVVlBUcUJWTFdVQlNYZ09HYWZoVTNDX0lhVldJVUUtb05BVzlHYmZMN3ZzZnA5Rzkya1ItcjlhWlNEUnVqT3Y1MWdMUk1rckV4M29Rcm5KSmNfV0w?oc=5",
-        "published": "2026-11-01T16:02:10.000Z",
-        "language": "en",
-        "source_role": "news-search"
-      },
-      {
-        "title": "Is the truth really out there? Studying UAP sightings - CBS News",
-        "source": "CBS News",
-        "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxPQWd0cURRbkpHQ3dKeGEzcHpzcGpDV2xoTGpiVnp4WWNTMTZIai1uSHFXWnRVNkNadUNCa0FwWlVpUW1DU2ZmUThHaHRJTGRCb1drQ19pNEhJZ1VGSUFERmVsWlo4SWhwUFFBekFlWE1Ya1M5REdwS2ljVi1qVlRqRHZNZDdxS1FiQkE?oc=5",
-        "published": "2026-11-01T14:28:02.000Z",
-        "language": "en",
-        "source_role": "news-search"
       }
     ],
     "bulgaria": [
@@ -1877,6 +1927,24 @@
         }
       },
       {
+        "title": "Американски адмирал твърди: НЛО се крият в океана - Vesti.bg",
+        "source": "Vesti.bg",
+        "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQc1BxZm1HNEVEVGZDR2owVS1VclZFNkZzX0ZJMEYwMnlRY0VpSFNPendMR3BpTENNMm9Hb1E3S1AwN0lBVDR5VFhqMC1ZQllmQTVHMm5TT0paTVlsZDFPZkFjWXVtZEV1WnR3dHZQcGFaaEptdVVNc0J1MTlHNHJyNDBzWGc4Q0Njc3pOZA?oc=5",
+        "published": "2026-10-29T07:00:00.000Z",
+        "language": "bg",
+        "source_role": "news-search",
+        "translated_title": "An American admiral claims: UFOs are hiding in the ocean - Vesti.bg",
+        "source_language": "bg",
+        "translation": {
+          "source_language": "bg",
+          "target_language": "en",
+          "status": "machine_translated",
+          "method": "automated",
+          "provider": "machine_translation",
+          "editorial_reviewed": false
+        }
+      },
+      {
         "title": "НЛО спря мач на Арсенал - Стандарт нюз",
         "source": "Стандарт нюз",
         "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE5NbkVDME55d3ZaMTktVUt1SWZIX015VVo0WC1CTW5rekt3cjljaWpYY0VIekJIYnMyZnJnc1MweGxYWElTNDRSd2FqVWFDaHRfbFhpMEJBTXNvVU0wb2JxNFVpbGRGaTM2Qnd6andTV2xQQXZoYWpjR0FOTHc?oc=5",
@@ -1902,42 +1970,6 @@
         "language": "bg",
         "source_role": "news-search",
         "translated_title": "UFO over Washington: Huge clouds in the shape of flying saucers caused a stir - FlashNews",
-        "source_language": "bg",
-        "translation": {
-          "source_language": "bg",
-          "target_language": "en",
-          "status": "machine_translated",
-          "method": "automated",
-          "provider": "machine_translation",
-          "editorial_reviewed": false
-        }
-      },
-      {
-        "title": "Случаят „Розуел“: Разсекретени документи описват извънземни тела и НЛО - Epoch Times Bulgaria",
-        "source": "Epoch Times Bulgaria",
-        "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxOMkt4aEtUUFh5MWtELVY3R3IwM0lWdmRMUTB2cThIQVUzcTM4T1JabTB4dUhyUERoclF6RkJMN0NjbkVNUHNUdGtQR1RFY0dYVEMwcjBFd3RsZmtQZWZoM3VqMnlCXzk5NGZrd2pMOXRKejhtSE5INWduOEZ5bWItSUZLZWtvUnVoY1pvWGJrTDdhdFdGa2ZaNlBQSWhRaUhVdkFxeUhsU29VZ2UzTXlscWxyTzNXb1FzeTJTaEJPUkpQU2NKd1Z2SzJNeGpQaVE?oc=5",
-        "published": "2026-10-25T09:17:00.000Z",
-        "language": "bg",
-        "source_role": "news-search",
-        "translated_title": "The \"Roswell\" case: Declassified documents describe extraterrestrial bodies and UFOs - Epoch Times Bulgaria",
-        "source_language": "bg",
-        "translation": {
-          "source_language": "bg",
-          "target_language": "en",
-          "status": "machine_translated",
-          "method": "automated",
-          "provider": "machine_translation",
-          "editorial_reviewed": false
-        }
-      },
-      {
-        "title": "Мистериите на ранчото Скинуокър: Нови документи на Пентагона разкриват портал към друг свят - Vesti.bg",
-        "source": "Vesti.bg",
-        "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxOeUZyQTZVS0xKVGlKdVl3MEJQZXNJVGVqZGZ0N2Fsc1M5VTNCakh1d0pob19kUFhSQ2c5UnFrMUFUVUt5aGZsek9zNHVSazZtZ1NnTVhBb0N4S3FyclRRbEY1NDFzOVVjUzJYQ3ROQWNoeWF1SlU3WGV1QXBkSmpGNWtJTmFPdmZ5RXRYdDZWYnFObmZTVjJCRk5mQWZabW1LOUIwSU8tOVZScjVZc0Z6NHhEQ3JxQWdxZHlVemxQYmpPdnFyX09CWEdKWG4?oc=5",
-        "published": "2026-10-25T07:00:00.000Z",
-        "language": "bg",
-        "source_role": "news-search",
-        "translated_title": "The mysteries of the Skinwalker Ranch: New Pentagon documents reveal a portal to another world - Vesti.bg",
         "source_language": "bg",
         "translation": {
           "source_language": "bg",
@@ -2003,13 +2035,13 @@
         }
       },
       {
-        "title": "Триъгълно НЛО със скорост 2900 км/ч летяло над обект от стратегическо значение за САЩ - Dnes.bg",
-        "source": "Dnes.bg",
-        "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxQa2FQRnNtdnkzSnZyMDZjUDlRbFpsY2dNRGR4R1NfTEMyT1ByX1RpNTQ1bm10bDlzWHZ5RTFqX3NuR0R5bFlnc3RTa2t2ZTdkQlNzOUZzYVJSLU5yVXBrdGFkTnVGXzRzVW96NVFkOEdNTGhFcWI5Sk5HZWYyb1hUY0FFS3dWdWczNldLWXctMzd0VHJuWUlwaThKcWhHVGs1N3RDcnBEZHhzRWhoV0dTWEZETFJ4dlkzdXBzTWIxdEE5VVY5RkE?oc=5",
+        "title": "Пентагонът показа триъгълно НЛО (снимки) - Dir.bg",
+        "source": "Dir.bg",
+        "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE5JU0p0bGltemUwUkZNWVpUdE1hbVRRajFRTUZhYTlQSWdlNTYxeDdaeVpQajhneHRsakdoOVNqemtZbGh4Z3oyeURleHdMNGNuOThJMXBsejlKelNHYVdYVThvZ0N5VEZZWGdiQ3FpMW5qMjBR?oc=5",
         "published": "2026-10-24T07:00:00.000Z",
         "language": "bg",
         "source_role": "news-search",
-        "translated_title": "A triangular UFO with a speed of 2900 km/h flew over an object of strategic importance for the USA - Dnes.bg",
+        "translated_title": "The Pentagon showed a triangular UFO (photos) - Dir.bg",
         "source_language": "bg",
         "translation": {
           "source_language": "bg",
@@ -2021,13 +2053,13 @@
         }
       },
       {
-        "title": "Пентагонът показа триъгълно НЛО (снимки) - Dir.bg",
-        "source": "Dir.bg",
-        "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE5JU0p0bGltemUwUkZNWVpUdE1hbVRRajFRTUZhYTlQSWdlNTYxeDdaeVpQajhneHRsakdoOVNqemtZbGh4Z3oyeURleHdMNGNuOThJMXBsejlKelNHYVdYVThvZ0N5VEZZWGdiQ3FpMW5qMjBR?oc=5",
+        "title": "Триъгълно НЛО със скорост 2900 км/ч летяло над обект от стратегическо значение за САЩ - Dnes.bg",
+        "source": "Dnes.bg",
+        "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxQa2FQRnNtdnkzSnZyMDZjUDlRbFpsY2dNRGR4R1NfTEMyT1ByX1RpNTQ1bm10bDlzWHZ5RTFqX3NuR0R5bFlnc3RTa2t2ZTdkQlNzOUZzYVJSLU5yVXBrdGFkTnVGXzRzVW96NVFkOEdNTGhFcWI5Sk5HZWYyb1hUY0FFS3dWdWczNldLWXctMzd0VHJuWUlwaThKcWhHVGs1N3RDcnBEZHhzRWhoV0dTWEZETFJ4dlkzdXBzTWIxdEE5VVY5RkE?oc=5",
         "published": "2026-10-24T07:00:00.000Z",
         "language": "bg",
         "source_role": "news-search",
-        "translated_title": "The Pentagon showed a triangular UFO (photos) - Dir.bg",
+        "translated_title": "A triangular UFO with a speed of 2900 km/h flew over an object of strategic importance for the USA - Dnes.bg",
         "source_language": "bg",
         "translation": {
           "source_language": "bg",
@@ -2455,6 +2487,22 @@
     ],
     "official": [
       {
+        "title": "Repeat advertisers returning season after season are the strongest proof of cinema advertising effectiveness: Sachiin Guptaa, UFO Moviez - MediaNews4U",
+        "source": "MediaNews4U",
+        "url": "https://news.google.com/rss/articles/CBMi9gFBVV95cUxNd0xqeGZ0RTVJUzlqdjNtdXpvOWI3LWd3c0NGR0lVQmJOdHBwQXV4aVdPdzQ3ZG5jaDNKSC1qNVdCT3FmX2tYX0hrdmNJOHVlTEpzcFJBbjZub1VGV196enNQNmY0TjAzd0Z5SXJQNE5UM3pQZlZCX2EwT0JrY1lYeVY5ZnpCUkgxUG1PalVVQ19BamM2UHpPdTBIX1ozZmszOWxGMGZTakpuTzNIYTZLYW1XMWJwQ21pQWR1ZGtGUWFQZjAwUGtlMzZOQXViVDRMbTFGT0ZnOVhBN1lfeHVRdEpoc1RYU3ZqZnNaRjBWbWtSMDRzS0E?oc=5",
+        "published": "2026-11-07T05:47:27.000Z",
+        "language": "en",
+        "source_role": "news-search"
+      },
+      {
+        "title": "UFO Researcher Jon Stewart Says Trump Could Make a \"Hail Mary\" Disclosure Move on Aliens - FOX 32 Chicago",
+        "source": "FOX 32 Chicago",
+        "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFBkNGFpUUVDSnI2aWVQSXNxSk9HbUVWS0FvbWZaRkVvWWhwdlFlRE5aM1RVZG5qWVpWYlRrVWZic25jN0xlU3RneXJSc1NFMC1Vd3dhbzBJMENvTHBjb2tSRTNfUG9kd9IBa0FVX3lxTE9JUF9mYXRjbDJENkg2V3IxS3d5Y2YtRXo5MEJOekJRX3dsTGJtNVpYMF9GZkFBWU9IQW5HLUNuWUxpZGZOR0NIemsxYUowODFuMGtSRTVpTjJrdTJTeXRGLWRBOGs1UV83NE9N?oc=5",
+        "published": "2026-11-06T23:01:22.000Z",
+        "language": "en",
+        "source_role": "news-search"
+      },
+      {
         "title": "Science Behind the Forecast: The cloud that can look like a UFO - Louisville Public Media",
         "source": "Louisville Public Media",
         "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQQVJobmVXa05tY0Zib0swRENvNnd6RzNCNXN2ZjU5bFl0VC1TU1pMb0d0R1lKcmhLMkdqWENfdFZIaU5Lb3RJREppU0tBelY5OU9weTJrQUF5ZEZueHB3NUJaNlo3Z0lZcnlEMGZ5Nm9JOC1DcnhMQlFnc29NTXFnM3o0dnJfMjk5ZlhxMnBETkVDS3l2RnQzbEhVUTJVSmc?oc=5",
@@ -2527,14 +2575,6 @@
         "source_role": "news-search"
       },
       {
-        "title": "UFO Moviez revenue rises 17%, while Q2 PAT falls 15% in FY27 - Multibagg AI",
-        "source": "Multibagg AI",
-        "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPQ3I1dE41Sk5lZV9hOWx5Q0FXalVEbWJuYzc2OFpJUWxRbGt3VGFzQWs5b0c0THRYOHQtQ3hUSVlJNUdkcFBiaHJ5Uy1CdDNPZmhadkx6M2tKeEJ6VFctX2ZwOTQ5X3lCZTNxTmFHMk9WWENwVDRHUVhjRjlGaVV6MjFQTDZCZGJPRk9PTVp3b3gtZ1pVTWNfbFdDalVnRE1uS2M4aUVtSUo?oc=5",
-        "published": "2026-11-05T05:27:10.000Z",
-        "language": "en",
-        "source_role": "news-search"
-      },
-      {
         "title": "UFO multiplexes accounted for 66% of Q2FY26 screens - Multibagg AI",
         "source": "Multibagg AI",
         "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQVTFaU1U2RDBTQnZVS24zVU1GSG1heDVKSFN2M2JkWFF3YXg5N0tLVkVsSDZVc3Ffd0JZa0lOUlRIdktzOVRaRzdiS1AwR015TGkzbjNxOUFkSmw4djVvT0RUTmJtREt3elhNRE1XSjd3TWlUcUhwNjVzM0lwdVFHTUJROHlsREllbWJkdFFxRHg3QUN0S3FBSXQ3R0txcjVoZUpN?oc=5",
@@ -2575,14 +2615,6 @@
         "source_role": "news-search"
       },
       {
-        "title": "The Charlton Crater: Did a UFO land in Wiltshire in 1963? - Sky HISTORY TV channel",
-        "source": "Sky HISTORY TV channel",
-        "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE10dXlrdUV6ZUFlU0s0M0w0akJLX0p1b0F0dGlBNWEzQXJjaDJFVWp4MmdESmt3Yi1uRHUwekVKNUhkVll3U00zU3dRSnpqU2lySHE2MjNlVXZIR1V2MkZkQXRyN3lWbVR2SmhHbkhR?oc=5",
-        "published": "2026-11-04T09:13:07.000Z",
-        "language": "en",
-        "source_role": "news-search"
-      },
-      {
         "title": "Best Bets: 5 Things to Do, November 4, 2026 - Scranton Times-Tribune",
         "source": "Scranton Times-Tribune",
         "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPOFNGNE01ejZyajNmWjJvd0lUZ0cyOHVpWUJlbFpNYlU5X0pxVFpkMlRjWmt3OUR2LUJ5MVphajc4OC1acThmcUxzd2FEcV9MdS1UcU9wT1o3ZzA2aWRMYTctQUthVVZKeDd2LXJBbzR2bzA5NDhQYXlwZlNmaGozdzkxZVFGRURuUXRNWGVR?oc=5",
@@ -2595,6 +2627,22 @@
         "source": "Adgully",
         "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOeXpPOEw5THk5T1pTejZ2YmVSaHNibGJyTXAzckhTSmxELUpNV0JrTTI5RDBwUFh2eEpGZW1TOEhOV3RYX0N1aVBrRVV6WjAxY0hlWENtc05rZGRBUjUyYWNmY0hSM0FRN1hQWnlTZkhQQm5vVmZYNzlDbzJqN3I3alpqNkdhNE5sM3piMzZRRlpCVy1PWFJNcnAwRmZ4OXJvNVRJbW1aY3JlRDJNVUhUNnJjdFdMd1lPdXc?oc=5",
         "published": "2026-11-04T05:18:00.000Z",
+        "language": "en",
+        "source_role": "news-search"
+      },
+      {
+        "title": "Hang Out With Sean Hannity - Jay Stratton & Dan Farah Expose 80 Years of UFO Secrets | Hang Out with Sean Hannity - FOX One",
+        "source": "FOX One",
+        "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxPd2Y3QWVneE51YllHaERqWWVRQlRhNTc5RFl6cEVGRGRsVDhRYktLdzRxNW5jbWprTXdfU3RZZXBYRFBBTXNwQmg4dFNqTzdzME1sQWlPMnVUM2drUEdpZk5aTU84NExaM3lTTUNjRkJsWUJYN1RwZFU1SzNNWW5WU1ZPSHhjTmxhUnR1OHZlYkxzS2s2YnpZUW9NU1dqR2pfSjhlSWZEb1EwZ01HV3ZmdFVRdVlmSWJRZ19QRWRnbDlQa0RsYkVObXFfcXlsRVhP?oc=5",
+        "published": "2026-11-04T02:49:38.000Z",
+        "language": "en",
+        "source_role": "news-search"
+      },
+      {
+        "title": "Jay Stratton & Dan Farah Expose 80 Years of UFO Secrets | Hang Out with Sean Hannity - Yahoo",
+        "source": "Yahoo",
+        "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxQSlpwbHctVXpwOGRjRzlBS2NPSUlHYlRwZ1dCN3R1NGZTNElXRHJnSnVUT1VpN3pnS2dTblB6ODJlelpVQkE2SFpjS3FjNURQcERFNmkybnNBem9NSGEtY3J6aW5aNm81RVNOMlFZVE1Ia2xhcGk2cEExMkI0ZFItSWcyMXM?oc=5",
+        "published": "2026-11-03T14:10:52.000Z",
         "language": "en",
         "source_role": "news-search"
       },
@@ -2623,14 +2671,6 @@
         "source_role": "news-search"
       },
       {
-        "title": "Sauchie man appears on BBC show to discuss 'UFO sightings' in central Scotland - Alloa Advertiser",
-        "source": "Alloa Advertiser",
-        "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxOWU94dC1pN0M0NkVRSEI3dEZCamswQ1hxOFJoQ2V4clQycmNXOE9jbTM3QTRLNE40YW52cjR5NkhOWHJ0OWVudTVrWDVWdjRNQl9vUGtrOG9lSFZxb3QzVVR1N01waWoyVGRPR2hDM2E1VHJzSi1KQ053c1JUZU1FeGNBZzBpekhxSEtpTUNCYURpX0dZZ3VyVDdNdTF4Mlk?oc=5",
-        "published": "2026-11-02T14:35:02.000Z",
-        "language": "en",
-        "source_role": "news-search"
-      },
-      {
         "title": "Is the truth out there? USA’s declassified UFO files prompt sniggers about ET claims - News24",
         "source": "News24",
         "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxPU0x3OEtoaXhmTVVoYVVTclppOGZjSl9WdjNVamlCTVprU3J4YTN1azQzX2xBYmwyVVo2R2l3dndBTWdERG5sNlpVMkxhRzRtOXpTc012bFNIUGZtN0NKVVRZbXJ6Z0d2RTdUendlczhKVUx4MnB5cW5YNkVLT0R6ZTZWTGtWMnBURXdTVWJpRHg5TTNfbzdGX2NoOHdZbDRVQXVia2k2UkNTWFJVbVhaeHRzNXN0RjZqQlNsdW5LcURnRGFaT09td1h6amdxeGphb1RGem5yUmN4dw?oc=5",
@@ -2655,14 +2695,6 @@
         "source_role": "news-search"
       },
       {
-        "title": "Former Pentagon UFO chief disputes FBI black triangle sighting, says reports lack evidence - Yahoo",
-        "source": "Yahoo",
-        "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxPcV9RMk02cG9paktocUVaYzdGSjhrdDdUY0FMdWJwbExIZ0ljMlZ1S0w0WXZWUXJrcUpiYk9taTZYNERXa1lHWWREV0s5WF9SNzl1cnRyeXhfU1VjT0w1bUcyTkx3ekxCUzlhY05YOFpWdnpxTFNwbElKU1ZxcXlWaVlCNDZMRVZoX2ZEbHlvMlRISUtWN3dZRg?oc=5",
-        "published": "2026-11-01T12:00:24.000Z",
-        "language": "en",
-        "source_role": "news-search"
-      },
-      {
         "title": "Dems gearing up to seize UFO disclosure issue from GOP after midterms - New York Post",
         "source": "New York Post",
         "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQOVVTYUhMZVNWNFVrV2d4bjdMdllNZ3hfMnJFNDU4UmtuUXd6c0Q1bi1nS18xZVUxbVFEWGpCTGJxb1NhbW92bjlPbDZUbERaak1LMldVem5GRkpDZWhWYkZPdkxLWTN5Umk5b0ViMndJY291SHZjc2xJV0Q0aXVXMzdtU1VCUFRYT01RTVBqY3RPVEVQMHBCNGRVTmNuakFlSWNLQVh1dGs?oc=5",
@@ -2671,18 +2703,18 @@
         "source_role": "news-search"
       },
       {
-        "title": "Machines above Moston and lights over Levenshulme: Every UFO reported over Greater Manchester mapped - Manchester Evening News",
-        "source": "Manchester Evening News",
-        "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNZVYzWjhwTm5yOE5Jd3pPQW1OdWRmS0l0UTIyN3JlclhOdm9mOFFBT2daeFA3eWRZTGZUUURzajVRV09tUWRGb0pZQnZJeEdHVERPWERFMXNkZVFJNFRMNERUUVlpSHdWMkRSYXZRR0tyVmRMaExlWjJzQ0o4MkE3TVJTcTJJbWQ2OHZkUEYtSU1TRnlMRkI5c3duajQ1Q0xGSFdTWlpXaDFqaVFEWmpjZ9IBtgFBVV95cUxQVkhfWHY1TnlhVzZuUHRILUVQUWZiNC1DdVBsZVlKekxLRWdSNHVLTE15OFN1R2RRVVc2MzdqN29FTUtNV2xBVngzLWowMk9kNUl5RWE1Q2VrYzFkR05VTngzYkI2YkRCTUUtYlpMWVlOQWUtTTd1Q2xxYUJOYkJaY190cDdTMFkxWGt1cUx2WlF0Y3JGaGt0eTh1bXNjSHBzby1hYXNObnB1Nm84T1RneUoyX25mdw?oc=5",
-        "published": "2026-10-31T17:09:00.000Z",
+        "title": "AUDACY NEWS' Something Offbeat: Thomas Edison's train lab explosion, Goldilocks behind bars, a 1940s UFO and searching for 'dog men' - Audacy",
+        "source": "Audacy",
+        "url": "https://news.google.com/rss/articles/CBMiggJBVV95cUxOOXptZmpWaVc4V1BEUVNUdUN5QkYzQVI5ZzAweFRZWFVBQW5vRUVLdHNfTnd5Q3dEUDJTZEJRczNEdE10R2FVNXN5Qkh4VW01X0NfSjFYdGlSVUNDT0FoeW1MZXlXbXo2TXBXZHFwM09YRVBKaTNpNVQ4ZFZ5ZHNFTktBVkVZdUlON0JtblNMR1gzTFRDMlhseXpYQUpfY2laVEZJUGx0OGhFcFI2bW1RLWdJNnBkck45NW52clZOR3dSeU1kMFkzdU53MnpjdmxfbHh2NVlKMUp3YlJvMmxxdVlaOWJ1eHdiZkpRWlQ1YVBOTGFqMGxHeGZ4YnpiMHY3VWc?oc=5",
+        "published": "2026-10-31T18:10:38.000Z",
         "language": "en",
         "source_role": "news-search"
       },
       {
-        "title": "The rainy night 'E.T.' filmed its Halloween bicycle chase in the NorCal redwoods - SFGATE",
-        "source": "SFGATE",
-        "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPcHl2d0FBZ00yNEZNTDdOT1VudUhtay1xdFRNNHdSd1gzdVpVMkhWbTExTEh3Y2VMajNjZjN4Y3JMQWhuM3g3YTBkREtHU2lVWUh0aU5FNDRGbmg0R0QwcWw2YnBDUGlJczgyUDJtSF90WDdIc05rZEJFOFdCZUU4R250dFZkNUtIVjR6NnllQQ?oc=5",
-        "published": "2026-10-31T11:11:49.000Z",
+        "title": "Machines above Moston and lights over Levenshulme: Every UFO reported over Greater Manchester mapped - Manchester Evening News",
+        "source": "Manchester Evening News",
+        "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNZVYzWjhwTm5yOE5Jd3pPQW1OdWRmS0l0UTIyN3JlclhOdm9mOFFBT2daeFA3eWRZTGZUUURzajVRV09tUWRGb0pZQnZJeEdHVERPWERFMXNkZVFJNFRMNERUUVlpSHdWMkRSYXZRR0tyVmRMaExlWjJzQ0o4MkE3TVJTcTJJbWQ2OHZkUEYtSU1TRnlMRkI5c3duajQ1Q0xGSFdTWlpXaDFqaVFEWmpjZ9IBtgFBVV95cUxQVkhfWHY1TnlhVzZuUHRILUVQUWZiNC1DdVBsZVlKekxLRWdSNHVLTE15OFN1R2RRVVc2MzdqN29FTUtNV2xBVngzLWowMk9kNUl5RWE1Q2VrYzFkR05VTngzYkI2YkRCTUUtYlpMWVlOQWUtTTd1Q2xxYUJOYkJaY190cDdTMFkxWGt1cUx2WlF0Y3JGaGt0eTh1bXNjSHBzby1hYXNObnB1Nm84T1RneUoyX25mdw?oc=5",
+        "published": "2026-10-31T17:09:00.000Z",
         "language": "en",
         "source_role": "news-search"
       },
@@ -2784,14 +2816,6 @@
         "source_region": "europe"
       },
       {
-        "title": "The Triangular UAP in the 7th Tranche of PURSUE - Avi Loeb – Medium",
-        "source": "Avi Loeb – Medium",
-        "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNZVZqRjY2ajhFelJhdXFoSWpKdXVzU1lRcndVNEJjVXFwRmZIWnhXeXViMEllWkVld0FfbGZOZ0JvWk9BY0dha1c4dHEtRVowQ1ZhNmxfdDRvbHNFRU45N1Y0TXM1Z0FlOC1nWTBhRVR2TEd6MEJBNTZRNHlzT29RSklBRU5wUmpKa0V5cmpFSVRPdw?oc=5",
-        "published": "2026-10-23T07:00:00.000Z",
-        "language": "en",
-        "source_role": "news-search"
-      },
-      {
         "title": "Seventh Release of files on Unidentified Anomalous Phenomena (UAP) – Project Capella Detailed (Updated) - Inside Outer Space",
         "source": "Inside Outer Space",
         "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQXy1uZEFpQWUtVm5nTlh4alNPeXR2Q1VDNHl2NEdWajBkQ3ZwS3dabXkycUdMUDhrRUZ0M2IyNXBrMFlMUzNWdjZMX2NKbDRJaDhyRDRpeDYxNU12UW5UWHpmZGEtMWRsbW96MUhJOThMRVFxMlNnV3RDOF9CTFVseUdKUGVNQmJRMUk2cTU2eFpSbGVrZXJfWjBnU1NMbzMxX0l2SVFhMXVmYm82VzdVUHNUS3MtYTNGcC1R?oc=5",
@@ -2872,6 +2896,14 @@
         "source_role": "news-search"
       },
       {
+        "title": "Digital Data or Material Evidence Please; The Time is Ripe to Go Beyond Verbal Testimonies on UAP! - Avi Loeb – Medium",
+        "source": "Avi Loeb – Medium",
+        "url": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxPU2tObkE2NzlZWW1zR2d3enpEaTVMUERPaXVoSGJBbTNRZ0QtclA0NkhpVHc4bUVEb3NLT1dzbHNDWUd4SkhzeDVNZ2xEMTFiSGdZRUlzN0VmWXFqcVNwb1hZemFZY28zMC1KOHU0djVXck5VZ0JXUW1zYW90ZzcyUDVCS1NEZ0JpVF84T2Q3RzE5aGgyQU5UeVZCelI3dGR5QTVYb0FyWDZKVFZNS2VRVzJoMlZXQ3JXcVNYei1Eal9RYWNwdUUxZHI3UGN0N3p3djhZ?oc=5",
+        "published": "2026-10-13T07:00:00.000Z",
+        "language": "en",
+        "source_role": "news-search"
+      },
+      {
         "title": "How the impossible geometry of 'Tomb Raider III''s UFO level was made - Space",
         "source": "Space",
         "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNZmxMampqdVlPSTRzc19HRGFFMURKU1hqdmRmZ1VWZWc5SlpPeGUxdnhoZEs3TmNoRG5Wc21HUWVha0paODJLcnREcnEzX19ZZngtN1ZiRzBDU2JlXzJVLWd0Qy16X2ZIbkxzTXpFWmlXUnJ6cncwTWVodVcyWW1CRkxnUkVGM2xzVGRMdmowNVlyMnJFY002UUkzNmtiTnMtUkhtMzRZa1VHZ2h1VEo4eUJTRDQ?oc=5",
@@ -2915,6 +2947,14 @@
         "title": "Founder Of The Week: Aaro Angerpuro - TechRound",
         "source": "TechRound",
         "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE40U0d4NGdOcHo4eE4zdGxzc2hTWHVaTnQxSGxWWmxlbXlYUG5EYzVWM1V4NHF0Zl9JLW4tRHNvVWRZbkZYMUpvcWFKMmJubkxKTnF6VmZUSkUtOWtSN2xsQksxSTFMXzZmaURQVmU5YnE4bm5oc21v?oc=5",
+        "published": "2026-09-22T07:00:00.000Z",
+        "language": "en",
+        "source_role": "news-search"
+      },
+      {
+        "title": "Warp Drives, Wormholes and UFOs: What’s Inside the Pentagon’s Latest UAP Files - Security Clearance Jobs",
+        "source": "Security Clearance Jobs",
+        "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNeHBrMnh3dzRGeDBQbDdMMkcyQ0xJaWNGSzZIUXlvR096YVZNQjNOS0hqeGhGbEZqZGhBWGVLWlIxcWxWSnhROTR5SVFCTUlTUkstTXBDZUZnQkhnblJVdk1qa3h6SnFIVkM4M2wzWEJ6cVdVNmNiczJNd3pUOHl4UXhKZjdKWnJ5LTZfSUFqNm9XSndXaEMzVXd3aTlKblRxcEZld1FhQkdKZTBCTVFjbjM2anVaSy0y?oc=5",
         "published": "2026-09-22T07:00:00.000Z",
         "language": "en",
         "source_role": "news-search"
@@ -2968,17 +3008,17 @@
         "source_role": "news-search"
       },
       {
-        "title": "Pentagon releases sixth batch of UFO files - NewsNation",
-        "source": "NewsNation",
-        "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE4yUXZRWEVFaXhkNjA1MjJlOVRMUkZNQmdjNm5id25OLThoT1J0V3p3MWxYU0tUR2VZOUhIdF9BLWZKU0hkX1ZvTHIwb01VU21OR0dKUXcxS0Z1eFhKZnBQdGNjX0xSQVItRkJreHZoRGlpTDBYbXlubWtSX0VhQdIBgwFBVV95cUxPVzZxWjNHMFJVZzZHd2xzd1dacU5lMHI1c3NEdW9ZZ1NGUENPR2xNNE1ZY1N6UmRYYm9feUtqMTJ2ZXBjdlItSExwYW1BaGlERFU4UUdnRUgyUGlQYXFYemkxLUtmcldDWDlYQ3VuOThWcGp6YV9scG1fandYbVRlc3NpMA?oc=5",
+        "title": "Pentagon releases more UFO files, including documents on secretive military program - CBS News",
+        "source": "CBS News",
+        "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE5GenVudndBakoyT05oTDltSnppZTlzM3lKeUJtNE5CVUN1WW5hYkRsLS1hN3FHTm1DNG9hdFJJMkFqSDhzRWNMam91eldxdDBvSzB6NGszeWJOV3hjY2F1aUNueHRzcElFRi1tTGRzZmRFUQ?oc=5",
         "published": "2026-09-18T07:00:00.000Z",
         "language": "en",
         "source_role": "news-search"
       },
       {
-        "title": "Pentagon releases more UFO files, including documents on secretive military program - CBS News",
-        "source": "CBS News",
-        "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE5GenVudndBakoyT05oTDltSnppZTlzM3lKeUJtNE5CVUN1WW5hYkRsLS1hN3FHTm1DNG9hdFJJMkFqSDhzRWNMam91eldxdDBvSzB6NGszeWJOV3hjY2F1aUNueHRzcElFRi1tTGRzZmRFUQ?oc=5",
+        "title": "Pentagon releases sixth batch of UFO files - NewsNation",
+        "source": "NewsNation",
+        "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE4yUXZRWEVFaXhkNjA1MjJlOVRMUkZNQmdjNm5id25OLThoT1J0V3p3MWxYU0tUR2VZOUhIdF9BLWZKU0hkX1ZvTHIwb01VU21OR0dKUXcxS0Z1eFhKZnBQdGNjX0xSQVItRkJreHZoRGlpTDBYbXlubWtSX0VhQdIBgwFBVV95cUxPVzZxWjNHMFJVZzZHd2xzd1dacU5lMHI1c3NEdW9ZZ1NGUENPR2xNNE1ZY1N6UmRYYm9feUtqMTJ2ZXBjdlItSExwYW1BaGlERFU4UUdnRUgyUGlQYXFYemkxLUtmcldDWDlYQ3VuOThWcGp6YV9scG1fandYbVRlc3NpMA?oc=5",
         "published": "2026-09-18T07:00:00.000Z",
         "language": "en",
         "source_role": "news-search"
@@ -3010,8 +3050,8 @@
         "source_role": "news-search"
       },
       {
-        "title": "What Did the U.S. Government Learn About Alien Tech? - Medium",
-        "source": "Medium",
+        "title": "What Did the U.S. Government Learn About Alien Tech? - Avi Loeb – Medium",
+        "source": "Avi Loeb – Medium",
         "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxOUV94QnZNMVd3UHhFUThWUWIyZnNBUC1hQTlaR2U2MkpwVl91N3lra0VHckF3akJfdHRGSlZ2WWVzWTZuQ1lidGRDbVlZM003d0VfTWVGcl9XVENJNGZKR2lFWlpuTHVmUUVZakdMMnB4Q3hSbjhyT2tmOUxuSGotSWYwX1UyUkZlSEhTTWFpS1pDX2drbHc?oc=5",
         "published": "2026-09-15T07:00:00.000Z",
         "language": "en",
@@ -3066,6 +3106,14 @@
         "source_role": "news-search"
       },
       {
+        "title": "AARO TechX Summit - Collision Repair Mag",
+        "source": "Collision Repair Mag",
+        "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOaEExWkNWUzRnUDloZ2FRWk1pUnZXSk9FTlZNS1VyMTBENDdfNGQ2MlV5VTFpSHd0UHZQMUVCRy1iWmFNanpEWTl3ZVJPSEhNbXlEVEJ4a2tSUHowemxqUFZxdFFIYmlUMVJpRF9CbHp5dlZ5cEFGeHdDckZvQm0tMkpJUXA3Nldm?oc=5",
+        "published": "2026-09-01T21:48:43.000Z",
+        "language": "en",
+        "source_role": "news-search"
+      },
+      {
         "title": "New Survey Suggests Gen Z Are More Likely to Believe in Aliens—How UFO Media May Be Shaping a Generation",
         "source": "The Debrief",
         "url": "https://thedebrief.org/new-survey-suggests-gen-z-are-more-likely-to-believe-in-aliens-how-ufo-media-may-be-shaping-a-generation/",
@@ -3082,32 +3130,16 @@
         "language": "en",
         "source_role": "specialist-press",
         "source_region": "americas"
-      },
-      {
-        "title": "Is UAP research (finally) welcome into the academic warmth? - Lunds universitet",
-        "source": "Lunds universitet",
-        "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE53TC0xUEc3SEc1SG5UZWs3WmFFN3ZlcHhnNExHRUdpRHMwa0FLT3MtVlRxV2VDSjRxMzJYLTN5ZjdNNlVwakFxaHRKb2VkZFotV1FQWGN0WGFQR0NlUGRVbWtxa3I1MVFxek5lMkJwX25FUWowZEJKalRLR2o?oc=5",
-        "published": "2026-08-27T10:19:28.000Z",
-        "language": "en",
-        "source_role": "news-search"
-      },
-      {
-        "title": "Sione Ta'ufo'ou - Football Coach - California Golden Bears Athletics",
-        "source": "California Golden Bears Athletics",
-        "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTFBnVXN0SFF3UlllckdPTFM3aTJOY0MtSmpIR2ozRWJhalpjTEplWkY2Z0Z0V1ktZnI4MU5PY0o5RFBmck13N01QUXByUmxpc1R3c01lanM2a2hCVmF6WGdaUFpHMThuQ2t2Tm1NeHVnang3NWNGSDl6TnkwMA?oc=5",
-        "published": "2026-08-25T16:09:04.000Z",
-        "language": "en",
-        "source_role": "news-search"
       }
     ]
   },
   "translations": {
     "target_language": "en",
     "status": "complete",
-    "translated": 118,
+    "translated": 122,
     "method": "automated_machine_translation",
     "editorial_reviewed": false,
-    "checked_at": "2026-11-06T19:37:01.136Z",
+    "checked_at": "2026-11-07T06:20:32.005Z",
     "excluded_untranslated": 1
   }
 }
